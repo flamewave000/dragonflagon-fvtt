@@ -3,7 +3,7 @@
 	"title": "DF User Logger",
 	"description": "Prints a simple message whenever a user logs-in/out of FoundryVTT",
 	"version": "1.0",
-	"author": { "name": "flamewave000" },
+	"author": "flamewave000",
 	"minimumCoreVersion": "0.6.5",
 	"compatibleCoreVersion": "0.6.6",
 	"esmodules": [ "main.js" ],
