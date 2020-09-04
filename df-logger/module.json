@@ -14,5 +14,10 @@
 			"path": "lang/en.json"
 		}
 	],
+	"url": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-logger",
+	"license": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/df-logger/LICENSE",
+	"manifest": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/df-logger/module.json",
+	"download": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/releases/df-logger.zip",
+	"readme": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-logger/README.md",
 	"socket": true
 }
