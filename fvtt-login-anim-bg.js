@@ -2,7 +2,7 @@
 // @name         Foundry VTT Animated Background
 // @namespace    https://github.com/flamewave000
 // @version      0.1
-// @description  Reads the "background image" URL and if it is a video link, adds it to the page as such.
+// @description  Reads the "background image" URL and adds a video element to a mp4/m4v file of the same path/name.
 // @author       flamewave000
 // @match        http*://*/join
 // @grant        none
