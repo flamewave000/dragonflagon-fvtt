@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name         Foundry VTT Animated Background
 // @namespace    https://github.com/flamewave000
-// @version      0.1
+// @version      0.2
 // @description  Reads the "background image" URL and adds a video element to a mp4/m4v file of the same path/name.
 // @author       flamewave000
 // @match        http*://*/join
 // @grant        none
-// @require http://code.jquery.com/jquery-latest.js
+// @downloadURL  https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/fvtt-login-anim-bg.js
+// @require      http://code.jquery.com/jquery-latest.js
+// @run-at       document-body
 // ==/UserScript==
 
 (function() {
