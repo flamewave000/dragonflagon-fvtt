@@ -1,0 +1,19 @@
+{
+	"manifest_version": 2,
+	"name": "DragonFlagon Animated Login FVTT",
+	"version": "1.0",
+	"description": "DragonFlagon Animated Login screen for FoundryVTT",
+	"icons": {
+		"16": "icons/fvtt-d20.png",
+		"48": "icons/fvtt-anvil.png",
+		"128": "icons/fvtt-cc-anvil.png"
+	},
+	"content_scripts": [
+		{
+			"matches": ["*://*/join"],
+			"css": ["styles.css"],
+			"js": ["main.js"],
+			"run_at": "document_end"
+		}
+	]
+}
