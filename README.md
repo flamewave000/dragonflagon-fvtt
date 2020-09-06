@@ -3,18 +3,21 @@
 ## DF User Logger
 User login/logout module that adds an expiring message to the chat log when a user logs in/out of the server.
 
-## Login Screen Animated Background Script (TamperMonkey)
-*Requires the TamperMonkey extension on individual each viewing browser to work*
+## Login Screen Animated Background Extension
 
 ### How to install (Everyone)
 
-- Install [TamperMonkey Extension](https://www.tampermonkey.net/) for your browser
-- Click the TamperMonkey extension and select "Dashboard" from its menu.
-- Select the "Utilities" tab
-- Copy and paste this URL into the "Install from URL" field
-  `https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/fvtt-login-anim-bg.js`
-- Click Install
-- Click Install again on the confirmation page
+- Download the extension for [Chrome](https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/extensions/df-anim-bg_chrome.zip) or [Firefox](https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/extensions/df-anim-bg_firefox.xpi)
+- **Chrome:**
+  - Open Browser Settings Menu
+  - Select Extensions
+  - Toggle "Developer mode" on
+  - Either click and drag the `df-anim-bg_chrome.zip` file onto the extensions page, OR use the "Load unpacked" button to load it from file.
+  - Enjoy!
+- **Firefox:**
+  - Open Browser Settings Menu
+  - Select "Add-ons"
+  - Either click and drag the `df-anim-bg_firefox.xpi` file onto the add-ons page, OR click the gear button and select "Install add-on from file".
 
 ### How to use (GM only)
 ![Setup](.assets/df-bganim-update.png)
