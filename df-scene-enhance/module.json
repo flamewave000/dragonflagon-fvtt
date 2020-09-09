@@ -1,12 +1,12 @@
 {
 	"name": "df-scene-thumb",
-	"title": "DF Scene Thumbnail Override",
-	"description": "Overrides the auto-generated thumbnail with your choice of image.",
+	"title": "DF Scene Enhancement",
+	"description": "A few enhancements to scene management for players and GMs.",
 	"version": "1.0",
 	"author": "flamewave000",
 	"minimumCoreVersion": "0.6.5",
 	"compatibleCoreVersion": "0.6.6",
-	"esmodules": [ "df-scene-thumb.js" ],
+	"esmodules": [ "df-scene-thumb.js", "df-scene-nav.js" ],
 	"languages": [
 		{
 			"lang": "en",
