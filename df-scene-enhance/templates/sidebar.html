@@ -1,0 +1,38 @@
+<div id="sidebar" class="app">
+    <nav id="sidebar-tabs" class="tabs">
+        <a class="item" title="{{localize 'SIDEBAR.TabChat'}}" data-tab="chat">
+            <i class="fas fa-comments"></i>
+            <i id="chat-notification" class="notification-pip fas fa-exclamation-circle"></i>
+        </a>
+        <a class="item" title="{{localize 'SIDEBAR.TabCombat'}}" data-tab="combat"><i class="fas fa-fist-raised"></i></a>
+        {{#if scenesAllowed }}
+        <a class="item" title="{{localize 'SIDEBAR.TabScenes'}}" data-tab="scenes"><i class="fas fa-map"></i></a>
+        {{/if}}
+        <a class="item" title="{{localize 'SIDEBAR.TabActors'}}" data-tab="actors"><i class="fas fa-users"></i></a>
+        <a class="item" title="{{localize 'SIDEBAR.TabItems'}}" data-tab="items"><i class="fas fa-suitcase"></i></a>
+        <a class="item" title="{{localize 'SIDEBAR.TabJournal'}}" data-tab="journal"><i class="fas fa-book-open"></i></a>
+        <a class="item" title="{{localize 'SIDEBAR.TabTables'}}" data-tab="tables"><i class="fas fa-th-list"></i></a>
+        <a class="item" title="{{localize 'SIDEBAR.TabPlaylists'}}" data-tab="playlists"><i class="fas fa-music"></i></a>
+        <a class="item" title="{{localize 'SIDEBAR.TabCompendium'}}" data-tab="compendium"><i class="fas fa-atlas"></i></a>
+        <a class="item" title="{{localize 'SIDEBAR.TabSettings'}}" data-tab="settings">
+            <i class="fas fa-cogs"></i>
+            {{#if coreUpdate}}
+            <i class="notification-pip fas fa-exclamation-circle" title="{{ coreUpdate }}"></i>
+            {{/if}}
+        </a>
+        <a class="collapse" title="{{localize 'SIDEBAR.CollapseToggle'}}"><i class="fas fa-caret-right"></i></a>
+    </nav>
+
+    <template class="tab" id="chat" data-tab="chat"></template>
+    <template class="tab" id="combat" data-tab="combat"></template>
+    {{#if scenesAllowed }}
+    <template class="tab" id="scenes" data-tab="scenes"></template>
+    {{/if}}
+    <template class="tab" id="actors" data-tab="actors"></template>
+    <template class="tab" id="items" data-tab="items"></template>
+    <template class="tab" id="journal" data-tab="journal"></template>
+    <template class="tab" id="tables" data-tab="tables"></template>
+    <template class="tab" id="playlists" data-tab="playlists"></template>
+    <template class="tab" id="compendium" data-tab="compendium"></template>
+    <template class="tab" id="settings" data-tab="settings"></template>
+</div>

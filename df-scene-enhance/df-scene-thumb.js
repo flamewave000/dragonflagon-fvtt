@@ -1,7 +1,8 @@
 class DFSceneThumb {
-	static MODULE = 'df-scene-thumb';
+	static MODULE = 'df-scene-enhance';
 	static THUMBS = 'thumbs';
 	static purge() {
+		if (!game.user.isGM) return;
 		let ids = []
 		for (var scene of game.scenes.entries) {
 			ids.push(scene.id);
@@ -25,10 +26,11 @@ class DFSceneThumb {
 
 	/** @override */
 	static async updateOverride(data, options = {}) {
+		if (!game.user.isGM) return this.dfThumb_update(data, options);
 		const dfSceneConfig = DFSceneThumb.getThumb(this.id);
 		let image = dfSceneConfig.url ? dfSceneConfig.url : data.img;
 		const imgChange = !!data.img && (data.img !== this.data.img || !dfSceneConfig.thumb);
-		const needsThumb = !!(this.data.img || data.img) && !this.data.thumb;
+		const needsThumb = !!(this.data.img || data.img || dfSceneConfig.url) && !this.data.thumb;
 		// Update the Scene thumbnail if necessary
 		if (imgChange || needsThumb) {
 			try {
@@ -59,6 +61,7 @@ Hooks.once('init', function () {
 		type: String,
 		default: "{}"
 	})
+	Scene.prototype.dfThumb_update = Scene.prototype.update;
 	Scene.prototype.update = DFSceneThumb.updateOverride;
 });
 
