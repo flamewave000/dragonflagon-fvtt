@@ -2,7 +2,7 @@
 	"name": "df-scene-enhance",
 	"title": "DF Scene Enhancement",
 	"description": "A few enhancements to scene management for players and GMs.",
-	"version": "1.0",
+	"version": "1.1",
 	"author": "flamewave000#6766",
 	"minimumCoreVersion": "0.6.5",
 	"compatibleCoreVersion": "0.6.6",
@@ -13,11 +13,16 @@
 			"lang": "en",
 			"name": "English",
 			"path": "lang/en.json"
+		},
+		{
+			"lang": "fr",
+			"name": "French",
+			"path": "lang/fr.json"
 		}
 	],
 	"url": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-scene-enhance",
 	"license": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/df-scene-enhance/LICENSE",
 	"manifest": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/df-scene-enhance/module.json",
-	"download": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/releases/df-scene-enhance_1.0.zip",
+	"download": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/releases/df-scene-enhance_1.1.zip",
 	"readme": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-scene-enhance/README.md"
 }

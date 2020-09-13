@@ -4,9 +4,7 @@ class DFSettingsClarity {
 		game.settings.dfSettingsClarity_register = game.settings.register;
 		game.settings.register = DFSettingsClarity.settingsRegister;
 		for (var pair of game.settings.settings) {
-			// let setting = game.settings.settings[pair[0]];
 			pair[1].name = DFSettingsClarity.formatName(pair[1].name, pair[1].scope);
-			// game.settings.settings[key] = setting;
 		}
 	}
 
@@ -14,9 +12,7 @@ class DFSettingsClarity {
 		game.settings.dfSettingsClarity_registerMenu = game.settings.registerMenu;
 		game.settings.registerMenu = DFSettingsClarity.settingsRegisterMenu;
 		for (var pair of game.settings.menus) {
-			// let menu = game.settings.menus[key];
 			pair[1].name = DFSettingsClarity.formatName(pair[1].name, pair[1].scope);
-			// game.settings.menus[key] = menu;
 		}
 	}
 
@@ -39,7 +35,6 @@ class DFSettingsClarity {
 
 
 Hooks.on('setup', function () {
-	// if (!game.user.isGM) return;
 	DFSettingsClarity.patchGameSettings();
 	DFSettingsClarity.patchGameSettingsMenus();
 });
