@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "DragonFlagon Animated Login FVTT",
-	"version": "1.0",
+	"version": "1.1",
 	"description": "DragonFlagon Animated Login screen for FoundryVTT",
 	"icons": {
 		"16": "icons/fvtt-d20.png",
