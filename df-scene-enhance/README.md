@@ -10,6 +10,9 @@ This feature changes the behaviour of Scenes in the Scenes Tab. Now if you click
 |![GM View of Scenes Tab](../.assets/df-scene-enhance-gm.png)|![Player View of Scenes Tab](../.assets/df-scene-enhance-pc.png)|
 |![GM View of Scenes Tab](../.assets/df-scene-enhance-gm-menu.png)|![Player View of Scenes Tab](../.assets/df-scene-enhance-pc-menu.png)|
 
+### Compatibility
+This module will work with any module that does not completely manipulate the Scenes Tab in the game. As of v1.2, I do not know of any module that replaces the Scenes Tab layout and so compatibility should be at 100%.
+
 
 ## Scene Thumbnail Override
 
