@@ -3,7 +3,13 @@ A few enhancements to scene management for players and GMs.
 
 ## Scene Navigation on the Scenes Tab (Players & GMs)
 
-This feature changes the behaviour of Scenes in the Scenes Tab. Now if you click on a scene, it will **navigate** to that scene instead of opening its configuration screen. Also, players will now see the Scenes tab as well and navigate to the scenes they have access to. This allows for the Nav Bar to be moch more reduced (especially for GMs). Now the Nav Bar can be used as a fast shortcut section as it should be.
+This feature changes the behaviour of Scenes in the Scenes Tab. Now if you click on a scene, it will **navigate** to that scene instead of opening its configuration screen. Also, players will now see the Scenes tab as well and navigate to the scenes they have access to. This allows for the Navigation Bar to be much more reduced (especially for GMs). Now the Navigation Bar can be used as a fast shortcut section as it should be.
+
+|GM View of Scenes Tab|Player View of Scenes Tab|
+|:-:|:-:|
+|![GM View of Scenes Tab](../.assets/df-scene-enhance-gm.png)|![Player View of Scenes Tab](../.assets/df-scene-enhance-pc.png)|
+|![GM View of Scenes Tab](../.assets/df-scene-enhance-gm-menu.png)|![Player View of Scenes Tab](../.assets/df-scene-enhance-pc-menu.png)|
+
 
 ## Scene Thumbnail Override
 

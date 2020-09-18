@@ -44,14 +44,25 @@ class DFSceneNav {
 		});
 	}
 
+	static patchSceneDirectory() {
+		let sidebarDirDefOpts = Object.getOwnPropertyDescriptor(SidebarDirectory, 'defaultOptions');
+		Object.defineProperty(SceneDirectory, 'defaultOptions', {
+			get: function () {
+				let options = mergeObject(sidebarDirDefOpts.get.bind(SceneDirectory)(), {
+					template: `modules/${DFSceneNav.MODULE}/templates/scene-directory.html`,
+				});
+				return options;
+			}
+		});
+	}
+
 	static patchSidebar() {
 		Sidebar.prototype.dfSceneNav_render = Sidebar.prototype._render;
 		Sidebar.prototype._render = async function (...args) {
 			// Render the Sidebar container only once
-			if (!this.rendered) await this.dfSceneNav_render(...args);//await super._render(...args);
+			if (!this.rendered) await this.dfSceneNav_render(...args);
 			// Define the sidebar tab names to render
 			const tabs = ["chat", "combat", "actors", "items", "journal", "tables", "playlists", "compendium", "settings", "scenes"];
-			// if (game.user.isGM) tabs.push("scenes");
 			// Render sidebar Applications
 			for (let name of tabs) {
 				const app = ui[name];
@@ -63,21 +74,18 @@ class DFSceneNav {
 				}
 			}
 		}
-		Sidebar.prototype.getData = function(options) {
+		Sidebar.prototype.getData = function (options) {
 			return {
 				coreUpdate: game.data.coreUpdate ? game.i18n.format("SETUP.UpdateAvailable", game.data.coreUpdate) : false,
 				user: game.user,
 				scenesAllowed: game.user.isGM || game.settings.get(DFSceneNav.MODULE, DFSceneNav.ON_CLICK_PLAYER)
 			};
 		}
+		let sidebarDefaultOptions = Object.getOwnPropertyDescriptor(Sidebar, 'defaultOptions');
 		Object.defineProperty(Sidebar, 'defaultOptions', {
 			get: function () {
-				return mergeObject(Application.defaultOptions, {
-					id: "sidebar",
+				return mergeObject(sidebarDefaultOptions.get(), {
 					template: `modules/${DFSceneNav.MODULE}/templates/sidebar.html`,
-					popOut: false,
-					width: 300,
-					tabs: [{ navSelector: ".tabs", contentSelector: "#sidebar", initial: "chat" }]
 				});
 			}
 		});
@@ -112,6 +120,11 @@ Hooks.once('init', function () {
 		default: false
 	});
 
+	Handlebars.registerHelper('dfCheck', function (user, scene) {
+		return (user.isGM || !scene.data.navName) ? scene.data.name : scene.data.navName;
+	})
+
+	DFSceneNav.patchSceneDirectory();
 	DFSceneNav.patchSidebar();
 	DFSceneNav.patchSceneDirectoryMenu(game.settings.get(DFSceneNav.MODULE, DFSceneNav.IN_MENU));
 });
