@@ -31,6 +31,7 @@ class DFSceneNav {
 		}
 	}
 	static patchSceneDirectoryMenu(entryOptions) {
+		if (!game.user) return;
 		if (!game.user.isGM)
 			entryOptions.length = 0;
 		entryOptions.unshift({
@@ -120,8 +121,8 @@ Hooks.once('init', function () {
 		default: false
 	});
 
-	Handlebars.registerHelper('dfCheck', function (user, scene) {
-		return (user.isGM || !scene.data.navName) ? scene.data.name : scene.data.navName;
+	Handlebars.registerHelper('dfCheck', function (scene) {
+		return ((game.user && game.user.isGM) || !scene.data.navName) ? scene.data.name : scene.data.navName;
 	})
 
 	DFSceneNav.patchSceneDirectory();

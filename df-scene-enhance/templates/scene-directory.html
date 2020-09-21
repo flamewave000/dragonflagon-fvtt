@@ -10,7 +10,7 @@
       <a class="create-entity" title="{{localize 'SIDEBAR.SceneCreate'}}" data-folder="{{folder._id}}">
           <i class="{{icon}}"></i>
       </a>
-	{{/if}}
+    {{/if}}
   </header>
 
   <ol class="subdirectory">
@@ -26,7 +26,7 @@
 
 {{#*inline "entityPartial"}}
 <li class="directory-item entity scene flexrow" data-entity-id="{{this.data._id}}" data-background-image="{{this.data.thumb}}">
-  <h3 class="entity-name"><a>{{dfCheck user this}}</a></h3>
+  <h3 class="entity-name"><a>{{dfCheck this}}</a></h3>
 </li>
 {{/inline}}
 
@@ -47,7 +47,7 @@
         {{> folderPartial folder=f user=../user icon=../sidebarIcon}}
 	    {{/each}}
 	    {{#each tree.content}}
-        {{> entityPartial user=../user}}
+        {{> entityPartial}}
 	    {{/each~}}
 	</ol>
 
