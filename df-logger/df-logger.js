@@ -9,13 +9,13 @@ Hooks.once('init', function () {
 		type: Boolean,
 		default: false,
 	});
-	game.settings.register(DFLogger.MODULE, DFLogger.SETTING_NOT_ME, {
-		name: "DRAGON_FLAGON.Settings_NotMe_Title",
-		hint: "DRAGON_FLAGON.Settings_NotMe_Hint",
-		scope: "client",
+	game.settings.register(DFLogger.MODULE, DFLogger.SETTING_SELF_DESTRUCT, {
+		name: "DRAGON_FLAGON.Settings_SelfDestruct_Title",
+		hint: "DRAGON_FLAGON.Settings_SelfDestruct_Hint",
+		scope: "world",
 		config: true,
 		type: Boolean,
-		default: false,
+		default: true
 	});
 	game.settings.register(DFLogger.MODULE, DFLogger.SETTING_DELAY, {
 		name: "DRAGON_FLAGON.Settings_Delay_Title",
@@ -28,11 +28,15 @@ Hooks.once('init', function () {
 			min: 1,
 			max: 30,
 			step: 1
-		},
-		onChange: value => {
-			if (value < 5)
-				game.settings.put(DFLogger.MODULE, DFLogger.SETTING_DELAY, 5);
 		}
+	});
+	game.settings.register(DFLogger.MODULE, DFLogger.SETTING_NOT_ME, {
+		name: "DRAGON_FLAGON.Settings_NotMe_Title",
+		hint: "DRAGON_FLAGON.Settings_NotMe_Hint",
+		scope: "client",
+		config: true,
+		type: Boolean,
+		default: false,
 	});
 
 	// register our socket events receiver

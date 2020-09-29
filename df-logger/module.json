@@ -2,22 +2,18 @@
 	"name": "df-logger",
 	"title": "DF User Logger",
 	"description": "Prints a simple message whenever a user logs-in/out of FoundryVTT",
-	"version": "1.1",
+	"version": "1.2",
 	"author": "flamewave000",
 	"minimumCoreVersion": "0.6.5",
 	"compatibleCoreVersion": "0.6.6",
 	"esmodules": [ "df-logger.js" ],
 	"languages": [
-		{
-			"lang": "en",
-			"name": "English",
-			"path": "lang/en.json"
-		}
+		{ "lang": "en", "name": "English", "path": "lang/en.json" }
 	],
 	"url": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-logger",
-	"license": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/df-logger/LICENSE",
-	"manifest": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/df-logger/module.json",
-	"download": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/releases/df-logger_1.1.zip",
+	"license": "https://github.com/flamewave000/dragonflagon-fvtt/raw/master/df-logger/LICENSE",
+	"manifest": "https://github.com/flamewave000/dragonflagon-fvtt/raw/master/df-logger/module.json",
+	"download": "https://github.com/flamewave000/dragonflagon-fvtt/raw/master/releases/df-logger_1.2.zip",
 	"readme": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-logger/README.md",
 	"socket": true
 }

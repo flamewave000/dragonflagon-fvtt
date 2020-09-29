@@ -4,9 +4,11 @@ export default class DFLogger {
 	static EV_LOGOUT = 'logout';
 	static SETTING_GM_ONLY = 'gm-only';
 	static SETTING_NOT_ME = 'not-me';
+	static SETTING_SELF_DESTRUCT = 'self-destruct';
 	static SETTING_DELAY = 'delay';
-	static get LoginContent() { return game.i18n.localize('DRAGON_FLAGON.Content_Login'); }
-	static get LogoutContent() { return game.i18n.localize('DRAGON_FLAGON.Content_Logout'); }
+	static get Persist() { return !game.settings.get(DFLogger.MODULE, DFLogger.SETTING_SELF_DESTRUCT); }
+	static get LoginContent() { return game.i18n.localize('DRAGON_FLAGON.Content_Login' + (DFLogger.Persist ? '_Persist' : '')); }
+	static get LogoutContent() { return game.i18n.localize('DRAGON_FLAGON.Content_Logout' + (DFLogger.Persist ? '_Persist' : '')); }
 
 	static getMessageText(msgKey, msgCount) {
 		return game.i18n.localize(msgKey + (Math.round(Math.random() * (msgCount * 100)) % msgCount));
@@ -25,9 +27,12 @@ export default class DFLogger {
 			whisper: [game.user.id],
 			type: CHAT_MESSAGE_TYPES.OOC
 		});
-		setTimeout(async () => {
-			await ChatMessage.delete(chatMsg.id);
-		}, Math.round(game.settings.get(DFLogger.MODULE, 'delay') * 1000));
+
+		if (!DFLogger.Persist) {
+			setTimeout(async () => {
+				await ChatMessage.delete(chatMsg.id);
+			}, Math.round(game.settings.get(DFLogger.MODULE, 'delay') * 1000));
+		}
 	}
 
 	static onEvent(data) {
@@ -68,6 +73,7 @@ export default class DFLogger {
 	}
 
 	static cleanup() {
+		if (DFLogger.Persist) return;
 		game.messages.forEach(async it => {
 			if (!it.isAuthor) return;
 			let alias = it.data.speaker.alias;
