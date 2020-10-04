@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "DragonFlagon FVTT Enhancement Suite",
-	"version": "1.0",
+	"version": "2.1",
 	"description": "DragonFlagon Enhancement Suite for Foundry VTT",
 	"icons": {
 		"16": "icons/fvtt-d20.png",
@@ -11,8 +11,14 @@
 	"content_scripts": [
 		{
 			"matches": ["*://*/setup"],
-			"js": ["main.js"],
+			"js": ["src/setup.js"],
 			"run_at": "document_end"
+		},
+		{
+			"matches": ["*://*/join"],
+			"css": ["css/join.css"],
+			"js": ["src/jquery-3.5.1.slim.min.js", "src/join.js"],
+			"run_at": "document_idle"
 		}
 	]
 }
