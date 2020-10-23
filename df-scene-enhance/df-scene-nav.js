@@ -62,8 +62,10 @@ class DFSceneNav {
 		Sidebar.prototype._render = async function (...args) {
 			// Render the Sidebar container only once
 			if (!this.rendered) await this.dfSceneNav_render(...args);
+			var pcClick = game.settings.get(DFSceneNav.MODULE, DFSceneNav.ON_CLICK_PLAYER);
 			// Define the sidebar tab names to render
-			const tabs = ["chat", "combat", "actors", "items", "journal", "tables", "playlists", "compendium", "settings", "scenes"];
+			const tabs = ["chat", "combat", "actors", "items", "journal", "tables", "playlists", "compendium", "settings"];
+			if (game.user.isGM || pcClick) tabs.push("scenes");
 			// Render sidebar Applications
 			for (let name of tabs) {
 				const app = ui[name];
@@ -86,7 +88,7 @@ class DFSceneNav {
 		Object.defineProperty(Sidebar, 'defaultOptions', {
 			get: function () {
 				return mergeObject(sidebarDefaultOptions.get(), {
-					template: `modules/${DFSceneNav.MODULE}/templates/sidebar.html`,
+					template: `modules/${DFSceneNav.MODULE}/templates/sidebar.html`
 				});
 			}
 		});

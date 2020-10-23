@@ -4,9 +4,9 @@
 	"DRAGON_FLAGON.Thumbnail_Button": "Browse Files",
 	"DRAGON_FLAGON.Nav_NavigateMenuItem": "Navigate",
 	"DRAGON_FLAGON.Nav_SettingOnClick": "Navigate when scene is clicked",
-	"DRAGON_FLAGON.Nav_SettingOnClickHint": "When a scene is clicked in the sidebar, it is navigated to (Always true for players). UPDATES ON NEXT SCENE CHANGE",
+	"DRAGON_FLAGON.Nav_SettingOnClickHint": "(requires refresh) When a scene is clicked in the sidebar, it is navigated to (Always true for players). UPDATES ON NEXT SCENE CHANGE",
 	"DRAGON_FLAGON.Nav_SettingOnClickPC": "Enable Scene Tab for Players",
 	"DRAGON_FLAGON.Nav_SettingOnClickHintPC": "Allow players to use the Scenes Tab to perform navigation.",
 	"DRAGON_FLAGON.Nav_SettingMenu": "Add Navigate option to Scene Menu",
-	"DRAGON_FLAGON.Nav_SettingMenuHint": "Add a Navigate menu option to the scene drop-down menus in the Scenes Directory."
+	"DRAGON_FLAGON.Nav_SettingMenuHint": "(requires refresh) Add a Navigate menu option to the scene drop-down menus in the Scenes Directory."
 }

@@ -33,13 +33,19 @@
 <section class="sidebar-tab sidebar-directory tab flexcol" id="scenes" data-tab="scenes">
 
     <!-- Directory Header -->
-    <header class="directory-header flexrow">
-        <div class="header-search">
-            <i class="fas fa-search"></i>
-            <input type="text" name="search" value="{{search}}" placeholder="{{localize 'SIDEBAR.SceneSearch'}}" autocomplete="off"/>
-        </div>
-        <a class="header-control collapse-all" title="{{localize 'FOLDER.Collapse'}}"><i class="fas fa-sort-amount-up fa-fw"></i></a>
-    </header>
+    <header class="directory-header">
+      {{#if user.isGM}}
+      <div class="header-actions action-buttons flexrow">
+          <button class="create-entity"><i class="{{ sidebarIcon }}"></i> {{localize 'SIDEBAR.SceneCreate'}}</button>
+          <button class="create-folder"><i class="fas fa-folder"></i> {{localize 'FOLDER.Create'}}</button>
+      </div>
+      {{/if}}
+      <div class="header-search flexrow">
+          <i class="fas fa-search"></i>
+          <input type="text" name="search" value="" placeholder="{{localize 'SIDEBAR.SceneSearch'}}" autocomplete="off"/>
+          <a class="header-control collapse-all" title="{{localize 'FOLDER.Collapse'}}"><i class="fas fa-sort-amount-up fa-fw"></i></a>
+      </div>
+  </header>
 
     <!-- Directories List -->
 	<ol class="directory-list">
@@ -52,10 +58,5 @@
 	</ol>
 
 	<!-- Directory Footer -->
-	{{#if user.isGM}}
-	<footer class="directory-footer">
-		<button class="create-entity"><i class="{{ sidebarIcon }}"></i> {{localize 'SIDEBAR.SceneCreate'}}</button>
-		<button class="create-folder"><i class="fas fa-folder"></i> {{localize 'FOLDER.Create'}}</button>
-	</footer>
-	{{/if}}
+	<footer class="directory-footer"></footer>
 </section>

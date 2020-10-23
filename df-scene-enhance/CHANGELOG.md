@@ -1,5 +1,10 @@
 # DF Scene Enhancement Changes
 
+## Version 2.0
+- Fixed breaking issues with the latest 0.7.4+ builds of FoundryVTT
+- Fixed Thumbnail Overrides.
+- Fixed Player Scene Tab features.
+
 ## Version 1.3
 - Fixed a breaking issue with scene directories
 
