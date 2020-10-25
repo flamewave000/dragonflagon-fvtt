@@ -1,5 +1,8 @@
 # DF Scene Enhancement Changes
 
+## Version 2.1
+- Added localization for Brazil Portuguese, courtesy of [Renato Innocenti](https://github.com/rinnocenti).
+
 ## Version 2.0
 - Fixed breaking issues with the latest 0.7.4+ builds of FoundryVTT
 - Fixed Thumbnail Overrides.
