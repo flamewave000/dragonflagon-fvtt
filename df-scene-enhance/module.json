@@ -10,7 +10,8 @@
 	"templates": [ "templates/sidebar.html" ],
 	"languages": [
 		{ "lang": "en", "path": "lang/en.json", "name": "English" },
-		{ "lang": "fr", "path": "lang/fr.json", "name": "French" }
+		{ "lang": "fr", "path": "lang/fr.json", "name": "French" },
+		{ "lang": "pt-BR", "path": "lang/pt-BR.json", "name": "Português (Brasil)" }
 	],
 	"url": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-scene-enhance",
 	"license": "https://github.com/flamewave000/dragonflagon-fvtt/raw/master/df-scene-enhance/LICENSE",
