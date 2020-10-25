@@ -1,0 +1,12 @@
+{
+	"DRAGON_FLAGON.Thumbnail_Label": "Substituição de imagem de visualização",
+	"DRAGON_FLAGON.Thumbnail_Hint": "Caminho da Miniatura",
+	"DRAGON_FLAGON.Thumbnail_Button": "Procurar Arquivos",
+	"DRAGON_FLAGON.Nav_NavigateMenuItem": "Navegar",
+	"DRAGON_FLAGON.Nav_SettingOnClick": "Navegar quando a cena for clicada",
+	"DRAGON_FLAGON.Nav_SettingOnClickHint": "(requer atualização) Quando uma cena é clicada na barra lateral, ela é aberta apara navegação (Sempre verdadeiro para jogadores). ATUALIZAÇÕES NA PRÓXIMA ALTERAÇÃO DE CENA",
+	"DRAGON_FLAGON.Nav_SettingOnClickPC": "Ativar guia de Cenas para jogadores",
+	"DRAGON_FLAGON.Nav_SettingOnClickHintPC": "Permitir que os jogadores usem a guia Cenas para realizar a navegação.",
+	"DRAGON_FLAGON.Nav_SettingMenu": "Adicionar opção Navegar ao Menu da Cena",
+	"DRAGON_FLAGON.Nav_SettingMenuHint": "(requer atualização) Adicione uma opção de menu Navegar aos menus suspensos de cena no Diretório de cenas."
+}
