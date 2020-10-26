@@ -5,7 +5,7 @@
 	"version": "1.2",
 	"author": "flamewave000",
 	"minimumCoreVersion": "0.6.5",
-	"compatibleCoreVersion": "0.6.6",
+	"compatibleCoreVersion": "0.7.5",
 	"esmodules": [ "df-logger.js" ],
 	"languages": [
 		{ "lang": "en", "name": "English", "path": "lang/en.json" }
