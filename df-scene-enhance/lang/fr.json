@@ -6,7 +6,5 @@
 	"DRAGON_FLAGON.Nav_SettingOnClick": "Naviguer lorsque la scène est cliquée",
 	"DRAGON_FLAGON.Nav_SettingOnClickHint": "Lorsqu'une scène est cliquée, elle est dirigée vers (Toujours vrai pour les joueurs). MISES À JOUR SUR LE PROCHAIN CHANGEMENT DE SCÈNE",
 	"DRAGON_FLAGON.Nav_SettingOnClickPC": "Activer l'onglet Scène pour les joueurs",
-	"DRAGON_FLAGON.Nav_SettingOnClickHintPC": "(nécessite une actualisation) Autoriser les joueurs à utiliser l'onglet Scènes pour effectuer la navigation.",
-	"DRAGON_FLAGON.Nav_SettingMenu": "Ajouter l'option Naviguer au menu Scène",
-	"DRAGON_FLAGON.Nav_SettingMenuHint": "(nécessite une actualisation) Ajouter une option Naviguer aux menus de scène dans l'onglet Scènes."
+	"DRAGON_FLAGON.Nav_SettingOnClickHintPC": "(nécessite une actualisation) Autoriser les joueurs à utiliser l'onglet Scènes pour effectuer la navigation."
 }

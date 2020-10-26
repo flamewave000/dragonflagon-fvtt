@@ -2,7 +2,6 @@ class DFSceneNav {
 	static MODULE = 'df-scene-enhance';
 	static ON_CLICK = 'nav-on-click';
 	static ON_CLICK_PLAYER = 'nav-on-click-player';
-	static IN_MENU = 'nav-in-menu';
 
 	static patchSceneDirectoryClick(newValue, isPlayer) {
 		var gmClick = game.settings.get(DFSceneNav.MODULE, DFSceneNav.ON_CLICK);
@@ -29,20 +28,6 @@ class DFSceneNav {
 			SceneDirectory.prototype._onClickEntityName = SceneDirectory.prototype.dfSceneNav_onClickEntityName;
 			delete SceneDirectory.prototype.dfSceneNav_onClickEntityName;
 		}
-	}
-	static patchSceneDirectoryMenu(entryOptions) {
-		if (!game.user) return;
-		if (!game.user.isGM)
-			entryOptions.length = 0;
-		entryOptions.unshift({
-			name: "DRAGON_FLAGON.Nav_NavigateMenuItem",
-			icon: '<i class="fas fa-directions"></i>',
-			condition: li => (!game.user.isGM || game.settings.get(DFSceneNav.MODULE, DFSceneNav.IN_MENU)) && !game.scenes.get(li.data("entityId")).isView,
-			callback: li => {
-				const scene = game.scenes.get(li.data("entityId"));
-				scene.view();
-			}
-		});
 	}
 
 	static patchSceneDirectory() {
@@ -114,14 +99,6 @@ Hooks.once('init', function () {
 		default: true,
 		onChange: value => DFSceneNav.patchSceneDirectoryClick(value, true)
 	});
-	game.settings.register(DFSceneNav.MODULE, DFSceneNav.IN_MENU, {
-		name: "DRAGON_FLAGON.Nav_SettingMenu",
-		hint: "DRAGON_FLAGON.Nav_SettingMenuHint",
-		scope: "world",
-		config: true,
-		type: Boolean,
-		default: false
-	});
 
 	Handlebars.registerHelper('dfCheck', function (scene) {
 		return ((game.user && game.user.isGM) || !scene.data.navName) ? scene.data.name : scene.data.navName;
@@ -129,13 +106,8 @@ Hooks.once('init', function () {
 
 	DFSceneNav.patchSceneDirectory();
 	DFSceneNav.patchSidebar();
-	DFSceneNav.patchSceneDirectoryMenu(game.settings.get(DFSceneNav.MODULE, DFSceneNav.IN_MENU));
 });
 
 Hooks.on('ready', function () {
 	DFSceneNav.patchSceneDirectoryClick();
-})
-
-Hooks.on(`getSceneDirectoryEntryContext`, function (html, entryOptions) {
-	DFSceneNav.patchSceneDirectoryMenu(entryOptions);
 });

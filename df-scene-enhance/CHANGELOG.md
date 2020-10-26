@@ -1,5 +1,8 @@
 # DF Scene Enhancement Changes
 
+## Version 2.2
+- Removed `Navigate` scene menu option as it is now a part of core. (see "View Scene" feature in 0.7.5+)
+
 ## Version 2.1
 - Added localization for Brazil Portuguese, courtesy of [Renato Innocenti](https://github.com/rinnocenti).
 
