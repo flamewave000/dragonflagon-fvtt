@@ -1,5 +1,8 @@
 # DF Scene Enhancement Changes
 
+## Version 2.3
+- Fixed issue where Thumbnail Overrides were using incorrect dimensions when being generated. This resulted in thumbnails being misaligned in the Scene card in the Scenes Directory.
+
 ## Version 2.2
 - Removed `Navigate` scene menu option as it is now a part of core. (see "View Scene" feature in 0.7.5+)
 

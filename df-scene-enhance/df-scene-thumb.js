@@ -28,44 +28,22 @@ class DFSceneThumb {
 	static async updateOverride(data, options = {}) {
 		// Determine what type of change has occurred
 		const dfSceneConfig = DFSceneThumb.getThumb(this.id);
-		const hasDefaultDims = (this.data.width === 4000) && (this.data.height === 3000);
-		const hasImage = data.img || this.data.img;
-		const changedBackground = (!!dfSceneConfig && data.img !== undefined && data.img !== this.data.img);
-		const clearedDims = (data.width === null) || (data.height === null);
-		const needsThumb = changedBackground || !this.data.thumb || (!!dfSceneConfig && !dfSceneConfig.thumb);
-		const needsDims = data.img && (clearedDims || hasDefaultDims);
+		if (!dfSceneConfig || !dfSceneConfig.url)
+			return this.dfThumb_update(data, options);
+		let normalData = this.dfThumb_update(data, options);
 		// Update thumbnail and image dimensions
-		if (((!!dfSceneConfig && !!dfSceneConfig.url) || hasImage) && (needsThumb || needsDims)) {
-			let td = {};
-			try {
-				let img = (dfSceneConfig && dfSceneConfig.url) ?? data.img ?? this.data.img;
-				td = await this.createThumbnail({ img: img });
-				if (!!dfSceneConfig) {
-					dfSceneConfig.thumb = true;
-					DFSceneThumb.updateThumb(this.id, img, true);
-				}
-			} catch (err) {
-				ui.notifications.error("Thumbnail generation for Scene failed: " + err.message);
-			}
-			if (needsThumb) data.thumb = td.thumb || null;
-			if (needsDims) {
-				data.width = td.width;
-				data.height = td.height;
-			}
+		let td = {};
+		try {
+			let img = (dfSceneConfig && dfSceneConfig.url) ?? data.img ?? this.data.img;
+			td = await ImageHelper.createThumbnail(img, { width: 300, height: 100 });
+			dfSceneConfig.thumb = true;
+			DFSceneThumb.updateThumb(this.id, img, true);
+		} catch (err) {
+			ui.notifications.error("Thumbnail Override generation for Scene failed: " + err.message);
 		}
-		// Warn the user if Scene dimensions are changing
-		if (options["fromSheet"] === true) {
-			const delta = diffObject(this.data, data);
-			const changed = Object.keys(delta);
-			if (["width", "height", "padding", "shiftX", "shiftY", "size"].some(k => changed.includes(k))) {
-				const confirm = await Dialog.confirm({
-					title: game.i18n.localize("SCENES.DimensionChangeTitle"),
-					content: `<p>${game.i18n.localize("SCENES.DimensionChangeWarning")}</p>`
-				});
-				if (!confirm) return;
-			}
-			delete options["fromSheet"];
-		}
+		data.thumb = td.thumb || null;
+		if (!!normalData.width) data.width = normalData.width;
+		if (!!normalData.height) data.height = normalData.height;
 		// Call the Entity update
 		return Entity.prototype.update.bind(this)(data, options);
 	}
