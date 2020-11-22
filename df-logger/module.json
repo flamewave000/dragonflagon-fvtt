@@ -15,5 +15,6 @@
 	"manifest": "https://github.com/flamewave000/dragonflagon-fvtt/releases/download/df-logger_1.3/module.json",
 	"download": "https://github.com/flamewave000/dragonflagon-fvtt/releases/download/df-logger_1.3/df-logger_1.3.zip",
 	"readme": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-logger/README.md",
+	"changelog": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-logger/CHANGELOG.md",
 	"socket": true
 }
