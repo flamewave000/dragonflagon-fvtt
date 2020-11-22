@@ -1,5 +1,8 @@
 # DF Scene Enhancement Changes
 
+## Version 2.4
+- Updated FoundryVTT version support.
+
 ## Version 2.3
 - Fixed issue where Thumbnail Overrides were using incorrect dimensions when being generated. This resulted in thumbnails being misaligned in the Scene card in the Scenes Directory.
 
