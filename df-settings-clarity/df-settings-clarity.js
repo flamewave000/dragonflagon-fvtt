@@ -35,6 +35,9 @@ class DFSettingsClarity {
 
 
 Hooks.on('setup', function () {
-	DFSettingsClarity.patchGameSettings();
-	DFSettingsClarity.patchGameSettingsMenus();
+	var user = game.data.users.find(x => x._id === game.userId);
+	if(!!user && user.role >= 3) {
+		DFSettingsClarity.patchGameSettings();
+		DFSettingsClarity.patchGameSettingsMenus();
+	}
 });
