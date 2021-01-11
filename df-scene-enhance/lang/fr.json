@@ -6,5 +6,11 @@
 	"DRAGON_FLAGON.Nav_SettingOnClick": "Naviguer lorsque la scène est cliquée",
 	"DRAGON_FLAGON.Nav_SettingOnClickHint": "Lorsqu'une scène est cliquée, elle est dirigée vers (Toujours vrai pour les joueurs). MISES À JOUR SUR LE PROCHAIN CHANGEMENT DE SCÈNE",
 	"DRAGON_FLAGON.Nav_SettingOnClickPC": "Activer l'onglet Scène pour les joueurs",
-	"DRAGON_FLAGON.Nav_SettingOnClickHintPC": "(nécessite une actualisation) Autoriser les joueurs à utiliser l'onglet Scènes pour effectuer la navigation."
+	"DRAGON_FLAGON.Nav_SettingOnClickPCHint": "(nécessite une actualisation) Autoriser les joueurs à utiliser l'onglet Scènes pour effectuer la navigation.",
+	"DRAGON_FLAGON.Nav_SettingOnClickJournal": "Naviguer lorsqu'un clic sur une référence de scène dans un journal",
+	"DRAGON_FLAGON.Nav_SettingOnClickJournalHint": "Si une entrée de journal contient un lien de scène, cliquer dessus vous permettra d'accéder à cette scène.",
+	"DRAGON_FLAGON.Dialog_JournalTitle": "Navigation de Scène",
+	"DRAGON_FLAGON.Dialog_JournalMessage": "Souhaitez-vous naviguer à la scène ou ouvrir sa configuration?",
+	"DRAGON_FLAGON.Dialog_JournalNavigate": "Naviguer",
+	"DRAGON_FLAGON.Dialog_JournalConfig": "Config"
 }

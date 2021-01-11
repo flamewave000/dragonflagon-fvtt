@@ -92,7 +92,7 @@ Hooks.once('init', function () {
 	});
 	game.settings.register(DFSceneNav.MODULE, DFSceneNav.ON_CLICK_PLAYER, {
 		name: "DRAGON_FLAGON.Nav_SettingOnClickPC",
-		hint: "DRAGON_FLAGON.Nav_SettingOnClickHintPC",
+		hint: "DRAGON_FLAGON.Nav_SettingOnClickPCHint",
 		scope: "world",
 		config: true,
 		type: Boolean,

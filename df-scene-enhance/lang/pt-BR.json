@@ -6,5 +6,11 @@
 	"DRAGON_FLAGON.Nav_SettingOnClick": "Navegar quando a cena for clicada",
 	"DRAGON_FLAGON.Nav_SettingOnClickHint": "Quando uma cena é clicada na barra lateral, ela é aberta apara navegação (Sempre verdadeiro para jogadores). ATUALIZAÇÕES NA PRÓXIMA ALTERAÇÃO DE CENA",
 	"DRAGON_FLAGON.Nav_SettingOnClickPC": "Ativar guia de Cenas para jogadores",
-	"DRAGON_FLAGON.Nav_SettingOnClickHintPC": "(requer atualização) Permitir que os jogadores usem a guia Cenas para realizar a navegação."
+	"DRAGON_FLAGON.Nav_SettingOnClickPCHint": "(requer atualização) Permitir que os jogadores usem a guia Cenas para realizar a navegação.",
+	"DRAGON_FLAGON.Nav_SettingOnClickJournal": "Navegue quando uma referência de cena é clicada em um Diário",
+	"DRAGON_FLAGON.Nav_SettingOnClickJournalHint": "If a Journal Entry contains a Scene link, clicking it will allow you to navigate to that Scene.",
+	"DRAGON_FLAGON.Dialog_JournalTitle": "Navegação de Cena",
+	"DRAGON_FLAGON.Dialog_JournalMessage": "Você gostaria de navegar até a cena ou abrir sua configuração?",
+	"DRAGON_FLAGON.Dialog_JournalNavigate": "Navegar",
+	"DRAGON_FLAGON.Dialog_JournalConfig": "Config"
 }

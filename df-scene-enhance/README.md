@@ -10,8 +10,15 @@ This feature changes the behaviour of Scenes in the Scenes Tab. Now if you click
 |![GM View of Scenes Tab](../.assets/df-scene-enhance-gm.png)|![Player View of Scenes Tab](../.assets/df-scene-enhance-pc.png)|
 |![GM View of Scenes Tab](../.assets/df-scene-enhance-gm-menu.png)|![Player View of Scenes Tab](../.assets/df-scene-enhance-pc-menu.png)|
 
+## Scene Navigation from Scenelinks in Journal Entries
+
+This feature allows the user to navigate to a scene that is referenced inside of a Journal Entry. The current behaviour opens the scene's Configuration, but this will prompt the user with a dialog that offers Config and Navigate options.
+
+![Journal Entry](../.assets/df-scene-enhance-journal.png)
+![Navigation Prompt](../.assets/df-scene-enhance-journal-confirm.png)
+
 ### Compatibility
-This module will work with any module that does not completely manipulate the Scenes Tab in the game. As of v1.2, I do not know of any module that replaces the Scenes Tab layout and so compatibility should be at 100%.
+This module will work with any module that does not completely manipulate the Scenes Tab in the game. As of v3.0, there is one new module I am aware of that has similer features to what Scene Enhancement provides ([Scene Clicker](https://foundryvtt.com/packages/scene-clicker/)).
 
 ## Scene Thumbnail Override
 
