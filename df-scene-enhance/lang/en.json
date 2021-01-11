@@ -9,8 +9,11 @@
 	"DRAGON_FLAGON.Nav_SettingOnClickPCHint": "(requires refresh) Allow players to use the Scenes Tab to perform navigation.",
 	"DRAGON_FLAGON.Nav_SettingOnClickJournal": "Navigate when a Scene reference is clicked in a Journal",
 	"DRAGON_FLAGON.Nav_SettingOnClickJournalHint": "If a Journal Entry contains a Scene link, clicking it will allow you to navigate to that Scene.",
-	"DRAGON_FLAGON.Dialog_JournalTitle": "Scene Navigation",
-	"DRAGON_FLAGON.Dialog_JournalMessage": "Would you like to navigate to the scene, or open its configuration?",
+	"DRAGON_FLAGON.Nav_SettingOnClickJournalOnlyOne": "Execute Scene Link immediately if only one option is available",
+	"DRAGON_FLAGON.Nav_SettingOnClickJournalOnlyOneHint": "If only one option is available, don't display the dialog and just execute the action immediately.",
+	"DRAGON_FLAGON.Dialog_JournalTitle": "Scene Navigation: ",
+	"DRAGON_FLAGON.Dialog_JournalMessage": "How would you like to open this Scene?",
 	"DRAGON_FLAGON.Dialog_JournalNavigate": "Navigate",
+	"DRAGON_FLAGON.Dialog_JournalJournal": "Journal",
 	"DRAGON_FLAGON.Dialog_JournalConfig": "Config"
 }

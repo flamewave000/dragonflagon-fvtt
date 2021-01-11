@@ -9,8 +9,9 @@
 	"DRAGON_FLAGON.Nav_SettingOnClickPCHint": "(nécessite une actualisation) Autoriser les joueurs à utiliser l'onglet Scènes pour effectuer la navigation.",
 	"DRAGON_FLAGON.Nav_SettingOnClickJournal": "Naviguer lorsqu'un clic sur une référence de scène dans un journal",
 	"DRAGON_FLAGON.Nav_SettingOnClickJournalHint": "Si une entrée de journal contient un lien de scène, cliquer dessus vous permettra d'accéder à cette scène.",
-	"DRAGON_FLAGON.Dialog_JournalTitle": "Navigation de Scène",
-	"DRAGON_FLAGON.Dialog_JournalMessage": "Souhaitez-vous naviguer à la scène ou ouvrir sa configuration?",
+	"DRAGON_FLAGON.Dialog_JournalTitle": "Navigation de Scène: ",
+	"DRAGON_FLAGON.Dialog_JournalMessage": "Comment voulez-vous ouvrir cette scène?",
 	"DRAGON_FLAGON.Dialog_JournalNavigate": "Naviguer",
+	"DRAGON_FLAGON.Dialog_JournalJournal": "Journal",
 	"DRAGON_FLAGON.Dialog_JournalConfig": "Config"
 }

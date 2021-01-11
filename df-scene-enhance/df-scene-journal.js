@@ -1,24 +1,52 @@
 class DFSceneJournal {
 	static MODULE = 'df-scene-enhance';
 	static ON_CLICK_JOURNAL = 'nav-on-click-journal';
+	static ON_CLICK_JOURNAL_ONLY_ONE = 'nav-on-click-journal-only-one';
 
 	static async displayDialog(scene) {
+		const permScene = scene.hasPerm(game.user, "LIMITED");
+		const hasConfig = game.user.isGM;
+		const hasJournal = !!scene.journal && scene.journal.hasPerm(game.user, "OBSERVER");
+		if (!permScene && !hasConfig && !hasJournal)
+			return ui.notifications.warn(`You do not have permission to view this ${scene.entity}.`);
+
+		const buttons = {};
+		let defaultButton = '';
+		if (hasConfig) {
+			defaultButton = 'config';
+			buttons.config = {
+				icon: '<i class="fas fa-cog"></i>',
+				label: game.i18n.localize('DRAGON_FLAGON.Dialog_JournalConfig'),
+				callback: async () => { return scene.sheet.render(true); }
+			}
+		}
+		if (hasJournal) {
+			defaultButton = 'journal';
+			buttons.journal = {
+				icon: '<i class="fas fa-book-open"></i>',
+				label: game.i18n.localize('DRAGON_FLAGON.Dialog_JournalJournal'),
+				callback: async () => { return scene.journal.sheet.render(true); }
+			}
+		}
+		if (permScene) {
+			defaultButton = 'navigate';
+			buttons.navigate = {
+				icon: '<i class="fas fa-directions"></i>',
+				label: game.i18n.localize('DRAGON_FLAGON.Dialog_JournalNavigate'),
+				callback: async () => { return scene.view(); }
+			}
+		}
+
+		// if there is only one option, execute it and return
+		const immediateIfOnlyOne = game.settings.get(DFSceneJournal.MODULE, DFSceneJournal.ON_CLICK_JOURNAL_ONLY_ONE);
+		if(immediateIfOnlyOne && Object.keys(buttons).length == 1)
+			return buttons[Object.keys(buttons)[0]].callback();
+
 		return (new Dialog({
-			title: game.i18n.localize("DRAGON_FLAGON.Dialog_JournalTitle"),
-			content: game.i18n.localize("DRAGON_FLAGON.Dialog_JournalMessage"),
-			buttons: {
-				config: {
-					icon: '<i class="fas fa-cog"></i>',
-					label: game.i18n.localize('DRAGON_FLAGON.Dialog_JournalConfig'),
-					callback: async () => { return scene.sheet.render(true); }
-				},
-				navigate: {
-					icon: '<i class="fas fa-directions"></i>',
-					label: game.i18n.localize('DRAGON_FLAGON.Dialog_JournalNavigate'),
-					callback: async () => { return scene.view(); }
-				}
-			}, callback: () => { },
-			default: 'navigate',
+			title: game.i18n.localize("DRAGON_FLAGON.Dialog_JournalTitle") + scene.name,
+			content: "<p>" + game.i18n.localize("DRAGON_FLAGON.Dialog_JournalMessage") + "</p>",
+			buttons: buttons,
+			default: defaultButton,
 		})).render(true);
 	}
 
@@ -43,16 +71,13 @@ class DFSceneJournal {
 			entity = id ? await pack.getEntity(id) : null;
 		}
 
-		// Target 2 - World Entity Link
+		// Target 2 - World Entity Link MODIFIED SECTION
 		else {
 			const cls = CONFIG[a.dataset.entity].entityClass;
 			entity = cls.collection.get(a.dataset.id);
-			if (entity.entity === "Scene" && entity.journal) entity = entity.journal;
-			if (!entity.hasPerm(game.user, "LIMITED")) {
-				return ui.notifications.warn(`You do not have permission to view this ${entity.entity} sheet.`);
+			if (entity.entity === "Scene") {
+				return DFSceneJournal.displayDialog(entity);
 			}
-			// This is sole addition to this original code from `TextEditor._onClickEntityLink`
-			return DFSceneJournal.displayDialog(entity);
 		}
 		if (!entity) return;
 
@@ -94,6 +119,14 @@ Hooks.once('init', function () {
 		type: Boolean,
 		default: true,
 		onChange: value => DFSceneJournal.patchTextEditor(value)
+	});
+	game.settings.register(DFSceneJournal.MODULE, DFSceneJournal.ON_CLICK_JOURNAL_ONLY_ONE, {
+		name: "DRAGON_FLAGON.Nav_SettingOnClickJournalOnlyOne",
+		hint: "DRAGON_FLAGON.Nav_SettingOnClickJournalOnlyOneHint",
+		scope: "scene",
+		config: true,
+		type: Boolean,
+		default: false
 	});
 });
 

@@ -15,7 +15,10 @@ This feature changes the behaviour of Scenes in the Scenes Tab. Now if you click
 This feature allows the user to navigate to a scene that is referenced inside of a Journal Entry. The current behaviour opens the scene's Configuration, but this will prompt the user with a dialog that offers Config and Navigate options.
 
 ![Journal Entry](../.assets/df-scene-enhance-journal.png)
-![Navigation Prompt](../.assets/df-scene-enhance-journal-confirm.png)
+![Configure, Journal, and Navigation Prompt](../.assets/df-scene-enhance-journal-confirm-cjn.png)
+![Configure and Navigation Prompt](../.assets/df-scene-enhance-journal-confirm-cn.png)
+![Navigation Prompt](../.assets/df-scene-enhance-journal-confirm-n.png)
+![Journal Prompt](../.assets/df-scene-enhance-journal-confirm-j.png)
 
 ### Compatibility
 This module will work with any module that does not completely manipulate the Scenes Tab in the game. As of v3.0, there is one new module I am aware of that has similer features to what Scene Enhancement provides ([Scene Clicker](https://foundryvtt.com/packages/scene-clicker/)).

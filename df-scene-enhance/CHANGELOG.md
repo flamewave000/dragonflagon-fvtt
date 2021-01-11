@@ -1,5 +1,11 @@
 # DF Scene Enhancement Changes
 
+## Version 3.1 (2021-1-11)
+- Fix issues with Scene Link navigation when a Journal Entry has been bound to a Scene.
+- Add third option for viewing the associated Journal Entry if one is bound to the Scene.
+- Will only display buttons for options that the user has permission to use.
+- If only one option is available, the user can have it immediately execute that option without displaying a dialog.
+
 ## Version 3.0 (2021-1-11)
 - Added new feature for navigating to scenes directly from Journals via Scene Entity links.
 
