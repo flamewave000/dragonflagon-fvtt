@@ -2,10 +2,10 @@
 	"name": "df-settings-clarity",
 	"title": "DF Settings Clarity",
 	"description": "Displays a tag next to each module setting, indicating if it is a World setting (GM Only) or a client setting (Per User).",
-	"version": "2.0",
+	"version": "2.0.1",
 	"author": "flamewave000#6766",
 	"minimumCoreVersion": "0.6.5",
-	"compatibleCoreVersion": "0.7.7",
+	"compatibleCoreVersion": "0.7.9",
 	"esmodules": [ "df-settings-clarity.js" ],
 	"languages": [
 		{
@@ -21,8 +21,8 @@
 	],
 	"url": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-settings-clarity",
 	"license": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/df-settings-clarity/LICENSE",
-	"manifest": "https://github.com/flamewave000/dragonflagon-fvtt/releases/download/df-settings-clarity_2.0/module.json",
-	"download": "https://github.com/flamewave000/dragonflagon-fvtt/releases/download/df-settings-clarity_2.0/df-settings-clarity_2.0.zip",
+	"manifest": "https://github.com/flamewave000/dragonflagon-fvtt/releases/download/df-settings-clarity_2.0.1/module.json",
+	"download": "https://github.com/flamewave000/dragonflagon-fvtt/releases/download/df-settings-clarity_2.0.1/df-settings-clarity_2.0.1.zip",
 	"readme": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-settings-clarity/README.md",
 	"changelog": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-settings-clarity/CHANGELOG.md"
 }
