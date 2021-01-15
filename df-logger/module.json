@@ -8,7 +8,8 @@
 	"compatibleCoreVersion": "0.7.9",
 	"esmodules": [ "df-logger.js" ],
 	"languages": [
-		{ "lang": "en", "name": "English", "path": "lang/en.json" }
+		{ "lang": "en", "name": "English", "path": "lang/en.json" },
+		{ "lang": "es", "name": "Español", "path": "lang/es.json" }
 	],
 	"url": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-logger",
 	"license": "https://github.com/flamewave000/dragonflagon-fvtt/raw/master/df-logger/LICENSE",
