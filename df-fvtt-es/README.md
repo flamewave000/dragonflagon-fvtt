@@ -20,6 +20,8 @@ Alphabetical sorts the modules/packages on the server setup screens. The default
 ## Login Screen Animated Background Extension
 This will allow you to place an animated background on the login screen.
 
+![Animated Background Example 1](../.assets/animated-titlescreen-background-1.gif)
+
 ### **Important: Requires all players to have this extension installed to see it.**
 
 ### How to use (GM only)
