@@ -2,7 +2,7 @@
 	"I18N.LANGUAGE": "Español",
 	"I18N.MAINTAINERS": "@Viriato139ac#0342",
 	
-	"DRAGON_FLAGON.Thumbnail_Label": "Previsualizar sobrescritura de la imagen",
+	"DRAGON_FLAGON.Thumbnail_Label": "Sobrescribir vista previa",
 	"DRAGON_FLAGON.Thumbnail_Hint": "Ruta de la miniatura",
 	"DRAGON_FLAGON.Thumbnail_Button": "Explorar archivos",
 	"DRAGON_FLAGON.Nav_NavigateMenuItem": "Navegar",
