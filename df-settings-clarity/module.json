@@ -17,6 +17,11 @@
 			"lang": "fr",
 			"name": "French",
 			"path": "lang/fr.json"
+		},
+		{
+			"lang": "es",
+			"name": "Español",
+			"path": "lang/es.json"
 		}
 	],
 	"url": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-settings-clarity",
