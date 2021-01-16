@@ -1,5 +1,8 @@
 # DF Scene Enhancement Changes
 
+## Release 3.1.1 (2021-1-15)
+- Added Spanish localization, courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
+
 ## Version 3.1 (2021-1-11)
 - Fix issues with Scene Link navigation when a Journal Entry has been bound to a Scene.
 - Add third option for viewing the associated Journal Entry if one is bound to the Scene.
