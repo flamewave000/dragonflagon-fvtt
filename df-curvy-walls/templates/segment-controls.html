@@ -1,0 +1,11 @@
+<div id="df-curvy-walls-tools">
+	<form id="df-curvy-walls-tools-form">
+		<ol id="df-curvy-walls-tools-container" class="control-tools">
+			{{#each tools as |t|}}
+			<li title="{{localize t.title}}">
+				<button class="control-tool {{t.class}}" {{#if style}}style="{{style}}" {{/if}} data-tool="{{t.name}}" type="submit" value=""><i class="{{t.icon}}"></i></button>
+			</li>
+			{{/each}}
+		</ol>
+	</form>
+</div>

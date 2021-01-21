@@ -1,6 +1,6 @@
 
 import { BezierTool, ToolMode } from './BezierTool.js';
-import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler.js";
+import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler, MagnetPointInputHandler } from "./ToolInputHandler.js";
 
 const pointNearPoint = BezierTool.pointNearPoint;
 declare type Point = PIXI.Point;
@@ -11,8 +11,8 @@ class InitializerIH extends InitializerInputHandler {
 		super(tool.lineA, tool.lineB, success, fail)
 		this.tool = tool;
 	}
-	move(origin: Point, destination: Point): void {
-		super.move(origin, destination);
+	move(origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
+		super.move(origin, destination, event);
 		var dx = this.tool.lineB.x - this.tool.lineA.x;
 		var dy = this.tool.lineB.y - this.tool.lineA.y;
 		const length = Math.sqrt((dx * dx) + (dy * dy));
@@ -29,6 +29,7 @@ export default class CubicTool extends BezierTool {
 	lineB = new PIXI.Point();
 	controlA = new PIXI.Point();
 	controlB = new PIXI.Point();
+	lockHandles = true;
 
 	get handles(): Point[] { return [this.lineA, this.controlA, this.controlB, this.lineB]; }
 	get bounds(): PIXI.Bounds {
@@ -59,13 +60,17 @@ export default class CubicTool extends BezierTool {
 	}
 	checkPointForDrag(point: Point): InputHandler | null {
 		if (this.mode == ToolMode.NotPlaced) {
-			this.mode = ToolMode.Placing;
-			return new InitializerIH(this, () => this.mode = ToolMode.Placed, () => this.mode = ToolMode.NotPlaced);
+			this.setMode(ToolMode.Placing);
+			return new InitializerIH(this, () => this.setMode(ToolMode.Placed), () => this.setMode(ToolMode.NotPlaced));
 		}
 		if (pointNearPoint(point, this.lineA, BezierTool.HANDLE_RADIUS))
-			return new PointInputHandler(this.lineA);
+			return this.lockHandles
+				? new MagnetPointInputHandler(this.lineA, this.controlA)
+				: new PointInputHandler(this.lineA);
 		else if (pointNearPoint(point, this.lineB, BezierTool.HANDLE_RADIUS))
-			return new PointInputHandler(this.lineB);
+			return this.lockHandles
+				? new MagnetPointInputHandler(this.lineB, this.controlB)
+				: new PointInputHandler(this.lineB);
 		else if (pointNearPoint(point, this.controlA, BezierTool.HANDLE_RADIUS))
 			return new PointInputHandler(this.controlA);
 		else if (pointNearPoint(point, this.controlB, BezierTool.HANDLE_RADIUS))
@@ -74,4 +79,8 @@ export default class CubicTool extends BezierTool {
 			return new PointArrayInputHandler(point, this.handles);
 		return null;
 	}
+
+	showTools() { }
+	hideTools() { }
+
 }

@@ -1,3 +1,9 @@
 {
-	
+	"df-curvy-walls.cubic": "Cubic Bezier Curve",
+	"df-curvy-walls.quadratic": "Quadratic Bezier Curve",
+	"df-curvy-walls.circle": "Ellipse Curve",
+	"df-curvy-walls.increment": "Increase Segments",
+	"df-curvy-walls.decrement": "Decrease Segments",
+	"df-curvy-walls.apply": "Apply curve walls to layer",
+	"df-curvy-walls.cancel": "Clear Tool"
 }

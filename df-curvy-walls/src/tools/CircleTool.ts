@@ -31,7 +31,11 @@ export default class CircleTool extends BezierTool {
 			bounds.maxX, bounds.maxY]);
 	}
 
+	showTools() { }
+	hideTools() { }
+
 	getSegments(count: number): PIXI.Point[] {
+		if (this.mode == ToolMode.NotPlaced) return [];
 		const bounds = this.bounds;
 		const rect = bounds.getRectangle(PIXI.Rectangle.EMPTY);
 		var halfWidth = rect.width / 2;
@@ -65,8 +69,8 @@ export default class CircleTool extends BezierTool {
 	}
 	checkPointForDrag(point: Point): InputHandler | null {
 		if (this.mode == ToolMode.NotPlaced) {
-			this.mode = ToolMode.Placing;
-			return new InitializerIH(this, () => this.mode = ToolMode.Placed, () => this.mode = ToolMode.NotPlaced);
+			this.setMode(ToolMode.Placing);
+			return new InitializerIH(this, () => this.setMode(ToolMode.Placed), () => this.setMode(ToolMode.NotPlaced));
 		}
 		if (pointNearPoint(point, this.lineA, BezierTool.HANDLE_RADIUS))
 			return new PointInputHandler(this.lineA);

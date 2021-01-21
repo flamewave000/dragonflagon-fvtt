@@ -1,21 +1,13 @@
 {
-	"name": "df-wall-curves",
+	"name": "df-curvy-walls",
 	"title": "DF Curved Wall Creator",
 	"description": "Creates wall segments along a Bezier Cubic or Quadratic curve or circle",
-	"version": "1.0",
+	"version": "{{version}}",
 	"author": "flamewave000#6766",
 	"minimumCoreVersion": "0.7.5",
 	"compatibleCoreVersion": "0.7.9",
-	"esmodules": [
-		"./dist/df-wall-curves.js",
-		"./dist/bezier.js",
-		"./dist/BezierControl.js",
-		"./dist/tools/BezierTool.js",
-		"./dist/tools/CircleTool.js",
-		"./dist/tools/CubicTool.js",
-		"./dist/tools/QuadTool.js",
-		"./dist/tools/ToolInputHandler.js"
-	],
+	"esmodules": "{{sources}}",
+	"styles": "{{css}}",
 	"languages": [
 		{
 			"lang": "en",
@@ -23,10 +15,10 @@
 			"path": "lang/en.json"
 		}
 	],
-	"url": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-wall-curves",
-	"license": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/df-wall-curves/LICENSE",
-	"manifest": "https://github.com/flamewave000/dragonflagon-fvtt/releases/download/df-wall-curves.1.0/module.json",
-	"download": "https://github.com/flamewave000/dragonflagon-fvtt/releases/download/df-wall-curves.1.0/df-wall-curves.1.0.zip",
-	"readme": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-wall-curves/README.md",
-	"changelog": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-wall-curves/CHANGELOG.md"
+	"url": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-curvy-walls",
+	"license": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/df-curvy-walls/LICENSE",
+	"manifest": "https://github.com/flamewave000/dragonflagon-fvtt/releases/download/df-curvy-walls_{{version}}/module.json",
+	"download": "https://github.com/flamewave000/dragonflagon-fvtt/releases/download/df-curvy-walls_{{version}}/df-curvy-walls_{{version}}.zip",
+	"readme": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-curvy-walls/README.md",
+	"changelog": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-curvy-walls/CHANGELOG.md"
 }

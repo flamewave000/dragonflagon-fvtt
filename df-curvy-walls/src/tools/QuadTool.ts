@@ -11,8 +11,8 @@ class InitializerIH extends InitializerInputHandler {
 		super(tool.lineA, tool.lineB, success, fail)
 		this.tool = tool;
 	}
-	move(origin: Point, destination: Point): void {
-		super.move(origin, destination);
+	move(origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
+		super.move(origin, destination, event);
 		var dx = this.tool.lineB.x - this.tool.lineA.x;
 		var dy = this.tool.lineB.y - this.tool.lineA.y;
 		const length = Math.sqrt((dx * dx) + (dy * dy));
@@ -54,8 +54,8 @@ export default class QuadTool extends BezierTool {
 	}
 	checkPointForDrag(point: Point): InputHandler | null {
 		if (this.mode == ToolMode.NotPlaced) {
-			this.mode = ToolMode.Placing;
-			return new InitializerIH(this, () => this.mode = ToolMode.Placed, () => this.mode = ToolMode.NotPlaced);
+			this.setMode(ToolMode.Placing);
+			return new InitializerIH(this, () => this.setMode(ToolMode.Placed), () => this.setMode(ToolMode.NotPlaced));
 		}
 		if (pointNearPoint(point, this.lineA, BezierTool.HANDLE_RADIUS))
 			return new PointInputHandler(this.lineA);
@@ -67,4 +67,7 @@ export default class QuadTool extends BezierTool {
 			return new PointArrayInputHandler(point, this.handles);
 		return null;
 	}
+
+	showTools() { }
+	hideTools() { }
 }

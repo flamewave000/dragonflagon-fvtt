@@ -12,7 +12,7 @@ declare interface WallsLayerExt extends WallsLayer {
 	dfWallCurves_onDragLeftCancel(event: PIXI.InteractionEvent): void
 }
 
-enum Mode {
+export enum Mode {
 	None,
 	Cube,
 	Quad,
@@ -34,19 +34,23 @@ unsetters[Mode.Quad] = () => unsetTool(MODE_NAMES[Mode.Quad]);
 unsetters[Mode.Cube] = () => unsetTool(MODE_NAMES[Mode.Cube]);
 unsetters[Mode.Circ] = () => unsetTool(MODE_NAMES[Mode.Circ]);
 
-export default class BezierControl {
+export class BezierControl {
 	private static _instance: BezierControl;
 	private _mode = Mode.None;
 	private wallsLayer: WallsLayerExt;
 	private walls: Wall[] = [];
 	private currentHandler?: InputHandler = null;
-	private handles = new PIXI.Graphics(null);
-	private activeTool?: BezierTool = null;
-	segments = 10;
-
-	private constructor() {
-		this.handles.zIndex = 0xFFFFFFFF;
+	private _activeTool?: BezierTool = null;
+	private _segments = 10;
+	get segments(): number { return this._segments; }
+	set segments(value: number) {
+		this._segments = Math.clamped(value, 1, 64);
+		if (this.mode != Mode.None)
+			this.render();
 	}
+	get activeTool(): BezierTool | null { return this._activeTool; }
+
+	private constructor() { }
 	public static get instance(): BezierControl {
 		return this._instance || (this._instance = new this());
 	}
@@ -54,57 +58,67 @@ export default class BezierControl {
 	get mode(): Mode { return this._mode; }
 
 	private setMode(enabled: boolean, mode: Mode) {
-		this.wallsLayer.preview.removeChildren();
-		this.handles.removeChildren();
-		this.handles.clear();
-		this.walls = [];
+		this.clearTool()
 		if (enabled) {
 			unsetters[this._mode]();
 			this._mode = mode;
 			this.wallsLayer.preview.sortableChildren = true;
-			this.wallsLayer.preview.addChild(this.handles);
 			this.render();
 		}
 		else {
 			if (this._mode != mode) return;
 			this._mode = Mode.None
-			this.activeTool = null;
+			this._activeTool = null;
 			this.wallsLayer.preview.sortableChildren = false;
 		}
 	}
 
 	toggleCubic(enabled: boolean) {
-		this.activeTool = new CubicTool();
+		this._activeTool = new CubicTool();
 		this.setMode(enabled, Mode.Cube);
 	}
 	toggleQuadratic(enabled: boolean) {
-		this.activeTool = new QuadTool();
+		this._activeTool = new QuadTool();
 		this.setMode(enabled, Mode.Quad);
 	}
 	toggleCircle(enabled: boolean) {
-		this.activeTool = new CircleTool();
+		this._activeTool = new CircleTool();
 		this.setMode(enabled, Mode.Circ);
+	}
+
+	async apply() {
+		// APPLY WALLS HERE SOMEHOW
+		await Wall.create(this.walls.map(e => e.data), {});
+		this.clearTool();
+	}
+
+	clearTool() {
+		if (!this._activeTool) return;
+		this._activeTool.clearTool();
+		this.walls = [];
+		this.wallsLayer.preview.removeChildren();
+		this.render();
 	}
 
 	injectControls(controls: Control[]) {
 		const curveTools: Tool[] = [
 			{
 				name: MODE_NAMES[Mode.Cube],
-				title: "Cubic",
+				title: "df-curvy-walls.cubic",
 				icon: 'fas fa-bezier-curve',
 				onClick: (newToggleState: boolean) => this.toggleCubic(newToggleState),
 				toggle: true
 			},
 			{
 				name: MODE_NAMES[Mode.Quad],
-				title: "Quadratic",
+				title: "df-curvy-walls.quadratic",
 				icon: 'fas fa-project-diagram',
 				onClick: (newToggleState: boolean) => this.toggleQuadratic(newToggleState),
 				toggle: true
 			},
 			{
 				name: MODE_NAMES[Mode.Circ],
-				title: "Circle",
+				title: "df-curvy-walls.circle",
 				icon: 'fas fa-circle',
 				onClick: (newToggleState: boolean) => this.toggleCircle(newToggleState),
 				toggle: true
@@ -116,7 +130,7 @@ export default class BezierControl {
 		// We are only called when we first load, or if the user left and came back
 		// Clear all of our state when that happens
 		this._mode = Mode.None
-		this.activeTool = null;
+		this._activeTool = null;
 		this.wallsLayer.preview.sortableChildren = false;
 		this.walls = [];
 	}
@@ -126,19 +140,19 @@ export default class BezierControl {
 		if (self.mode == Mode.None || self.activeTool == null) return self.wallsLayer.dfWallCurves_onDragLeftStart(event);
 		self.currentHandler = self.activeTool.checkPointForDrag(event.data.origin);
 		if (self.currentHandler == null) return;
-		self.currentHandler.start(event.data.origin, event.data.destination);
+		self.currentHandler.start(event.data.origin, event.data.destination, event);
 		self.render();
 	}
 	static _onDragLeftMove(event: PIXI.InteractionEvent) {
 		const self = BezierControl.instance;
 		if (self.mode == Mode.None || !self.currentHandler) return self.wallsLayer.dfWallCurves_onDragLeftMove(event);
-		self.currentHandler.move(event.data.origin, event.data.destination);
+		self.currentHandler.move(event.data.origin, event.data.destination, event);
 		self.render();
 	}
 	static _onDragLeftDrop(event: PIXI.InteractionEvent) {
 		const self = BezierControl.instance;
 		if (self.mode == Mode.None || !self.currentHandler) return self.wallsLayer.dfWallCurves_onDragLeftDrop(event);
-		self.currentHandler.stop(event.data.origin, event.data.destination);
+		self.currentHandler.stop(event.data.origin, event.data.destination, event);
 		self.currentHandler = null;
 		self.render();
 	}
@@ -148,22 +162,23 @@ export default class BezierControl {
 		else if (!self.currentHandler) return;
 		self.currentHandler.cancel();
 		self.currentHandler = null;
-		self.render();
+		self.clearTool();
 	}
 
 	private render() {
-		this.handles.clear();
+		this.wallsLayer.preview.removeChildren();
 		if (this.activeTool == null) return;
 		const points = this.activeTool?.getSegments(this.segments);
 		if (points.length == 0) return;
 		this.walls.length
-		const wallData = JSON.stringify(this.wallsLayer._getWallDataFromActiveTool(game.activeTool));
+		const wallData = this.wallsLayer._getWallDataFromActiveTool(game.activeTool);
+
 		while (this.walls.length > points.length - 1) {
 			const wall = this.walls.pop();
 			this.wallsLayer.preview.removeChild(wall);
 		}
 		for (var c = 0; c < points.length - 1; c++) {
-			const data = JSON.parse(wallData);
+			const data = duplicate(wallData);
 			data.c = [points[c].x, points[c].y, points[c + 1].x, points[c + 1].y]
 			if (c == this.walls.length) {
 				this.walls.push(new Wall(data, undefined));
@@ -171,10 +186,13 @@ export default class BezierControl {
 				this.walls[c].draw();
 			} else {
 				this.walls[c].data = data;
+				this.wallsLayer.preview.addChild(this.walls[c]);
 				this.walls[c].refresh();
 			}
 		}
-		this.activeTool.drawHandles(this.handles);
+		const graphics = new PIXI.Graphics(null);
+		this.wallsLayer.preview.addChild(graphics);
+		this.activeTool.drawHandles(graphics);
 	}
 
 	patchWallsLayer() {

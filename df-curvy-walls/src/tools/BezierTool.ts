@@ -11,10 +11,25 @@ export abstract class BezierTool {
 	public static readonly HANDLE_RADIUS: number = 6;
 	public static readonly LINE_SIZE: number = 2;
 
-	mode: ToolMode = ToolMode.NotPlaced;
+	private _mode: ToolMode = ToolMode.NotPlaced;
 	protected bezier: Bezier;
 	abstract get handles(): PIXI.Point[]
 	abstract get bounds(): PIXI.Bounds;
+
+	get mode(): ToolMode { return this._mode; };
+	protected setMode(value: ToolMode) {
+		this._mode = value;
+		if (this._mode == ToolMode.Placed) {
+			$(`button[data-tool="bezierapply"]`).show();
+			$(`button[data-tool="beziercancel"]`).show();
+			this.showTools();
+		}
+		else {
+			$(`button[data-tool="bezierapply"]`).hide();
+			$(`button[data-tool="beziercancel"]`).hide();
+			this.hideTools();
+		}
+	};
 
 	constructor() {
 		this.bezier = new Bezier(this.initialPoints());
@@ -28,6 +43,13 @@ export abstract class BezierTool {
 		this.bezier.points = this.handles;
 		this.bezier.update();
 		return this.bezier.getLUT(count + 2).map((e: { x: number, y: number }) => new PIXI.Point(e.x, e.y));
+	}
+
+	abstract showTools(): void
+	abstract hideTools(): void
+
+	clearTool() {
+		this.setMode(ToolMode.NotPlaced);
 	}
 
 	protected drawBoundingBox(context: PIXI.Graphics) {
