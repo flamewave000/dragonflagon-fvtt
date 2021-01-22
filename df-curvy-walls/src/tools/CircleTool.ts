@@ -3,6 +3,7 @@ import { BezierTool, ToolMode } from './BezierTool.js';
 import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler.js";
 
 const pointNearPoint = BezierTool.pointNearPoint;
+const PI2 = Math.PI * 2
 declare type Point = PIXI.Point;
 
 // Helper function log outputs
@@ -15,7 +16,7 @@ class InitializerIH extends InitializerInputHandler {
 }
 
 export default class CircleTool extends BezierTool {
-	static readonly ANGLE_SNAP = (30 / 180) * Math.PI;
+	static readonly ANGLE_SNAP = (15 / 180) * Math.PI;
 	lineA = new PIXI.Point();
 	lineB = new PIXI.Point();
 	arcHandle = new RotatorHandle(100);
@@ -68,18 +69,19 @@ export default class CircleTool extends BezierTool {
 		// initialize with the first point
 		const points: PIXI.Point[] = [];
 		// Start at full rotation and work our way back CCW
-		var angle = Math.PI * 2;
-		var sliceAngle = this.sliceHandle.rawAngle != Math.PI*2 ? this.sliceHandle.rawAngle : 0.0;
-		while (angle >= this.sliceHandle.rawAngle) {
+		var angle = PI2;
+		var sliceAngle = this.sliceHandle.rawAngle != PI2 ? this.sliceHandle.rawAngle : 0.0;
+		// console.log(`Slice: ${degrees(sliceAngle)}, Arc: ${degrees(this.arcHandle.rawAngle)}`);
+		while (angle >= sliceAngle) {
 			points.push(this.createVector(this.arcHandle.rawAngle + angle, magnitude, origin));
 			angle -= deltaTheta;
 		}
 		// If we stopped short of the slice handle, add a small step to go the rest of the way
-		if (this.finishSliceIfShort && angle != this.sliceHandle.rawAngle) {
-			points.push(this.createVector(this.arcHandle.rawAngle + this.sliceHandle.rawAngle, magnitude, origin));
+		if (this.finishSliceIfShort && angle != sliceAngle) {
+			points.push(this.createVector(this.arcHandle.rawAngle + sliceAngle, magnitude, origin));
 		}
 		// If there is no slice, close the loop
-		if (this.sliceHandle.rawAngle == 0)
+		if (sliceAngle == 0)
 			points.push(points[0]);
 		return points;
 	}
@@ -88,10 +90,17 @@ export default class CircleTool extends BezierTool {
 	drawHandles(context: PIXI.Graphics): void {
 		if (this.mode == ToolMode.NotPlaced) return;
 		this.drawBoundingBox(context);
+		const middle = this.getCenter();
+		const arc = this.arcHandle.getHandlePoint(middle);
+		const slice = this.sliceHandle.getHandlePoint(middle);
 		context.beginFill(0xffaacc)
 			.lineStyle(BezierTool.LINE_SIZE, 0xffaacc, 1, 0.5)
 			.moveTo(this.lineA.x, this.lineA.y)
 			.lineTo(this.lineB.x, this.lineB.y)
+			.moveTo(middle.x, middle.y)
+			.lineTo(arc.x, arc.y)
+			.moveTo(middle.x, middle.y)
+			.lineTo(slice.x, slice.y)
 			.endFill();
 		this.drawHandle(context, 0xff4444, this.lineA);
 		this.drawHandle(context, 0xff4444, this.lineB);
@@ -120,6 +129,7 @@ export default class CircleTool extends BezierTool {
 class RotatorHandle {
 	private _angle: number = 0.0;
 	get rawAngle(): number { return this._angle; }
+	set rawAngle(value: number) { this._angle = value; }
 	get angle(): number {
 		return !!this.magnet ? this._angle + this.magnet._angle : this._angle;
 	}
@@ -127,7 +137,7 @@ class RotatorHandle {
 		this._angle = !!this.magnet ? value - this.magnet._angle : this._angle = value;
 	}
 	private length: number = 0.0;
-	private magnet: RotatorHandle;
+	magnet: RotatorHandle;
 	constructor(length: number, magnet?: RotatorHandle) {
 		this.length = length;
 		this.magnet = magnet;
@@ -159,7 +169,7 @@ class PointRotationHandler extends InputHandler {
 		// If on the -X axis (2nd and 3rd quadrants)
 		if (vecX < 0) angle += Math.PI;
 		// Specifically the +X,-Y quadrant (4th quadrant)
-		else if (vecY < 0) angle += (Math.PI * 2);
+		else if (vecY < 0) angle += PI2;
 		// Perform snapping if enabled
 		if (this.shouldSnap(event)) {
 			// Whole number of angle snaps
@@ -169,7 +179,8 @@ class PointRotationHandler extends InputHandler {
 				? whole * CircleTool.ANGLE_SNAP
 				: (whole + 1) * CircleTool.ANGLE_SNAP;
 		}
-		this.arcHandle.angle = angle;
+		const magnet = !!this.arcHandle.magnet ? (PI2 - this.arcHandle.magnet.rawAngle) : 0
+		this.arcHandle.rawAngle = (magnet + angle) % PI2;
 	}
 
 	start(_origin: PIXI.Point, destination: PIXI.Point, event: PIXI.InteractionEvent): void {

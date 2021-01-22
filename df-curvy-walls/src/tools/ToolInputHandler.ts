@@ -81,22 +81,22 @@ export class PointInputHandler extends InputHandler {
 export class PointArrayInputHandler extends InputHandler {
 	private originalPoints: Point[] = [];
 	points: PIXI.Point[];
-	private last: Point;
+	private _start: Point;
 	completion: (sender: PointArrayInputHandler) => void;
 	constructor(start: Point, points: Point[], completion: (sender: PointArrayInputHandler) => void = null) {
 		super();
 		points.forEach(e => this.originalPoints.push(e.clone()));
 		this.points = points;
-		this.last = start;
+		this._start = start;
 		this.completion = completion;
 	}
 	private moveAll(to: Point, event: PIXI.InteractionEvent) {
-		const delta = new PIXI.Point(to.x - this.last.x, to.y - this.last.y);
+		const delta = new PIXI.Point(to.x - this._start.x, to.y - this._start.y);
 		const snap = this.shouldSnap(event);
-		this.last.copyFrom(to);
-		this.points.forEach(e => {
-			e.copyFrom(this.getWallEndPoint(new PIXI.Point(e.x + delta.x,
-				e.y + delta.y), snap));
+		var o: PIXI.Point;
+		this.points.forEach((e, i) => {
+			o = this.originalPoints[i];
+			e.copyFrom(this.getWallEndPoint(new PIXI.Point(o.x + delta.x, o.y + delta.y), snap));
 		})
 	}
 	start(_origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
@@ -124,7 +124,7 @@ export class MagnetPointInputHandler extends InputHandler {
 	protected offsetX: number;
 	protected offsetY: number;
 	completion?: (sender: MagnetPointInputHandler) => void = null;
-	constructor(masterPoint: Point, slavePoint: Point,  completion: (sender: MagnetPointInputHandler) => void = null) {
+	constructor(masterPoint: Point, slavePoint: Point, completion: (sender: MagnetPointInputHandler) => void = null) {
 		super();
 		this.originalPoint.copyFrom(masterPoint);
 		this.masterPoint = masterPoint;
