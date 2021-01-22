@@ -6,7 +6,7 @@ Adds Bezier Curves and Ellipse tools to the walls layer. This gives you the abil
 
 | Cubic Bezier Curve | Quadratic Bezier Curve | Ellipse With Slicing |
 | :----------------: | :--------------------: | :------------------: |
-| [![Quadratic Curve](../.assets/df-curvy-walls-cubic.gif)](../.assets/df-curvy-walls-cubic.mp4)| [![Quadratic Curve](../.assets/df-curvy-walls-quadratic.gif)](../.assets/df-curvy-walls-quadratic.mp4)| [![Quadratic Curve](../.assets/df-curvy-walls-ellipse.gif)](../.assets/df-curvy-walls-ellipse.mp4) |
+| [![Quadratic Curve](../.assets/df-curvy-walls-cubic.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/18)| [![Quadratic Curve](../.assets/df-curvy-walls-quadratic.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/19)| [![Quadratic Curve](../.assets/df-curvy-walls-ellipse.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/20) |
 
 ## Bezier Curves
 
