@@ -2,6 +2,9 @@
 
 ## Modules
 
+### [DF Curvy Walls](https://github.com/flamewave000/dragonflagon-fvtt/blob/master/df-curvy-walls/README.md)
+New wall tools for drawing walls along a bezier or elliptical curve.
+
 ### [DF Scene Enhancement](https://github.com/flamewave000/dragonflagon-fvtt/blob/master/df-scene-enhance/README.md)
 A few enhancements to scene management for players and GMs.
 
