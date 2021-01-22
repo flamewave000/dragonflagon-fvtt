@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"name": "df-curvy-walls",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "Generates wall segments along a curve",
 	"main": "df-wall-curves.js",
 	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/df-curvy-walls/",

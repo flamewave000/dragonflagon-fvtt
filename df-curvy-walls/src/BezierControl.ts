@@ -1,5 +1,5 @@
 
-import { BezierTool } from './tools/BezierTool.js';
+import { BezierTool, ToolMode } from './tools/BezierTool.js';
 import CircleTool from './tools/CircleTool.js';
 import CubicTool from './tools/CubicTool.js';
 import QuadTool from './tools/QuadTool.js';
@@ -36,6 +36,7 @@ unsetters[Mode.Circ] = () => unsetTool(MODE_NAMES[Mode.Circ]);
 
 export class BezierControl {
 	private static _instance: BezierControl;
+	private inputManager = new KeyboardInputManager();
 	private _mode = Mode.None;
 	private wallsLayer: WallsLayerExt;
 	private walls: Wall[] = [];
@@ -87,7 +88,7 @@ export class BezierControl {
 	}
 
 	async apply() {
-		// APPLY WALLS HERE SOMEHOW
+		if (this.activeTool.mode != ToolMode.Placed) return;
 		await Wall.create(this.walls.map(e => e.data), {});
 		this.clearTool();
 	}
@@ -162,7 +163,7 @@ export class BezierControl {
 		else if (!self.currentHandler) return;
 		self.currentHandler.cancel();
 		self.currentHandler = null;
-		self.clearTool();
+		self.render();
 	}
 
 	render() {
@@ -206,6 +207,8 @@ export class BezierControl {
 		this.wallsLayer._onDragLeftMove = BezierControl._onDragLeftMove;
 		this.wallsLayer._onDragLeftDrop = BezierControl._onDragLeftDrop;
 		this.wallsLayer._onDragLeftCancel = BezierControl._onDragLeftCancel;
+		window.addEventListener('keydown', this.inputManager.onKeyDown.bind(this.inputManager));
+		window.addEventListener('keyup', this.inputManager.onKeyUp.bind(this.inputManager));
 	}
 
 	static findControl(name: string): Control | undefined {
@@ -220,5 +223,31 @@ export class BezierControl {
 			if (tool != undefined) return tool;
 		}
 		return undefined;
+	}
+}
+
+class KeyboardInputManager {
+	private manager = new KeyboardManager();
+	private _currentKeys = new Set<string>()
+	onKeyDown(event: KeyboardEvent) {
+		const key = game.keyboard.getKey(event);
+		if (key! in ["Enter", "Delete", "Backspace"]) return;
+		if (this._currentKeys.size == 0) return;
+		this._currentKeys.add(key);
+	}
+	onKeyUp(event: KeyboardEvent) {
+		const key = game.keyboard.getKey(event);
+		if (key! in this._currentKeys) return;
+		event.preventDefault();
+		switch (key) {
+			case "Enter":
+				BezierControl.instance.apply();
+				break;
+			case "Delete":
+			case "Backspace":
+				BezierControl.instance.clearTool();
+				break;
+		}
+		this._currentKeys.clear();
 	}
 }
