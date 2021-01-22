@@ -18,7 +18,8 @@ Hooks.on('renderSceneControls', async controls => {
 		if (!toolbar) {
 			(toolbar = new BezierToolBar()).render(true);
 			BezierControl.instance.clearTool();
-		}
+		} else
+			BezierControl.instance.render();
 	}
 	else {
 		if (!toolbar) return;

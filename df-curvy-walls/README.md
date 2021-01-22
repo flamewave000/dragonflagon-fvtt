@@ -16,5 +16,9 @@ Supports both a Quadratic and Cubic curve to give differing forms of curve gener
 
 Generates a simple ellipse that can be squished and stretched. You can cut a "slice" out of the ellipse to create an opening, and you can specify the arc offset of the walls so the segments are position at the right point along the curve.
 
+## Uses the Current Wall Type Selection
+
+![Wall Type Selection](../.assets/df-curvy-walls-types.webp)
+
 ## Community Libraries Used
 - BezierJS by Pomax [[Project](https://pomax.github.io/bezierjs)] [[Repositiory](https://github.com/Pomax/bezierjs)]

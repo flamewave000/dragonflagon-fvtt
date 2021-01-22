@@ -165,7 +165,7 @@ export class BezierControl {
 		self.clearTool();
 	}
 
-	private render() {
+	render() {
 		this.wallsLayer.preview.removeChildren();
 		if (this.activeTool == null) return;
 		const points = this.activeTool?.getSegments(this.segments);
