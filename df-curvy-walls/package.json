@@ -1,6 +1,6 @@
 {
 	"private": true,
-	"name": "df-wall-curves",
+	"name": "df-curvy-walls",
 	"version": "1.0.0",
 	"description": "Generates wall segments along a curve",
 	"main": "df-wall-curves.js",

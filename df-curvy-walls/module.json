@@ -1,5 +1,5 @@
 {
-	"name": "df-curvy-walls",
+	"name": "{{name}}",
 	"title": "DF Curved Wall Creator",
 	"description": "Creates wall segments along a Bezier Cubic or Quadratic curve or circle",
 	"version": "{{version}}",

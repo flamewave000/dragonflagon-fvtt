@@ -35,6 +35,7 @@ function processModuleManifest(cb) {
 			const css = files.filter(e => e.endsWith('css'));
 			fs.readFile('module.json', (err, data) => {
 				const module = data.toString()
+					.replace('{{name}}', npmPackage().name)
 					.replaceAll('{{version}}', npmPackage().version)
 					.replace('"{{sources}}"', JSON.stringify(js, null, '\t').replaceAll('\n', '\n\t'))
 					.replace('"{{css}}"', JSON.stringify(css, null, '\t').replaceAll('\n', '\n\t'));
@@ -62,7 +63,7 @@ function bundleCompile() {
 }
 function bundleZip() {
 	const package = npmPackage();
-	return src(package.name + GLOB)
+	return src(package.name + '/' + GLOB)
 		.pipe(zip(`${package.name}_${package.version}.zip`))
 		.pipe(dest('./'));
 }
@@ -80,11 +81,16 @@ exports.devClean = function () {
 	return _del([DIST, package.devDir + SOURCE, package.devDir + LANG, package.devDir + 'module.json'], { force: true });
 }
 
-exports.bundle = series(exports.clean,
-	parallel(outputAssets, series(bundleCompile, processModuleManifest)),
-	() => src(DIST + GLOB).pipe(dest(npmPackage.name)),
-	bundleZip, del([DIST, npmPackage.name])
-);
+exports.bundle = (() => {
+	const package = npmPackage();
+	return series(
+		exports.clean
+		, parallel(outputAssets, series(bundleCompile, processModuleManifest))
+		, () => src(DIST + GLOB).pipe(dest(`${package.name}/${package.name}`))
+		, bundleZip
+		, del([DIST, package.name])
+	);
+})();
 
 exports.build = series(outputAssets, build, processModuleManifest);
 exports.module = processModuleManifest;
