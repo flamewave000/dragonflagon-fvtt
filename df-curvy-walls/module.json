@@ -9,11 +9,8 @@
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [
-		{
-			"lang": "en",
-			"name": "English",
-			"path": "lang/en.json"
-		}
+		{ "lang": "en", "name": "English", "path": "lang/en.json" },
+		{ "lang": "fr", "name": "French", "path": "lang/fr.json" }
 	],
 	"url": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-curvy-walls",
 	"license": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/df-curvy-walls/LICENSE",
@@ -22,29 +19,11 @@
 	"readme": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-curvy-walls/README.md",
 	"changelog": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-curvy-walls/CHANGELOG.md",
 	"manifestPlusVersion": "1.0.0",
-	"authors": [
-		{
-			"name": "flamewave000",
-			"discord": "flamewave000#6766",
-			"url": "https://github.com/flamewave000"
-		}
-	],
+	"authors": [ { "name": "flamewave000", "discord": "flamewave000#6766", "url": "https://github.com/flamewave000" } ],
 	"media": [
-		{
-			"type": "cover",
-			"url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-banner.png"
-		},
-		{
-			"type": "screenshot",
-			"url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-cubic.gif"
-		},
-		{
-			"type": "screenshot",
-			"url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-quadratic.gif"
-		},
-		{
-			"type": "screenshot",
-			"url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-ellipse.gif"
-		}
+		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-banner.png" },
+		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-cubic.gif" },
+		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-quadratic.gif" },
+		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-ellipse.gif" }
 	]
 }

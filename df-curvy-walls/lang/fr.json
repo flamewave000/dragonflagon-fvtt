@@ -1,0 +1,14 @@
+{
+	"df-curvy-walls.cubic": "Courbe de Bézier cubique",
+	"df-curvy-walls.quadratic": "Courbe de Bézier Quadratique",
+	"df-curvy-walls.circle": "Courbe Ellipse",
+	"df-curvy-walls.increment": "Augmenter les segments",
+	"df-curvy-walls.decrement": "Diminuer les segments",
+	"df-curvy-walls.apply": "Appliquer des murs courbes au calque",
+	"df-curvy-walls.cancel": "Effacer l'outil",
+	"df-curvy-walls.cubic_lock_handles": "Link Curve Controls to Line Ends",
+	"df-curvy-walls.ellipse_close": "Fermer cercle lorsque découpé en tranches",
+	"df-curvy-walls.ellipse_finish_slice": "Ajouter un mur court au point de coupe",
+	"df-curvy-walls.ellipse_increment": "Augmenter la taille du pas d'angle",
+	"df-curvy-walls.ellipse_decrement": "Diminuer la taille du pas d'angle"
+}

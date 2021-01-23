@@ -5,6 +5,7 @@
 ### General
 
 - Added keyboard capture of the "Enter", "Delete", and "Backspace" keys. The "Enter" key will now apply the current wall curve (just like clicking the green checkmark). The "Delete" and "Backspace" keys will clear the current tool (just like clicking the red X button).
+- Added French translations.
 - Bug Fix: Right-Click cancelling of the current point drag will now return to its original position as expected instead of clearing the tool.
 
 ### Ellipse Tool
