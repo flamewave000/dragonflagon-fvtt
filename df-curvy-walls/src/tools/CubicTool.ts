@@ -1,4 +1,5 @@
 
+import { ToolUI } from '../BezierToolBar.js';
 import { BezierTool, ToolMode } from './BezierTool.js';
 import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler, MagnetPointInputHandler } from "./ToolInputHandler.js";
 
@@ -25,11 +26,11 @@ class InitializerIH extends InitializerInputHandler {
 }
 
 export default class CubicTool extends BezierTool {
+	static lockHandles = true;
 	lineA = new PIXI.Point();
 	lineB = new PIXI.Point();
 	controlA = new PIXI.Point();
 	controlB = new PIXI.Point();
-	lockHandles = true;
 
 	get handles(): Point[] { return [this.lineA, this.controlA, this.controlB, this.lineB]; }
 	get bounds(): PIXI.Bounds {
@@ -64,11 +65,11 @@ export default class CubicTool extends BezierTool {
 			return new InitializerIH(this, () => this.setMode(ToolMode.Placed), () => this.setMode(ToolMode.NotPlaced));
 		}
 		if (pointNearPoint(point, this.lineA, BezierTool.HANDLE_RADIUS))
-			return this.lockHandles
+			return CubicTool.lockHandles
 				? new MagnetPointInputHandler(this.lineA, this.controlA)
 				: new PointInputHandler(this.lineA);
 		else if (pointNearPoint(point, this.lineB, BezierTool.HANDLE_RADIUS))
-			return this.lockHandles
+			return CubicTool.lockHandles
 				? new MagnetPointInputHandler(this.lineB, this.controlB)
 				: new PointInputHandler(this.lineB);
 		else if (pointNearPoint(point, this.controlA, BezierTool.HANDLE_RADIUS))
@@ -80,7 +81,29 @@ export default class CubicTool extends BezierTool {
 		return null;
 	}
 
-	showTools() { }
-	hideTools() { }
-
+	getTools(): ToolUI[] {
+		return [
+			{
+				icon: 'fas fa-lock',
+				name: 'cubiclock',
+				title: 'df-curvy-walls.cubic_lock_handles',
+				class: 'toggle' + (CubicTool.lockHandles ? ' active' : ''),
+				style: 'display:none',
+				onClick: (button: JQuery<HTMLButtonElement>) => {
+					var enabled = button.hasClass('active');
+					CubicTool.lockHandles = !enabled;
+					if (enabled)
+						button.removeClass('active');
+					else
+						button.addClass('active');
+				}
+			}
+		];
+	}
+	showTools() {
+		$(`button[data-tool="cubiclock"]`).show();
+	}
+	hideTools() {
+		$(`button[data-tool="cubiclock"]`).hide();
+	}
 }

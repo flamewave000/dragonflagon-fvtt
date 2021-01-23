@@ -1,5 +1,6 @@
 import { Bezier } from "../lib/bezier.js";
 import { InputHandler } from "./ToolInputHandler.js";
+import { ToolUI } from '../BezierToolBar.js';
 
 export enum ToolMode {
 	NotPlaced,
@@ -45,6 +46,7 @@ export abstract class BezierTool {
 		return this.bezier.getLUT(count + 2).map((e: { x: number, y: number }) => new PIXI.Point(e.x, e.y));
 	}
 
+	abstract getTools(): ToolUI[]
 	abstract showTools(): void
 	abstract hideTools(): void
 

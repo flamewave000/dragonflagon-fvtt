@@ -6,8 +6,9 @@ export interface ToolUI {
 	title: String
 	icon: String
 	style?: String
-	onClick?: () => void
+	onClick?: (control: JQuery<HTMLButtonElement>) => void
 	class?: String
+	html?: String
 }
 export class BezierToolBar extends FormApplication {
 	static get defaultOptions() {
@@ -61,28 +62,20 @@ export class BezierToolBar extends FormApplication {
 			onClick: () => { BezierControl.instance.clearTool() },
 			class: "cancel"
 		}];
-
-		// switch (BezierControl.instance.mode) {
-		// 	case Mode.Cube:
-		// 		break;
-		// 	case Mode.Quad:
-		// 		break;
-		// 	case Mode.Circ:
-		// 		break;
-		// }
-		return { tools: tools } as any as FormApplication.Data<any>;
+		return { coreTools: tools, extraTools: BezierControl.instance.activeTool.getTools() } as any as FormApplication.Data<any>;
 	}
 	/**
 	 * This method is called upon form submission after form data is validated
 	 * @param event {Event}       The initial triggering submission event
-	 * @param formData {Object}   The object of validated form data with which to update the object
 	 * @private
 	 */
-	async _updateObject(event: any, formData: any) {
+	async _updateObject(event: any) {
 		if (!event.submitter) return;
 		const data = this.getData();
-		((data as any).tools as Array<any>)
+		const coreTools = ((data as any).coreTools as Array<ToolUI>);
+		const extraTools = ((data as any).extraTools as Array<ToolUI>);
+		coreTools.concat(...extraTools)
 			.find(e => e.name === event.submitter.dataset.tool)
-			.onClick();
+			.onClick($(event.submitter));
 	}
 }

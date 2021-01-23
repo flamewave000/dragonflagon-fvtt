@@ -75,16 +75,16 @@ export class BezierControl {
 	}
 
 	toggleCubic(enabled: boolean) {
-		this._activeTool = new CubicTool();
 		this.setMode(enabled, Mode.Cube);
+		this._activeTool = new CubicTool();
 	}
 	toggleQuadratic(enabled: boolean) {
-		this._activeTool = new QuadTool();
 		this.setMode(enabled, Mode.Quad);
+		this._activeTool = new QuadTool();
 	}
 	toggleCircle(enabled: boolean) {
-		this._activeTool = new CircleTool();
 		this.setMode(enabled, Mode.Circ);
+		this._activeTool = new CircleTool();
 	}
 
 	async apply() {
@@ -209,6 +209,9 @@ export class BezierControl {
 		this.wallsLayer._onDragLeftCancel = BezierControl._onDragLeftCancel;
 		window.addEventListener('keydown', this.inputManager.onKeyDown.bind(this.inputManager));
 		window.addEventListener('keyup', this.inputManager.onKeyUp.bind(this.inputManager));
+		Hooks.on('requestCurvyWallsRedraw', () => {
+			this.render();
+		});
 	}
 
 	static findControl(name: string): Control | undefined {

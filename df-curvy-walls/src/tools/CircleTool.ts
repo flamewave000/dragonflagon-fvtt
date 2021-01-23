@@ -1,5 +1,6 @@
 
 import { BezierTool, ToolMode } from './BezierTool.js';
+import { ToolUI } from '../BezierToolBar.js';
 import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler.js";
 
 const pointNearPoint = BezierTool.pointNearPoint;
@@ -16,12 +17,14 @@ class InitializerIH extends InitializerInputHandler {
 }
 
 export default class CircleTool extends BezierTool {
-	static readonly ANGLE_SNAP = (15 / 180) * Math.PI;
+	static readonly ANGLE_SNAP_STEPS = [Math.PI / 4, Math.PI / 6, Math.PI / 12, Math.PI / 24, Math.PI / 48];
+	static snapSetIndex = 2;
+	static finishSliceIfShort = true;
+	static closeLoopIfSliced = false;
 	lineA = new PIXI.Point();
 	lineB = new PIXI.Point();
 	arcHandle = new RotatorHandle(100);
 	sliceHandle = new RotatorHandle(75, this.arcHandle);
-	finishSliceIfShort = true;
 
 	get handles(): Point[] { return [this.lineA, this.lineB]; }
 	get bounds(): PIXI.Bounds {
@@ -39,8 +42,62 @@ export default class CircleTool extends BezierTool {
 			bounds.maxX, bounds.maxY]);
 	}
 
-	showTools() { }
-	hideTools() { }
+	getTools(): ToolUI[] {
+		return [{
+			icon: 'fas fa-adjust',
+			name: 'ellipseclose',
+			title: 'df-curvy-walls.ellipse_close',
+			class: 'toggle' + (CircleTool.closeLoopIfSliced ? ' active' : ''),
+			style: 'display:none',
+			onClick: (button) => {
+				var enabled = button.hasClass('active');
+				CircleTool.closeLoopIfSliced = !enabled;
+				if (enabled) button.removeClass('active');
+				else button.addClass('active');
+				Hooks.call('requestCurvyWallsRedraw');
+			}
+		}, {
+			icon: 'fas fa-compress-alt',
+			name: 'ellipsefinish',
+			title: 'df-curvy-walls.ellipse_finish_slice',
+			class: 'toggle' + (CircleTool.finishSliceIfShort ? ' active' : ''),
+			style: 'display:none',
+			onClick: (button) => {
+				var enabled = button.hasClass('active');
+				CircleTool.finishSliceIfShort = !enabled;
+				if (enabled) button.removeClass('active');
+				else button.addClass('active');
+				Hooks.call('requestCurvyWallsRedraw');
+			}
+		}, {
+			icon: '',
+			name: 'ellipseinc',
+			title: 'df-curvy-walls.ellipse_increment',
+			class: '',
+			style: 'display:none',
+			html: '<div class="ellipseinc"></div>',
+			onClick: () => { CircleTool.snapSetIndex = Math.clamped(CircleTool.snapSetIndex + 1, 0, CircleTool.ANGLE_SNAP_STEPS.length - 1); }
+		}, {
+			icon: '',
+			name: 'ellipsedec',
+			title: 'df-curvy-walls.ellipse_decrement',
+			style: 'display:none',
+			html: '<div class="ellipsedec"></div>',
+			onClick: () => { CircleTool.snapSetIndex = Math.clamped(CircleTool.snapSetIndex - 1, 0, CircleTool.ANGLE_SNAP_STEPS.length - 1); }
+		}];
+	}
+	showTools() {
+		$(`button[data-tool="ellipseclose"]`).show();
+		$(`button[data-tool="ellipsefinish"]`).show();
+		$(`button[data-tool="ellipseinc"]`).show();
+		$(`button[data-tool="ellipsedec"]`).show();
+	}
+	hideTools() {
+		$(`button[data-tool="ellipseclose"]`).hide();
+		$(`button[data-tool="ellipsefinish"]`).hide();
+		$(`button[data-tool="ellipseinc"]`).hide();
+		$(`button[data-tool="ellipsedec"]`).hide();
+	}
 
 	getCenter(): PIXI.Point {
 		const bounds = this.bounds;
@@ -77,11 +134,11 @@ export default class CircleTool extends BezierTool {
 			angle -= deltaTheta;
 		}
 		// If we stopped short of the slice handle, add a small step to go the rest of the way
-		if (this.finishSliceIfShort && angle != sliceAngle) {
+		if (CircleTool.finishSliceIfShort && angle != sliceAngle) {
 			points.push(this.createVector(this.arcHandle.rawAngle + sliceAngle, magnitude, origin));
 		}
-		// If there is no slice, close the loop
-		if (sliceAngle == 0)
+		// Close loop if there is no slice, or if the user has locked loop closing
+		if (CircleTool.closeLoopIfSliced || sliceAngle == 0)
 			points.push(points[0]);
 		return points;
 	}
@@ -172,12 +229,13 @@ class PointRotationHandler extends InputHandler {
 		else if (vecY < 0) angle += PI2;
 		// Perform snapping if enabled
 		if (this.shouldSnap(event)) {
+			const snapAngle = CircleTool.ANGLE_SNAP_STEPS[CircleTool.snapSetIndex];
 			// Whole number of angle snaps
-			const whole = Math.trunc(angle / CircleTool.ANGLE_SNAP);
+			const whole = Math.trunc(angle / snapAngle);
 			// Round to the nearest whole angle snap
-			angle = (angle - (whole * CircleTool.ANGLE_SNAP)) < (CircleTool.ANGLE_SNAP / 2)
-				? whole * CircleTool.ANGLE_SNAP
-				: (whole + 1) * CircleTool.ANGLE_SNAP;
+			angle = (angle - (whole * snapAngle)) < (snapAngle / 2)
+				? whole * snapAngle
+				: (whole + 1) * snapAngle;
 		}
 		const magnet = !!this.arcHandle.magnet ? (PI2 - this.arcHandle.magnet.rawAngle) : 0
 		this.arcHandle.rawAngle = (magnet + angle) % PI2;

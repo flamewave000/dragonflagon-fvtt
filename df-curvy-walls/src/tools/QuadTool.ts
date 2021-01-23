@@ -1,5 +1,6 @@
 
 import { BezierTool, ToolMode } from './BezierTool.js';
+import { ToolUI } from '../BezierToolBar.js';
 import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler.js";
 
 const pointNearPoint = BezierTool.pointNearPoint;
@@ -68,6 +69,7 @@ export default class QuadTool extends BezierTool {
 		return null;
 	}
 
+	getTools(): ToolUI[] { return []; }
 	showTools() { }
 	hideTools() { }
 }
