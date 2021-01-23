@@ -27,7 +27,7 @@
 		"@types/bezier-js": "0.0.8",
 		"@types/node": "^14.14.21",
 		"del": "^6.0.0",
-		"foundry-vtt-types": "github:flamewave000/foundry-vtt-types#walls-layer",
+		"foundry-vtt-types": "github:flamewave000/foundry-vtt-types#foundry-0.7.9",
 		"gulp": "^4.0.2",
 		"gulp-cli": "^2.3.0",
 		"gulp-rename": "^2.0.0",

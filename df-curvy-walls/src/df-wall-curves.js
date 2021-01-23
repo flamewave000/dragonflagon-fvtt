@@ -15,11 +15,10 @@ var toolbar = null;
 Hooks.on('renderSceneControls', async controls => {
 	if (!game.user.isGM) return;
 	if (controls.activeControl === 'walls' && BezierControl.instance.mode != Mode.None) {
-		if (!toolbar) {
-			(toolbar = new BezierToolBar()).render(true);
-			BezierControl.instance.clearTool();
-		} else
-			BezierControl.instance.render();
+		if (!!toolbar) await toolbar.close({force: true});
+		(toolbar = new BezierToolBar()).render(true);
+		BezierControl.instance.clearTool();
+		setToolBarPosition();
 	}
 	else {
 		if (!toolbar) return;
@@ -30,7 +29,7 @@ Hooks.on('renderSceneControls', async controls => {
 });
 
 function setToolBarPosition() {
-	const tools = $('#df-curvy-walls-tools');
+	const tools = $(toolbar.form).parent();
 	if (!tools) return;
 	const curveTools = $('li[data-tool=beziercube]').offset();
 	tools.css({ top: `${curveTools.top}px`, left: `${curveTools.left + 44}px` });

@@ -30,10 +30,6 @@ export class BezierToolBar extends FormApplication {
 	/** @override */
 	activateListeners(html: JQuery<HTMLElement>) {
 		super.activateListeners(html);
-		// this.
-		// html.find('.control-tool').each((self, index, element) {
-		// 	this.
-		// });
 	}
 
 	getData(options?: any): FormApplication.Data<any> {
