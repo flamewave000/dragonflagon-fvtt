@@ -134,13 +134,13 @@ export default class CircleTool extends BezierTool {
 			angle -= deltaTheta;
 		}
 		// If we stopped short of the slice handle, add a small step to go the rest of the way
-		if (CircleTool.finishSliceIfShort && angle != sliceAngle) {
+		if (CircleTool.finishSliceIfShort && angle != sliceAngle && sliceAngle != 0) {
 			points.push(this.createVector(this.arcHandle.rawAngle + sliceAngle, magnitude, origin));
 		}
 		// Close loop if there is no slice, or if the user has locked loop closing
-		if (CircleTool.closeLoopIfSliced || sliceAngle == 0)
+		if (CircleTool.closeLoopIfSliced && sliceAngle != 0)
 			points.push(points[0]);
-		return points;
+		return (this.lastSegmentFetch = points);
 	}
 
 	initialPoints(): number[] { return [0, 0, 0, 0, 0, 0]; }
@@ -159,10 +159,16 @@ export default class CircleTool extends BezierTool {
 			.moveTo(middle.x, middle.y)
 			.lineTo(slice.x, slice.y)
 			.endFill();
+		this.drawSegmentLabel(context);
 		this.drawHandle(context, 0xff4444, this.lineA);
 		this.drawHandle(context, 0xff4444, this.lineB);
 		this.drawHandle(context, 0x44ff44, this.arcHandle.getHandlePoint(this.getCenter()));
 		this.drawHandle(context, 0x4444ff, this.sliceHandle.getHandlePoint(this.getCenter()));
+	}
+	protected drawSegmentLabel(context: PIXI.Graphics) {
+		const text = BezierTool.createText(`↔${this.lastSegmentFetch.length - 1}`);
+		text.position = this.lineCenter;
+		context.addChild(text);
 	}
 	checkPointForDrag(point: Point): InputHandler | null {
 		if (this.mode == ToolMode.NotPlaced) {

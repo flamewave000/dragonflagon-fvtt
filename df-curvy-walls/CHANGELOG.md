@@ -1,5 +1,9 @@
 # DF Curvy Walls
 
+## Release 1.2.0 (2021-01-23)
+- Added label to display the current number of line segments.
+- Bug Fix: Extended Tool menu was not opening properly when switching tools. Would only work for which ever tool was first opened.
+
 ## Release 1.1.1 (2021-01-23)
 - HOT FIX: Corrected issue with keyboard input getting messed up. Users had issues with Pause/Unpause of the game and other keyboard related issues.
 

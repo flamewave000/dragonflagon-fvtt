@@ -49,6 +49,7 @@ export default class QuadTool extends BezierTool {
 			.moveTo(this.lineB.x, this.lineB.y)
 			.lineTo(this.control.x, this.control.y)
 			.endFill();
+		super.drawSegmentLabel(context);
 		this.drawHandle(context, 0xff4444, this.lineA);
 		this.drawHandle(context, 0xff4444, this.lineB);
 		this.drawHandle(context, 0xaaff44, this.control);

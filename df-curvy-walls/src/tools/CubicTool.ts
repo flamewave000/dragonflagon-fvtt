@@ -54,6 +54,7 @@ export default class CubicTool extends BezierTool {
 			.moveTo(this.lineB.x, this.lineB.y)
 			.lineTo(this.controlB.x, this.controlB.y)
 			.endFill();
+		super.drawSegmentLabel(context);
 		this.drawHandle(context, 0xff4444, this.lineA);
 		this.drawHandle(context, 0xff4444, this.lineB);
 		this.drawHandle(context, 0xaaff44, this.controlA);
