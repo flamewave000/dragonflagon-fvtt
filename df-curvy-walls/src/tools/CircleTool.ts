@@ -76,14 +76,20 @@ export default class CircleTool extends BezierTool {
 			class: '',
 			style: 'display:none',
 			html: '<div class="ellipseinc"></div>',
-			onClick: () => { CircleTool.snapSetIndex = Math.clamped(CircleTool.snapSetIndex + 1, 0, CircleTool.ANGLE_SNAP_STEPS.length - 1); }
+			onClick: () => {
+				CircleTool.snapSetIndex = Math.clamped(CircleTool.snapSetIndex + 1, 0, CircleTool.ANGLE_SNAP_STEPS.length - 1);
+				Hooks.call('requestCurvyWallsRedraw');
+			}
 		}, {
 			icon: '',
 			name: 'ellipsedec',
 			title: 'df-curvy-walls.ellipse_decrement',
 			style: 'display:none',
 			html: '<div class="ellipsedec"></div>',
-			onClick: () => { CircleTool.snapSetIndex = Math.clamped(CircleTool.snapSetIndex - 1, 0, CircleTool.ANGLE_SNAP_STEPS.length - 1); }
+			onClick: () => {
+				CircleTool.snapSetIndex = Math.clamped(CircleTool.snapSetIndex - 1, 0, CircleTool.ANGLE_SNAP_STEPS.length - 1);
+				Hooks.call('requestCurvyWallsRedraw');
+			}
 		}];
 	}
 	showTools() {
@@ -160,6 +166,11 @@ export default class CircleTool extends BezierTool {
 			.lineTo(slice.x, slice.y)
 			.endFill();
 		this.drawSegmentLabel(context);
+		const snapAngle = toDegrees(CircleTool.ANGLE_SNAP_STEPS[CircleTool.snapSetIndex]).toFixed(2);
+		const arcLabel = BezierTool.createText(`⇲${snapAngle}°   ◶${180 / parseFloat(snapAngle)}`);
+		arcLabel.position.copyFrom(this.lineCenter);
+		arcLabel.position.y += BezierTool.TEXT_STYLE.fontSize as number + 4;
+		context.addChild(arcLabel);
 		this.drawHandle(context, 0xff4444, this.lineA);
 		this.drawHandle(context, 0xff4444, this.lineB);
 		this.drawHandle(context, 0x44ff44, this.arcHandle.getHandlePoint(this.getCenter()));

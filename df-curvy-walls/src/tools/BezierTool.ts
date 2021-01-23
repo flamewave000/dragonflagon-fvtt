@@ -82,7 +82,7 @@ export abstract class BezierTool {
 		return result;
 	}
 	protected drawSegmentLabel(context: PIXI.Graphics) {
-		const text = BezierTool.createText(`↔${this.lastSegmentFetch.length - 1}`);
+		const text = BezierTool.createText(`⊷${this.lastSegmentFetch.length - 1}`);
 		text.position = this.lineCenter;
 		context.addChild(text);
 	}

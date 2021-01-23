@@ -1,6 +1,7 @@
 # DF Curvy Walls
 
 ## Release 1.2.0 (2021-01-23)
+- Added label to display the current angle snap of the Ellipse Tool.
 - Added label to display the current number of line segments.
 - Bug Fix: Extended Tool menu was not opening properly when switching tools. Would only work for which ever tool was first opened.
 
