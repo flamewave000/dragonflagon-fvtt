@@ -12,13 +12,23 @@ Hooks.on("getSceneControlButtons", (controls) => {
 });
 
 var toolbar = null;
+var prevMode = Mode.None;
 Hooks.on('renderSceneControls', async controls => {
 	if (!game.user.isGM) return;
 	if (controls.activeControl === 'walls' && BezierControl.instance.mode != Mode.None) {
-		if (!!toolbar) await toolbar.close({force: true});
-		(toolbar = new BezierToolBar()).render(true);
-		BezierControl.instance.clearTool();
-		setToolBarPosition();
+		if (prevMode == BezierControl.instance.mode) {
+			BezierControl.instance.render();
+			return;
+		}
+		if (toolbar != null) {
+			await toolbar.close({ force: true });
+			(toolbar = new BezierToolBar()).render(true);
+			BezierControl.instance.clearTool();
+		} else {
+			(toolbar = new BezierToolBar()).render(true);
+			BezierControl.instance.render();
+		}
+		prevMode = BezierControl.instance.mode;
 	}
 	else {
 		if (!toolbar) return;
