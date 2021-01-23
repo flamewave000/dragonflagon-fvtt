@@ -65,7 +65,7 @@ function bundleZip() {
 	const package = npmPackage();
 	return src(package.name + '/' + GLOB)
 		.pipe(zip(`${package.name}_${package.version}.zip`))
-		.pipe(dest('./'));
+		.pipe(dest('./bundle/'));
 }
 const outputAssets = parallel(
 	() => src(LANG + GLOB).pipe(dest(DIST + LANG)),
@@ -87,7 +87,7 @@ exports.bundle = (() => {
 		exports.clean
 		, parallel(outputAssets, series(bundleCompile, processModuleManifest))
 		, () => src(DIST + GLOB).pipe(dest(`${package.name}/${package.name}`))
-		, bundleZip
+		, parallel(bundleZip, () => src(DIST + '/module.json').pipe(rename(`module_${package.version}.json`)).pipe(dest('./bundle/')))
 		, del([DIST, package.name])
 	);
 })();

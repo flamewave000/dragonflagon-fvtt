@@ -9,7 +9,7 @@
 - Bug Fix: Right-Click cancelling of the current point drag will now return to its original position as expected instead of clearing the tool.
 
 ### Ellipse Tool
-- Added button for toggling on/off closing thhe ellipse when slicing. This can be useful for making a circle with a flattened side.
+- Added button for toggling on/off closing the ellipse when slicing. This can be useful for making a circle with a flattened side.
 - Added button for toggling off the small partial wall that is generated when the current slice does not line up with the end of a wall segment. This can be useful if you don't want the little bit of extra wall but the slicer handle snapping doesn't quite line up.
 - Added 2 buttons, one for increasing the snapping subdivisions, and the other to decrease it. This will provide the following angle snap sizes:
 ```
