@@ -132,7 +132,6 @@ export class BezierControl {
 		// Clear all of our state when that happens
 		this._mode = Mode.None
 		this._activeTool = null;
-		this.wallsLayer.preview.sortableChildren = false;
 		this.walls = [];
 	}
 
