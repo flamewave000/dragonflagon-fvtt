@@ -1,4 +1,7 @@
-# DF Curvy Walls 
+# DF Curvy Walls
+
+## Release 1.1.1 (2021-01-23)
+- HOT FIX: Corrected issue with keyboard input getting messed up. Users had issues with Pause/Unpause of the game and other keyboard related issues.
 
 ## Release 1.1.0 (2021-01-22)
 

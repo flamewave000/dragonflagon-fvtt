@@ -1,6 +1,6 @@
 {
 	"name": "{{name}}",
-	"title": "DF Curved Wall Creator",
+	"title": "DF Curvy Walls",
 	"description": "Creates wall segments along a Bezier Cubic or Quadratic curve or circle",
 	"version": "{{version}}",
 	"author": "flamewave000#6766",

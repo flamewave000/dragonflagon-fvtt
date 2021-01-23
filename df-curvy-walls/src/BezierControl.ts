@@ -230,7 +230,6 @@ export class BezierControl {
 }
 
 class KeyboardInputManager {
-	private manager = new KeyboardManager();
 	private _currentKeys = new Set<string>()
 	onKeyDown(event: KeyboardEvent) {
 		const key = game.keyboard.getKey(event);
