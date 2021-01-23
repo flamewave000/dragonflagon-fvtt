@@ -5,8 +5,8 @@
 Adds Bezier Curves and Ellipse tools to the walls layer. This gives you the ability to generate wall segments along a curve quickly and easily. You can also increase or decrease the number of wall segments used along the curve.
 
 | Cubic Bezier Curve | Quadratic Bezier Curve | Ellipse With Slicing |
-| :----------------: | :--------------------: | :------------------: |
-| [![Quadratic Curve](../.assets/df-curvy-walls-cubic.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/18)| [![Quadratic Curve](../.assets/df-curvy-walls-quadratic.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/19)| [![Quadratic Curve](../.assets/df-curvy-walls-ellipse.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/20) |
+| :-: | :-: | :-: |
+| [![Quadratic Curve](../.assets/df-curvy-walls-cubic.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/18) | [![Quadratic Curve](../.assets/df-curvy-walls-quadratic.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/19) | [![Quadratic Curve](../.assets/df-curvy-walls-ellipse.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/20) |
 
 ## Bezier Curves
 
@@ -19,6 +19,10 @@ Generates a simple ellipse that can be squished and stretched. You can cut a "sl
 ## Uses the Current Wall Type Selection
 
 ![Wall Type Selection](../.assets/df-curvy-walls-types.webp)
+
+## Changelog
+
+You can find all the latest updates [in the CHANGELOG](./CHANGELOG.md)
 
 ## Community Libraries Used
 - BezierJS by Pomax [[Project](https://pomax.github.io/bezierjs)] [[Repositiory](https://github.com/Pomax/bezierjs)]
