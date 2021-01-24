@@ -1,0 +1,31 @@
+<div id="df-curvy-walls-tools">
+	<form id="df-curvy-walls-tools-form">
+		<table id="df-curvy-walls-tools-container">
+			<tr>
+				<td>
+					<ol class="control-tools">
+						{{#each coreTools as |t|}}
+						<li title="{{localize t.title}}">
+							<button class="control-tool {{t.class}}" {{#if t.style}}style="{{t.style}}" {{/if}} data-tool="{{t.name}}" type="submit" value="">
+								{{#if t.html}}{{{t.html}}}{{else}}<i class="{{t.icon}}"></i>{{/if}}
+							</button>
+						</li>
+						{{/each}}
+					</ol>
+				</td>
+				<td>
+					<ol class="control-tools">
+						{{#each extraTools as |e|}}
+						<li title="{{localize e.title}}">
+							<button class="control-tool {{e.class}}" {{#if e.style}}style="{{e.style}}" {{/if}} data-tool="{{e.name}}" type="submit" value="">
+								{{#if e.html}}{{{e.html}}}{{else}}<i class="{{e.icon}}"></i>{{/if}}
+							</button>
+						</li>
+						{{/each}}
+					</ol>
+				</td>
+			</tr>
+		</table>
+
+	</form>
+</div>
