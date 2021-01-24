@@ -10,7 +10,8 @@
 	"styles": "{{css}}",
 	"languages": [
 		{ "lang": "en", "name": "English", "path": "lang/en.json" },
-		{ "lang": "fr", "name": "French", "path": "lang/fr.json" }
+		{ "lang": "fr", "name": "French", "path": "lang/fr.json" },
+		{ "lang": "es", "name": "Español", "path": "lang/es.json" }
 	],
 	"url": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-curvy-walls",
 	"license": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/df-curvy-walls/LICENSE",
