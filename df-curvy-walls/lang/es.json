@@ -1,0 +1,17 @@
+{
+	"I18N.LANGUAGE": "Español",
+	"I18N.MAINTAINERS": "@Viriato139ac#0342",
+
+	"df-curvy-walls.cubic": "Curva Cúbico-Bézier",
+	"df-curvy-walls.quadratic": "Curva Cuadrático-Bézier",
+	"df-curvy-walls.circle": "Curva elíptica",
+	"df-curvy-walls.increment": "Aumentar segmentos",
+	"df-curvy-walls.decrement": "Disminuir segmentos",
+	"df-curvy-walls.apply": "Añadir curva a la capa",
+	"df-curvy-walls.cancel": "Descartar curva",
+	"df-curvy-walls.cubic_lock_handles": "Ajustar controles de curva a extremos de línea",
+	"df-curvy-walls.ellipse_close": "Cerrar círculo al recortar",
+	"df-curvy-walls.ellipse_finish_slice": "Completar con muro para ajustar el punto de corte",
+	"df-curvy-walls.ellipse_increment": "Aumentar paso del ángulo de recorte",
+	"df-curvy-walls.ellipse_decrement": "Disminuir paso del ángulo de recorte"
+}
