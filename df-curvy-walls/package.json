@@ -4,7 +4,7 @@
 	"version": "1.2.0",
 	"description": "Generates wall segments along a curve",
 	"main": "df-wall-curves.js",
-	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/df-curvy-walls/",
+	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/",
 	"scripts": {
 		"build": "gulp",
 		"start": "gulp watch",

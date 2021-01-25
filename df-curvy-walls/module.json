@@ -13,12 +13,12 @@
 		{ "lang": "fr", "name": "French", "path": "lang/fr.json" },
 		{ "lang": "es", "name": "Español", "path": "lang/es.json" }
 	],
-	"url": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-curvy-walls",
-	"license": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/df-curvy-walls/LICENSE",
-	"manifest": "https://github.com/flamewave000/dragonflagon-fvtt/releases/download/df-curvy-walls_{{version}}/module_{{version}}.json",
-	"download": "https://github.com/flamewave000/dragonflagon-fvtt/releases/download/df-curvy-walls_{{version}}/df-curvy-walls_{{version}}.zip",
-	"readme": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-curvy-walls/README.md",
-	"changelog": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-curvy-walls/CHANGELOG.md",
+	"url": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}",
+	"license": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/{{name}}/LICENSE",
+	"manifest": "https://github.com/flamewave000/dragonflagon-fvtt/releases/download/{{name}}_{{release}}/module_{{release}}.json",
+	"download": "https://github.com/flamewave000/dragonflagon-fvtt/releases/download/{{name}}_{{release}}/{{name}}_{{release}}.zip",
+	"readme": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/README.md",
+	"changelog": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/CHANGELOG.md",
 	"manifestPlusVersion": "1.0.0",
 	"authors": [ { "name": "flamewave000", "discord": "flamewave000#6766", "url": "https://github.com/flamewave000" } ],
 	"media": [

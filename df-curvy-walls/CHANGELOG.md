@@ -1,5 +1,9 @@
 # DF Curvy Walls
 
+## Release 1.2.1 (2021-01-24)
+- Added Spanish localization, courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
+- Fixed module manifest not allowing people to update to the latest version properly.
+
 ## Release 1.2.0 (2021-01-23)
 - Added label to display the current angle snap of the Ellipse Tool.
 - Added label to display the current number of line segments.

@@ -26,3 +26,20 @@ You can find all the latest updates [in the CHANGELOG](./CHANGELOG.md)
 
 ## Community Libraries Used
 - BezierJS by Pomax [[Project](https://pomax.github.io/bezierjs)] [[Repositiory](https://github.com/Pomax/bezierjs)]
+
+---
+---
+
+## Building the module
+This module requires NPM in order to be compiled as it uses TypeScript and Gulp.
+- Make sure you have NPM installed: [Get NPM](https://www.npmjs.com/get-npm)
+- Open a terminal in the module directory `/path/to/repo/dragonflagon-fvtt/df-curvy-walls/`
+- Run the following `npm install`
+- After that finishes you can simply run `npx gulp`
+- You will find the compiled module in the now available `dist/` folder.
+
+### Auto-deploy to local FoundryVTT
+If you want to have the compiled module output to the FoundryVTT installation instead of to the `dist/` folder, you can do the following:
+- Open the `package.json` file.
+- Change the `"devDir": "..."` value to your own installation of Foundry's module folder.
+- Run the following command `npx gulp dev` to build the project and have the result copied to your Foundry Modules folder.
