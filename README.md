@@ -1,11 +1,15 @@
 # Dragon Flagon Mods for Foundry VTT
 
+##### [![become a patron](.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats!
+
 ## Modules
 
 ### [DF Curvy Walls](https://github.com/flamewave000/dragonflagon-fvtt/blob/master/df-curvy-walls/README.md)
+
 New wall tools for drawing walls along a bezier or elliptical curve.
 
 ### [DF Scene Enhancement](https://github.com/flamewave000/dragonflagon-fvtt/blob/master/df-scene-enhance/README.md)
+
 A few enhancements to scene management for players and GMs.
 
 ### [DF Settings Clarity](https://github.com/flamewave000/dragonflagon-fvtt/blob/master/df-settings-clarity/README.md)
@@ -19,3 +23,4 @@ Tools for drawing walls along a curve using Bezier and Circle paths.
 
 ## [DragonFlagon FVTT Enhancement Suite](https://github.com/flamewave000/df-fvtt-enhancement-suite)
 DragonFlagon Enhancement Suite Patch for Foundry VTT
+

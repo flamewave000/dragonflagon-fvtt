@@ -20,12 +20,22 @@ Generates a simple ellipse that can be squished and stretched. You can cut a "sl
 
 ![Wall Type Selection](../.assets/df-curvy-walls-types.webp)
 
+## Community Libraries Used
+- BezierJS by Pomax [[Project](https://pomax.github.io/bezierjs)] [[Repositiory](https://github.com/Pomax/bezierjs)]
+
+## Contributors
+
+- [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo): Spanish localization
+
+
+
+##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats!
+
+
+
 ## Changelog
 
 You can find all the latest updates [in the CHANGELOG](./CHANGELOG.md)
-
-## Community Libraries Used
-- BezierJS by Pomax [[Project](https://pomax.github.io/bezierjs)] [[Repositiory](https://github.com/Pomax/bezierjs)]
 
 ---
 ---
