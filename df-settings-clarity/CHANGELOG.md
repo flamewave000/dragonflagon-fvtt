@@ -1,5 +1,8 @@
 # DF Settings Clarity
 
+## Release 2.0.3 (2021-01-26)
+- Added emoticons to the labels to make them more visually distinct.
+
 ## Release 2.0.2
 - Added Spanish localization, courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
 
