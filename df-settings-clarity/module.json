@@ -2,10 +2,11 @@
 	"name": "df-settings-clarity",
 	"title": "DF Settings Clarity",
 	"description": "Displays a tag next to each module setting, indicating if it is a World setting (GM Only) or a client setting (Per User).",
-	"version": "2.0.3",
+	"version": "2.1.0",
 	"author": "flamewave000#6766",
 	"minimumCoreVersion": "0.6.5",
 	"compatibleCoreVersion": "0.7.9",
+	"styles": ["css/df-settings-clarity.css"],
 	"esmodules": [ "df-settings-clarity.js" ],
 	"languages": [
 		{ "lang": "en", "name": "English", "path": "lang/en.json" },

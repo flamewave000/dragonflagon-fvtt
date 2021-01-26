@@ -1,0 +1,28 @@
+.df-settings-clarity-tooltip {
+	position: absolute;
+	width: auto;
+	height: 30px;
+	z-index: 5000;
+	display: inline-block;
+}
+
+.df-settings-clarity-tooltip .msg {
+	color: #BBB;
+	font-size: 18px;
+	line-height: 18px;
+	text-align: center;
+	vertical-align: middle;
+	background: rgba(0, 0, 0, 0.75);
+	border: thin solid #ff6400;
+	border-right: none;
+	border-radius: 5px 0px 0px 5px;
+	padding: 6px;
+	display: inline-block;
+}
+.df-settings-clarity-tooltip img {
+	width: 20px;
+	height: 32px;
+	top: 12.5px;
+	border: none;
+	position: relative;
+}

@@ -1,6 +1,9 @@
 # DF Settings Clarity
 
-## Release 2.0.3 (2021-01-26)
+## Release 2.1.0 (2021-01-26)
+- Moved the text label into a tooltip and now only add the emoticon to the settings label. Much more minimal and unobtrusive.
+
+## Release 2.0.3 (2021-01-25)
 - Added emoticons to the labels to make them more visually distinct.
 
 ## Release 2.0.2
