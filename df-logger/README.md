@@ -17,7 +17,6 @@ Sends an OOC whisper to all users when someone logs in. These messages have a li
 
 ## Future Features:
 
-- Detect when a user disconnects from game without logging out (ie. closes their browser).
 - Add ability to allow GM to manage the login/logout messages from within settings.
 
 ## Contributors

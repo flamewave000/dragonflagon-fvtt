@@ -41,6 +41,7 @@ Hooks.once('init', function () {
 
 	// register our socket events receiver
 	game.socket.on(`module.${DFLogger.MODULE}`, DFLogger.onEvent);
+	game.socket.on('userActivity', DFLogger.onUserActivity);
 });
 
 Hooks.once('ready', function () {
@@ -48,12 +49,4 @@ Hooks.once('ready', function () {
 	DFLogger.cleanup();
 	// Emit our login event to the socket
 	DFLogger.performLogin();
-	// swap the logout function for my own intermediate
-	game.dflogger_logOut = game.logOut;
-	game.logOut = async function () {
-		// Emit our logout event to the socket
-		await DFLogger.performLogout();
-		// execute the regular logout function
-		game.dflogger_logOut();
-	};
 });
