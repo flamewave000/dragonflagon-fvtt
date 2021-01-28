@@ -20,7 +20,12 @@ This feature allows the user to navigate to a scene that is referenced inside of
 ![Navigation Prompt](../.assets/df-scene-enhance-journal-confirm-n.png)
 ![Journal Prompt](../.assets/df-scene-enhance-journal-confirm-j.png)
 
-### Advanced Scene Dimensions
+
+
+## Advanced Scene Dimensions
+
+*Feature suggestion by @Damocles#7837*
+
 ![](../.assets/df-scene-enhance-ratio.png)
 
 Provides various features for more advanced Scene Dimension control.

@@ -20,5 +20,7 @@
 	"DRAGON_FLAGON.Ratio_Numerator": "Numerator",
 	"DRAGON_FLAGON.Ratio_LockRatio": "Lock Ratio",
 	"DRAGON_FLAGON.Ratio_SizeRatio": "Size Ratio",
-	"DRAGON_FLAGON.Ratio_Scale": "Scale"
+	"DRAGON_FLAGON.Ratio_ApplyRatio": "Apply custom ratio to width/height",
+	"DRAGON_FLAGON.Ratio_Scale": "Scale",
+	"DRAGON_FLAGON.Ratio_ApplyScale": "Multiply width/height by scale"
 }

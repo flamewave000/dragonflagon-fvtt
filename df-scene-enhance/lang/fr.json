@@ -18,5 +18,7 @@
 	"DRAGON_FLAGON.Ratio_Numerator": "Numérateur",
 	"DRAGON_FLAGON.Ratio_LockRatio": "Verrouiller le Ratio",
 	"DRAGON_FLAGON.Ratio_SizeRatio": "Ratio de Taille",
-	"DRAGON_FLAGON.Ratio_Scale": "L'Échelle"
+	"DRAGON_FLAGON.Ratio_ApplyRatio": "Appliquer rapport à la largeur/hauteur",
+	"DRAGON_FLAGON.Ratio_Scale": "L'Échelle",
+	"DRAGON_FLAGON.Ratio_ApplyScale": "Multiplier largeur/hauteur par échelle"
 }

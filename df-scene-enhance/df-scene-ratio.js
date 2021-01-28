@@ -49,9 +49,9 @@ export default class DFSceneRatio {
 	set _scale(value) { this.scale.val(value); }
 
 
-	_updateScale() {
-		this.scale.val(((this._width / this.initialWidth) + (this._height / this.initialHeight)) / 2.0);
-	}
+	// _updateScale() {
+	// 	this.scale.val(((this._width / this.initialWidth) + (this._height / this.initialHeight)) / 2.0);
+	// }
 	_updateRatio() {
 		const [num, den] = reduce(this._width, this._height);
 		this._numerator = num;
@@ -59,7 +59,7 @@ export default class DFSceneRatio {
 	}
 
 	_performDimensionChange(width, height) {
-		this._updateScale();
+		// this._updateScale();
 		if (!this.isLocked) {
 			this._updateRatio();
 			return;
@@ -80,13 +80,16 @@ export default class DFSceneRatio {
 		const den = this._denominator;
 		const scale = this._scale
 		if (isNaN(num) || isNaN(den) || isNaN(scale)) return;
-		if ((num == den && this._width > this._height) || num > den) {
-			this._width = Math.round(this.initialWidth * scale);
-			this._height = Math.round(((this.initialWidth * scale) / num) * den);
-		} else {
-			this._width = Math.round(((this.initialHeight * scale) / den) * num);
-			this._height = Math.round(this.initialHeight * scale);
-		}
+		// if ((num == den && this._width > this._height) || num > den) {
+		// 	this._width = Math.round(this.initialWidth * scale);
+		// 	this._height = Math.round(((this.initialWidth * scale) / num) * den);
+		// } else {
+		// 	this._width = Math.round(((this.initialHeight * scale) / den) * num);
+		// 	this._height = Math.round(this.initialHeight * scale);
+		// }
+		this._width = this._width * scale;
+		this._height = this._height * scale;
+		this._scale = 1;
 	}
 
 	_performRatio() {
@@ -100,7 +103,7 @@ export default class DFSceneRatio {
 		} else {
 			this._width = Math.round((height / den) * num);
 		}
-		this._updateScale();
+		// this._updateScale();
 	}
 
 	async render(_app, html, data) {
