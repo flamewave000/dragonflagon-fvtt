@@ -10,7 +10,7 @@ This feature changes the behaviour of Scenes in the Scenes Tab. Now if you click
 |![GM View of Scenes Tab](../.assets/df-scene-enhance-gm.png)|![Player View of Scenes Tab](../.assets/df-scene-enhance-pc.png)|
 |![GM View of Scenes Tab](../.assets/df-scene-enhance-gm-menu.png)|![Player View of Scenes Tab](../.assets/df-scene-enhance-pc-menu.png)|
 
-## Scene Navigation from Scenelinks in Journal Entries
+## Scene Navigation from Scene Links in Journal Entries
 
 This feature allows the user to navigate to a scene that is referenced inside of a Journal Entry. The current behaviour opens the scene's Configuration, but this will prompt the user with a dialog that offers Config and Navigate options.
 
@@ -20,8 +20,21 @@ This feature allows the user to navigate to a scene that is referenced inside of
 ![Navigation Prompt](../.assets/df-scene-enhance-journal-confirm-n.png)
 ![Journal Prompt](../.assets/df-scene-enhance-journal-confirm-j.png)
 
+### Advanced Scene Dimensions
+![](../.assets/df-scene-enhance-ratio.png)
+
+Provides various features for more advanced Scene Dimension control.
+
+- Apply scaler value against current dimensions.
+- Changing dimensions will update scale based on the original values when sheet was opened.
+- Lock dimension ratio, will automatically change one dimension when you change the other, maintaining the current aspect ratio to the nearest whole number.
+- Automatically calculates the smallest fraction that represents the current ratio of the width and height whenever they change,and displays it in the "Size Ratio" fields.
+- Set a custom ratio and apply it to the current dimensions. (Will preserve one of the dimensions, and just change the other to adhere to the new ratio).
+- Clearing a dimension field will reveal the current image's original size for that dimension as placeholder/hint text.
+
 ### Compatibility
-This module will work with any module that does not completely manipulate the Scenes Tab in the game. As of v3.0, there is one new module I am aware of that has similer features to what Scene Enhancement provides ([Scene Clicker](https://foundryvtt.com/packages/scene-clicker/)).
+
+This module will work with any module that does not completely manipulate the Scenes Tab in the game. As of v3.0, there is one new module I am aware of that has similar features to what Scene Enhancement provides ([Scene Clicker](https://foundryvtt.com/packages/scene-clicker/)).
 
 ## Scene Thumbnail Override
 

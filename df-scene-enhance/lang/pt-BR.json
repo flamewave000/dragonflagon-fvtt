@@ -1,4 +1,6 @@
 {
+	"I18N.LANGUAGE": "Português (Brasil)",
+	"I18N.MAINTAINERS": "Renato Innocenti",
 	"DRAGON_FLAGON.Thumbnail_Label": "Substituição de imagem de visualização",
 	"DRAGON_FLAGON.Thumbnail_Hint": "Caminho da Miniatura",
 	"DRAGON_FLAGON.Thumbnail_Button": "Procurar Arquivos",
