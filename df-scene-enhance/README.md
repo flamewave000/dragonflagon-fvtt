@@ -8,17 +8,16 @@ This feature changes the behaviour of Scenes in the Scenes Tab. Now if you click
 |GM View of Scenes Tab|Player View of Scenes Tab|
 |:-:|:-:|
 |![GM View of Scenes Tab](../.assets/df-scene-enhance-gm.png)|![Player View of Scenes Tab](../.assets/df-scene-enhance-pc.png)|
-|![GM View of Scenes Tab](../.assets/df-scene-enhance-gm-menu.png)|![Player View of Scenes Tab](../.assets/df-scene-enhance-pc-menu.png)|
 
 ## Scene Navigation from Scene Links in Journal Entries
 
 This feature allows the user to navigate to a scene that is referenced inside of a Journal Entry. The current behaviour opens the scene's Configuration, but this will prompt the user with a dialog that offers Config and Navigate options.
 
-![Journal Entry](../.assets/df-scene-enhance-journal.png)
-![Configure, Journal, and Navigation Prompt](../.assets/df-scene-enhance-journal-confirm-cjn.png)
-![Configure and Navigation Prompt](../.assets/df-scene-enhance-journal-confirm-cn.png)
-![Navigation Prompt](../.assets/df-scene-enhance-journal-confirm-n.png)
-![Journal Prompt](../.assets/df-scene-enhance-journal-confirm-j.png)
+|||
+|:-:|:-:|
+|![Journal Entry](../.assets/df-scene-enhance-journal.png)|![Configure, Journal, and Navigation Prompt](../.assets/df-scene-enhance-journal-confirm-cjn.png)|
+|![Configure and Navigation Prompt](../.assets/df-scene-enhance-journal-confirm-cn.png)|![Navigation Prompt](../.assets/df-scene-enhance-journal-confirm-n.png)|
+|![Journal Prompt](../.assets/df-scene-enhance-journal-confirm-j.png)| |
 
 
 
@@ -49,6 +48,7 @@ This feature provides a Scene Thumbnail override. This is very useful if you wis
 
 - [Renato Innocenti](https://github.com/rinnocenti): Brazil Portuguese localization
 - [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo): Spanish localization
+- @Damocles#7837: Scene Dimension Ratio Suggestion
 
 
 

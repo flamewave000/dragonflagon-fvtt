@@ -2,11 +2,11 @@
 
 ## Release 3.2.0 (2021-1-28)
 - Added many new features for Scene Dimensions (Feature suggestion by @Damocles#7837)
- - Apply scaler value against current dimensions.
- - Changing dimensions will update scale based on the original values when sheet was opened.
- - Lock dimension ratio, will automatically change one dimension when you change the other, maintaining the current aspect ratio to the nearest whole number.
- - Set a custom ratio and apply it to the current dimensions. (Will preserve one of the dimensions, and just change the other to adhere to the new ratio).
- - Clearing a dimension field will reveal the current image's original size for that dimension as placeholder/hint text.
+	- Apply scaler value against current dimensions.
+	- Changing dimensions will update scale based on the original values when sheet was opened.
+	- Lock dimension ratio, will automatically change one dimension when you change the other, maintaining the current aspect ratio to the nearest whole number.
+	- Set a custom ratio and apply it to the current dimensions. (Will preserve one of the dimensions, and just change the other to adhere to the new ratio).
+	- Clearing a dimension field will reveal the current image's original size for that dimension as placeholder/hint text.
 
 ## Release 3.1.2 (2021-1-17)
 - Added Spanish corrections courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
