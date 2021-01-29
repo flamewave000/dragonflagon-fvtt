@@ -232,7 +232,7 @@ class KeyboardInputManager {
 	private _currentKeys = new Set<string>()
 	onKeyDown(event: KeyboardEvent) {
 		const key = game.keyboard.getKey(event);
-		if (key! in ["Enter", "Delete", "Backspace"]) return;
+		if (key! in ["Enter", "Delete", "Backspace", "-", "="]) return;
 		if (this._currentKeys.size == 0) return;
 		this._currentKeys.add(key);
 	}
@@ -247,6 +247,12 @@ class KeyboardInputManager {
 			case "Delete":
 			case "Backspace":
 				BezierControl.instance.clearTool();
+				break;
+			case "-":
+				BezierControl.instance.segments--;
+				break;
+			case "=":
+				BezierControl.instance.segments++;
 				break;
 		}
 		this._currentKeys.clear();

@@ -10,7 +10,7 @@ Adds Bezier Curves and Ellipse tools to the walls layer. This gives you the abil
 
 ## Bezier Curves
 
-Supports both a Quadratic and Cubic curve to give differing forms of curve generation. The Quadratic curve may be of very niche use, but the Cubic is very powerful and will provide great ways to create "just the right" curve.
+Supports both a Quadratic and Cubic curve to give differing forms of curve generation. The Quadratic curve may be of very niche use but gives a very fast way to create a simple curve. The Cubic curve is very powerful though, and provides a great to create "just the right" curve.
 
 ## Ellipse Curve
 
@@ -21,6 +21,7 @@ Generates a simple ellipse that can be squished and stretched. You can cut a "sl
 ![Wall Type Selection](../.assets/df-curvy-walls-types.webp)
 
 ## Community Libraries Used
+
 - BezierJS by Pomax [[Project](https://pomax.github.io/bezierjs)] [[Repositiory](https://github.com/Pomax/bezierjs)]
 
 ## Contributors
