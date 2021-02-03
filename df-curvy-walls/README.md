@@ -27,6 +27,7 @@ Generates a simple ellipse that can be squished and stretched. You can cut a "sl
 ## Contributors
 
 - [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo): Spanish localization
+- Touge: Japanese localization
 
 
 
