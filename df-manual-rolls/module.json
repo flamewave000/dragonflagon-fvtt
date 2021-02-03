@@ -1,0 +1,21 @@
+{
+	"name": "df-manual-rolls",
+	"title": "DF Manual Rolls",
+	"description": "Provides a way for a user to enter a custom value for rolls. This is to facilitate rolling real dice and then providing the values to Foundry to use.",
+	"version": "0.0.1",
+	"author": "flamewave000#6766",
+	"minimumCoreVersion": "0.7.9",
+	"compatibleCoreVersion": "0.7.9",
+	"esmodules": ["df-manual-rolls.js"],
+	"languages": [
+		{ "lang": "en", "name": "English", "path": "lang/en.json" }
+	],
+	"url": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-manual-rolls",
+	"license": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/df-manual-rolls/LICENSE",
+	"manifest": "https://github.com/flamewave000/dragonflagon-fvtt/releases/download/df-manual-rolls_latest/module.json",
+	"download": "https://github.com/flamewave000/dragonflagon-fvtt/releases/download/df-manual-rolls_latest/df-manual-rolls.zip",
+	"readme": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-manual-rolls/README.md",
+	"changelog": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-manual-rolls/CHANGELOG.md",
+	"manifestPlusVersion": "1.0.0",
+	"authors": [ { "name": "flamewave000", "discord": "flamewave000#6766", "url": "https://github.com/flamewave000" } ]
+}
