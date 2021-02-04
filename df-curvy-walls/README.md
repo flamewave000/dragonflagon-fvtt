@@ -8,6 +8,8 @@ Adds Bezier Curves and Ellipse tools to the walls layer. This gives you the abil
 | :-: | :-: | :-: |
 | [![Quadratic Curve](../.assets/df-curvy-walls-cubic.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/18) | [![Quadratic Curve](../.assets/df-curvy-walls-quadratic.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/19) | [![Quadratic Curve](../.assets/df-curvy-walls-ellipse.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/20) |
 
+##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be anouncing any new modules or pre-releases there for anyone wanting to help me test things out!
+
 ## Bezier Curves
 
 Supports both a Quadratic and Cubic curve to give differing forms of curve generation. The Quadratic curve may be of very niche use but gives a very fast way to create a simple curve. The Cubic curve is very powerful though, and provides a great to create "just the right" curve.
@@ -28,12 +30,6 @@ Generates a simple ellipse that can be squished and stretched. You can cut a "sl
 
 - [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo): Spanish localization
 - Touge: Japanese localization
-
-
-
-##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats!
-
-
 
 ## Changelog
 

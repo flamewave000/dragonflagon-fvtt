@@ -2,6 +2,8 @@
 
 Sends an OOC whisper to all users when someone logs in. These messages have a lifetime and will self-delete after a specified amount of time. These messages currently use the same quotes that are used by Discord for when a user joins a server. There is also a message sent when a user logs out of the game.
 
+##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be anouncing any new modules or pre-releases there for anyone wanting to help me test things out!
+
 ## Message
 
 ![DF User Logger Message Example](../.assets/df-logger-message.png)
@@ -23,6 +25,6 @@ Sends an OOC whisper to all users when someone logs in. These messages have a li
 
 - [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo): Spanish localization
 
+## Changelog
 
-
-##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats!
+You can find all the latest updates [in the CHANGELOG](./CHANGELOG.md)

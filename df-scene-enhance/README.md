@@ -1,6 +1,8 @@
 # DF Scene Enhancement
 A few enhancements to scene management for players and GMs.
 
+##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be anouncing any new modules or pre-releases there for anyone wanting to help me test things out!
+
 ## Scene Navigation on the Scenes Tab (Players & GMs)
 
 This feature changes the behaviour of Scenes in the Scenes Tab. Now if you click on a scene, it will **navigate** to that scene instead of opening its configuration screen. Also, players will now see the Scenes tab as well and navigate to the scenes they have access to. This allows for the Navigation Bar to be much more reduced (especially for GMs). Now the Navigation Bar can be used as a fast shortcut section as it should be.
@@ -18,8 +20,6 @@ This feature allows the user to navigate to a scene that is referenced inside of
 |![Journal Entry](../.assets/df-scene-enhance-journal.png)|![Configure, Journal, and Navigation Prompt](../.assets/df-scene-enhance-journal-confirm-cjn.png)|
 |![Configure and Navigation Prompt](../.assets/df-scene-enhance-journal-confirm-cn.png)|![Navigation Prompt](../.assets/df-scene-enhance-journal-confirm-n.png)|
 |![Journal Prompt](../.assets/df-scene-enhance-journal-confirm-j.png)| |
-
-
 
 ## Advanced Scene Dimensions
 
@@ -50,6 +50,6 @@ This feature provides a Scene Thumbnail override. This is very useful if you wis
 - [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo): Spanish localization
 - @Damocles#7837: Scene Dimension Ratio Suggestion
 
+## Changelog
 
-
-##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats!
+You can find all the latest updates [in the CHANGELOG](./CHANGELOG.md)
