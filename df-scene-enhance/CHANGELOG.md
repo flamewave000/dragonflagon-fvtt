@@ -1,5 +1,8 @@
 # DF Scene Enhancement Changes
 
+## Release 3.2.1/2 (2021-02-04)
+- Implemented new release system for all Dragon Flagon modules.
+
 ## Release 3.2.0 (2021-1-28)
 - Added many new features for Scene Dimensions (Feature suggestion by @Damocles#7837)
 	- Apply scaler value against current dimensions.

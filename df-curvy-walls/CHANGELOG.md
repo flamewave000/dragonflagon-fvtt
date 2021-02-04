@@ -1,5 +1,8 @@
 # DF Curvy Walls
 
+## Release 1.3.2/3 (2021-02-04)
+- Implemented new release system for all Dragon Flagon modules.
+
 ## Release 1.3.1 (2021-02-03)
 - Added Japanese translations, courtesy of Touge
 

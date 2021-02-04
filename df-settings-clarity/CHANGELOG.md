@@ -1,5 +1,8 @@
 # DF Settings Clarity
 
+## Release 2.1.1/2 (2021-02-04)
+- Implemented new release system for all Dragon Flagon modules.
+
 ## Release 2.1.0 (2021-01-26)
 - Moved the text label into a tooltip and now only add the emoticon to the settings label. Much more minimal and unobtrusive.
 

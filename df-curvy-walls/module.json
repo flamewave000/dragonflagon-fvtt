@@ -14,12 +14,12 @@
 		{ "lang": "es", "path": "lang/es.json", "name": "Español" },
 		{ "lang": "ja", "path": "lang/ja.json", "name": "日本語" }
 	],
-	"url": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}",
-	"license": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/{{name}}/LICENSE",
-	"manifest": "https://github.com/flamewave000/dragonflagon-fvtt/releases/download/{{name}}_{{release}}/module_{{release}}.json",
-	"download": "https://github.com/flamewave000/dragonflagon-fvtt/releases/download/{{name}}_{{release}}/{{name}}_{{release}}.zip",
-	"readme": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/README.md",
-	"changelog": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/CHANGELOG.md",
+	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}",
+	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/{{name}}/LICENSE",
+	"manifest":	"https://dragonflagon.cafe/mods/man/{{name}}",
+	"download":	"https://dragonflagon.cafe/mods/pak/{{name}}",
+	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/README.md",
+	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/CHANGELOG.md",
 	"manifestPlusVersion": "1.0.0",
 	"authors": [ { "name": "flamewave000", "discord": "flamewave000#6766", "url": "https://github.com/flamewave000" } ],
 	"media": [
