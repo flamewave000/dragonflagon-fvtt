@@ -1,4 +1,4 @@
-
+String.prototype.replaceAll = function(token, replacement) { return this.split(token).join(replacement); };
 class DFManualRolls {
 	static MODULE = 'df-manual-rolls';
 	static ENABLED = 'manual-rolls-enabled';
@@ -15,6 +15,11 @@ class DFManualRolls {
 		if (!!DiceTerm.prototype.dfManualRolls_roll) return;
 		DiceTerm.prototype.dfManualRolls_roll = DiceTerm.prototype.roll;
 		DiceTerm.prototype.roll = function ({ minimize = false, maximize = false } = {}) {
+			if(maximize) {
+				const roll = { result: this.faces, active: true };
+				this.results.push(roll);
+				return roll;
+			}
 			var value;
 			var message = null;
 			var result;
@@ -31,8 +36,9 @@ class DFManualRolls {
 					message = game.i18n.localize("DF_MANUAL_ROLLS.PromptInvalid").replaceAll('{d}', this.faces);
 			}
 			result = parseInt(value);
-			if (minimize) result = Math.min(1, this.faces);
+			// if (minimize) result = Math.min(1, this.faces);
 			if (maximize) result = this.faces;
+			this.DFManualRolls_result = result;
 			const roll = { result, active: true };
 			this.results.push(roll);
 			return roll;

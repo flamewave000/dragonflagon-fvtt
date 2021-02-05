@@ -81,11 +81,11 @@ function compressDistribution(release = null) {
 			.pipe(gulp.dest(DIST + `${PACKAGE.name}/${PACKAGE.name}`))
 		// Compress the new folder into a ZIP and save it to the `bundle` folder
 		, () => gulp.src(DIST + PACKAGE.name + '/' + GLOB)
-			.pipe(zip(`${PACKAGE.name}_${release || PACKAGE.version}.zip`))
+			.pipe(zip(PACKAGE.name + '.zip'))
 			.pipe(gulp.dest(BUNDLE))
 		// Copy the module.json to the bundle directory, renaming it for the release
 		, () => gulp.src(DIST + '/module.json')
-			.pipe(rename(`module_${release || PACKAGE.version}.json`))
+			.pipe(rename(`module.json`))
 			.pipe(gulp.dest(BUNDLE))
 		// Cleanup by deleting the intermediate module named folder
 		, pdel(DIST + PACKAGE.name)
@@ -130,26 +130,19 @@ exports.dev = gulp.series(
 	, outputDistToDevEnvironment
 );
 /**
- * Performs a default build and then zips the result into a bindle using the `package.version` as the release name
- */
-exports.zipVersion = gulp.series(
-	exports.default,
-	compressDistribution()
-);
-/**
  * Performs a default build and then zips the result into a bindle using `latest` as the release name
  */
-exports.zipLatest = gulp.series(
+exports.zip = gulp.series(
 	pdel([DIST])
 	, gulp.parallel(
-		buildSource(true)
-		, buildManifest('latest')
+		buildSource(false)
+		, buildManifest()
 		, outputLanguages
 		// , outputTemplates
 		// , outputStylesCSS
 		, outputMetaFiles
 	)
-	, compressDistribution('latest')
+	, compressDistribution()
 );
 /**
  * Sets up a file watch on the project to detect any file changes and automatically rebuild those components.
