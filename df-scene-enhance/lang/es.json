@@ -17,5 +17,12 @@
 	"DRAGON_FLAGON.Dialog_JournalMessage": "¿Como quiere abrir esta escena?",
 	"DRAGON_FLAGON.Dialog_JournalNavigate": "Navegar",
 	"DRAGON_FLAGON.Dialog_JournalJournal": "Diario",
-	"DRAGON_FLAGON.Dialog_JournalConfig": "Ajustes"
+	"DRAGON_FLAGON.Dialog_JournalConfig": "Ajustes",
+	"DRAGON_FLAGON.Ratio_Denominator": "Denominador",
+	"DRAGON_FLAGON.Ratio_Numerator": "Numerador",
+	"DRAGON_FLAGON.Ratio_LockRatio": "Bloquear aspecto",
+	"DRAGON_FLAGON.Ratio_SizeRatio": "Proporción de tamaño",
+	"DRAGON_FLAGON.Ratio_ApplyRatio": "Aplicar proporción personalizada al ancho/alto",
+	"DRAGON_FLAGON.Ratio_Scale": "Escala",
+	"DRAGON_FLAGON.Ratio_ApplyScale": "Multiplicar ancho/alto por la escala"
 }
