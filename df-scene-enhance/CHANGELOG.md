@@ -1,6 +1,11 @@
 # DF Scene Enhancement Changes
 
+## Release 3.2.3 (2021-02-06)
+
+- Added Spanish localization for new features, courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
+
 ## Release 3.2.1/2 (2021-02-04)
+
 - Implemented new release system for all Dragon Flagon modules.
 
 ## Release 3.2.0 (2021-1-28)
@@ -15,6 +20,7 @@
 - Added Spanish corrections courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
 
 ## Release 3.1.1 (2021-1-15)
+
 - Added Spanish localization, courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
 
 ## Version 3.1 (2021-1-11)

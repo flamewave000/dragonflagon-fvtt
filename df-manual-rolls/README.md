@@ -4,6 +4,8 @@ Allows you to manually enter the individual dice results when making any kind of
 
 Given the limitations of Foundry around Rolling (namely that rolls are not Asynchronous) it is difficult to really do any kind of overhaul of the roll system. But I've found a way using good ol' fashioned prompts!
 
+![Manual Rolls Demo](../.assets/df-manual-rolls-demo.webp)
+
 ## Limitations
 
 ❌ **It will NOT work inside the Foundry Desktop App. The module will only work inside a Browser.**
