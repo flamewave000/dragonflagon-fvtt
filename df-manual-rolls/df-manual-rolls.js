@@ -1,4 +1,4 @@
-String.prototype.replaceAll = function(token, replacement) { return this.split(token).join(replacement); };
+String.prototype.replaceAll = function (token, replacement) { return this.split(token).join(replacement); };
 class DFManualRolls {
 	static MODULE = 'df-manual-rolls';
 	static ENABLED = 'manual-rolls-enabled';
@@ -15,7 +15,7 @@ class DFManualRolls {
 		if (!!DiceTerm.prototype.dfManualRolls_roll) return;
 		DiceTerm.prototype.dfManualRolls_roll = DiceTerm.prototype.roll;
 		DiceTerm.prototype.roll = function ({ minimize = false, maximize = false } = {}) {
-			if(maximize) {
+			if (maximize) {
 				const roll = { result: this.faces, active: true };
 				this.results.push(roll);
 				return roll;
@@ -24,7 +24,12 @@ class DFManualRolls {
 			var message = null;
 			var result;
 			while (true) {
-				value = prompt(message || game.i18n.localize("DF_MANUAL_ROLLS.Prompt").replaceAll('{d}', this.faces));
+				try {
+					value = prompt(message || game.i18n.localize("DF_MANUAL_ROLLS.Prompt").replaceAll('{d}', this.faces));
+				} catch (err) {
+					ui.notifications.error(game.i18n.localize("DF_MANUAL_ROLLS.FVTTAppError"));
+					return this.dfManualRolls_roll({ minimize, maximize });
+				}
 				// If the user hits Cancel and wants to rollback to Foundry's Roller
 				if (value == null && DFManualRolls.rollback)
 					return this.dfManualRolls_roll({ minimize: minimize, maximize: maximize });
@@ -106,7 +111,7 @@ Hooks.on('ready', function () {
 Hooks.on('createChatMessage', async (chatMessage) => {
 	if (!chatMessage.isRoll || !DFManualRolls.flagged || !(DFManualRolls.enabled || DFManualRolls.forced)) return;
 	var flavor = game.i18n.localize("DF_MANUAL_ROLLS.Flag");
-	if(!!chatMessage.data.flavor)
+	if (!!chatMessage.data.flavor)
 		flavor += " " + chatMessage.data.flavor;
 	await chatMessage.update({ flavor: flavor });
 });

@@ -11,5 +11,6 @@
 	"DF_MANUAL_ROLLS.Settings_Rollback_Hint": "When enabled, cancelling the prompt will instead perform a regular roll with Foundry.",
 	"DF_MANUAL_ROLLS.Reload_Title": "Reload page?",
 	"DF_MANUAL_ROLLS.Reload_Content": "You changed the forced manual rolls setting which needs the page to be reloaded.",
-	"DF_MANUAL_ROLLS.Flag": "(Manual Roll)"
+	"DF_MANUAL_ROLLS.Flag": "(Manual Roll)",
+	"DF_MANUAL_ROLLS.FVTTAppError": "You cannot use DF Manual Rolls inside the FoundryVTT Desktop App. Please use a browser when playing to use this feature."
 }
