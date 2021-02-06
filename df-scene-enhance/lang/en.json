@@ -15,5 +15,12 @@
 	"DRAGON_FLAGON.Dialog_JournalMessage": "How would you like to open this Scene?",
 	"DRAGON_FLAGON.Dialog_JournalNavigate": "Navigate",
 	"DRAGON_FLAGON.Dialog_JournalJournal": "Journal",
-	"DRAGON_FLAGON.Dialog_JournalConfig": "Config"
+	"DRAGON_FLAGON.Dialog_JournalConfig": "Config",
+	"DRAGON_FLAGON.Ratio_Denominator": "Denominator",
+	"DRAGON_FLAGON.Ratio_Numerator": "Numerator",
+	"DRAGON_FLAGON.Ratio_LockRatio": "Lock Ratio",
+	"DRAGON_FLAGON.Ratio_SizeRatio": "Size Ratio",
+	"DRAGON_FLAGON.Ratio_ApplyRatio": "Apply custom ratio to width/height",
+	"DRAGON_FLAGON.Ratio_Scale": "Scale",
+	"DRAGON_FLAGON.Ratio_ApplyScale": "Multiply width/height by scale"
 }

@@ -35,7 +35,7 @@ class DFSceneNav {
 		Object.defineProperty(SceneDirectory, 'defaultOptions', {
 			get: function () {
 				let options = mergeObject(sidebarDirDefOpts.get.bind(SceneDirectory)(), {
-					template: `modules/${DFSceneNav.MODULE}/templates/scene-directory.html`,
+					template: `modules/${DFSceneNav.MODULE}/templates/scene-directory.hbs`,
 				});
 				return options;
 			}
@@ -73,7 +73,7 @@ class DFSceneNav {
 		Object.defineProperty(Sidebar, 'defaultOptions', {
 			get: function () {
 				return mergeObject(sidebarDefaultOptions.get(), {
-					template: `modules/${DFSceneNav.MODULE}/templates/sidebar.html`
+					template: `modules/${DFSceneNav.MODULE}/templates/sidebar.hbs`
 				});
 			}
 		});

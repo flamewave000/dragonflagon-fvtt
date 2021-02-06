@@ -41,6 +41,13 @@ export default class DFLogger {
 		if (data.type === DFLogger.EV_LOGIN) DFLogger.onLogin(data);
 		else if (data.type === DFLogger.EV_LOGOUT) DFLogger.onLogout(data);
 	}
+	static onUserActivity(userId, activityData = {}) {
+		if (!("active" in activityData) || activityData.active === true) return;
+		DFLogger.onLogout({
+			id: userId,
+			msg: DFLogger.getMessageText("DRAGON_FLAGON.LogoutMsg", 1)
+		});
+	}
 
 	static performLogin() {
 		let payload = {
@@ -51,15 +58,6 @@ export default class DFLogger {
 		game.socket.emit(`module.${DFLogger.MODULE}`, payload);
 		if (!game.settings.get(DFLogger.MODULE, DFLogger.SETTING_NOT_ME))
 			DFLogger.onEvent(payload);
-	}
-
-	static async performLogout() {
-		let payload = {
-			type: DFLogger.EV_LOGOUT,
-			id: game.user.id,
-			msg: DFLogger.getMessageText("DRAGON_FLAGON.LogoutMsg", 1)
-		}
-		await game.socket.emit(`module.${DFLogger.MODULE}`, payload);
 	}
 
 	static async onLogin(data) {

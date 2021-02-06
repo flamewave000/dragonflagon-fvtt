@@ -2,6 +2,6 @@
 	"I18N.LANGUAGE": "Español",
 	"I18N.MAINTAINERS": "@Viriato139ac#0342",
 	
-	"DRAGON_FLAGON.SettingsClarity_world": "(Solo GM)",
-	"DRAGON_FLAGON.SettingsClarity_client": "(Por usuario)"
+	"DRAGON_FLAGON.SettingsClarity_world": "Solo GM",
+	"DRAGON_FLAGON.SettingsClarity_client": "Por usuario"
 }

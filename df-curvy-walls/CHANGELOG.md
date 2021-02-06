@@ -1,5 +1,19 @@
 # DF Curvy Walls
 
+## Release 1.3.2/3 (2021-02-04)
+- Implemented new release system for all Dragon Flagon modules.
+
+## Release 1.3.1 (2021-02-03)
+- Added Japanese translations, courtesy of Touge
+
+## Release 1.3.0 (2021-01-28)
+- Fixed issue plaguing some users where the buttons don't do anything. This was caused by some users having an older version of the Foundry Installation (even though they updated to 0.7.9). Unfortunately Electron did not always update correctly during Foundry updates, and was causing problems. The issue has been corrected to accommodate those users.
+- Added Keyboard mapping of the `+` and `-` keys for incrementing and decrementing the number of wall segments.
+
+## Release 1.2.1 (2021-01-24)
+- Added Spanish localization, courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
+- Fixed module manifest not allowing people to update to the latest version properly.
+
 ## Release 1.2.0 (2021-01-23)
 - Added label to display the current angle snap of the Ellipse Tool.
 - Added label to display the current number of line segments.

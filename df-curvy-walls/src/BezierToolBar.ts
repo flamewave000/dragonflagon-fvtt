@@ -27,9 +27,26 @@ export class BezierToolBar extends FormApplication {
 		return mergeObject(super.defaultOptions, options);
 	}
 
+	private renderHookId: number = 0;
+
 	/** @override */
 	activateListeners(html: JQuery<HTMLElement>) {
 		super.activateListeners(html);
+		this.renderHookId = Hooks.on('renderBezierToolBar', this.htmlRendered);
+	}
+
+	/** @override */
+	async close(options?: FormApplication.CloseOptions): Promise<void> {
+		Hooks.off('renderBezierToolBar', this.renderHookId);
+	}
+
+	private htmlRendered(_app: BezierToolBar, html: JQuery<HTMLDivElement>, data: { coreTools: ToolUI[], extraTools: ToolUI[] }) {
+		data.coreTools.forEach(elem => {
+			html.find('#' + elem.name).on('click', function () { elem.onClick($(this) as JQuery<HTMLButtonElement>); });
+		})
+		data.extraTools.forEach(elem => {
+			html.find('#' + elem.name).on('click', function () { elem.onClick($(this) as JQuery<HTMLButtonElement>); });
+		})
 	}
 
 	getData(options?: any): FormApplication.Data<any> {
@@ -66,12 +83,12 @@ export class BezierToolBar extends FormApplication {
 	 * @private
 	 */
 	async _updateObject(event: any) {
-		if (!event.submitter) return;
-		const data = this.getData();
-		const coreTools = ((data as any).coreTools as Array<ToolUI>);
-		const extraTools = ((data as any).extraTools as Array<ToolUI>);
-		coreTools.concat(...extraTools)
-			.find(e => e.name === event.submitter.dataset.tool)
-			.onClick($(event.submitter));
+	// 	if (!event.submitter) return;
+	// 	const data = this.getData();
+	// 	const coreTools = ((data as any).coreTools as Array<ToolUI>);
+	// 	const extraTools = ((data as any).extraTools as Array<ToolUI>);
+	// 	coreTools.concat(...extraTools)
+	// 		.find(e => e.name === event.submitter.dataset.tool)
+	// 		.onClick($(event.submitter));
 	}
 }

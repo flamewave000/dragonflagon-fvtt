@@ -1,3 +1,5 @@
+import DFSceneRatio from "./df-scene-ratio.js";
+
 class DFSceneThumb {
 	static MODULE = 'df-scene-enhance';
 	static THUMBS = 'thumbs';
@@ -55,14 +57,14 @@ Hooks.once('init', function () {
 		config: false,
 		type: String,
 		default: "{}"
-	})
+	});
 	Scene.prototype.dfThumb_update = Scene.prototype.update;
 	Scene.prototype.update = DFSceneThumb.updateOverride;
 });
 
 Hooks.once('ready', DFSceneThumb.purge);
 
-Hooks.on('renderSceneConfig', (app, html, data) => {
+Hooks.on('renderSceneConfig', async (app, html, data) => {
 	let form = html.find('section > form')[0];
 	let imgInput = html.find('section > form > div > div > input[name ="img"]')[0];
 	if (!form || !imgInput) return;
@@ -70,21 +72,11 @@ Hooks.on('renderSceneConfig', (app, html, data) => {
 	let target = imgInput.parentElement.parentElement;
 	let sceneId = data.entity._id;
 	const thumbConfig = DFSceneThumb.getThumb(sceneId);
-	const thumbPath = (thumbConfig && thumbConfig.url) || "";
-	const injection = $.parseHTML(`			<div class="form-group">
-				<label>${game.i18n.localize('DRAGON_FLAGON.Thumbnail_Label')}</label>
-				<div class="form-fields">
-					<button id="df-thumb-btn" type="button" class="file-picker" data-type="image" data-target="df-thumb-img" title="${game.i18n.localize('DRAGON_FLAGON.Thumbnail_Button')}" tabindex="-1">
-						<i class="fas fa-file-import fa-fw"></i>
-					</button>
-					<input id="df-thumb-img" class="image" type="text" name="df-thumb-img" placeholder="${game.i18n.localize('DRAGON_FLAGON.Thumbnail_Hint')}" value="${thumbPath}">
-				</div>
-			</div>`);
+	const injection = $(await renderTemplate(`modules/${DFSceneThumb.MODULE}/templates/scene-thumb.hbs`, { thumbPath: (thumbConfig && thumbConfig.url) || "" }));
 	for (var c = 0; c < injection.length; c++) {
 		if (injection[c].nodeType != 1) continue;
 		target.after(injection[c]);
 	}
-
 	html.find('#df-thumb-btn').click(() => {
 		let fp = FilePicker.fromButton(html.find('#df-thumb-btn')[0]);
 		let target = html.find('#df-thumb-btn')[0].getAttribute("data-target");
@@ -96,4 +88,6 @@ Hooks.on('renderSceneConfig', (app, html, data) => {
 	});
 
 	html.find('#df-thumb-img').change(() => DFSceneThumb.updateThumb(sceneId, html.find('#df-thumb-img').val()));
+	app.ratioScaler = new DFSceneRatio();
+	await app.ratioScaler.render(app, html, data);
 });

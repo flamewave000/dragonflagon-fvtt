@@ -1,0 +1,62 @@
+{{#*inline "folderPartial"}}
+<li class="directory-item folder flexcol {{#unless folder.expanded}}collapsed{{/unless}}"
+		data-folder-id="{{folder._id}}" data-folder-depth="{{folder.depth}}">
+	<header class="folder-header flexrow" style="background-color: {{folder.data.color}}">
+		<h3><i class="fas fa-folder-open fa-fw"></i>{{folder.name}}</h3>
+		{{#if user.isGM}}
+			<a class="create-folder" title="{{localize 'FOLDER.Create'}}" data-parent-folder="{{folder._id}}">
+					<i class="fas fa-folder-plus fa-fw"></i>
+			</a>
+			<a class="create-entity" title="{{localize 'SIDEBAR.SceneCreate'}}" data-folder="{{folder._id}}">
+					<i class="{{icon}}"></i>
+			</a>
+		{{/if}}
+	</header>
+
+	<ol class="subdirectory">
+	{{~#each folder.children as |child i|}}
+			{{> folderPartial folder=child user=../user icon=../icon}}
+		{{/each}}
+		{{#each folder.content}}
+			{{> entityPartial}}
+		{{/each~}}
+	</ol>
+</li>
+{{/inline}}
+
+{{#*inline "entityPartial"}}
+<li class="directory-item entity scene flexrow" data-entity-id="{{this.data._id}}" data-background-image="{{this.data.thumb}}">
+	<h3 class="entity-name"><a>{{dfCheck this}}</a></h3>
+</li>
+{{/inline}}
+
+<section class="sidebar-tab sidebar-directory tab flexcol" id="scenes" data-tab="scenes">
+
+		<!-- Directory Header -->
+		<header class="directory-header">
+			{{#if user.isGM}}
+			<div class="header-actions action-buttons flexrow">
+					<button class="create-entity"><i class="{{ sidebarIcon }}"></i> {{localize 'SIDEBAR.SceneCreate'}}</button>
+					<button class="create-folder"><i class="fas fa-folder"></i> {{localize 'FOLDER.Create'}}</button>
+			</div>
+			{{/if}}
+			<div class="header-search flexrow">
+					<i class="fas fa-search"></i>
+					<input type="text" name="search" value="" placeholder="{{localize 'SIDEBAR.SceneSearch'}}" autocomplete="off"/>
+					<a class="header-control collapse-all" title="{{localize 'FOLDER.Collapse'}}"><i class="fas fa-sort-amount-up fa-fw"></i></a>
+			</div>
+	</header>
+
+		<!-- Directories List -->
+	<ol class="directory-list">
+			{{~#each tree.children as |f fi|}}
+				{{> folderPartial folder=f user=../user icon=../sidebarIcon}}
+			{{/each}}
+			{{#each tree.content}}
+				{{> entityPartial}}
+			{{/each~}}
+	</ol>
+
+	<!-- Directory Footer -->
+	<footer class="directory-footer"></footer>
+</section>

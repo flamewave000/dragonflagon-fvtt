@@ -4,7 +4,8 @@ This simple module provides a measure of clarity to the module configurations. I
 
 ![Settings Clarity](../.assets/df-settings-clarity.png)
 
+##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be anouncing any new modules or pre-releases there for anyone wanting to help me test things out!
+
 ## Contributers
 
 - [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo): Spanish localization
-
