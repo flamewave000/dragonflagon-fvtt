@@ -24,9 +24,24 @@ class DFSceneNav {
 				if (entity instanceof Scene) entity.view();
 				else this.dfSceneNav_onClickEntityName(event);
 			};
+			SceneDirectory.prototype.dfSceneNav_getEntryContextOptions = SceneDirectory.prototype._getEntryContextOptions;
+			SceneDirectory.prototype._getEntryContextOptions = function () {
+				if (game.user.isGM) return this.dfSceneNav_getEntryContextOptions();
+				else return [{
+					name: "SCENES.View",
+					icon: '<i class="fas fa-eye"></i>',
+					condition: li => !canvas.ready || (li.data("entityId") !== canvas.scene._id),
+					callback: li => {
+						const scene = game.scenes.get(li.data("entityId"));
+						scene.view();
+					}
+				}];
+			}
 		} else {
 			SceneDirectory.prototype._onClickEntityName = SceneDirectory.prototype.dfSceneNav_onClickEntityName;
 			delete SceneDirectory.prototype.dfSceneNav_onClickEntityName;
+			SceneDirectory.prototype._getEntryContextOptions = SceneDirectory.prototype.dfSceneNav_getEntryContextOptions;
+			delete SceneDirectory.prototype.dfSceneNav_getEntryContextOptions;
 		}
 	}
 
