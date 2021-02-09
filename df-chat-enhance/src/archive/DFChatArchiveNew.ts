@@ -6,7 +6,7 @@ export default class DFChatArchiveNew extends FormApplication {
 	static get defaultOptions() {
 		const options = FormApplication.defaultOptions;
 		mergeObject(options, {
-			template: "modules/df-chat-archive/templates/archive-new.hbs",
+			template: "modules/df-chat-enhance/templates/archive-new.hbs",
 			resizable: false,
 			minimizable: false,
 			title: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveNew_Title")

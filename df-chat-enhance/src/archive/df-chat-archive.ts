@@ -28,6 +28,7 @@ export default function initDFChatArchive() {
 	});
 
 	Hooks.on('renderSettings', function (settings: Settings, html: JQuery<HTMLElement>, data: {}) {
+		if (!game.user.isGM) return;
 		const archiveManagerHtml = $(`<button data-action="archive"><i class="fas fa-archive"></i>${game.i18n.localize('DF_CHAT_ARCHIVE.OpenChatArchive')}</button>`);
 		archiveManagerHtml.on('click', () => {
 			if (archiveManager == null) {
@@ -39,7 +40,6 @@ export default function initDFChatArchive() {
 		});
 		html.find('#settings-game').append(archiveManagerHtml)
 	});
-
 	Hooks.on('closeDFChatArchiveNew', () => archiveNew = null)
 	Hooks.on('closeDFChatArchiveManager', () => archiveManager = null)
 }

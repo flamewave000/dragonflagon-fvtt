@@ -7,7 +7,7 @@ export default class DFChatArchiveManager extends Application {
 	static get defaultOptions() {
 		const options = Application.defaultOptions;
 		mergeObject(options, {
-			template: "modules/df-chat-archive/templates/archive-manager.hbs",
+			template: "modules/df-chat-enhance/templates/archive-manager.hbs",
 			resizable: true,
 			minimizable: true,
 			width: 300,

@@ -12,7 +12,7 @@ export default class DFChatArchiveViewer extends Application {
 	static get defaultOptions() {
 		const options = Application.defaultOptions;
 		mergeObject(options, {
-			template: "modules/df-chat-archive/templates/archive-viewer.hbs",
+			template: "modules/df-chat-enhance/templates/archive-viewer.hbs",
 			width: 300,
 			height: 500,
 			resizable: true,
