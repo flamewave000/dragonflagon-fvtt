@@ -1,6 +1,6 @@
 {
 	"name": "df-chat-enhance",
-	"version": "0.0.2",
+	"version": "0.1.0",
 	"description": "Archive your chat logs, , .",
 	"main": "src/df-chat-enhance.js",
 	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/",
