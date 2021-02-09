@@ -23,6 +23,10 @@
 	"DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllMessage2": "<p style=\"margin:1em 0\"><b>Last Chance!</b> You double sure you want to delete them all?</p>",
 	"DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllComplete": "All chat archives have been deleted",
 	"DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveTitle": "Delete Chat Archive?",
-	"DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveContent": "<p style=\"margin:1em 0\">Are you sure you want to delete '{name}'?</p>"
+	"DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveContent": "<p style=\"margin:1em 0\">Are you sure you want to delete '{name}'?</p>",
 	
+	"DF_CHAT_PRIVACY.Settings_EnableTitle": "Replace roll type selector with buttons",
+	"DF_CHAT_PRIVACY.Settings_EnableHint": "(Requires Reload) Replace the drop-down menu selector for roll types with a set of four buttons.",
+	"DF_CHAT_PRIVACY.ReloadGameTitle": "DF Chat Enhance",
+	"DF_CHAT_PRIVACY.ReloadGameContent": "<p style=\"margin:1em 0\">Changes will only go into effect on reload. Would you like to reload now?</p>"
 }

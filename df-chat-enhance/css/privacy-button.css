@@ -1,0 +1,44 @@
+
+#dfcp-rt-buttons {
+	display: flex;
+	flex-flow: row nowrap;
+	padding: 0 0.5em;
+}
+
+#dfcp-rt-buttons button {
+	flex: 0 1 auto;
+	min-height: 36px;
+	max-height: 36px;
+	padding-top: 2px;
+}
+
+#dfcp-rt-buttons button i {
+	color: black;
+	width: 20px;
+	height: 20px;
+	margin: auto;
+}
+#dfcp-rt-buttons button.active i {
+	color: white;
+}
+
+#dfcp-rt-buttons button[data-id="roll"].active {
+	background-color: rgb(0, 128, 0);
+}
+
+#dfcp-rt-buttons button[data-id="gmroll"].active {
+	background-color: rgb(64, 128, 0);
+}
+
+#dfcp-rt-buttons button[data-id="blindroll"].active {
+	background-color: rgb(128, 64, 0);
+}
+
+#dfcp-rt-buttons button[data-id="selfroll"].active {
+	background-color: rgb(128, 0, 0);
+}
+
+#chat-controls {
+	padding: 0.5em 0;
+	align-items: center;
+}

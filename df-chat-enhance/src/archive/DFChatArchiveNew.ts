@@ -1,12 +1,8 @@
-// select message range
-// Should we delete the messages?
-// copy to archive
-// maybe delete messages at same time
-
 import { DFChatArchive } from "./DFChatArchive.js";
+import CONFIG from '../CONFIG.js';
 
 export default class DFChatArchiveNew extends FormApplication {
-
+	private static readonly PREF_DELETE = 'new-should-delete';
 	static get defaultOptions() {
 		const options = FormApplication.defaultOptions;
 		mergeObject(options, {
@@ -19,7 +15,7 @@ export default class DFChatArchiveNew extends FormApplication {
 	}
 
 	static registerSettings() {
-		game.settings.register('df-chat-archive', 'new-should-delete', {
+		game.settings.register(CONFIG.MOD_NAME, DFChatArchiveNew.PREF_DELETE, {
 			config: false,
 			scope: 'world',
 			type: Boolean,
@@ -30,13 +26,13 @@ export default class DFChatArchiveNew extends FormApplication {
 	getData(options?: any) {
 		const data = super.getData(options) as any;
 		mergeObject(data, {
-			shouldDelete: game.settings.get('df-chat-archive', 'new-should-delete') as Boolean
+			shouldDelete: game.settings.get(CONFIG.MOD_NAME, DFChatArchiveNew.PREF_DELETE) as Boolean
 		});
 		return data;
 	}
 
 	_updateObject(_event?: any, formData?: any): void {
-		game.settings.set('df-chat-archive', 'new-should-delete', formData.delete);
+		game.settings.set(CONFIG.MOD_NAME, DFChatArchiveNew.PREF_DELETE, formData.delete);
 
 		const name = formData.name;
 		if (!name) {
