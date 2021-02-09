@@ -1,0 +1,14 @@
+<section id="dfca-manager">
+	<p class="dfca-no-items" style="text-align:center">{{localize "DF_CHAT_ARCHIVE.ArchiveManager_NotItems"}}</p>
+	<ol id="dfca-archives">
+		{{#each messages}}
+		<li class="dfca-archive-item" data-id="{{id}}">
+			<div>
+				<a class="button dfca-view" data-type="view" data-id="{{id}}"><i class="fas fa-eye"></i><span>{{name}}</span></a>
+				<a class="button dfca-delete" data-type="delete" data-id="{{id}}"><i class="fas fa-trash"></i></a>
+			</div>
+		</li>
+		{{/each}}
+	</ol>
+	<button id="dfca-delete-all"><i class="fas fa-trash"></i> {{localize "DF_CHAT_ARCHIVE.ArchiveManager_DeleteAll"}}</button>
+</section>

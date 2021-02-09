@@ -1,0 +1,48 @@
+#dfca-manager {
+	display: flex;
+	flex-flow: column nowrap;
+}
+
+#dfca-manager ol {
+	list-style: none;
+	padding: 0;
+	flex: 1 0;
+}
+
+#dfca-manager ol li p {
+	padding: 0.5em, 0.25em;
+	font-weight: bold;
+}
+
+#dfca-manager ol li div {
+	padding: 0.5em 0.75em;
+	display: flex;
+	flex-direction: row;
+}
+
+#dfca-manager ol li:nth-child(odd) div {
+	background: rgba(0, 0, 0, 0.25);
+}
+
+#dfca-manager ol li div a {
+	flex: 0 0 auto;
+}
+
+#dfca-manager ol li div a:first-child i {
+	margin-right: 1em;
+}
+
+#dfca-manager ol li div a:first-child {
+	flex: 1 0;
+}
+
+#dfca-delete-all {
+	background: rgb(128, 20, 20);
+	color: white;
+	flex: 0 0 auto;
+	margin: 0 2em;
+	width: auto;
+}
+.dfca-delete {
+	color: rgb(150, 0, 0);
+}
