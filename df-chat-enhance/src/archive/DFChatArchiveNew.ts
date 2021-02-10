@@ -2,7 +2,8 @@ import { DFChatArchive } from "./DFChatArchive.js";
 import CONFIG from '../CONFIG.js';
 
 export default class DFChatArchiveNew extends FormApplication {
-	private static readonly PREF_DELETE = 'new-should-delete';
+	static readonly PREF_DELETE = 'new-should-delete';
+	static readonly PREF_HIDE_EXPORT = 'hide-export';
 	static get defaultOptions() {
 		const options = FormApplication.defaultOptions;
 		mergeObject(options, {

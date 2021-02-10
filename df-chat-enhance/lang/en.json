@@ -2,6 +2,10 @@
 	"DF_CHAT_ARCHIVE.ExportButtonTitle": "Archive chat log",
 	"DF_CHAT_ARCHIVE.OpenChatArchive": "Manage Chat Archive",
 
+	"DF_CHAT_ARCHIVE.Settings_HideExport": "Hide the Export Chat Log button",
+	"DF_CHAT_PRIVACY.Settings_EnableTitle": "Replace roll type selector with buttons",
+	"DF_CHAT_PRIVACY.Settings_EnableHint": "(Requires Reload) Replace the drop-down menu selector for roll types with a set of four buttons.",
+
 	"DF_CHAT_ARCHIVE.ArchiveNew_Title": "DF Create Chat Archive",
 	"DF_CHAT_ARCHIVE.ArchiveNew_Name": "Archive Name:",
 	"DF_CHAT_ARCHIVE.ArchiveNew_NameHint": "Unamed Archive",
@@ -24,9 +28,7 @@
 	"DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllComplete": "All chat archives have been deleted",
 	"DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveTitle": "Delete Chat Archive?",
 	"DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveContent": "<p style=\"margin:1em 0\">Are you sure you want to delete '{name}'?</p>",
-	
-	"DF_CHAT_PRIVACY.Settings_EnableTitle": "Replace roll type selector with buttons",
-	"DF_CHAT_PRIVACY.Settings_EnableHint": "(Requires Reload) Replace the drop-down menu selector for roll types with a set of four buttons.",
+
 	"DF_CHAT_PRIVACY.ReloadGameTitle": "DF Chat Enhance",
 	"DF_CHAT_PRIVACY.ReloadGameContent": "<p style=\"margin:1em 0\">Changes will only go into effect on reload. Would you like to reload now?</p>"
 }

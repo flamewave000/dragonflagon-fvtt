@@ -1,7 +1,7 @@
 {
 	"name": "{{name}}",
-	"title": "DF Chat Enhancements",
-	"description": "Archive your chat logs, , ",
+	"title": "DF Chat Enhancement",
+	"description": "Various enhancements to the chat features.",
 	"version": "{{version}}",
 	"author": "flamewave000#6766",
 	"minimumCoreVersion": "0.7.9",

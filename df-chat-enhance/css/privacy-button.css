@@ -2,7 +2,7 @@
 #dfcp-rt-buttons {
 	display: flex;
 	flex-flow: row nowrap;
-	padding: 0 0.5em;
+	margin-left: 0.5em;
 }
 
 #dfcp-rt-buttons button {
@@ -27,11 +27,11 @@
 }
 
 #dfcp-rt-buttons button[data-id="gmroll"].active {
-	background-color: rgb(64, 128, 0);
+	background-color: rgb(128, 140, 0);
 }
 
 #dfcp-rt-buttons button[data-id="blindroll"].active {
-	background-color: rgb(128, 64, 0);
+	background-color: rgb(156, 94, 11);
 }
 
 #dfcp-rt-buttons button[data-id="selfroll"].active {

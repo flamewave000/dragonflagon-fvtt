@@ -8,6 +8,11 @@ import initDFChatPrivacy from "./privacy/df-chat-privacy.js";
 }
 
 Hooks.once('init', function() {
+	/**
+	 * Order here matters! The archive adds a button to the
+	 * chat window, while the privacy changes those buttons
+	 * from <a> tags to <button> tags if enabled.
+	 */
 	initDFChatArchive();
 	initDFChatPrivacy();
 });

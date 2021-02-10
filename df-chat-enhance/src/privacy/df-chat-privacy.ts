@@ -12,6 +12,64 @@ function calcColour(current: number, count: number): string {
 	return `rgb(${(current / count) * 255},${(1 - (current / count)) * 255},0)`;
 }
 
+interface ChatLogData {
+	user: User,
+	rollMode: String,
+	rollModes: any,
+	isStream: Boolean
+}
+
+async function handleChatLogRendering(chat: ChatLog, html: JQuery<HTMLElement>, data: ChatLogData) {
+	const modes = Object.keys(data.rollModes);
+	const buttons: any[] = [];
+	const iconKeys = Object.keys(ICONS_FOR_KNOWN_ROLL_TYPES);
+	for (let c = 0; c < modes.length; c++) {
+		const rt = modes[c];
+		if (!(rt in ICONS_FOR_KNOWN_ROLL_TYPES)) {
+			console.warn(Error(`Unknown roll type '${rt}'`));
+			continue;
+		}
+		buttons.push({
+			rt: rt,
+			name: data.rollModes[rt],
+			active: data.rollMode === rt,
+			icon: ICONS_FOR_KNOWN_ROLL_TYPES[rt],
+			colour: calcColour(iconKeys.findIndex(x => x == rt), iconKeys.length)
+		});
+	}
+	const buttonHtml = $(await renderTemplate('modules/df-chat-enhance/templates/privacy-button.hbs', { buttons }));
+	buttonHtml.find('button').on('click', function () {
+		const rollType = $(this).attr('data-id');
+		game.settings.set("core", "rollMode", rollType);
+		buttonHtml.find('button.active').removeClass('active');
+		$(this).addClass('active');
+	});
+
+	// Convert the old <a> tag elements to <button> tags
+	const newButtons = [];
+	const oldButtons = html.find('#chat-controls div.control-buttons a')
+	var first = true;
+	oldButtons.each(function (idx, element) {
+		let html = $(this).html();
+		let classes = $(this).attr('class');
+		let title = $(this).attr('title');
+		let style = $(this).attr('style');
+		let click = ($ as any)._data(this, 'events')['click'][0].handler;
+		let button = $(`<button class="${classes}" title="${title}" style="${style}">${html}</button>`);
+		button.on('click', click);
+		// Add a small margin between the first button and the RollTypes
+		if (first) {
+			button.attr('style', 'margin-left:0.5em');
+			first = false;
+		}
+		buttonHtml.append(button);
+	});
+
+	html.find('select.roll-type-select').after(buttonHtml);
+	html.find('select.roll-type-select').remove();
+	html.find('#chat-controls div.control-buttons').remove();
+}
+
 export default function initDFChatPrivacy() {
 	game.settings.register(CONFIG.MOD_NAME, 'enabled', {
 		name: 'DF_CHAT_PRIVACY.Settings_EnableTitle',
@@ -30,41 +88,26 @@ export default function initDFChatPrivacy() {
 			}
 		}
 	});
+	// game.settings.register(CONFIG.MOD_NAME, 'replace-buttons', {
+	// 	name: 'DF_CHAT_PRIVACY.Settings_EnableTitle',
+	// 	hint: 'DF_CHAT_PRIVACY.Settings_EnableHint',
+	// 	scope: 'client',
+	// 	type: Boolean,
+	// 	default: true,
+	// 	config: true,
+	// 	onChange: async () => {
+	// 		if (await Dialog.confirm({
+	// 			title: game.i18n.localize("DF_CHAT_PRIVACY.ReloadGameTitle"),
+	// 			content: game.i18n.localize("DF_CHAT_PRIVACY.ReloadGameContent"),
+	// 			defaultYes: true
+	// 		} as any) as any as Boolean) {
+	// 			window.location.reload();
+	// 		}
+	// 	}
+	// });
 
 	if (game.settings.get(CONFIG.MOD_NAME, 'enabled') === false)
 		return;
 
-	Hooks.on('renderChatLog', async function (chat, html: JQuery<HTMLElement>, data: {
-		user: User,
-		rollMode: String,
-		rollModes: any,
-		isStream: Boolean
-	}) {
-		const modes = Object.keys(data.rollModes);
-		const buttons: any[] = [];
-		const iconKeys = Object.keys(ICONS_FOR_KNOWN_ROLL_TYPES);
-		for (let c = 0; c < modes.length; c++) {
-			const rt = modes[c];
-			if (!(rt in ICONS_FOR_KNOWN_ROLL_TYPES)) {
-				console.warn(Error(`Unknown roll type '${rt}'`));
-				continue;
-			}
-			buttons.push({
-				rt: rt,
-				name: data.rollModes[rt],
-				active: data.rollMode === rt,
-				icon: ICONS_FOR_KNOWN_ROLL_TYPES[rt],
-				colour: calcColour(iconKeys.findIndex(x => x == rt), iconKeys.length)
-			});
-		}
-		const buttonHtml = $(await renderTemplate('modules/df-chat-enhance/templates/privacy-button.hbs', { buttons }));
-		buttonHtml.find('button').on('click', function () {
-			const rollType = $(this).attr('data-id');
-			game.settings.set("core", "rollMode", rollType);
-			buttonHtml.find('button.active').removeClass('active');
-			$(this).addClass('active');
-		});
-		html.find('select.roll-type-select').after(buttonHtml);
-		html.find('select.roll-type-select').remove();
-	});
+	Hooks.on('renderChatLog', handleChatLogRendering);
 }
