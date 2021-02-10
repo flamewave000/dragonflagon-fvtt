@@ -20,9 +20,9 @@ export default function initDFChatArchive() {
 		config: true,
 		onChange: (newValue) => {
 			if (!newValue)
-				$('#dfcp-rt-buttons .export-log').show();
+				$('#chat-controls .export-log').show();
 			else
-				$('#dfcp-rt-buttons .export-log').hide();
+				$('#chat-controls .export-log').hide();
 		}
 	});
 
@@ -39,7 +39,7 @@ export default function initDFChatArchive() {
 		});
 		html.find('.control-buttons')
 			.prepend(archiveButton)
-			.attr('style', 'flex:0 0 72px;');
+			.attr('style', 'flex:0 0 auto;');
 		if (game.settings.get(CONFIG.MOD_NAME, DFChatArchiveNew.PREF_HIDE_EXPORT)) {
 			html.find('.control-buttons .export-log').hide();
 		}

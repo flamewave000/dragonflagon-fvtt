@@ -2,7 +2,7 @@
 #dfcp-rt-buttons {
 	display: flex;
 	flex-flow: row nowrap;
-	margin-left: 0.5em;
+	margin: 0 0.5em;
 }
 
 #dfcp-rt-buttons button {

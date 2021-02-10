@@ -44,12 +44,18 @@ async function handleChatLogRendering(chat: ChatLog, html: JQuery<HTMLElement>, 
 		buttonHtml.find('button.active').removeClass('active');
 		$(this).addClass('active');
 	});
+	html.find('select.roll-type-select').after(buttonHtml);
+	html.find('select.roll-type-select').remove();
+
+	if(!game.settings.get(CONFIG.MOD_NAME, 'replace-buttons'))
+		return;
+
+	// Adjust the button container to remove the extra margin since those buttons are now moving in.
+	buttonHtml.attr('style', 'margin:0 0 0 0.5em');
 
 	// Convert the old <a> tag elements to <button> tags
-	const newButtons = [];
-	const oldButtons = html.find('#chat-controls div.control-buttons a')
 	var first = true;
-	oldButtons.each(function (idx, element) {
+	html.find('#chat-controls div.control-buttons a').each(function (idx, element) {
 		let html = $(this).html();
 		let classes = $(this).attr('class');
 		let title = $(this).attr('title');
@@ -65,8 +71,6 @@ async function handleChatLogRendering(chat: ChatLog, html: JQuery<HTMLElement>, 
 		buttonHtml.append(button);
 	});
 
-	html.find('select.roll-type-select').after(buttonHtml);
-	html.find('select.roll-type-select').remove();
 	html.find('#chat-controls div.control-buttons').remove();
 }
 
@@ -80,31 +84,31 @@ export default function initDFChatPrivacy() {
 		config: true,
 		onChange: async () => {
 			if (await Dialog.confirm({
-				title: game.i18n.localize("DF_CHAT_PRIVACY.ReloadGameTitle"),
-				content: game.i18n.localize("DF_CHAT_PRIVACY.ReloadGameContent"),
+				title: game.i18n.localize("DF_CHAT_ENHANCE.ReloadGameTitle"),
+				content: game.i18n.localize("DF_CHAT_ENHANCE.ReloadGameContent"),
 				defaultYes: true
 			} as any) as any as Boolean) {
 				window.location.reload();
 			}
 		}
 	});
-	// game.settings.register(CONFIG.MOD_NAME, 'replace-buttons', {
-	// 	name: 'DF_CHAT_PRIVACY.Settings_EnableTitle',
-	// 	hint: 'DF_CHAT_PRIVACY.Settings_EnableHint',
-	// 	scope: 'client',
-	// 	type: Boolean,
-	// 	default: true,
-	// 	config: true,
-	// 	onChange: async () => {
-	// 		if (await Dialog.confirm({
-	// 			title: game.i18n.localize("DF_CHAT_PRIVACY.ReloadGameTitle"),
-	// 			content: game.i18n.localize("DF_CHAT_PRIVACY.ReloadGameContent"),
-	// 			defaultYes: true
-	// 		} as any) as any as Boolean) {
-	// 			window.location.reload();
-	// 		}
-	// 	}
-	// });
+	game.settings.register(CONFIG.MOD_NAME, 'replace-buttons', {
+		name: 'DF_CHAT_PRIVACY.Settings_ReplaceButtonsTitle',
+		hint: 'DF_CHAT_PRIVACY.Settings_ReplaceButtonsHint',
+		scope: 'client',
+		type: Boolean,
+		default: true,
+		config: true,
+		onChange: async () => {
+			if (await Dialog.confirm({
+				title: game.i18n.localize("DF_CHAT_ENHANCE.ReloadGameTitle"),
+				content: game.i18n.localize("DF_CHAT_ENHANCE.ReloadGameContent"),
+				defaultYes: true
+			} as any) as any as Boolean) {
+				window.location.reload();
+			}
+		}
+	});
 
 	if (game.settings.get(CONFIG.MOD_NAME, 'enabled') === false)
 		return;
