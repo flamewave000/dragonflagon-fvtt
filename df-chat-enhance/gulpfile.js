@@ -146,6 +146,7 @@ exports.zip = gulp.series(
 		, outputMetaFiles()
 	)
 	, compressDistribution()
+	, pdel([DIST])
 );
 /**
  * Sets up a file watch on the project to detect any file changes and automatically rebuild those components.

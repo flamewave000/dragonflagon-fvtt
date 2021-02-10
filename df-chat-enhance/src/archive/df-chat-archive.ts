@@ -47,7 +47,10 @@ export default function initDFChatArchive() {
 
 	Hooks.on('renderSettings', function (settings: Settings, html: JQuery<HTMLElement>, data: {}) {
 		if (!game.user.isGM) return;
-		const archiveManagerHtml = $(`<button data-action="archive"><i class="fas fa-archive"></i>${game.i18n.localize('DF_CHAT_ARCHIVE.OpenChatArchive')}</button>`);
+		const archiveManagerHtml = $(`<div id="df-chat-enhance-settings" style="margin:0">
+	<h4>${game.i18n.localize('DF_CHAT_ARCHIVE.ChatEnhanceSettingGroup')}</h4>
+	<button data-action="archive"><i class="fas fa-archive"></i>${game.i18n.localize('DF_CHAT_ARCHIVE.OpenChatArchive')}</button>
+</div>`);
 		archiveManagerHtml.on('click', () => {
 			if (archiveManager == null) {
 				archiveManager = new DFChatArchiveManager();
