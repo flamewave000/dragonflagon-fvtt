@@ -1,0 +1,21 @@
+{
+	"name": "{{name}}",
+	"title": "Verbose Module Name",
+	"description": "Module description displayed in FoundryVTT Program",
+	"version": "{{version}}",
+	"author": "flamewave000#6766",
+	"minimumCoreVersion": "0.7.9",
+	"compatibleCoreVersion": "0.7.9",
+	"esmodules": "{{sources}}",
+	"languages": [
+		{ "lang": "en", "name": "English", "path": "lang/en.json" }
+	],
+	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}",
+	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/{{name}}/LICENSE",
+	"manifest":	"https://dragonflagon.cafe/mods/man/{{name}}",
+	"download":	"https://dragonflagon.cafe/mods/pak/{{name}}",
+	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/README.md",
+	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/CHANGELOG.md",
+	"manifestPlusVersion": "1.0.0",
+	"authors": [ { "name": "flamewave000", "discord": "flamewave000#6766", "url": "https://github.com/flamewave000" } ]
+}
