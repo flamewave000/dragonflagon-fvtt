@@ -1,7 +1,7 @@
 {
 	"name": "{{name}}",
-	"title": "DF Quick Table Roll",
-	"description": "Adds a menu option to roll tables for rolling on the table without having to open the roll sheet",
+	"title": "DragonFlagon Quality of Life",
+	"description": "Adds various Quality of Life improvements. These are small, light-weight, adjustments done to work out some of the kinks in Core FoundryVTT.",
 	"version": "{{version}}",
 	"author": "flamewave000#6766",
 	"minimumCoreVersion": "0.7.9",

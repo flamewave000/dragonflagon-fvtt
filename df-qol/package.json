@@ -1,9 +1,8 @@
 {
 	"private": true,
-	"name": "df-quick-roll",
-	"version": "1.0.2",
-	"description": "Adds a menu option to roll tables for rolling on the table without having to open the roll sheet",
-	"main": "df-quick-roll.js",
+	"name": "df-qol",
+	"version": "1.0.0",
+	"description": "Adds various Quality of Life improvements. These are small, light-weight, adjustments done to work out some of the kinks in Core FoundryVTT.",
 	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/",
 	"scripts": {
 		"build": "npx gulp",
@@ -21,7 +20,7 @@
 	"bugs": {
 		"url": "https://github.com/flamewave000/dragonflagon-fvtt/issues"
 	},
-	"homepage": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-quick-roll",
+	"homepage": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-qol",
 	"dependencies": {},
 	"devDependencies": {
 		"@types/bezier-js": "0.0.8",
