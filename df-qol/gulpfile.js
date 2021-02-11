@@ -5,6 +5,7 @@ const ts = require('gulp-typescript');
 const sm = require('gulp-sourcemaps');
 const zip = require('gulp-zip');
 const rename = require('gulp-rename');
+const minify = require('gulp-minify');
 
 const GLOB = '**/*';
 const DIST = 'dist/';
@@ -27,17 +28,23 @@ function plog(message) { return (cb) => { console.log(message); cb() }; }
  * Compile the source code into the distribution directory
  * @param {Boolean} keepSources Include the TypeScript SourceMaps
  */
-function buildSource(keepSources, output = null) {
+function buildSource(keepSources, minifySources = false, output = null) {
 	return () => {
 		var stream = gulp.src(SOURCE + GLOB);
 		if (keepSources) stream = stream.pipe(sm.init())
 		stream = stream.pipe(ts.createProject("tsconfig.json")())
 		if (keepSources) stream = stream.pipe(sm.write())
+		if (minifySources) stream = stream.pipe(minify({
+			ext: {min:'.js'},
+			mangle: false,
+			noSource: true
+		}));
 		return stream.pipe(gulp.dest((output || DIST) + SOURCE));
 	}
 }
 exports.step_buildSourceDev = buildSource(true);
 exports.step_buildSource = buildSource(false);
+exports.step_buildSourceMin = buildSource(false, true);
 
 /**
  * Builds the module manifest based on the package, sources, and css.
@@ -109,7 +116,7 @@ exports.clean = pdel([DIST, BUNDLE]);
 exports.default = gulp.series(
 	pdel([DIST])
 	, gulp.parallel(
-		buildSource(true)
+		buildSource(true, false)
 		, buildManifest()
 		, outputLanguages()
 		, outputTemplates()
@@ -123,7 +130,7 @@ exports.default = gulp.series(
 exports.dev = gulp.series(
 	pdel([DEV_DIST() + GLOB], { force: true }),
 	gulp.parallel(
-		buildSource(true, DEV_DIST())
+		buildSource(true, false, DEV_DIST())
 		, buildManifest(DEV_DIST())
 		, outputLanguages(DEV_DIST())
 		, outputTemplates(DEV_DIST())
@@ -138,7 +145,7 @@ exports.dev = gulp.series(
 exports.zip = gulp.series(
 	pdel([DIST])
 	, gulp.parallel(
-		buildSource(false)
+		buildSource(false, true)
 		, buildManifest()
 		, outputLanguages()
 		, outputTemplates()
