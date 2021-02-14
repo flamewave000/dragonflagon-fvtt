@@ -124,9 +124,16 @@ export default class DFAdventureLogProcessor {
 			return;
 		}
 		const journal = game.journal.get(journalId);
-		const html = $(journal.data.content);
-		const messageHtml = $(messageText);
-		html.find('article.df-adventure-log').append(messageHtml);
+		var html = $(journal.data.content);
+		var messageHtml = $(messageText);
+		var article = html.find('article.df-adventure-log');
+		if (article.length == 0) {
+			await DFAdventureLogConfig.initializeJournal(false);
+			html = $(journal.data.content);
+			messageHtml = $(messageText);
+			article = html.find('article.df-adventure-log');
+		}
+		article.append(messageHtml);
 		await journal.update({
 			content: $('<div></div>').append(html).html()
 		});

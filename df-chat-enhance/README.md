@@ -12,6 +12,48 @@ Multiple improvements to the chat system feature set. Brings a new Chat Archive 
 
 ##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
 
+## Adventure Log
+
+You can now enable the Adventure Log feature for easy in-game event tracking. This feature adds the new chat command `/log` that allows you to quickly add a note about something that has just happened. This command will save the event message as an entry in a designated journal. It will be formatted with a timestamp, and who made the entry.
+
+### Config
+
+Access the config through the settings, or by entering `/log config` into the chat window. This is where you can set the target Journal for Adventure Log entries. It also gives you an option to erase the contents of the Journal. Either way, it will add a new section with a header label "Adventure Log" and will contain the logged entries.
+
+**It is NOT recommended for you to change anything in the section between the header and the horizontal line that denotes the end of the log**
+
+![](../.assets/df-chat-enhance-log-config.png)
+
+### Log Command Help
+
+At any time you can simply enter `/log` into the chat to display the help dialog
+
+### Log Commands
+
+| Name          | Command                                                      | Description                                       |
+| ------------- | ------------------------------------------------------------ | ------------------------------------------------- |
+| General Event | `/log ...message`<br />`/log e ...message`<br />`/log event ...message` | Logs a simple event message to the adventure log. |
+| Quote         | `/log q <source> ...message`<br />`/log quote <source> ...message`<br />`/log q "<source with spaces" ...message`<br />`/log quote "<source with spaces" ...message` | Adds an entry Quote of the "Source".              |
+
+![](../.assets/df-chat-enhance-log-entries.png) ![](../.assets/df-chat-enhance-log-messages.png)
+
+#### Quote Sources
+
+You do not need to add quotes around the Source Name, unless there are spaces in the name. Such as the following:
+`/log q Bob Marley Don't worry, be happy!`
+Will output into the log
+
+> [2021-02-12 4:35PM] (Susan) Bob said: "Marley Don't worry, be happy!"
+
+Instead if you add quotes around the name, it will allow the spaces.
+`/log q "Bob Marley" Don't worry, be happy!`
+Will output into the log
+
+> [2021-02-12 4:35PM] (Susan) Bob Marley said: "Don't worry, be happy!"
+
+
+
+
 ## Roll Selector Buttons
 
 | Players | Game Masters |
@@ -60,4 +102,3 @@ You can view and delete archives from the archive manager. You'll find the ![man
 ## Future Module Features
 
 - Edit sent chat messages if you are the owner (not including roll chats) [Trello: Edit Chat messages if owner](https://trello.com/c/R2Zw8HGh/72-edit-chat-messages-if-owner)
-- Add chat to journal command. [Trello: Game Logger (chat-to-journal)](https://trello.com/c/HiUp32yb/223-game-logger-chat-to-journal)

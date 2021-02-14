@@ -1,5 +1,9 @@
 # DF Chat Enhancements
 
+## Alpha Release 0.3.0
+- Added new Adventure Log command feature!
+- Set the archive name field to autofocus when the dialog opens. No more needing to click it first, just open the dialog and start typing!
+
 ## Alpha Release 0.2.0
 - Added option for hiding the Export Chat Log button.
 - Added option to convert the other chat buttons into the same style as the new Roll Type buttons.

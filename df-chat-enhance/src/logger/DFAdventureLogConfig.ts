@@ -4,6 +4,7 @@ import CONFIG from "../CONFIG.js";
 export default class DFAdventureLogConfig extends FormApplication {
 	static readonly PREF_JOURNAL = 'log-journal';
 	static readonly PREF_CLEAR = 'log-journal-clear';
+	static readonly PREF_CONFIG = 'log-config-menu';
 
 	static get defaultOptions() {
 		const options = FormApplication.defaultOptions;
@@ -29,6 +30,12 @@ export default class DFAdventureLogConfig extends FormApplication {
 			default: true,
 			config: false
 		})
+		game.settings.registerMenu(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_CONFIG, {
+			restricted: true,
+			type: DFAdventureLogConfig,
+			label: "DF_CHAT_LOG.Config_Title",
+			icon: 'fas fa-edit'
+		});
 	}
 
 	getData(options?: any) {
@@ -52,26 +59,31 @@ export default class DFAdventureLogConfig extends FormApplication {
 		return data;
 	}
 
-	_updateObject(_event?: any, formData?: any): void {
+	async _updateObject(_event?: any, formData?: any) {
 		const id = formData['dfal-journal'];
 		const clear = formData['dfal-clear'];
 		game.settings.set(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL, id);
 		game.settings.set(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_CLEAR, clear);
-		if(!game.journal.has(id)) return;
+		await DFAdventureLogConfig.initializeJournal(id);
+	}
+
+	static async initializeJournal(clear: Boolean) {
+		const id = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL);
+		if (!game.journal.has(id)) return;
 		const journal = game.journal.get(id);
-		if (clear)
+		if (clear || journal.data.content === null)
 			journal.data.content = '';
 		const html = $(journal.data.content);
 		const article = html.find('article[class="df-adventure-log"]');
-		if(article.length != 0) return;
-		journal.update({
+		if (article.length != 0) return;
+		await journal.update({
 			content: journal.data.content + `
-<section>
-	<h2>${game.i18n.localize('DF_CHAT_LOG.Log_Header')}</h2>
-	<article class="df-adventure-log"></article>
-	<hr />
-</section>
-`
+			<section>
+				<h2>${game.i18n.localize('DF_CHAT_LOG.Log_Header')}</h2>
+				<article class="df-adventure-log"></article>
+				<hr />
+			</section>
+			`
 		});
 	}
 }
