@@ -5,11 +5,12 @@
 	"description": "Adds various Quality of Life improvements. These are small, light-weight, adjustments done to work out some of the kinks in Core FoundryVTT.",
 	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/",
 	"scripts": {
-		"build": "npx gulp",
-		"start": "npx gulp watch",
-		"build-dev": "npx gulp dev",
-		"start-dev": "npx gulp devWatch",
-		"clean": "npx gulp clean"
+		"build-local": "npx gulp",
+		"clean": "npx gulp clean",
+		"build": "npx gulp dev",
+		"start": "npx gulp devWatch",
+		"clean-dev": "npx gulp devClean",
+		"release": "npx gulp zip"
 	},
 	"repository": {
 		"type": "git",

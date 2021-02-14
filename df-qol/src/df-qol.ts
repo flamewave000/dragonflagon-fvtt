@@ -59,5 +59,7 @@ function DF_QUICK_ROLL(_html: any, entryOptions: any) {
 }
 
 function DF_AUTO_FOCUS(_app: any, html: JQuery, _data: any) {
-	html.find('input[type="text"]')[0].focus();
+	const inputs = html.find('input[type="text"]');
+	if(inputs.length == 0) return
+	inputs[0].focus();
 }
