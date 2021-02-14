@@ -63,4 +63,7 @@ export default function initDFChatArchive() {
 	});
 	Hooks.on('closeDFChatArchiveNew', () => archiveNew = null)
 	Hooks.on('closeDFChatArchiveManager', () => archiveManager = null)
+	Hooks.on(`renderDFChatArchiveNew`, function (app: any, html: JQuery, data: any) {
+		html.find('input[type="text"]')[0].focus();
+	});
 }

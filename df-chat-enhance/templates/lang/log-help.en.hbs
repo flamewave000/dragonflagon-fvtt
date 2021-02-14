@@ -1,0 +1,42 @@
+
+<article class="dfal-help">
+<h1>How to use the /log command</h1>
+
+{{#if isGM}}
+<h2>Adventure Log Setup</h2>
+<p>As a shortcut, you can use the following command to open the Adventure Log Config.</p>
+<code>/log config</code>
+{{/if}}
+
+<h2>General Event (default)</h2>
+
+<p>Logs a simple event message to the adventure log.</p>
+
+<table>
+<tr><td>Command</td><td><code>/log ...message<br />/log e ...message<br />/log event ...message</code></td></tr>
+<tr><td>Output To Chat</td><td><code>Event Logged<br />message...</code></td></tr>
+<tr><td>Output to Log </td><td><code>[<span class="dfal-ts">&lt;YYYY-MM-DD HH:mmPM&gt;</span>] (<span class="dfal-na">&lt;LoggerName&gt;</span>) <span class="dfal-ev">message...</span></code></td></tr>
+<tr><td>Example</td><td><code>Susan: /log We killed a goblin!</code><br/><code>[<span class="dfal-ts">2021-02-12 4:35PM</span>] (<span class="dfal-na">Susan</span>) <span class="dfal-ev">We killed a goblin!</span></code></td></tr>
+</table>
+
+<h2>Quote Something</h2>
+
+<p>Formats an event entry as a quote of the given "Source". Source can be any text, such as the name of a player or NPC. Or maybe something funny someone said!</p>
+
+<table>
+<tr><td>Command</td><td><code>/log q "Source" ...quote<br />/log quote "Source" ...quote</code></td></tr>
+<tr><td>Output To Chat</td><td><code>&lt;LoggerName&gt; quoted &lt;Source&gt;<br />...quote</code></td></tr>
+<tr><td>Output to Log</td><td><code>[<span class="dfal-ts">&lt;YYYY-MM-DD HH:mmPM&gt;</span>] (<span class="dfal-na">&lt;LoggerName&gt;</span>) &lt;Source&gt; said: <span class="dfal-qu">"quote..."</span></code></td></tr>
+</table>
+
+<p>You do not need to add quotes around the Source Name, unless there are spaces in the name. Such as the following:</p>
+<code>/log q Bob Marley Don't worry, be happy!</code>
+<p>Will output into the log</p>
+<code>[<span class="dfal-ts">2021-02-12 4:35PM</span>] (<span class="dfal-na">Susan</span>) Bob said: <span class="dfal-qu">"Marley Don't worry, be happy!"</span></code>
+
+<p>Instead if you add quotes around the name, it will allow the spaces.</p>
+<code>/log q "Bob Marley" Don't worry, be happy!</code>
+<p>Will output into the log</p>
+<code>[<span class="dfal-ts">2021-02-12 4:35PM</span>] (<span class="dfal-na">Susan</span>) Bob Marley said: <span class="dfal-qu">"Don't worry, be happy!"</span></code>
+
+</article>

@@ -1,0 +1,34 @@
+.dfal-help {
+	height: 600px;
+	overflow-y: scroll;
+	margin-bottom: 1em;
+}
+
+.dfal-help h2 {
+	margin-top: 1em;
+}
+
+.dfal-ts {
+	color: #555;
+}
+
+.dfal-na {
+	color: #800;
+}
+
+.dfal-ev {
+	color: #070;
+}
+
+.dfal-qu {
+	color: #007;
+}
+
+article.df-adventure-log p {
+	margin: 0.125em 0;
+}
+
+article.df-adventure-log code {
+	font-size: smaller;
+	padding-top: 3px;
+}

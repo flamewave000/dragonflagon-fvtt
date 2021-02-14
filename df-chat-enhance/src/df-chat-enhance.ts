@@ -1,4 +1,5 @@
 import initDFChatArchive from "./archive/df-chat-archive.js";
+import initDFAdventureLog from "./logger/df-adventure-log.js";
 import initDFChatPrivacy from "./privacy/df-chat-privacy.js";
 
 (Application.prototype as any)._recalculateDimensions = function () {
@@ -15,4 +16,5 @@ Hooks.once('init', function() {
 	 */
 	initDFChatArchive();
 	initDFChatPrivacy();
+	initDFAdventureLog();
 });

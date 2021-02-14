@@ -6,6 +6,7 @@
 	"author": "flamewave000#6766",
 	"minimumCoreVersion": "0.7.9",
 	"compatibleCoreVersion": "0.7.9",
+	"dependencies": [ { "name": "_chatcommands" } ],
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [

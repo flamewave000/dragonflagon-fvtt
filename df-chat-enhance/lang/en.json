@@ -1,13 +1,15 @@
 {
+	"DF_CHAT_ENHANCE.LANG": "en",
+	"DF_CHAT_ENHANCE.ReloadGameTitle": "DF Chat Enhance",
+	"DF_CHAT_ENHANCE.ReloadGameContent": "<p style=\"margin:1em 0\">Changes will only go into effect on reload. Would you like to reload now?</p>",
+
+
+
 	"DF_CHAT_ARCHIVE.ChatEnhanceSettingGroup": "Chat Enhancement",
 	"DF_CHAT_ARCHIVE.ExportButtonTitle": "Archive chat log",
 	"DF_CHAT_ARCHIVE.OpenChatArchive": "Manage Chat Archive",
 
 	"DF_CHAT_ARCHIVE.Settings_HideExport": "Hide the Export Chat Log button",
-	"DF_CHAT_PRIVACY.Settings_EnableTitle": "Replace roll type selector with buttons",
-	"DF_CHAT_PRIVACY.Settings_EnableHint": "(Requires Reload) Replace the drop-down menu selector for roll types with a set of four buttons.",
-	"DF_CHAT_PRIVACY.Settings_ReplaceButtonsTitle": "Use Roll Type button style on all chat buttons",
-	"DF_CHAT_PRIVACY.Settings_ReplaceButtonsHint": "(Requires Reload) Restyle the other chat buttons to look the same as the new Roll Type buttons.",
 	
 	"DF_CHAT_ARCHIVE.ArchiveNew_Title": "DF Create Chat Archive",
 	"DF_CHAT_ARCHIVE.ArchiveNew_Name": "Archive Name:",
@@ -32,6 +34,27 @@
 	"DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveTitle": "Delete Chat Archive?",
 	"DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveContent": "<p style=\"margin:1em 0\">Are you sure you want to delete '{name}'?</p>",
 
-	"DF_CHAT_ENHANCE.ReloadGameTitle": "DF Chat Enhance",
-	"DF_CHAT_ENHANCE.ReloadGameContent": "<p style=\"margin:1em 0\">Changes will only go into effect on reload. Would you like to reload now?</p>"
+
+	
+	"DF_CHAT_PRIVACY.Settings_EnableTitle": "Replace roll type selector with buttons",
+	"DF_CHAT_PRIVACY.Settings_EnableHint": "(Requires Reload) Replace the drop-down menu selector for roll types with a set of four buttons.",
+	"DF_CHAT_PRIVACY.Settings_ReplaceButtonsTitle": "Use Roll Type button style on all chat buttons",
+	"DF_CHAT_PRIVACY.Settings_ReplaceButtonsHint": "(Requires Reload) Restyle the other chat buttons to look the same as the new Roll Type buttons.",
+
+
+
+	"DF_CHAT_LOG.Setting_EnableTitle": "Use Adventure Log",
+	"DF_CHAT_LOG.Setting_EnableHint": "(Requires reload) Enables the Adventure Log feature for logging events to a journal directly from the chat sidebar",
+	"DF_CHAT_LOG.Setting_GmOnlyTitle": "Set Adventure Log GM Only",
+	"DF_CHAT_LOG.Setting_GmOnlyHint": "(Requires reload) Sets the Adventure Log commands to be GM only",
+	"DF_CHAT_LOG.Error_NoJournalSet": "The Gamemaster has not set a journal for use as an Adventure Log",
+	"DF_CHAT_LOG.Error_NoJournalSetGM": "There is no journal set for use as an Adventure Log. Use \"<code>/log config</code>\" to set one",
+	"DF_CHAT_LOG.Log_Header": "Adventure Log",
+	"DF_CHAT_LOG.Log_Event": "<p><code><span class=\"dfal-ts\">{0}</span></code>&nbsp;(<span class=\"dfal-na\">{1}</span>)&nbsp;<span class=\"dfal-ev\">{2}</span></p>",
+	"DF_CHAT_LOG.Log_Quote": "<p><code><span class=\"dfal-ts\">{0}</span></code>&nbsp;(<span class=\"dfal-na\">{1}</span>)&nbsp;<span class=\"dfal-qu-src\">{2} said:</span>&nbsp;<span class=\"dfal-qu\">\"{3}\"</span></p>",
+	"DF_CHAT_LOG.Config_Title": "Adventure Log Settings",
+	"DF_CHAT_LOG.Config_JournalSelect": "Journal to use as the log",
+	"DF_CHAT_LOG.Config_NoSelection": "---",
+	"DF_CHAT_LOG.Config_ClearContent": "Clear all contents of the journal",
+	"DF_CHAT_LOG.Config_JournalPermissions": "Anyone who will log events will need permission to edit the selected Journal."
 }

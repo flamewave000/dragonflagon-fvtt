@@ -82,15 +82,7 @@ export default function initDFChatPrivacy() {
 		type: Boolean,
 		default: true,
 		config: true,
-		onChange: async () => {
-			if (await Dialog.confirm({
-				title: game.i18n.localize("DF_CHAT_ENHANCE.ReloadGameTitle"),
-				content: game.i18n.localize("DF_CHAT_ENHANCE.ReloadGameContent"),
-				defaultYes: true
-			} as any) as any as Boolean) {
-				window.location.reload();
-			}
-		}
+		onChange: CONFIG.requestReload
 	});
 	game.settings.register(CONFIG.MOD_NAME, 'replace-buttons', {
 		name: 'DF_CHAT_PRIVACY.Settings_ReplaceButtonsTitle',
@@ -99,15 +91,7 @@ export default function initDFChatPrivacy() {
 		type: Boolean,
 		default: true,
 		config: true,
-		onChange: async () => {
-			if (await Dialog.confirm({
-				title: game.i18n.localize("DF_CHAT_ENHANCE.ReloadGameTitle"),
-				content: game.i18n.localize("DF_CHAT_ENHANCE.ReloadGameContent"),
-				defaultYes: true
-			} as any) as any as Boolean) {
-				window.location.reload();
-			}
-		}
+		onChange: CONFIG.requestReload
 	});
 
 	if (game.settings.get(CONFIG.MOD_NAME, 'enabled') === false)
