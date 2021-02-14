@@ -2,6 +2,11 @@
 
 Multiple improvements to the chat system feature set. Brings a new Chat Archive that lets you save your current chat log to an archive and keep the chat clean between sessions. Gives an option to replace the Roll Type dropdown menu with a set of 4 buttons. This makes switching rolls much more efficient and provides a better visual indicator for what roll you're in.
 
+- [Adventure Log](#Adventure-Log)
+	- [Config](#Config)
+	- [Log Command Help](#Log-Command-Help)
+	- [Log Commands](#Log-Commands)
+		- [Quote Sources](#Quote-Sources)
 - [Roll Selector Buttons](#roll-selector-buttons)
 - [Chat Archive](#Chat-Archive)
 	- [Create Archive](#Create-Archive)
@@ -30,10 +35,10 @@ At any time you can simply enter `/log` into the chat to display the help dialog
 
 ### Log Commands
 
-| Name          | Command                                                      | Description                                       |
-| ------------- | ------------------------------------------------------------ | ------------------------------------------------- |
+| Name | Command | Description |
+| --- | --- | --- |
 | General Event | `/log ...message`<br />`/log e ...message`<br />`/log event ...message` | Logs a simple event message to the adventure log. |
-| Quote         | `/log q <source> ...message`<br />`/log quote <source> ...message`<br />`/log q "<source with spaces" ...message`<br />`/log quote "<source with spaces" ...message` | Adds an entry Quote of the "Source".              |
+| Quote | `/log q <source> ...message`<br />`/log quote <source> ...message`<br />`/log q "<source with spaces" ...message`<br />`/log quote "<source with spaces" ...message` | Adds an entry Quote of the "Source". |
 
 ![](../.assets/df-chat-enhance-log-entries.png) ![](../.assets/df-chat-enhance-log-messages.png)
 
@@ -50,8 +55,6 @@ Instead if you add quotes around the name, it will allow the spaces.
 Will output into the log
 
 > [2021-02-12 4:35PM] (Susan) Bob Marley said: "Don't worry, be happy!"
-
-
 
 
 ## Roll Selector Buttons
