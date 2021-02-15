@@ -1,5 +1,9 @@
 # DF Scene Enhancement Changes
 
+## Release 3.3.1 (2021-02-15)
+- Fixed conflict with the Laptop Form Fix module.
+- Fixed fields not injecting when returning from the Grid Config window.
+
 ## Release 3.3.0 (2021-02-06)
 - Fixed major issue with Player Scenes tab. They were able to access the Configure and Import/Export actions. This has been fixed and they will now only see the "View Scene" option. Thank you [Doresain](https://github.com/Doresain) for reporting this issue.
 
