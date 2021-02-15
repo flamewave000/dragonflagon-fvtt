@@ -13,7 +13,8 @@ Multiple improvements to the chat system feature set. Brings a new Chat Archive 
 		- [Create Chat Archive Window](#Create-Chat-Archive-Window)
 	- [Manage Chat Archives](#Manage-Chat-Archives)
 	- [Future planned archive features](#Future-planned-archive-features)
-- [Future Module Features](#Future-Module-Features)
+- [Edit Sent Messages](#Edit-Sent-Messages)
+- [Future planned improvements](#Future-planned-improvements)
 
 ##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
 
@@ -94,15 +95,20 @@ You can view and delete archives from the archive manager. You'll find the ![man
 |:-:|:-:|
 |![Manage archives](../.assets/df-chat-enhance-archive-manage.png)|![View archive](../.assets/df-chat-enhance-archive-viewer.png)|
 
-### Future planned archive features
-
-- Delete individual messages from an archive.
-- Rename an archive.
-- Combine two archives together (sorted by time and removing any duplicate entries).
-
-
 ## Edit Sent Messages
 
 You will now see a little edit button in the top right of messages you are allowed to edit. Clicking this will display a dialog that lets you change the contents of the message. It will also add the "(edited)" flavour to the message to show that it has been modified.
 
 ![](../.assets/df-chat-enhance-edit-message.png)
+
+## Future planned improvements
+
+### Message Archive
+
+- Delete individual messages from an archive.
+- Rename an archive.
+- Combine two archives together (sorted by time and removing any duplicate entries).
+- Allow GMs to set permissions on archives for players
+
+### Message Editor
+- Use [Shift + Up] (or some other combo) to quickly edit the last message sent
