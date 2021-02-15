@@ -66,7 +66,7 @@ Hooks.once('ready', DFSceneThumb.purge);
 
 Hooks.on('renderSceneConfig', async (app, html, data) => {
 	let form = html.find('section > form')[0];
-	let imgInput = html.find('section > form > div > div > input[name ="img"]')[0];
+	let imgInput = html.find('input[name ="img"]')[0];
 	if (!form || !imgInput) return;
 	if (!imgInput.parentElement || !imgInput.parentElement.parentElement) return;
 	let target = imgInput.parentElement.parentElement;
