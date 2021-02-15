@@ -1,5 +1,8 @@
 # DF Chat Enhancements
 
+## Release 1.0.1 (2021-02-15)
+- Moved settings from 'init' hook to the 'setup' hook, fixes issue where `gaame.user.isGM` is not yet defined.
+
 ## Release 1.0.0 (2021-02-14)
 - Added new Chat Editing feature!
 - Now that the 4 core features are complete. The module is in full release and I can put some focus into improvements.

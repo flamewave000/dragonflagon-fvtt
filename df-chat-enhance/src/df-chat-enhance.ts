@@ -9,7 +9,7 @@ import initDFChatPrivacy from "./privacy/df-chat-privacy.js";
 	this.setPosition({});
 }
 
-Hooks.once('init', function () {
+Hooks.once('setup', function () {
 	/**
 	 * Order here matters! The archive adds a button to the
 	 * chat window, while the privacy changes those buttons

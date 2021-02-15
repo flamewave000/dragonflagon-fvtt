@@ -1,6 +1,6 @@
 {
 	"name": "df-chat-enhance",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Various enhancements to the chat features.",
 	"main": "src/df-chat-enhance.js",
 	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/",
