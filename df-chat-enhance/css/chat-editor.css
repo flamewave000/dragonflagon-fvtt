@@ -1,0 +1,19 @@
+.dfce-editor {
+	display: flex;
+	flex-flow: column;
+}
+
+.dfce-editor h3,
+.dfce-editor blockquote,
+.dfce-editor button {
+	flex: 0 0 auto;
+}
+
+.dfce-editor textarea {
+	flex: 1 0;
+}
+
+p.df-edited {
+	font-size: xx-small;
+	font-style: italic;
+}

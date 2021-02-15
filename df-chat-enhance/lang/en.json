@@ -56,5 +56,13 @@
 	"DF_CHAT_LOG.Config_JournalSelect": "Journal to use as the log",
 	"DF_CHAT_LOG.Config_NoSelection": "---",
 	"DF_CHAT_LOG.Config_ClearContent": "Clear all contents of the journal",
-	"DF_CHAT_LOG.Config_JournalPermissions": "Anyone who will log events will need permission to edit the selected Journal."
+	"DF_CHAT_LOG.Config_JournalPermissions": "Anyone who will log events will need permission to edit the selected Journal.",
+
+	"DF_CHAT_EDIT.Editor_Title": "DF Chat Editor",
+	"DF_CHAT_EDIT.Editor_Original": "Original Message",
+	"DF_CHAT_EDIT.Settings_AllowEditName": "Allow message editing",
+	"DF_CHAT_EDIT.Settings_AllowEditHint": "Allow players to edit the messages they send",
+	"DF_CHAT_EDIT.Settings_GMEditAllName": "GM can edit all",
+	"DF_CHAT_EDIT.Settings_GMEditAllHint": "Allow GMs to edit anyone's message instead of just their own",
+	"DF_CHAT_EDIT.EditedFlag": "(edited)"
 }

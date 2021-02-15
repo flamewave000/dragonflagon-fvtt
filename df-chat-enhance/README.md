@@ -101,7 +101,8 @@ You can view and delete archives from the archive manager. You'll find the ![man
 - Combine two archives together (sorted by time and removing any duplicate entries).
 
 
+## Edit Sent Messages
 
-## Future Module Features
+You will now see a little edit button in the top right of messages you are allowed to edit. Clicking this will display a dialog that lets you change the contents of the message. It will also add the "(edited)" flavour to the message to show that it has been modified.
 
-- Edit sent chat messages if you are the owner (not including roll chats) [Trello: Edit Chat messages if owner](https://trello.com/c/R2Zw8HGh/72-edit-chat-messages-if-owner)
+![](../.assets/df-chat-enhance-edit-message.png)
