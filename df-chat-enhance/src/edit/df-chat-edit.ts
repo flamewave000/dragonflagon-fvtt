@@ -11,18 +11,17 @@ export default function initDFChatEdit() {
 		type: Boolean,
 		default: true,
 		scope: 'world',
-		onChange: () => {
-			// Figure out how to go through the messages and bind/unbind the edit button
-		}
+		config: true
 	});
 	game.settings.register(CONFIG.MOD_NAME, PREF_GM_ALL, {
 		name: 'DF_CHAT_EDIT.Settings_GMEditAllName',
 		hint: 'DF_CHAT_EDIT.Settings_GMEditAllHint',
 		type: Boolean,
 		default: false,
+		config: true,
 		scope: 'world',
 		onChange: () => {
-			// Figure out how to go through the messages and bind/unbind the edit button
+			processAllMessages();
 		}
 	});
 
@@ -36,6 +35,13 @@ export default function initDFChatEdit() {
 
 // Will be bound to the instance of ChatMessage we are observing
 async function editChatMessage(this: ChatMessage) {
+	// Double check permissions
+	if (!game.settings.get(CONFIG.MOD_NAME, PREF_EDIT_ALLOWED)) {
+		ui.notifications.warn(game.i18n.localize('DF_CHAT_EDIT.Error_NoPermission'));
+		// Try removing the edit buttons from everything
+		processAllMessages();
+		return;
+	}
 	if (!!(this as any).chatEditor) {
 		(this as any).chatEditor.bringToTop();
 	} else {
@@ -46,7 +52,7 @@ async function editChatMessage(this: ChatMessage) {
 
 function processAllMessages() {
 	var element: JQuery<HTMLLIElement>;
-	ui.chat.element.find('li.chat-message').each(function() {
+	ui.chat.element.find('li.chat-message').each(function () {
 		element = $(this) as JQuery<HTMLLIElement>;
 		const message = game.messages.get(element.attr('data-message-id'));
 		processChatMessage(message, element, message.data);
@@ -54,14 +60,14 @@ function processAllMessages() {
 }
 
 function processChatMessage(chatMessage: ChatMessage, html: JQuery<HTMLElement>, data: any) {
-	// Ignore rolls and other people's messages, unless we are the GM and PREF_GM_ALL is true
-	if (chatMessage.isRoll || (chatMessage.data.user !== game.userId && !(game.user.isGM && game.settings.get(CONFIG.MOD_NAME, PREF_GM_ALL))))
-		return;
-	console.log(data);
 	// If an edit button has already been placed
-	if(html.find('a.message-edit').length != 0) {
-		html.find('a.message-edit').remove();// remove the old edit button
+	if (html.find('a.button.message-edit').length != 0) {
+		html.find('a.button.message-edit').remove();// remove the old edit button
 	}
+	// Ignore rolls and other people's messages, unless we are the GM and PREF_GM_ALL is true
+	if (!game.settings.get(CONFIG.MOD_NAME, PREF_EDIT_ALLOWED) || chatMessage.isRoll
+		|| (chatMessage.data.user !== game.userId && !(game.user.isGM && game.settings.get(CONFIG.MOD_NAME, PREF_GM_ALL))))
+		return;
 	const header = html.find('header.message-header');
 	const editButton = $(`<a class="button message-edit" style="flex:0 0 auto;margin-right:0.125em"><i class="fas fa-pencil-alt"></i></a>`);
 	header.prepend(editButton);
