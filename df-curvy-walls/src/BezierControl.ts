@@ -88,7 +88,7 @@ export class BezierControl {
 	}
 
 	async apply() {
-		if (this.activeTool.mode != ToolMode.Placed) return;
+		if (!this.activeTool || this.activeTool.mode != ToolMode.Placed) return;
 		await Wall.create(this.walls.map(e => e.data), {});
 		this.clearTool();
 	}

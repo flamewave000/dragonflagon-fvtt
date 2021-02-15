@@ -1,5 +1,9 @@
 # DF Curvy Walls
 
+## Release 1.3.4 (2021-02-15)
+- Potential fix for a randomly occurring error.
+- Fixed the url for the Manifest+ Media Cover (was missing the image).
+
 ## Release 1.3.2/3 (2021-02-04)
 - Implemented new release system for all Dragon Flagon modules.
 
