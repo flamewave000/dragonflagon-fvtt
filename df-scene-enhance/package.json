@@ -1,8 +1,8 @@
 {
 	"private": true,
-	"name": "df-module-name",
+	"name": "df-qol",
 	"version": "1.0.0",
-	"description": "Description",
+	"description": "Adds various Quality of Life improvements. These are small, light-weight, adjustments done to work out some of the kinks in Core FoundryVTT.",
 	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/",
 	"scripts": {
 		"build-local": "npx gulp",
@@ -21,8 +21,7 @@
 	"bugs": {
 		"url": "https://github.com/flamewave000/dragonflagon-fvtt/issues"
 	},
-	"homepage": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-module-name",
-	"dependencies": {},
+	"homepage": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-qol",
 	"devDependencies": {
 		"@types/bezier-js": "0.0.8",
 		"@types/node": "^14.14.21",
