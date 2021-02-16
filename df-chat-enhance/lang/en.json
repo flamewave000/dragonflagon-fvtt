@@ -49,6 +49,8 @@
 	"DF_CHAT_LOG.Setting_GmOnlyHint": "(Requires reload) Sets the Adventure Log commands to be GM only",
 	"DF_CHAT_LOG.Error_NoJournalSet": "The Gamemaster has not set a journal for use as an Adventure Log",
 	"DF_CHAT_LOG.Error_NoJournalSetGM": "There is no journal set for use as an Adventure Log. Use \"<code>/log config</code>\" to set one",
+	"DF_CHAT_LOG.Error_MissingQuote": "You are missing the closing quote for {0}",
+	"DF_CHAT_LOG.Error_MissingMessage": "You did not supply a message",
 	"DF_CHAT_LOG.Log_Header": "Adventure Log",
 	"DF_CHAT_LOG.Log_Event": "<p><code><span class=\"dfal-ts\">{0}</span></code>&nbsp;(<span class=\"dfal-na\">{1}</span>)&nbsp;<span class=\"dfal-ev\">{2}</span></p>",
 	"DF_CHAT_LOG.Log_Quote": "<p><code><span class=\"dfal-ts\">{0}</span></code>&nbsp;(<span class=\"dfal-na\">{1}</span>)&nbsp;<span class=\"dfal-qu-src\">{2} said:</span>&nbsp;<span class=\"dfal-qu\">\"{3}\"</span></p>",

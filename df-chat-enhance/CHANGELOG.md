@@ -1,5 +1,10 @@
 # DF Chat Enhancements
 
+## Release 1.1.0 (2021-02-16)
+- Fixed "No Message" and "Missing Quote" errors. They will now properly preserve the message and give you a chance to fix them.
+- Fixed lifecycle issues for detecting if the current user has the `isGM` flag set.
+- 
+
 ## Release 1.0.1 (2021-02-15)
 - Moved settings from 'init' hook to the 'setup' hook, fixes issue where `gaame.user.isGM` is not yet defined.
 

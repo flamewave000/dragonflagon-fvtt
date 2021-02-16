@@ -25,12 +25,10 @@ export default function initDFChatEdit() {
 		}
 	});
 
-	Hooks.once('ready', function () {
-		if (game.user.isGM || game.settings.get(CONFIG.MOD_NAME, PREF_EDIT_ALLOWED)) {
-			Hooks.on('renderChatMessage', processChatMessage);
-			processAllMessages();
-		}
-	});
+	if (game.user.isGM || game.settings.get(CONFIG.MOD_NAME, PREF_EDIT_ALLOWED)) {
+		Hooks.on('renderChatMessage', processChatMessage);
+		processAllMessages();
+	}
 }
 
 // Will be bound to the instance of ChatMessage we are observing

@@ -65,7 +65,7 @@ export default class DFAdventureLogProcessor {
 			case 'q':
 			case 'quote':
 				messageText = messageText.replace(tokens[0], '').trimStart();
-				var source;
+				var source: string;
 				// If the token starts with a quote, but does not end with one
 				if (tokens[1][0] === '"' && tokens[1][tokens[1].length - 1] !== '"') {
 					// Extract the quoted Source
@@ -77,8 +77,8 @@ export default class DFAdventureLogProcessor {
 						}
 					}
 					if (index < 0) {
-						ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Log_Quote_MissingQuote'));
-						ui.chat.element.find('#chat-message').text('/log q ' + messageText);
+						ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error_MissingQuote').replace('{0}', tokens[1]));
+						setTimeout(() => $('#chat-message').val('/log q ' + messageText), 1);
 						return;
 					}
 					source = messageText.slice(0, index + 1);
@@ -90,9 +90,9 @@ export default class DFAdventureLogProcessor {
 				source = source.replace(/"/gm, '');
 				messageData.flavor = `${game.user.name} quoted ${source}`;
 				messageData.content = `<span class="dfal-qu">${messageText}</span>`;
-				if (messageData.content.length == 0) {
-					ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Log_MissingMessage'));
-					ui.chat.element.find('#chat-message').text(`/log q "${source}" ${messageText}`);
+				if (messageText.length == 0) {
+					ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error_MissingMessage'));
+					setTimeout(() => $('#chat-message').val(`/log q "${source}" ${messageText}`), 1);
 					return;
 				}
 				var line = game.i18n.localize('DF_CHAT_LOG.Log_Quote');
