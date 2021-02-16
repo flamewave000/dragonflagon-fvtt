@@ -1,12 +1,16 @@
 import DFSceneRatio from "./df-scene-ratio.js";
 
+interface SceneExt extends Scene {
+	dfThumb_update(data: Scene.Data, options: any): Promise<Scene>;
+}
+
 class DFSceneThumb {
 	static MODULE = 'df-scene-enhance';
 	static THUMBS = 'thumbs';
 	static purge() {
 		if (!game.user.isGM) return;
 		let ids = []
-		for (var scene of game.scenes.entries) {
+		for (var scene of game.scenes.entries as any as Entity[]) {
 			ids.push(scene.id);
 		}
 		let config = JSON.parse(game.settings.get(DFSceneThumb.MODULE, DFSceneThumb.THUMBS));
@@ -16,23 +20,23 @@ class DFSceneThumb {
 		}
 		game.settings.set(DFSceneThumb.MODULE, DFSceneThumb.THUMBS, JSON.stringify(config));
 	}
-	static updateThumb(sceneId, value, generated = false) {
+	static updateThumb(sceneId: string, value?: string, generated: boolean = false) {
 		let config = JSON.parse(game.settings.get(DFSceneThumb.MODULE, DFSceneThumb.THUMBS));
 		if (!value) delete config[sceneId];
 		else config[sceneId] = { url: value, thumb: generated };
 		game.settings.set(DFSceneThumb.MODULE, DFSceneThumb.THUMBS, JSON.stringify(config));
 	}
-	static getThumb(sceneId) {
+	static getThumb(sceneId: string) {
 		return JSON.parse(game.settings.get(DFSceneThumb.MODULE, DFSceneThumb.THUMBS))[sceneId] ?? null;
 	}
 
 	/** @override */
-	static async updateOverride(data, options = {}) {
+	static async updateOverride(this: SceneExt, data: Scene.Data, options = {}) {
 		// Determine what type of change has occurred
 		const dfSceneConfig = DFSceneThumb.getThumb(this.id);
 		if (!dfSceneConfig || !dfSceneConfig.url)
 			return this.dfThumb_update(data, options);
-		let normalData = this.dfThumb_update(data, options);
+		let normalData = await this.dfThumb_update(data, options);
 		// Update thumbnail and image dimensions
 		let td = {};
 		try {
@@ -43,9 +47,9 @@ class DFSceneThumb {
 		} catch (err) {
 			ui.notifications.error("Thumbnail Override generation for Scene failed: " + err.message);
 		}
-		data.thumb = td.thumb || null;
-		if (!!normalData.width) data.width = normalData.width;
-		if (!!normalData.height) data.height = normalData.height;
+		(data as any).thumb = (td as any).thumb || null;
+		if (!!normalData.data.width) data.width = normalData.data.width;
+		if (!!normalData.data.height) data.height = normalData.data.height;
 		// Call the Entity update
 		return Entity.prototype.update.bind(this)(data, options);
 	}
@@ -58,13 +62,13 @@ Hooks.once('init', function () {
 		type: String,
 		default: "{}"
 	});
-	Scene.prototype.dfThumb_update = Scene.prototype.update;
-	Scene.prototype.update = DFSceneThumb.updateOverride;
+	(Scene.prototype as any).dfThumb_update = Scene.prototype.update;
+	(Scene.prototype as any).update = DFSceneThumb.updateOverride;
 });
 
 Hooks.once('ready', DFSceneThumb.purge);
 
-Hooks.on('renderSceneConfig', async (app, html, data) => {
+Hooks.on('renderSceneConfig', async (app: any, html: JQuery<HTMLElement>, data: any) => {
 	// let form = html.find('form')[0];
 	let imgInput = html.find('input[name ="img"]')[0];
 	if (/*!form || */!imgInput) return;
@@ -77,8 +81,8 @@ Hooks.on('renderSceneConfig', async (app, html, data) => {
 		if (injection[c].nodeType != 1) continue;
 		target.after(injection[c]);
 	}
-	html.find('#df-thumb-btn').click(() => {
-		let fp = FilePicker.fromButton(html.find('#df-thumb-btn')[0]);
+	html.find('#df-thumb-btn').on('click', () => {
+		let fp = FilePicker.fromButton(html.find('#df-thumb-btn')[0] as HTMLButtonElement);
 		let target = html.find('#df-thumb-btn')[0].getAttribute("data-target");
 		app.filepickers.push({
 			target: target,
@@ -87,7 +91,7 @@ Hooks.on('renderSceneConfig', async (app, html, data) => {
 		fp.browse();
 	});
 
-	html.find('#df-thumb-img').change(() => DFSceneThumb.updateThumb(sceneId, html.find('#df-thumb-img').val()));
+	html.find('#df-thumb-img').on('change', () => DFSceneThumb.updateThumb(sceneId, html.find('#df-thumb-img').val() as string));
 	app.ratioScaler = new DFSceneRatio();
 	await app.ratioScaler.render(app, html, data);
 });

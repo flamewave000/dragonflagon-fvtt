@@ -1,5 +1,5 @@
 // Reduce a fraction by finding the Greatest Common Divisor and dividing by it.
-function reduce(numerator, denominator) {
+function reduce(numerator: number, denominator: number) {
 	var a = numerator;
 	var b = denominator;
 	var c;
@@ -8,11 +8,11 @@ function reduce(numerator, denominator) {
 	}
 	return [numerator / a, denominator / a];
 }
-function floatVal(input) {
-	return parseFloat(input.val());
+function floatVal(input: JQuery<HTMLElement>) {
+	return parseFloat(input.val() as string);
 }
-function intVal(input) {
-	return parseInt(input.val());
+function intVal(input: JQuery<HTMLElement>) {
+	return parseInt(input.val() as string);
 }
 
 export default class DFSceneRatio {
@@ -21,29 +21,29 @@ export default class DFSceneRatio {
 	initialWidth = 0;
 	initialHeight = 0;
 
-	widthField = null;
-	heightField = null;
-	lockRatio = null;
-	customRatio = null;
-	numerator = null;
-	denominator = null;
-	applyRatio = null;
-	scale = null;
-	applyScale = null;
+	widthField: JQuery<HTMLInputElement> = null;
+	heightField: JQuery<HTMLInputElement> = null;
+	lockRatio: JQuery<HTMLInputElement> = null;
+	customRatio: JQuery<HTMLInputElement> = null;
+	numerator: JQuery<HTMLInputElement> = null;
+	denominator: JQuery<HTMLInputElement> = null;
+	applyRatio: JQuery<HTMLElement> = null;
+	scale: JQuery<HTMLInputElement> = null;
+	applyScale: JQuery<HTMLElement> = null;
 
-	isLocked = false;
-	useCustom = false;
+	isLocked: boolean = false;
+	useCustom: boolean = false;
 
 
-	get _width() { return intVal(this.widthField); }
-	set _width(value) { this.widthField.val(value); }
-	get _height() { return intVal(this.heightField); }
-	set _height(value) { this.heightField.val(value); }
+	get _width(): number { return intVal(this.widthField); }
+	set _width(value: number) { this.widthField.val(value); }
+	get _height(): number { return intVal(this.heightField); }
+	set _height(value: number) { this.heightField.val(value); }
 
-	get _numerator() { return floatVal(this.numerator); }
-	set _numerator(value) { this.numerator.val(value); }
-	get _denominator() { return floatVal(this.denominator); }
-	set _denominator(value) { this.denominator.val(value); }
+	get _numerator(): number { return floatVal(this.numerator); }
+	set _numerator(value: number) { this.numerator.val(value); }
+	get _denominator(): number { return floatVal(this.denominator); }
+	set _denominator(value: number) { this.denominator.val(value); }
 
 	get _scale() { return floatVal(this.scale); }
 	set _scale(value) { this.scale.val(value); }
@@ -58,7 +58,7 @@ export default class DFSceneRatio {
 		this._denominator = den;
 	}
 
-	_performDimensionChange(width, height) {
+	_performDimensionChange(width?: number, height?: number) {
 		// this._updateScale();
 		if (!this.isLocked) {
 			this._updateRatio();
@@ -106,30 +106,30 @@ export default class DFSceneRatio {
 		// this._updateScale();
 	}
 
-	async render(_app, html, data) {
-		this.initialWidth = data.entity.width;
-		this.initialHeight = data.entity.height;
-		const [numerator, denominator] = reduce(data.entity.width, data.entity.height);
+	async render(_app: any, html: JQuery<HTMLElement>, data: {entity: Scene}) {
+		this.initialWidth = data.entity.data.width;
+		this.initialHeight = data.entity.data.height;
+		const [numerator, denominator] = reduce(data.entity.data.width, data.entity.data.height);
 		const ratioData = {
 			numerator: numerator,
 			denominator: denominator
 		};
 		const ratioHtml = $(await renderTemplate(`modules/${DFSceneRatio.MODULE}/templates/scene-ratio.hbs`, ratioData));
 		const dimHtml = html.find('#df-thumb-group').next();
-		this.widthField = dimHtml.find('input[name="width"]');
-		this.heightField = dimHtml.find('input[name="height"]');
+		this.widthField = dimHtml.find('input[name="width"]') as JQuery<HTMLInputElement>;
+		this.heightField = dimHtml.find('input[name="height"]') as JQuery<HTMLInputElement>;
 		ratioHtml.insertAfter(dimHtml);
 		this._extractFields(ratioHtml);
-		this._attachListeners(ratioHtml);
+		this._attachListeners();
 		await this._updateOriginalImageDimensions(data.entity.img);
 	}
-	_extractFields(html) {
-		this.lockRatio = html.find('input[name="lockRatio"]');
-		this.customRatio = html.find('input[name="customRatio"]');
-		this.numerator = html.find('input[name="numerator"]');
-		this.denominator = html.find('input[name="denominator"]');
+	_extractFields(html: JQuery<HTMLElement>) {
+		this.lockRatio = html.find('input[name="lockRatio"]') as JQuery<HTMLInputElement>;
+		this.customRatio = html.find('input[name="customRatio"]') as JQuery<HTMLInputElement>;
+		this.numerator = html.find('input[name="numerator"]') as JQuery<HTMLInputElement>;
+		this.denominator = html.find('input[name="denominator"]') as JQuery<HTMLInputElement>;
 		this.applyRatio = html.find('button[name="applyRatio"]');
-		this.scale = html.find('input[name="scale"]');
+		this.scale = html.find('input[name="scale"]') as JQuery<HTMLInputElement>;
 		this.applyScale = html.find('button[name="applyScale"]');
 	}
 	_attachListeners() {
@@ -147,8 +147,8 @@ export default class DFSceneRatio {
 		this.applyRatio.on('click', () => this._performRatio());
 	}
 
-	async _updateOriginalImageDimensions(url) {
-		return new Promise((resolve, reject) => {
+	async _updateOriginalImageDimensions(url: string) {
+		return new Promise<void>((resolve, reject) => {
 			const image = $(new Image());
 			image.on('load', () => {
 				this.widthField.attr('placeholder', image[0].width);

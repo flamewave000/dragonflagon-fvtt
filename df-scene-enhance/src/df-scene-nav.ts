@@ -3,7 +3,7 @@ class DFSceneNav {
 	static ON_CLICK = 'nav-on-click';
 	static ON_CLICK_PLAYER = 'nav-on-click-player';
 
-	static patchSceneDirectoryClick(newValue, isPlayer) {
+	static patchSceneDirectoryClick(newValue?: Boolean, isPlayer?: Boolean) {
 		var gmClick = game.settings.get(DFSceneNav.MODULE, DFSceneNav.ON_CLICK);
 		var pcClick = game.settings.get(DFSceneNav.MODULE, DFSceneNav.ON_CLICK_PLAYER);
 		if (newValue !== undefined) {
@@ -14,34 +14,34 @@ class DFSceneNav {
 		// Determine our enabled state
 		let enabled = (game.user.isGM && gmClick) || (!game.user.isGM && pcClick);
 
-		if (enabled == !!SceneDirectory.prototype.dfSceneNav_onClickEntityName)
+		if (enabled == !!(SceneDirectory.prototype as any).dfSceneNav_onClickEntityName)
 			return;
 		if (enabled) {
-			SceneDirectory.prototype.dfSceneNav_onClickEntityName = SceneDirectory.prototype._onClickEntityName;
-			SceneDirectory.prototype._onClickEntityName = function (event) {
+			(SceneDirectory.prototype as any).dfSceneNav_onClickEntityName = (SceneDirectory.prototype as any)._onClickEntityName;
+			(SceneDirectory.prototype as any)._onClickEntityName = function (event: JQuery.ClickEvent) {
 				event.preventDefault();
 				const entity = this.constructor.collection.get(event.currentTarget.parentElement.dataset.entityId);
 				if (entity instanceof Scene) entity.view();
 				else this.dfSceneNav_onClickEntityName(event);
 			};
-			SceneDirectory.prototype.dfSceneNav_getEntryContextOptions = SceneDirectory.prototype._getEntryContextOptions;
-			SceneDirectory.prototype._getEntryContextOptions = function () {
+			(SceneDirectory.prototype as any).dfSceneNav_getEntryContextOptions = (SceneDirectory.prototype as any)._getEntryContextOptions;
+			(SceneDirectory.prototype as any)._getEntryContextOptions = function () {
 				if (game.user.isGM) return this.dfSceneNav_getEntryContextOptions();
 				else return [{
 					name: "SCENES.View",
 					icon: '<i class="fas fa-eye"></i>',
-					condition: li => !canvas.ready || (li.data("entityId") !== canvas.scene._id),
-					callback: li => {
+					condition: (li: JQuery<HTMLLIElement>) => !canvas.ready || (li.data("entityId") !== (canvas as Canvas).scene._id),
+					callback: (li: JQuery<HTMLLIElement>) => {
 						const scene = game.scenes.get(li.data("entityId"));
 						scene.view();
 					}
 				}];
 			}
 		} else {
-			SceneDirectory.prototype._onClickEntityName = SceneDirectory.prototype.dfSceneNav_onClickEntityName;
-			delete SceneDirectory.prototype.dfSceneNav_onClickEntityName;
-			SceneDirectory.prototype._getEntryContextOptions = SceneDirectory.prototype.dfSceneNav_getEntryContextOptions;
-			delete SceneDirectory.prototype.dfSceneNav_getEntryContextOptions;
+			(SceneDirectory.prototype as any)._onClickEntityName = (SceneDirectory.prototype as any).dfSceneNav_onClickEntityName;
+			delete (SceneDirectory.prototype as any).dfSceneNav_onClickEntityName;
+			(SceneDirectory.prototype as any)._getEntryContextOptions = (SceneDirectory.prototype as any).dfSceneNav_getEntryContextOptions;
+			delete (SceneDirectory.prototype as any).dfSceneNav_getEntryContextOptions;
 		}
 	}
 
@@ -58,8 +58,8 @@ class DFSceneNav {
 	}
 
 	static patchSidebar() {
-		Sidebar.prototype.dfSceneNav_render = Sidebar.prototype._render;
-		Sidebar.prototype._render = async function (...args) {
+		(Sidebar.prototype as any).dfSceneNav_render = (Sidebar.prototype as any)._render;
+		(Sidebar.prototype as any)._render = async function (...args: any[]) {
 			// Render the Sidebar container only once
 			if (!this.rendered) await this.dfSceneNav_render(...args);
 			var pcClick = game.settings.get(DFSceneNav.MODULE, DFSceneNav.ON_CLICK_PLAYER);
@@ -68,9 +68,9 @@ class DFSceneNav {
 			if (game.user.isGM || pcClick) tabs.push("scenes");
 			// Render sidebar Applications
 			for (let name of tabs) {
-				const app = ui[name];
+				const app = (ui as any)[name] as Application;
 				try {
-					await app._render(true, {})
+					await (app as any)._render(true, {})
 				} catch (err) {
 					console.error(`Failed to render Sidebar tab ${name}`);
 					console.error(err);
