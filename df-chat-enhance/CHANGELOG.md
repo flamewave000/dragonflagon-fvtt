@@ -3,7 +3,9 @@
 ## Release 1.1.0 (2021-02-16)
 - Fixed "No Message" and "Missing Quote" errors. They will now properly preserve the message and give you a chance to fix them.
 - Fixed lifecycle issues for detecting if the current user has the `isGM` flag set.
-- 
+- Added setting for disabling Chat Messages for log entries.
+- Added setting to turn all log entry chat messages into whispers if the GM Only setting is also set.
+- Now if the GM makes a log entry and their Roll Type is not set to Public, it will make the chat message a whisper.
 
 ## Release 1.0.1 (2021-02-15)
 - Moved settings from 'init' hook to the 'setup' hook, fixes issue where `gaame.user.isGM` is not yet defined.

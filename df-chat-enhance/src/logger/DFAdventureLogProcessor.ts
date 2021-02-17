@@ -2,23 +2,109 @@
 import CONFIG from '../CONFIG.js';
 import DFAdventureLogConfig from './DFAdventureLogConfig.js';
 
+declare interface ChatCommand {
+	commandKey: String;
+	shouldDisplayToChat: Boolean;
+	invokeOnCommand: Function;
+	createdMessageType: Number;
+	iconClass: String;
+	description: String;
+	gmOnly: Boolean;
+}
+
+declare class ChatCommands {
+	/**
+	 * Registers a Chat Command to be handled
+	 */
+	registerCommand(command: ChatCommand): void;
+	/**
+	 * Deregister a Chat Command
+	 */
+	deregisterCommand(command: ChatCommand): void;
+	createCommandFromData(data: any): ChatCommand;
+}
+
 export default class DFAdventureLogProcessor {
 	static readonly PREF_ENABLE = 'enable-command';
+	static readonly PREF_GMONLY = 'df-log-gmonly';
+	static readonly PREF_GMONLY_WHISPER = 'df-log-gmonly-whisper';
+	static readonly PREF_MESSAGES = 'df-log-messages';
+	static chatCommands: ChatCommands = null;
+	static command: ChatCommand = null;
 	static setupSettings() {
+
+		game.settings.register(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE, {
+			scope: 'world',
+			name: 'DF_CHAT_LOG.Setting_EnableTitle',
+			hint: 'DF_CHAT_LOG.Setting_EnableHint',
+			config: true,
+			type: Boolean,
+			default: true,
+			onChange: (enabled: Boolean) => {
+				if (!enabled && !!DFAdventureLogProcessor.command)
+					DFAdventureLogProcessor.deregisterCommand();
+				else
+					DFAdventureLogProcessor.registerCommand();
+			}
+		});
+		game.settings.register(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_GMONLY, {
+			name: 'DF_CHAT_LOG.Setting_GmOnlyTitle',
+			hint: 'DF_CHAT_LOG.Setting_GmOnlyHint',
+			scope: 'world',
+			type: Boolean,
+			default: false,
+			config: true,
+			onChange: (gmOnly) => {
+				if (gmOnly && !game.user.isGM)
+					DFAdventureLogProcessor.deregisterCommand();
+				else
+					DFAdventureLogProcessor.registerCommand();
+			}
+		});
+		game.settings.register(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_GMONLY_WHISPER, {
+			name: 'DF_CHAT_LOG.Setting_GmOnlyWhisperName',
+			hint: 'DF_CHAT_LOG.Setting_GmOnlyWhisperHint',
+			scope: 'world',
+			type: Boolean,
+			default: false,
+			config: true
+		});
+
+		game.settings.register(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_MESSAGES, {
+			name: 'DF_CHAT_LOG.Setting_PrintMessagesName',
+			hint: 'DF_CHAT_LOG.Setting_PrintMessagesHint',
+			scope: 'world',
+			type: Boolean,
+			default: true,
+			config: true
+		});
 
 		Hooks.on('closeDFAdventureLogConfig', () => { DFAdventureLogProcessor.logConfig = null; });
 
-		if (game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE)) {
-			Hooks.on('chatCommandsReady', function (chatCommands: any) {
-				chatCommands.registerCommand(chatCommands.createCommandFromData({
-					commandKey: "/log",
-					invokeOnCommand: DFAdventureLogProcessor.chatCommandProcessor,
-					shouldDisplayToChat: false,
-					iconClass: "fa-edit",
-					description: "Submit an event to the adventure log"
-				}));
-			});
-		}
+		if (!game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE)) return;
+		Hooks.on('chatCommandsReady', function (chatCommands: ChatCommands) {
+			DFAdventureLogProcessor.chatCommands = chatCommands;
+			DFAdventureLogProcessor.registerCommand();
+		});
+	}
+
+	static deregisterCommand() {
+		DFAdventureLogProcessor.chatCommands.deregisterCommand(DFAdventureLogProcessor.command);
+		DFAdventureLogProcessor.command = null;
+	}
+	static registerCommand() {
+		if (game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_GMONLY) && !game.user.isGM)
+			return;
+		if (!!DFAdventureLogProcessor.command)
+			return;
+		DFAdventureLogProcessor.command = DFAdventureLogProcessor.chatCommands.createCommandFromData({
+			commandKey: "/log",
+			invokeOnCommand: DFAdventureLogProcessor.chatCommandProcessor,
+			shouldDisplayToChat: false,
+			iconClass: "fa-edit",
+			description: game.i18n.localize("DF_CHAT_LOG.CommandDescription")
+		});
+		DFAdventureLogProcessor.chatCommands.registerCommand(DFAdventureLogProcessor.command);
 	}
 
 	private static logConfig: DFAdventureLogConfig = null;
@@ -27,11 +113,17 @@ export default class DFAdventureLogProcessor {
 		messageText = messageText.trim();
 		const tokens = messageText.split(' ');
 
+		if (!game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE)) {
+			DFAdventureLogProcessor.chatCommands.deregisterCommand(DFAdventureLogProcessor.command);
+			ui.notifications.warn(game.i18n.localize('DF_CHAT_LOG.Error_Disabled'));
+			return;
+		}
+
 		// If the user did not enter anything, send them a help message
 		if (messageText.length == 0 || tokens.every(x => x.length == 0)) {
 			setTimeout(async () => {
 				await Dialog.prompt({
-					title: 'Adventure Journal Command Help',
+					title: game.i18n.localize('DF_CHAT_LOG.HelpDialog_Title'),
 					label: 'OK',
 					callback: () => { },
 					content: await renderTemplate(`modules/df-chat-enhance/templates/lang/log-help.${game.i18n.localize('DF_CHAT_ENHANCE.LANG')}.hbs`, {
@@ -44,15 +136,26 @@ export default class DFAdventureLogProcessor {
 		}
 
 		const speaker = ChatMessage.getSpeaker({ user: game.user } as any);
-		const messageData = {
+		const messageData: {
+			flavor: string,
+			user: string,
+			speaker: ChatMessage.SpeakerData,
+			type: number,
+			content: string,
+			whisper?: string[]
+		} = {
 			flavor: '',
 			user: game.user._id,
 			speaker: speaker,
 			type: CONST.CHAT_MESSAGE_TYPES.OOC,
-			content: ''
+			content: '',
 		};
 		switch (tokens[0].toLowerCase()) {
 			case 'config':
+				if (!game.user.isGM) {
+					ui.notifications.warn(game.i18n.localize('DF_CHAT_LOG.Error_ConfigGmOnly'));
+					return;
+				}
 				setTimeout(async () => {
 					if (!!DFAdventureLogProcessor.logConfig)
 						DFAdventureLogProcessor.logConfig.bringToTop();
@@ -137,6 +240,20 @@ export default class DFAdventureLogProcessor {
 		await journal.update({
 			content: $('<div></div>').append(html).html()
 		});
-		await ChatMessage.create(messageData as any, {});
+		const rollType = game.settings.get("core", "rollMode");
+		if (game.user.isGM) {
+			if (
+				// If the roll type is anything but Public
+				rollType !== 'roll'
+				// If logs are GM Only and the Whisper All settings is true
+				|| (game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_GMONLY) &&
+					game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_GMONLY_WHISPER))
+			) {
+				// Make the message a whisper
+				messageData.whisper = [game.user.id];
+			}
+		}
+		if (game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_MESSAGES))
+			await ChatMessage.create(messageData as any, {});
 	}
 }

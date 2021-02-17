@@ -9,7 +9,7 @@
 	"DF_CHAT_ARCHIVE.ExportButtonTitle": "Archive chat log",
 	"DF_CHAT_ARCHIVE.OpenChatArchive": "Manage Chat Archive",
 
-	"DF_CHAT_ARCHIVE.Settings_HideExport": "Hide the Export Chat Log button",
+	"DF_CHAT_ARCHIVE.Settings_HideExport": "Chat Archive: Hide the Export Chat Log button",
 	
 	"DF_CHAT_ARCHIVE.ArchiveNew_Title": "DF Create Chat Archive",
 	"DF_CHAT_ARCHIVE.ArchiveNew_Name": "Archive Name:",
@@ -36,17 +36,25 @@
 
 
 	
-	"DF_CHAT_PRIVACY.Settings_EnableTitle": "Replace roll type selector with buttons",
+	"DF_CHAT_PRIVACY.Settings_EnableTitle": "Roll Buttons: Replace roll type selector with buttons",
 	"DF_CHAT_PRIVACY.Settings_EnableHint": "(Requires Reload) Replace the drop-down menu selector for roll types with a set of four buttons.",
-	"DF_CHAT_PRIVACY.Settings_ReplaceButtonsTitle": "Use Roll Type button style on all chat buttons",
+	"DF_CHAT_PRIVACY.Settings_ReplaceButtonsTitle": "Roll Buttons: Use button style on all chat buttons",
 	"DF_CHAT_PRIVACY.Settings_ReplaceButtonsHint": "(Requires Reload) Restyle the other chat buttons to look the same as the new Roll Type buttons.",
 
 
 
-	"DF_CHAT_LOG.Setting_EnableTitle": "Use Adventure Log",
-	"DF_CHAT_LOG.Setting_EnableHint": "(Requires reload) Enables the Adventure Log feature for logging events to a journal directly from the chat sidebar",
-	"DF_CHAT_LOG.Setting_GmOnlyTitle": "Set Adventure Log GM Only",
-	"DF_CHAT_LOG.Setting_GmOnlyHint": "(Requires reload) Sets the Adventure Log commands to be GM only",
+	"DF_CHAT_LOG.CommandDescription":"Submit an event to the adventure log",
+	"DF_CHAT_LOG.HelpDialog_Title":"Adventure Journal Command Help",
+	"DF_CHAT_LOG.Setting_EnableTitle": "Adventure Log: Enable",
+	"DF_CHAT_LOG.Setting_EnableHint": "Enables the Adventure Log feature for logging events to a journal directly from the chat sidebar",
+	"DF_CHAT_LOG.Setting_GmOnlyTitle": "Adventure Log: Set Adventure Log GM Only",
+	"DF_CHAT_LOG.Setting_GmOnlyHint": "Sets the Adventure Log commands to be GM only",
+	"DF_CHAT_LOG.Setting_GmOnlyWhisperName": "Adventure Log: (If GM Only) All Logs are Whispsers",
+	"DF_CHAT_LOG.Setting_GmOnlyWhisperHint": "If the above GM Only setting is on, this will make all log entry chat messages be whispers",
+	"DF_CHAT_LOG.Setting_PrintMessagesName": "Adventure Log: Post logs to chat",
+	"DF_CHAT_LOG.Setting_PrintMessagesHint": "Post a message to the chat for new Adventure Log entries",
+	"DF_CHAT_LOG.Error_ConfigGmOnly": "Only the GM is allowed to change the Adventure Log configuration.",
+	"DF_CHAT_LOG.Error_Disabled": "The Gamemaster has disabled the Adventure Log",
 	"DF_CHAT_LOG.Error_NoJournalSet": "The Gamemaster has not set a journal for use as an Adventure Log",
 	"DF_CHAT_LOG.Error_NoJournalSetGM": "There is no journal set for use as an Adventure Log. Use \"<code>/log config</code>\" to set one",
 	"DF_CHAT_LOG.Error_MissingQuote": "You are missing the closing quote for {0}",
@@ -62,9 +70,9 @@
 
 	"DF_CHAT_EDIT.Editor_Title": "DF Chat Editor",
 	"DF_CHAT_EDIT.Editor_Original": "Original Message",
-	"DF_CHAT_EDIT.Settings_AllowEditName": "Allow message editing",
+	"DF_CHAT_EDIT.Settings_AllowEditName": "Chat Edit: Allow message editing",
 	"DF_CHAT_EDIT.Settings_AllowEditHint": "Allow players to edit the messages they send",
-	"DF_CHAT_EDIT.Settings_GMEditAllName": "GM can edit all",
+	"DF_CHAT_EDIT.Settings_GMEditAllName": "Chat Edit: GM can edit all",
 	"DF_CHAT_EDIT.Settings_GMEditAllHint": "Allow GMs to edit anyone's message instead of just their own",
 	"DF_CHAT_EDIT.EditedFlag": "(edited)",
 	"DF_CHAT_EDIT.Error_NoPermission": "The Gamemaster has disabled editing"
