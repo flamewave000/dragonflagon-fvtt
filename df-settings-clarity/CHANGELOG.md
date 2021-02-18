@@ -1,5 +1,10 @@
 # DF Settings Clarity
 
+## Release 2.1.3 (2021-02-18)
+- Fixed scope indicator on Menus.
+- Added Manifest+ cover image to manifest.
+- Added Bug Reporter support to manifest.
+
 ## Release 2.1.1/2 (2021-02-04)
 - Implemented new release system for all Dragon Flagon modules.
 
