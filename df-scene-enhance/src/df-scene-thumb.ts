@@ -1,7 +1,10 @@
+import { SceneConfig } from "foundry-vtt-types/types/applications/sceneConfig";
 import DFSceneRatio from "./df-scene-ratio.js";
 
-interface SceneExt extends Scene {
+declare class SceneExt extends Scene {
 	dfThumb_update(data: Scene.Data, options: any): Promise<Scene>;
+	get width(): number
+	get height(): number
 }
 
 class DFSceneThumb {
@@ -29,30 +32,6 @@ class DFSceneThumb {
 	static getThumb(sceneId: string) {
 		return JSON.parse(game.settings.get(DFSceneThumb.MODULE, DFSceneThumb.THUMBS))[sceneId] ?? null;
 	}
-
-	/** @override */
-	static async updateOverride(this: SceneExt, data: Scene.Data, options = {}) {
-		// Determine what type of change has occurred
-		const dfSceneConfig = DFSceneThumb.getThumb(this.id);
-		if (!dfSceneConfig || !dfSceneConfig.url)
-			return this.dfThumb_update(data, options);
-		let normalData = await this.dfThumb_update(data, options);
-		// Update thumbnail and image dimensions
-		let td = {};
-		try {
-			let img = (dfSceneConfig && dfSceneConfig.url) ?? data.img ?? this.data.img;
-			td = await ImageHelper.createThumbnail(img, { width: 300, height: 100 });
-			dfSceneConfig.thumb = true;
-			DFSceneThumb.updateThumb(this.id, img, true);
-		} catch (err) {
-			ui.notifications.error("Thumbnail Override generation for Scene failed: " + err.message);
-		}
-		(data as any).thumb = (td as any).thumb || null;
-		if (!!normalData.data.width) data.width = normalData.data.width;
-		if (!!normalData.data.height) data.height = normalData.data.height;
-		// Call the Entity update
-		return Entity.prototype.update.bind(this)(data, options);
-	}
 }
 
 Hooks.once('init', function () {
@@ -62,21 +41,17 @@ Hooks.once('init', function () {
 		type: String,
 		default: "{}"
 	});
-	(Scene.prototype as any).dfThumb_update = Scene.prototype.update;
-	(Scene.prototype as any).update = DFSceneThumb.updateOverride;
 });
 
 Hooks.once('ready', DFSceneThumb.purge);
 
-Hooks.on('renderSceneConfig', async (app: any, html: JQuery<HTMLElement>, data: any) => {
-	// let form = html.find('form')[0];
-	let imgInput = html.find('input[name ="img"]')[0];
-	if (/*!form || */!imgInput) return;
-	if (!imgInput.parentElement || !imgInput.parentElement.parentElement) return;
-	let target = imgInput.parentElement.parentElement;
-	let sceneId = data.entity._id;
+Hooks.on('renderSceneConfig', async (app: any, html: JQuery<HTMLElement>, data: { entity: SceneExt }) => {
+	const imgInput = html.find('input[name ="img"]')[0];
+	if (!imgInput || !imgInput.parentElement || !imgInput.parentElement.parentElement) return;
+	const sceneId = data.entity._id;
 	const thumbConfig = DFSceneThumb.getThumb(sceneId);
 	const injection = $(await renderTemplate(`modules/${DFSceneThumb.MODULE}/templates/scene-thumb.hbs`, { thumbPath: (thumbConfig && thumbConfig.url) || "" }));
+	const target = imgInput.parentElement.parentElement;
 	for (var c = 0; c < injection.length; c++) {
 		if (injection[c].nodeType != 1) continue;
 		target.after(injection[c]);
@@ -90,8 +65,23 @@ Hooks.on('renderSceneConfig', async (app: any, html: JQuery<HTMLElement>, data: 
 		});
 		fp.browse();
 	});
-
 	html.find('#df-thumb-img').on('change', () => DFSceneThumb.updateThumb(sceneId, html.find('#df-thumb-img').val() as string));
 	app.ratioScaler = new DFSceneRatio();
 	await app.ratioScaler.render(app, html, data);
+});
+
+Hooks.on('closeSceneConfig', async (app: SceneConfig, html: JQuery<HTMLElement>) => {
+	const dfSceneConfig = DFSceneThumb.getThumb(app.entity.id);
+	const scene: SceneExt = app.entity as SceneExt;
+	if (!dfSceneConfig || !dfSceneConfig.url) return;
+	// Update thumbnail and image dimensions
+	try {
+		let img = (dfSceneConfig && dfSceneConfig.url) ?? scene.data.img;
+		const td = await ImageHelper.createThumbnail(img, { width: 300, height: 100 });
+		dfSceneConfig.thumb = true;
+		DFSceneThumb.updateThumb(scene.id, img, true);
+		await scene.update({ thumb: td.thumb } as any, {});
+	} catch (err) {
+		ui.notifications.error("Thumbnail Override generation for Scene failed: " + err.message);
+	}
 });

@@ -1,5 +1,8 @@
 # DF Scene Enhancement Changes
 
+## Release 3.3.2 (2021-02-17)
+- Fixed reported conflict with the module "Calendar/Weather"
+
 ## Release 3.3.1 (2021-02-15)
 - Fixed conflict with the Laptop Form Fix module.
 - Fixed fields not injecting when returning from the Grid Config window.

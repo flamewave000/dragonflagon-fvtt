@@ -1,3 +1,8 @@
+declare class SceneExt extends Scene {
+	get width(): number
+	get height(): number
+}
+
 // Reduce a fraction by finding the Greatest Common Divisor and dividing by it.
 function reduce(numerator: number, denominator: number) {
 	var a = numerator;
@@ -106,10 +111,10 @@ export default class DFSceneRatio {
 		// this._updateScale();
 	}
 
-	async render(_app: any, html: JQuery<HTMLElement>, data: {entity: Scene}) {
-		this.initialWidth = data.entity.data.width;
-		this.initialHeight = data.entity.data.height;
-		const [numerator, denominator] = reduce(data.entity.data.width, data.entity.data.height);
+	async render(_app: any, html: JQuery<HTMLElement>, data: {entity: SceneExt}) {
+		this.initialWidth = data.entity.width;
+		this.initialHeight = data.entity.height;
+		const [numerator, denominator] = reduce(data.entity.width, data.entity.height);
 		const ratioData = {
 			numerator: numerator,
 			denominator: denominator
