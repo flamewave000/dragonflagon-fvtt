@@ -174,7 +174,7 @@ exports.watch = function () {
 exports.devWatch = function () {
 	const devDist = DEV_DIST();
 	exports.dev();
-	gulp.watch(SOURCE + GLOB, gulp.series(plog('deleting: '+ devDist + SOURCE + GLOB), pdel(devDist + SOURCE + GLOB, {force: true}), buildSource(true, devDist), plog('sources done.')));
+	gulp.watch(SOURCE + GLOB, gulp.series(plog('deleting: '+ devDist + SOURCE + GLOB), pdel(devDist + SOURCE + GLOB, {force: true}), buildSource(true, false, devDist), plog('sources done.')));
 	gulp.watch(['module.json', 'package.json'], gulp.series(reloadPackage, buildManifest(devDist), plog('manifest done.')));
 	gulp.watch(LANG + GLOB, gulp.series(pdel(devDist + LANG + GLOB, {force: true}), outputLanguages(devDist), plog('langs done.')));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(devDist + TEMPLATES + GLOB, {force: true}), outputTemplates(devDist), plog('templates done.')));
