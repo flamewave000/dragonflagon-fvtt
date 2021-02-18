@@ -1,5 +1,9 @@
 # DF Chat Enhancements
 
+## Release 1.1.1 (2021-02-17)
+- Fixed crash when enabling the Adventure Log.
+- Added support for Bug Reporter
+
 ## Release 1.1.0 (2021-02-16)
 - Fixed "No Message" and "Missing Quote" errors. They will now properly preserve the message and give you a chance to fix them.
 - Fixed lifecycle issues for detecting if the current user has the `isGM` flag set.

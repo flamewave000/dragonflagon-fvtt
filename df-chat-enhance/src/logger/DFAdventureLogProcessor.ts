@@ -2,6 +2,7 @@
 import CONFIG from '../CONFIG.js';
 import DFAdventureLogConfig from './DFAdventureLogConfig.js';
 
+
 declare interface ChatCommand {
 	commandKey: String;
 	shouldDisplayToChat: Boolean;
@@ -24,12 +25,15 @@ declare class ChatCommands {
 	createCommandFromData(data: any): ChatCommand;
 }
 
+declare class GameExt extends Game {
+	chatCommands: ChatCommands
+}
+
 export default class DFAdventureLogProcessor {
 	static readonly PREF_ENABLE = 'enable-command';
 	static readonly PREF_GMONLY = 'df-log-gmonly';
 	static readonly PREF_GMONLY_WHISPER = 'df-log-gmonly-whisper';
 	static readonly PREF_MESSAGES = 'df-log-messages';
-	static chatCommands: ChatCommands = null;
 	static command: ChatCommand = null;
 	static setupSettings() {
 
@@ -80,16 +84,14 @@ export default class DFAdventureLogProcessor {
 		});
 
 		Hooks.on('closeDFAdventureLogConfig', () => { DFAdventureLogProcessor.logConfig = null; });
-
-		if (!game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE)) return;
 		Hooks.on('chatCommandsReady', function (chatCommands: ChatCommands) {
-			DFAdventureLogProcessor.chatCommands = chatCommands;
+			if (!game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE)) return;
 			DFAdventureLogProcessor.registerCommand();
 		});
 	}
 
 	static deregisterCommand() {
-		DFAdventureLogProcessor.chatCommands.deregisterCommand(DFAdventureLogProcessor.command);
+		(game as GameExt).chatCommands.deregisterCommand(DFAdventureLogProcessor.command);
 		DFAdventureLogProcessor.command = null;
 	}
 	static registerCommand() {
@@ -97,14 +99,14 @@ export default class DFAdventureLogProcessor {
 			return;
 		if (!!DFAdventureLogProcessor.command)
 			return;
-		DFAdventureLogProcessor.command = DFAdventureLogProcessor.chatCommands.createCommandFromData({
+		DFAdventureLogProcessor.command = (game as GameExt).chatCommands.createCommandFromData({
 			commandKey: "/log",
 			invokeOnCommand: DFAdventureLogProcessor.chatCommandProcessor,
 			shouldDisplayToChat: false,
 			iconClass: "fa-edit",
 			description: game.i18n.localize("DF_CHAT_LOG.CommandDescription")
 		});
-		DFAdventureLogProcessor.chatCommands.registerCommand(DFAdventureLogProcessor.command);
+		(game as GameExt).chatCommands.registerCommand(DFAdventureLogProcessor.command);
 	}
 
 	private static logConfig: DFAdventureLogConfig = null;
@@ -114,7 +116,7 @@ export default class DFAdventureLogProcessor {
 		const tokens = messageText.split(' ');
 
 		if (!game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE)) {
-			DFAdventureLogProcessor.chatCommands.deregisterCommand(DFAdventureLogProcessor.command);
+			(game as GameExt).chatCommands.deregisterCommand(DFAdventureLogProcessor.command);
 			ui.notifications.warn(game.i18n.localize('DF_CHAT_LOG.Error_Disabled'));
 			return;
 		}
