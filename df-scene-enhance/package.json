@@ -5,12 +5,13 @@
 	"description": "A few enhancements to scene management for players and GMs.",
 	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/",
 	"scripts": {
-		"build-local": "npx gulp",
-		"clean": "npx gulp clean",
-		"build": "npx gulp dev",
-		"start": "npx gulp devWatch",
-		"clean-dev": "npx gulp devClean",
-		"release": "npx gulp zip"
+		"build": "npx gulp --gulpfile=../gulpfile.js --cwd=./",
+		"start": "npx gulp watch --gulpfile=../gulpfile.js --cwd=./",
+		"clean": "npx gulp clean --gulpfile=../gulpfile.js --cwd=./",
+		"dev-build": "npx gulp dev --gulpfile=../gulpfile.js --cwd=./",
+		"dev-start": "npx gulp devWatch --gulpfile=../gulpfile.js --cwd=./",
+		"dev-clean": "npx gulp devClean --gulpfile=../gulpfile.js --cwd=./",
+		"release": "npx gulp zip --gulpfile=../gulpfile.js --cwd=./"
 	},
 	"repository": {
 		"type": "git",

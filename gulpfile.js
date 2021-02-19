@@ -32,7 +32,7 @@ function buildSource(keepSources, minifySources = false, output = null) {
 	return () => {
 		var stream = gulp.src(SOURCE + GLOB);
 		if (keepSources) stream = stream.pipe(sm.init())
-		stream = stream.pipe(ts.createProject("tsconfig.json")())
+		stream = stream.pipe(ts.createProject("../tsconfig.json")())
 		if (keepSources) stream = stream.pipe(sm.write())
 		if (minifySources) stream = stream.pipe(minify({
 			ext: {min:'.js'},
@@ -75,7 +75,7 @@ exports.step_buildManifest = buildManifest();
 function outputLanguages(output = null) { return () => gulp.src(LANG + GLOB).pipe(gulp.dest((output || DIST) + LANG)); }
 function outputTemplates(output = null) { return () => gulp.src(TEMPLATES + GLOB).pipe(gulp.dest((output || DIST) + TEMPLATES)); }
 function outputStylesCSS(output = null) { return () => gulp.src(CSS + GLOB).pipe(gulp.dest((output || DIST) + CSS)); }
-function outputMetaFiles(output = null) { return () => gulp.src(['LICENSE', 'README.md', 'CHANGELOG.md']).pipe(gulp.dest((output || DIST))); }
+function outputMetaFiles(output = null) { return () => gulp.src(['../LICENSE', 'README.md', 'CHANGELOG.md']).pipe(gulp.dest((output || DIST))); }
 
 /**
  * Copy files to module named directory and then compress that folder into a zip
@@ -146,7 +146,7 @@ exports.dev = gulp.series(
 exports.zip = gulp.series(
 	pdel([DIST])
 	, gulp.parallel(
-		buildSource(false, false)
+		buildSource(false, true)
 		, buildManifest()
 		, outputLanguages()
 		, outputTemplates()
@@ -161,12 +161,12 @@ exports.zip = gulp.series(
  */
 exports.watch = function () {
 	exports.default();
-	gulp.watch(SOURCE + GLOB, gulp.series(pdel(DIST + SOURCE), buildSource(true)));
+	gulp.watch(SOURCE + GLOB, gulp.series(pdel(DIST + SOURCE), buildSource(true, false)));
 	gulp.watch(['module.json', 'package.json'], buildManifest());
 	gulp.watch(LANG + GLOB, gulp.series(pdel(DIST + LANG), outputLanguages()));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(DIST + TEMPLATES), outputTemplates()));
 	gulp.watch(CSS + GLOB, gulp.series(pdel(DIST + CSS), outputStylesCSS()));
-	gulp.watch(['LICENSE', 'README.md', 'CHANGELOG.md'], outputMetaFiles());
+	gulp.watch(['../LICENSE', 'README.md', 'CHANGELOG.md'], outputMetaFiles());
 }
 /**
  * Sets up a file watch on the project to detect any file changes and automatically rebuild those components, and then copy them to the Development Environment.
@@ -179,5 +179,5 @@ exports.devWatch = function () {
 	gulp.watch(LANG + GLOB, gulp.series(pdel(devDist + LANG + GLOB, {force: true}), outputLanguages(devDist), plog('langs done.')));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(devDist + TEMPLATES + GLOB, {force: true}), outputTemplates(devDist), plog('templates done.')));
 	gulp.watch(CSS + GLOB, gulp.series(pdel(devDist + CSS + GLOB, {force: true}), outputStylesCSS(devDist), plog('css done.')));
-	gulp.watch(['LICENSE', 'README.md', 'CHANGELOG.md'], gulp.series(outputMetaFiles(devDist), plog('metas done.')));
+	gulp.watch(['../LICENSE', 'README.md', 'CHANGELOG.md'], gulp.series(outputMetaFiles(devDist), plog('metas done.')));
 }
