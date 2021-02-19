@@ -146,7 +146,7 @@ exports.dev = gulp.series(
 exports.zip = gulp.series(
 	pdel([DIST])
 	, gulp.parallel(
-		buildSource(false, true)
+		buildSource(false, false)
 		, buildManifest()
 		, outputLanguages()
 		, outputTemplates()

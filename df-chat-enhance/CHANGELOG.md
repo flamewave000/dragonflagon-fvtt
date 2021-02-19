@@ -1,5 +1,8 @@
 # DF Chat Enhancements
 
+## Release 1.1.2 (2021-02-19)
+- Fixed Chat Commands initialization.
+
 ## Release 1.1.1 (2021-02-17)
 - Fixed crash when enabling the Adventure Log.
 - Added support for Bug Reporter

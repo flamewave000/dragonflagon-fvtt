@@ -84,10 +84,12 @@ export default class DFAdventureLogProcessor {
 		});
 
 		Hooks.on('closeDFAdventureLogConfig', () => { DFAdventureLogProcessor.logConfig = null; });
-		Hooks.on('chatCommandsReady', function (chatCommands: ChatCommands) {
-			if (!game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE)) return;
+		if (!!(game as GameExt).chatCommands)
 			DFAdventureLogProcessor.registerCommand();
-		});
+		else
+			Hooks.on('chatCommandsReady', function (chatCommands: ChatCommands) {
+				DFAdventureLogProcessor.registerCommand();
+			});
 	}
 
 	static deregisterCommand() {
@@ -95,6 +97,8 @@ export default class DFAdventureLogProcessor {
 		DFAdventureLogProcessor.command = null;
 	}
 	static registerCommand() {
+		if (!game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE))
+			return;
 		if (game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_GMONLY) && !game.user.isGM)
 			return;
 		if (!!DFAdventureLogProcessor.command)
