@@ -19,9 +19,11 @@
 	"DF_CHAT_ARCHIVE.ArchiveNew_FromDate": "From Date:",
 	"DF_CHAT_ARCHIVE.ArchiveNew_ToDate": "To Date:",
 	"DF_CHAT_ARCHIVE.ArchiveNew_Delete": "Delete the chat messages from the chat log?",
+	"DF_CHAT_ARCHIVE.ArchiveNew_Visible": "Make visible to players?",
 	"DF_CHAT_ARCHIVE.ArchiveNew_Submit": "Save Archive",
 	"DF_CHAT_ARCHIVE.ArchiveNew_ErrorNameMissing": "Must provide a name for the new archive!",
 	"DF_CHAT_ARCHIVE.ArchiveNew_ErrorDatesMissing": "Must provide both 'From' and 'To' dates if archiving by date range!",
+	"DF_CHAT_ARCHIVE.ArchiveNew_NoticeSuccess": "The new archive \"{0}\" has been created",
 
 	"DF_CHAT_ARCHIVE.ArchiveManager_Title": "DF Chat Archive Manager",
 	"DF_CHAT_ARCHIVE.ArchiveManager_NotItems": "You do not have any chat archives",
@@ -33,6 +35,13 @@
 	"DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllComplete": "All chat archives have been deleted",
 	"DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveTitle": "Delete Chat Archive?",
 	"DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveContent": "<p style=\"margin:1em 0\">Are you sure you want to delete '{name}'?</p>",
+	"DF_CHAT_ARCHIVE.ArchiveManager_VisibleToPlayers": "Visible to players",
+
+	"DF_CHAT_ARCHIVE.ArchiveViewer_Title": "DF Chat Archive",
+	"DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Title": "Edit Archive Name",
+	"DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Save": "Save name",
+	"DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Cancel": "Cancel",
+	"DF_CHAT_ARCHIVE.ArchiveViewer_Visible": "Visible to players",
 
 
 	

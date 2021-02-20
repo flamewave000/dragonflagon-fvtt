@@ -19,9 +19,11 @@ export default class DFChatArchiveManager extends Application {
 
 	getData(options?: any) {
 		let data = super.getData(options) as any;
-		mergeObject(data, {
-			messages: DFChatArchive.getLogs()
-		});
+		var messages = DFChatArchive.getLogs();
+		if (!game.user.isGM) {
+			messages = messages.filter(x => x.visible);
+		}
+		mergeObject(data, { messages: messages });
 		return data;
 	}
 
@@ -94,51 +96,30 @@ export default class DFChatArchiveManager extends Application {
 	}
 
 	private async _archiveChanged() {
-		const logs = new Map(DFChatArchive.getLogs().map(x => [x.id, x]));
-		const elements = new Map<number, JQuery<HTMLElement>>();
-		this.element.find('li.dfca-archive-item')
-			.each(function () {
-				const x = $(this);
-				const attr = x.attr('data-id');
-				const id = parseInt(attr);
-				elements.set(id, x);
-			});
-
-		const removed: number[] = [];
-		const added: number[] = [];
-		if (elements.size == 0) {
-			added.push(...logs.keys());
-		} else {
-			for (let rowId of elements.keys()) {
-				if (logs.has(rowId)) continue;
-				removed.push(rowId);
-			}
-			for (let rowId of logs.keys()) {
-				if (elements.has(rowId)) continue;
-				added.push(rowId);
-			}
-		}
-
-		// Remove deleted items
-		for (let id of removed) {
-			elements.get(id).remove();
-			elements.delete(id);
-		}
+		var logs = DFChatArchive.getLogs();
+		if(!game.user.isGM)
+			logs = logs.filter(x => x.visible);
 		const archiveContainer = this.element.find('#dfca-archives');
+		archiveContainer.empty();
 		// Add new items
-		for (let id of added) {
+		for (let archive of logs) {
+			const visible = archive.visible === true
+				? `<i class="dfca-visible fas fa-users" title="${game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_VisibleToPlayers')}"></i>` : '';
 			const html = $(`
-		<li class="dfca-archive-item" data-id="${id}">
+		<li class="dfca-archive-item" data-id="${archive.id}">
 			<div>
-				<a class="button dfca-view" data-type="view" data-id="${id}"><i class="fas fa-eye"></i><span>${logs.get(id).name}</span></a>
-				<a class="button dfca-delete" data-type="delete" data-id="${id}"><i class="fas fa-trash"></i></a>
+				<a class="button dfca-view" data-type="view" data-id="${archive.id}"><i class="fas fa-eye"></i>
+					<span>${archive.name}</span>
+				</a>
+				${visible}
+				<a class="button dfca-delete" data-type="delete" data-id="${archive.id}"><i class="fas fa-trash"></i></a>
 			</div>
 		</li>`);
 			this._subscribeView(html.find('a[data-type="view"]'));
 			this._subscribeDelete(html.find('a[data-type="delete"]'));
 			archiveContainer.append(html);
 		}
-		if (elements.size == 0 && added.length == 0)
+		if (archiveContainer[0].children.length == 0)
 			this.element.find('p.dfca-no-items').show();
 		else
 			this.element.find('p.dfca-no-items').hide();

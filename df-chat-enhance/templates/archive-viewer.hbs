@@ -1,5 +1,10 @@
 <section class="sidebar-tab tab flexcol" id="{{logId}}" data-tab="chat" style="display:flex">
-	<h2>{{name}}</h2>
+	<h2>{{#if isGM}}<a id="edit" style="button"><i class="fas fa-pencil-alt"></i></a> {{/if}}{{name}}</h2>
+	{{#if isGM}}
+	<div style="display:flex;flex:0 0 auto;color:#FFF">
+	<input id="visible" type="checkbox"{{#if visible}} checked{{/if}}/><label for="visible" style="margin:auto 0">{{localize 'DF_CHAT_ARCHIVE.ArchiveViewer_Visible'}}</label>
+	</div>
+	{{/if}}
 	<ol id="df-chat-log">
 	</ol>
 </section>

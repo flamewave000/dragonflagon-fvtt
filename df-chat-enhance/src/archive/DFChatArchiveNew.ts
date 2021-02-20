@@ -54,8 +54,8 @@ export default class DFChatArchiveNew extends FormApplication {
 			chats = chats.filter((value) => value.data.timestamp >= fromDate && value.data.timestamp <= toDate);
 		}
 
-		ui.notifications.info(game.i18n.localize(''));
-		DFChatArchive.createChatArchive(name, chats);
+		ui.notifications.info(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveNew_NoticeSuccess').replace('{0}', name));
+		DFChatArchive.createChatArchive(name, chats, formData['visible']);
 		// If we don't want to delete the messages, return
 		if (!formData.delete) return;
 
