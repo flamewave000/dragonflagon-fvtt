@@ -1,7 +1,7 @@
 ---
 name: Feature/Improvement request
 about: Suggest an idea for a module feature/improvement
-title: "[DF Module Name]: Summarize idea..."
+title: 'DF Module Name: Summarize idea...'
 labels: enhancement
 assignees: flamewave000
 

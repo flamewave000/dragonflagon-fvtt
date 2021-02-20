@@ -1,7 +1,7 @@
 ---
 name: Module Conflict Report
 about: Report that a DragonFlagon module conflicts with another module
-title: "[DF Module Name]: Conflicting module names..."
+title: 'DF Module Name: Conflicting module names...'
 labels: conflicting-module
 assignees: flamewave000
 

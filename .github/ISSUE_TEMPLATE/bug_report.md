@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report to help me improve my modules
-title: "[DF Module Name]: Summarize issue..."
+title: 'DF Module Name: Summarize issue...'
 labels: bug
 assignees: flamewave000
 
