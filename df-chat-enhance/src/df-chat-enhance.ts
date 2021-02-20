@@ -1,6 +1,6 @@
 import initDFChatArchive from "./archive/df-chat-archive.js";
 import initDFChatEdit from "./edit/df-chat-edit.js";
-import initDFAdventureLog from "./logger/df-adventure-log.js";
+import * as DFAdventureLog from "./logger/df-adventure-log.js";
 import initDFChatPrivacy from "./privacy/df-chat-privacy.js";
 
 (Application.prototype as any)._recalculateDimensions = function () {
@@ -17,9 +17,10 @@ Hooks.once('init', function() {
 	 */
 	initDFChatArchive();
 	initDFChatPrivacy();
+	DFAdventureLog.init();
 });
 
 Hooks.once('ready', function() {
-	initDFAdventureLog();
+	DFAdventureLog.ready();
 	initDFChatEdit();
 });

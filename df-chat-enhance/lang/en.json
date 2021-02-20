@@ -53,6 +53,7 @@
 	"DF_CHAT_LOG.Setting_GmOnlyWhisperHint": "If the above GM Only setting is on, this will make all log entry chat messages be whispers",
 	"DF_CHAT_LOG.Setting_PrintMessagesName": "Adventure Log: Post logs to chat",
 	"DF_CHAT_LOG.Setting_PrintMessagesHint": "Post a message to the chat for new Adventure Log entries",
+	"DF_CHAT_LOG.Error_LibWrapperMissing": "You do not have libWrapper enabled. Adventure Log depends on this module and will not operate without it.",
 	"DF_CHAT_LOG.Error_ConfigGmOnly": "Only the GM is allowed to change the Adventure Log configuration.",
 	"DF_CHAT_LOG.Error_Disabled": "The Gamemaster has disabled the Adventure Log",
 	"DF_CHAT_LOG.Error_NoJournalSet": "The Gamemaster has not set a journal for use as an Adventure Log",
@@ -67,6 +68,8 @@
 	"DF_CHAT_LOG.Config_NoSelection": "---",
 	"DF_CHAT_LOG.Config_ClearContent": "Clear all contents of the journal",
 	"DF_CHAT_LOG.Config_JournalPermissions": "Anyone who will log events will need permission to edit the selected Journal.",
+	"DF_CHAT_LOG.ContextMenu_AsEvent": "Adventure Log as an Event",
+	"DF_CHAT_LOG.ContextMenu_AsQuote": "Adventure Log as a Quote",
 
 	"DF_CHAT_EDIT.Editor_Title": "DF Chat Editor",
 	"DF_CHAT_EDIT.Editor_Original": "Original Message",

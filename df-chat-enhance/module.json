@@ -6,7 +6,10 @@
 	"author": "flamewave000#6766",
 	"minimumCoreVersion": "0.7.9",
 	"compatibleCoreVersion": "0.7.9",
-	"dependencies": [ { "name": "_chatcommands" } ],
+	"dependencies": [
+		{ "name": "_chatcommands" },
+		{ "name": "lib-wrapper" }
+	],
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [
