@@ -67,7 +67,7 @@ function processChatMessage(chatMessage: ChatMessage, html: JQuery<HTMLElement>,
 		|| (chatMessage.data.user !== game.userId && !(game.user.isGM && game.settings.get(CONFIG.MOD_NAME, PREF_GM_ALL))))
 		return;
 	const header = html.find('header.message-header');
-	const editButton = $(`<a class="button message-edit" style="flex:0 0 auto;margin-right:0.125em"><i class="fas fa-pencil-alt"></i></a>`);
+	const editButton = $(`<a class="button message-edit"><i class="fas fa-pencil-alt"></i></a>`);
 	header.prepend(editButton);
 	editButton.on('click', editChatMessage.bind(chatMessage));
 }

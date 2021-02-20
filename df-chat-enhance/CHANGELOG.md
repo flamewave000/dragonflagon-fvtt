@@ -1,5 +1,10 @@
 # DF Chat Enhancements
 
+## Release 2.0.0 (2021-02-20)
+- You can now right-click chats to add them as an event/quote to the adventure Log.
+- GMs can now set the player visibility of Chat Archives. This will allow players to view chat archives the GM has allowed them to see.
+- For chat editing, you can now select the text in the "Original Message" area.
+
 ## Release 1.1.2 (2021-02-19)
 - Fixed Chat Commands initialization.
 

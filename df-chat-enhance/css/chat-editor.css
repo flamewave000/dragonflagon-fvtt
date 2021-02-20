@@ -9,6 +9,10 @@
 	flex: 0 0 auto;
 }
 
+.dfce-editor blockquote {
+	user-select: text;
+}
+
 .dfce-editor textarea {
 	flex: 1 0;
 }
@@ -16,4 +20,9 @@
 p.df-edited {
 	font-size: xx-small;
 	font-style: italic;
+}
+
+a.message-edit {
+	flex: 0 0 auto;
+	margin-right: 0.125em;
 }
