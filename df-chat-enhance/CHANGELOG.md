@@ -4,7 +4,9 @@
 - Adventure Log
 	- You can now right-click chats to add them as an event/quote to the adventure Log.
 	- NEW! `/gmlog` command. You can now configure a GM Only log, separate from the general Adventure Log. This way you can make private note taking directly from the chat log without revealing the events to your players. This was sort of possible before by setting your settings in a certain way, but this is definitely simpler and a nice way to have both options.
-- Chat Archive: GMs can now set the player visibility of Chat Archives. This will allow players to view chat archives the GM has allowed them to see.
+- Chat Archive
+	- GMs can now set the player visibility of Chat Archives. This will allow players to view chat archives the GM has allowed them to see.
+	- GMs can now delete individual messages in Chat Archives.
 - Chat Editing
 	- You can now select the text in the "Original Message" area.
 	- NEW! Shift-Up keyboard combo to edit your last sent message. Simply press and hold Shift, then press the Up key and release. This keyboard shortcute will immediately display the edit message dialog for the most recent chat message you sent.

@@ -70,16 +70,34 @@ export default class DFChatArchiveViewer extends Application {
 				});
 
 				const log = html.find('#df-chat-log');
-				var m: ChatMessage;
 				const messageHtml = [];
 				for (let value of this.archive.chats as ChatMessage.Data[]) {
-					const cm = value instanceof ChatMessage ? value : new ChatMessage(value);
+					const chatMessage = value instanceof ChatMessage ? value : new ChatMessage(value);
 					try {
-						const html = $(await cm.render());
-						html.find('a.message-delete').hide();
+						const html = $(await chatMessage.render());
+						// if we only have 1 message, don't allow it to be deleted. They might as well just delete the archive
+						if (this.archive.chats.length == 1)
+							html.find('a.message-delete').hide();
+						html.find('a.message-delete').on('click', (element) => {
+							Dialog.confirm({
+								title: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveViewer_DeleteTitle"),
+								content: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveViewer_DeleteContent"),
+								defaultYes: false,
+								no: () => { },
+								yes: async () => {
+									const messageHtml = element.target.parentElement?.parentElement?.parentElement?.parentElement;
+									const id = messageHtml?.dataset?.messageId;
+									if (!id) return;
+									const index = this.archive.chats.findIndex((x: any) => x._id === id);
+									this.archive.chats.splice(index, 1);
+									await DFChatArchive.updateChatArchive(this.archive);
+									$(messageHtml).hide(1000, () => messageHtml.remove());
+								}
+							})
+						});
 						messageHtml.push(html);
 					} catch (err) {
-						console.error(`Chat message ${cm.id} failed to render.\n${err})`);
+						console.error(`Chat message ${chatMessage.id} failed to render.\n${err})`);
 					}
 				}
 				// Prepend the HTML

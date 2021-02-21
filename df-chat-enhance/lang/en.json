@@ -42,6 +42,8 @@
 	"DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Save": "Save name",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Cancel": "Cancel",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Visible": "Visible to players",
+	"DF_CHAT_ARCHIVE.ArchiveViewer_DeleteTitle": "Delete Archived Message",
+	"DF_CHAT_ARCHIVE.ArchiveViewer_DeleteContent": "Are you sure you wish to delete this message?",
 
 
 	
