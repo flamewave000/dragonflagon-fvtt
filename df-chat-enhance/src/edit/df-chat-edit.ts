@@ -1,6 +1,7 @@
 import CONFIG from "../CONFIG.js";
 import DFChatEditor from './DFChatEditor.js';
 
+
 const PREF_EDIT_ALLOWED = 'edit-allowed';
 const PREF_GM_ALL = 'gm-edit-all';
 
@@ -29,10 +30,27 @@ export default function initDFChatEdit() {
 		Hooks.on('renderChatMessage', processChatMessage);
 		processAllMessages();
 	}
+
+	libWrapper.register(CONFIG.MOD_NAME, 'ChatLog.prototype._onChatKeyDown', (wrapper: Function, ...args: any) => {
+		const event = args[0] as KeyboardEvent;
+		const code = game.keyboard.getKey(event);
+		// We have used the Shift+Up combo to edit previously sent message
+		if (code === "ArrowUp" && event.shiftKey) {
+			event.preventDefault();
+			var messages = [...((ui.chat as any).collection as Map<string, ChatMessage>).values()];
+			// Perform an inverted sort ( n<0 before, n=0 same, n>0 after )
+			messages = messages.sort((a, b) => b.data.timestamp - a.data.timestamp);
+			const message = messages.find(x => x.data.user === game.user.id);
+			if (!message) return;
+			editChatMessage.bind(message)();
+		}
+		else
+			wrapper(...args);
+	}, 'MIXED');
 }
 
 // Will be bound to the instance of ChatMessage we are observing
-async function editChatMessage(this: ChatMessage) {
+function editChatMessage(this: ChatMessage) {
 	// Double check permissions
 	if (!game.settings.get(CONFIG.MOD_NAME, PREF_EDIT_ALLOWED)) {
 		ui.notifications.warn(game.i18n.localize('DF_CHAT_EDIT.Error_NoPermission'));
