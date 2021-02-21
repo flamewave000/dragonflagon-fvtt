@@ -2,12 +2,21 @@
 	<label style="flex:1 0 100%" for="dfal-journal">{{localize 'DF_CHAT_LOG.Config_JournalSelect'}}</label>
 	<select style="flex:1 0 100%" id="dfal-journal" name="dfal-journal">
 		<option value="">{{localize 'DF_CHAT_LOG.Config_NoSelection'}}</option>
-		{{#each journals as | journal |}}
+		{{#each logJournals as | journal |}}
 		<option value="{{journal.id}}"{{#if journal.selected}} selected{{/if}}>{{journal.name}}</option>
 		{{/each}}
 	</select>
 	<label style="flex:1 0" for="dfal-clear">{{localize 'DF_CHAT_LOG.Config_ClearContent'}}</label>
-	<input style="flex:0 0 auto" id="dfal-clear" type="checkbox" data-dtype="Boolean" name="dfal-clear" {{#if checked}} checked{{/if}}>
+	<input style="flex:0 0 auto" id="dfal-clear" type="checkbox" data-dtype="Boolean" name="dfal-clear">
+	<label style="flex:1 0 100%" for="dfal-journal-gm">{{localize 'DF_CHAT_LOG.Config_GMJournalSelect'}}</label>
+	<select style="flex:1 0 100%" id="dfal-journal-gm" name="dfal-journal-gm">
+		<option value="">{{localize 'DF_CHAT_LOG.Config_NoSelection'}}</option>
+		{{#each gmlogJournals as | journal |}}
+		<option value="{{journal.id}}"{{#if journal.selected}} selected{{/if}}>{{journal.name}}</option>
+		{{/each}}
+	</select>
+	<label style="flex:1 0" for="dfal-clear-gm">{{localize 'DF_CHAT_LOG.Config_GmClearContent'}}</label>
+	<input style="flex:0 0 auto" id="dfal-clear-gm" type="checkbox" data-dtype="Boolean" name="dfal-clear-gm">
 	<p style="flex:1 0 100%">{{localize 'DF_CHAT_LOG.Config_JournalPermissions'}}</p>
 	<button style="flex:1 0 100%" type="submit"><i class="fas fa-save"></i>{{localize 'SETTINGS.Save'}}</button>
 </form>

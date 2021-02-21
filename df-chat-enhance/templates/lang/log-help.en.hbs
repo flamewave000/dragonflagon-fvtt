@@ -3,9 +3,21 @@
 <h1>How to use the /log command</h1>
 
 {{#if isGM}}
-<h2>Adventure Log Setup</h2>
-<p>As a shortcut, you can use the following command to open the Adventure Log Config.</p>
-<code>/log config</code>
+<section style="background-color:rgba(255,128,0,0.2);padding:0.5em;margin-right:0.5em">
+	<h3><b>GM Only Info</b></h3>
+	<h2>Adventure Log Setup</h2>
+	<p>As a shortcut, you can use the following command to open the Adventure Log Config.</p>
+	<code>/log config</code>
+	<h2>GM Only Adventure Log</h2>
+	<p>You can replace <code>/log</code> with <code>/gmlog</code> for all of the below commands to add those events/quotes to the configured GM Only Adventure Log. If chat messages are turned on, GM Log entries will <b>always</b> be posted as <b>whispers</b> to yourself.</p>
+	<code>
+		/gmlog message...<br>
+		/gmlog e message...<br>
+		/gmlog event message...<br>
+		/gmlog q "Bobby McFerrin" message...<br>
+		/gmlog quote "Bobby McFerrin" message...
+	</code>
+</section>
 {{/if}}
 
 <h2>General Event (default)</h2>
@@ -30,13 +42,13 @@
 </table>
 
 <p>You do not need to add quotes around the Source Name, unless there are spaces in the name. Such as the following:</p>
-<code>/log q Bob Marley Don't worry, be happy!</code>
+<code>/log q Bobby McFerrin Don't worry, be happy!</code>
 <p>Will output into the log</p>
-<code>[<span class="dfal-ts">2021-02-12 4:35PM</span>] (<span class="dfal-na">Susan</span>) Bob said: <span class="dfal-qu">"Marley Don't worry, be happy!"</span></code>
+<code>[<span class="dfal-ts">2021-02-12 4:35PM</span>] (<span class="dfal-na">Susan</span>) Bobby said: <span class="dfal-qu">"McFerrin Don't worry, be happy!"</span></code>
 
 <p>Instead if you add quotes around the name, it will allow the spaces.</p>
-<code>/log q "Bob Marley" Don't worry, be happy!</code>
+<code>/log q "Bobby McFerrin" Don't worry, be happy!</code>
 <p>Will output into the log</p>
-<code>[<span class="dfal-ts">2021-02-12 4:35PM</span>] (<span class="dfal-na">Susan</span>) Bob Marley said: <span class="dfal-qu">"Don't worry, be happy!"</span></code>
+<code>[<span class="dfal-ts">2021-02-12 4:35PM</span>] (<span class="dfal-na">Susan</span>) Bobby McFerrin said: <span class="dfal-qu">"Don't worry, be happy!"</span></code>
 
 </article>

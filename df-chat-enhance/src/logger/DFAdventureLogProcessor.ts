@@ -35,7 +35,8 @@ export default class DFAdventureLogProcessor {
 	static readonly PREF_GMONLY = 'df-log-gmonly';
 	static readonly PREF_GMONLY_WHISPER = 'df-log-gmonly-whisper';
 	static readonly PREF_MESSAGES = 'df-log-messages';
-	static command: ChatCommand = null;
+	static logCommand: ChatCommand = null;
+	static gmlogCommand: ChatCommand = null;
 
 	static initialise() {
 		// Initialize libWrapper
@@ -43,7 +44,7 @@ export default class DFAdventureLogProcessor {
 			const options = wrapped(...args) as ContextMenu.Option[];
 			options.push({
 				name: 'DF_CHAT_LOG.ContextMenu_AsEvent',
-				icon: '<i class="fas fa-edit"></i>',
+				icon: '<i style="color:SeaGreen" class="fas fa-edit"></i>',
 				condition: () => {
 					const enabled = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE);
 					const isGM = game.user.isGM;
@@ -52,13 +53,13 @@ export default class DFAdventureLogProcessor {
 				},
 				callback: (header) => {
 					const chatData = ((ui.chat as any).collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
-					DFAdventureLogProcessor._commandProcessor(chatData.content);
+					DFAdventureLogProcessor._commandProcessor(chatData.content, false);
 					return {};
 				}
 			});
 			options.push({
 				name: 'DF_CHAT_LOG.ContextMenu_AsQuote',
-				icon: '<i class="fas fa-quote-right"></i>',
+				icon: '<i style="color:SeaGreen" class="fas fa-quote-right"></i>',
 				condition: () => {
 					const enabled = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE);
 					const isGM = game.user.isGM;
@@ -68,9 +69,42 @@ export default class DFAdventureLogProcessor {
 				callback: (header) => {
 					const chatData = ((ui.chat as any).collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
 					if (chatData.content.trimStart().startsWith('"'))
-						DFAdventureLogProcessor._commandProcessor('q ' + chatData.content);
+						DFAdventureLogProcessor._commandProcessor('q ' + chatData.content, false);
 					else
-						DFAdventureLogProcessor._commandProcessor(`q "${game.users.get(chatData.user).name}" ${chatData.content}`);
+						DFAdventureLogProcessor._commandProcessor(`q "${game.users.get(chatData.user).name}" ${chatData.content}`, false);
+					return {};
+				}
+			});
+			options.push({
+				name: 'DF_CHAT_LOG.ContextMenu_AsGmEvent',
+				icon: '<i style="color:FireBrick" class="fas fa-edit"></i>',
+				condition: () => {
+					const enabled = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE);
+					const isGM = game.user.isGM;
+					const gmOnly = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_GMONLY);
+					return enabled && (!gmOnly || isGM);
+				},
+				callback: (header) => {
+					const chatData = ((ui.chat as any).collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+					DFAdventureLogProcessor._commandProcessor(chatData.content, true);
+					return {};
+				}
+			});
+			options.push({
+				name: 'DF_CHAT_LOG.ContextMenu_AsGmQuote',
+				icon: '<i style="color:FireBrick" class="fas fa-quote-right"></i>',
+				condition: () => {
+					const enabled = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE);
+					const isGM = game.user.isGM;
+					const gmOnly = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_GMONLY);
+					return enabled && (!gmOnly || isGM);
+				},
+				callback: (header) => {
+					const chatData = ((ui.chat as any).collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+					if (chatData.content.trimStart().startsWith('"'))
+						DFAdventureLogProcessor._commandProcessor('q ' + chatData.content, true);
+					else
+						DFAdventureLogProcessor._commandProcessor(`q "${game.users.get(chatData.user).name}" ${chatData.content}`, true);
 					return {};
 				}
 			});
@@ -87,7 +121,7 @@ export default class DFAdventureLogProcessor {
 			type: Boolean,
 			default: true,
 			onChange: (enabled: Boolean) => {
-				if (!enabled && !!DFAdventureLogProcessor.command)
+				if (!enabled && !!DFAdventureLogProcessor.logCommand)
 					DFAdventureLogProcessor.deregisterCommand();
 				else
 					DFAdventureLogProcessor.registerCommand();
@@ -115,7 +149,6 @@ export default class DFAdventureLogProcessor {
 			default: false,
 			config: true
 		});
-
 		game.settings.register(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_MESSAGES, {
 			name: 'DF_CHAT_LOG.Setting_PrintMessagesName',
 			hint: 'DF_CHAT_LOG.Setting_PrintMessagesHint',
@@ -133,37 +166,49 @@ export default class DFAdventureLogProcessor {
 	}
 
 	static deregisterCommand() {
-		(game as GameExt).chatCommands.deregisterCommand(DFAdventureLogProcessor.command);
-		DFAdventureLogProcessor.command = null;
+		(game as GameExt).chatCommands.deregisterCommand(DFAdventureLogProcessor.logCommand);
+		if(!!DFAdventureLogProcessor.gmlogCommand)
+			(game as GameExt).chatCommands.deregisterCommand(DFAdventureLogProcessor.gmlogCommand);
+		DFAdventureLogProcessor.logCommand = null;
+		DFAdventureLogProcessor.gmlogCommand = null;
 	}
 	static registerCommand() {
 		if (!game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE))
 			return;
 		if (game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_GMONLY) && !game.user.isGM)
 			return;
-		if (!!DFAdventureLogProcessor.command)
+		if (!!DFAdventureLogProcessor.logCommand)
 			return;
 
-		DFAdventureLogProcessor.command = (game as GameExt).chatCommands.createCommandFromData({
+		DFAdventureLogProcessor.logCommand = (game as GameExt).chatCommands.createCommandFromData({
 			commandKey: "/log",
-			invokeOnCommand: DFAdventureLogProcessor._chatCommandHandler,
+			invokeOnCommand: async (_cl: any, msg: string, _cd: any) => await DFAdventureLogProcessor._commandProcessor(msg, false),
 			shouldDisplayToChat: false,
 			iconClass: "fa-edit",
 			description: game.i18n.localize("DF_CHAT_LOG.CommandDescription")
 		});
-		(game as GameExt).chatCommands.registerCommand(DFAdventureLogProcessor.command);
+		(game as GameExt).chatCommands.registerCommand(DFAdventureLogProcessor.logCommand);
+
+		// If we are not the GM, early return to avoid registering the /gmlog command
+		if(!game.user.isGM) return;
+		// Register the /gmlog command
+		DFAdventureLogProcessor.gmlogCommand = (game as GameExt).chatCommands.createCommandFromData({
+			commandKey: "/gmlog",
+			invokeOnCommand: async (_cl: any, msg: string, _cd: any) => await DFAdventureLogProcessor._commandProcessor(msg, true),
+			shouldDisplayToChat: false,
+			iconClass: "fa-edit",
+			description: game.i18n.localize("DF_CHAT_LOG.GMCommandDescription")
+		});
+		(game as GameExt).chatCommands.registerCommand(DFAdventureLogProcessor.gmlogCommand);
 	}
 
 	private static logConfig: DFAdventureLogConfig = null;
-	private static async _chatCommandHandler(_chatLog: ChatLog, messageText: string, _chatData: ChatMessage.ChatData): Promise<void> {
-		await DFAdventureLogProcessor._commandProcessor(messageText);
-	}
-	private static async _commandProcessor(messageText: string): Promise<void> {
+	private static async _commandProcessor(messageText: string, gmLog: boolean): Promise<void> {
 		messageText = messageText.trim();
 		const tokens = messageText.split(' ');
 
 		if (!game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE)) {
-			(game as GameExt).chatCommands.deregisterCommand(DFAdventureLogProcessor.command);
+			(game as GameExt).chatCommands.deregisterCommand(DFAdventureLogProcessor.logCommand);
 			ui.notifications.warn(game.i18n.localize('DF_CHAT_LOG.Error_Disabled'));
 			return;
 		}
@@ -267,7 +312,8 @@ export default class DFAdventureLogProcessor {
 				break;
 		}
 
-		const journalId = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL) as string;
+		// fetch the log to submit to
+		const journalId = game.settings.get(CONFIG.MOD_NAME, gmLog ? DFAdventureLogConfig.PREF_JOURNAL_GM : DFAdventureLogConfig.PREF_JOURNAL) as string;
 		if (!game.journal.has(journalId)) {
 			if (game.user.isGM)
 				ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error_NoJournalSetGM'), { permanent: true });
@@ -286,9 +332,7 @@ export default class DFAdventureLogProcessor {
 			article = html.find('article.df-adventure-log');
 		}
 		article.append(messageHtml);
-		await journal.update({
-			content: $('<div></div>').append(html).html()
-		});
+		await journal.update({ content: $('<div></div>').append(html).html() });
 		const rollType = game.settings.get("core", "rollMode");
 		if (game.user.isGM) {
 			if (
@@ -302,6 +346,11 @@ export default class DFAdventureLogProcessor {
 				messageData.whisper = [game.user.id];
 			}
 		}
+		// All GM logs are whispered
+		if (gmLog) {
+			messageData.whisper = [game.user.id];
+		}
+		// Post message to chat if Messages are enabled
 		if (game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_MESSAGES))
 			await ChatMessage.create(messageData as any, {});
 	}
