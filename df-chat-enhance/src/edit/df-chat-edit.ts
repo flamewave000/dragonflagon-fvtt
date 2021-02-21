@@ -76,6 +76,9 @@ function processAllMessages() {
 }
 
 function processChatMessage(chatMessage: ChatMessage, html: JQuery<HTMLElement>, data: any) {
+	// If we are catching the render of an archived message
+	if(!((ui.chat as any).collection as Map<string, ChatMessage>).has(chatMessage.id))
+		return;
 	// If an edit button has already been placed
 	if (html.find('a.button.message-edit').length != 0) {
 		html.find('a.button.message-edit').remove();// remove the old edit button
