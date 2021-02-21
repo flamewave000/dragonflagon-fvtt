@@ -6,6 +6,7 @@ const sm = require('gulp-sourcemaps');
 const zip = require('gulp-zip');
 const rename = require('gulp-rename');
 const minify = require('gulp-minify');
+const tabify = require('gulp-tabify');
 
 const GLOB = '**/*';
 const DIST = 'dist/';
@@ -35,10 +36,11 @@ function buildSource(keepSources, minifySources = false, output = null) {
 		stream = stream.pipe(ts.createProject("../tsconfig.json")())
 		if (keepSources) stream = stream.pipe(sm.write())
 		if (minifySources) stream = stream.pipe(minify({
-			ext: {min:'.js'},
+			ext: { min: '.js' },
 			mangle: false,
 			noSource: true
 		}));
+		else stream = stream.pipe(tabify(4, false));
 		return stream.pipe(gulp.dest((output || DIST) + SOURCE));
 	}
 }
@@ -146,7 +148,7 @@ exports.dev = gulp.series(
 exports.zip = gulp.series(
 	pdel([DIST])
 	, gulp.parallel(
-		buildSource(false, true)
+		buildSource(false, false)
 		, buildManifest()
 		, outputLanguages()
 		, outputTemplates()
@@ -174,10 +176,10 @@ exports.watch = function () {
 exports.devWatch = function () {
 	const devDist = DEV_DIST();
 	exports.dev();
-	gulp.watch(SOURCE + GLOB, gulp.series(plog('deleting: '+ devDist + SOURCE + GLOB), pdel(devDist + SOURCE + GLOB, {force: true}), buildSource(true, false, devDist), plog('sources done.')));
+	gulp.watch(SOURCE + GLOB, gulp.series(plog('deleting: ' + devDist + SOURCE + GLOB), pdel(devDist + SOURCE + GLOB, { force: true }), buildSource(true, false, devDist), plog('sources done.')));
 	gulp.watch(['module.json', 'package.json'], gulp.series(reloadPackage, buildManifest(devDist), plog('manifest done.')));
-	gulp.watch(LANG + GLOB, gulp.series(pdel(devDist + LANG + GLOB, {force: true}), outputLanguages(devDist), plog('langs done.')));
-	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(devDist + TEMPLATES + GLOB, {force: true}), outputTemplates(devDist), plog('templates done.')));
-	gulp.watch(CSS + GLOB, gulp.series(pdel(devDist + CSS + GLOB, {force: true}), outputStylesCSS(devDist), plog('css done.')));
+	gulp.watch(LANG + GLOB, gulp.series(pdel(devDist + LANG + GLOB, { force: true }), outputLanguages(devDist), plog('langs done.')));
+	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(devDist + TEMPLATES + GLOB, { force: true }), outputTemplates(devDist), plog('templates done.')));
+	gulp.watch(CSS + GLOB, gulp.series(pdel(devDist + CSS + GLOB, { force: true }), outputStylesCSS(devDist), plog('css done.')));
 	gulp.watch(['../LICENSE', 'README.md', 'CHANGELOG.md'], gulp.series(outputMetaFiles(devDist), plog('metas done.')));
 }
