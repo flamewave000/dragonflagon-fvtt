@@ -33,7 +33,7 @@ export default class DFChatEditor extends FormApplication {
 		});
 	}
 
-	_updateObject(_event?: any, formData?: any): void {
+	async _updateObject(_event?: any, formData?: any) {
 		var data = formData.content as string;
 		data = data.replace(/\r?\n/gm, '<br/>');
 		if (data.search(/\<p +class="df-edited"\>/) < 0) {

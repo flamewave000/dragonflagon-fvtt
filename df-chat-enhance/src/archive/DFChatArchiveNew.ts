@@ -32,7 +32,7 @@ export default class DFChatArchiveNew extends FormApplication {
 		return data;
 	}
 
-	_updateObject(_event?: any, formData?: any): void {
+	async _updateObject(_event?: any, formData?: any) {
 		game.settings.set(CONFIG.MOD_NAME, DFChatArchiveNew.PREF_DELETE, formData.delete);
 
 		const name = formData.name;
@@ -64,7 +64,7 @@ export default class DFChatArchiveNew extends FormApplication {
 		}
 	}
 
-	_renderInner(data: object, options?: any): Promise<JQuery<HTMLElement>> {
+	_renderInner(data: any, options?: any): Promise<JQuery<HTMLElement>> {
 		return super._renderInner(data, options)
 			.then((html) => {
 				const from = html.find('#dfca-from');

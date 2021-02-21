@@ -56,7 +56,6 @@ export default class DFChatArchiveManager extends Application {
 				title: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveTitle'),
 				content: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveContent').replace('{name}', archive.name),
 				defaultYes: false,
-				no: () => { },
 				yes: async () => await DFChatArchive.deleteChatArchive(id)
 			});
 		});
@@ -72,13 +71,11 @@ export default class DFChatArchiveManager extends Application {
 			await Dialog.confirm({
 				title: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllTitle'),
 				content: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllMessage1'),
-				no: () => { },
 				defaultYes: false,
 				yes: async () => {
 					await Dialog.confirm({
 						title: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllTitle'),
 						content: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllMessage2'),
-						no: () => { },
 						defaultYes: false,
 						yes: async () => {
 							await DFChatArchive.deleteAll();
@@ -90,7 +87,7 @@ export default class DFChatArchiveManager extends Application {
 		});
 	}
 
-	close(options: {} = {}): Promise<void> {
+	close(options: {} = {}): Promise<unknown> {
 		DFChatArchive.setUpdateListener(null);
 		return super.close(options);
 	}

@@ -41,7 +41,7 @@ export default class DFAdventureLogProcessor {
 	static initialise() {
 		// Initialize libWrapper
 		libWrapper.register(CONFIG.MOD_NAME, 'ChatLog.prototype._getEntryContextOptions', function (wrapped: Function, ...args: any) {
-			const options = wrapped(...args) as ContextMenu.Option[];
+			const options = wrapped(...args) as ContextMenu.Item[];
 			options.push({
 				name: 'DF_CHAT_LOG.ContextMenu_AsEvent',
 				icon: '<i style="color:SeaGreen" class="fas fa-edit"></i>',

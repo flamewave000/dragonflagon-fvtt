@@ -34,7 +34,7 @@ export default class DFChatArchiveViewer extends Application {
 
 	_renderInner(data: {}, options?: any): Promise<JQuery> {
 		return super._renderInner(data, options)
-			.then(async (html) => {
+			.then(async (html: JQuery<HTMLElement>) => {
 				html.find("#visible").on('change', async (element) => {
 					this.archive.visible = (element.target as HTMLInputElement).checked;
 					await DFChatArchive.updateChatArchive(this.archive);
@@ -145,7 +145,7 @@ export default class DFChatArchiveViewer extends Application {
 				return html;
 			});
 	}
-	close(options = {}): Promise<void> {
+	close(options: Application.CloseOptions = {}): Promise<unknown> {
 		this.onCloseCallBack(this);
 		return super.close(options);
 	}
