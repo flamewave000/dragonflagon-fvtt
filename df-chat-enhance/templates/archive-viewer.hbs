@@ -1,7 +1,11 @@
 <section class="sidebar-tab tab flexcol" id="{{logId}}" data-tab="chat" style="display:flex">
-	<h2>{{#if isGM}}<a id="edit" style="button"><i class="fas fa-pencil-alt"></i></a> {{/if}}{{name}}</h2>
+	<h2 style="display:flex;align-items:center">
+		{{#if isGM}}<a id="edit" style="flex:0 0 auto;margin-right:0.5em"><i class="fas fa-pencil-alt"></i></a> {{/if}}
+		<span style="flex:1 0">{{name}}</span>
+		{{#if isGM}}<button id="merge" title="{{localize 'DF_CHAT_ARCHIVE.ArchiveViewer_Merge'}}" style="flex:0 0 auto;margin:0.25em 0;width:auto"><i class="fas fa-sitemap" style="margin:0"></i></button>{{/if}}
+	</h2>
 	{{#if isGM}}
-	<div style="display:flex;flex:0 0 auto;color:#FFF">
+	<div style="display:flex;flex:0 0 auto;color:#FFF;flex-flow:row wrap">
 	<input id="visible" type="checkbox"{{#if visible}} checked{{/if}}/><label for="visible" style="margin:auto 0">{{localize 'DF_CHAT_ARCHIVE.ArchiveViewer_Visible'}}</label>
 	</div>
 	{{/if}}

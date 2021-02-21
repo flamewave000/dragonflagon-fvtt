@@ -38,9 +38,9 @@ export class DFChatArchive {
 		this._logs = JSON.parse(game.settings.get(CONFIG.MOD_NAME, DFChatArchive.PREF_LOGS));
 	}
 
-	static getLogs() { return this._logs; }
-	static getArchive(id: number) { return this._logs.find(x => x.id == id); }
-	static exists(id: number) { return !!this._logs.find(x => x.id == id); }
+	static getLogs(): DFChatArchiveEntry[] { return this._logs; }
+	static getArchive(id: number): DFChatArchiveEntry { return this._logs.find(x => x.id == id); }
+	static exists(id: number): boolean { return !!this._logs.find(x => x.id == id); }
 
 	static async createChatArchive(name: string, chats: ChatMessage[], visible: boolean): Promise<DFChatArchiveEntry> {
 		var newId = (game.settings.get(CONFIG.MOD_NAME, DFChatArchive.PREF_CID) as number) + 1;

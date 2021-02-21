@@ -7,10 +7,11 @@
 - Chat Archive
 	- GMs can now set the player visibility of Chat Archives. This will allow players to view chat archives the GM has allowed them to see.
 	- GMs can now delete individual messages in Chat Archives.
+	- Archive Merging! You can now merge other archives into the one currently being viewed!
 - Chat Editing
 	- You can now select the text in the "Original Message" area.
-	- NEW! Shift-Up keyboard combo to edit your last sent message. Simply press and hold Shift, then press the Up key and release. This keyboard shortcute will immediately display the edit message dialog for the most recent chat message you sent.
-- Roll Type Buttons: Adjusted colours to be more pleasing to the eye (Yes this is subjective, but what're you gunna do about it!?). Don't worry, I've also tried to make them Accessible Colours for our colour impaired friends in the community 🙂 Each colour should be visually distinct from each other.
+	- NEW! Shift-Up keyboard combo to edit your last sent message. Simply press and hold Shift, then press the Up key and release. This keyboard shortcut will immediately display the edit message dialog for the most recent chat message you sent.
+- Roll Type Buttons: Adjusted colours to be more pleasing to the eye (Yes this is subjective, but what're you gunna do about it!?). Don't worry, I've also tried to use only Accessible Colours for our colour impaired friends in the community 🙂 Each colour should be visually distinct from each other and be within the AA specifications.
 
 ## Release 1.1.2 (2021-02-19)
 - Fixed Chat Commands initialization.
@@ -46,8 +47,10 @@
 - First Alpha release with the core functionality of Chat Archive and Roll Selector Buttons.
 - Missing: French Translations
 
-## PreRelease 0.0.2
+## Pre-Release 0.0.2
+
 - Chat roll privacy selector as buttons feature.
 
-## PreRelease 0.0.1
+## Pre-Release 0.0.1
+
 - Core Chat Archive functionality and features.

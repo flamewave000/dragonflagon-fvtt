@@ -68,6 +68,46 @@ export default class DFChatArchiveViewer extends Application {
 						dialog.render(true);
 					}, 1);
 				});
+				html.find('#merge').on('click', async () => {
+					if(DFChatArchive.getLogs().length == 1) {
+						ui.notifications.info(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_Merge_OnlyOneArchive'));
+						return;
+					}
+					const dialog: Dialog = new Dialog({
+						title: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Title'),
+						default: 'merge',
+						content: await renderTemplate('modules/df-chat-enhance/templates/archive-merge.hbs', {
+							name: this.archive.name,
+							archives: DFChatArchive.getLogs().filter(x => x.id != this.archive.id)
+						}),
+						buttons: {
+							cancel: {
+								icon: '<i class="fas fa-times"></i>',
+								label: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Cancel'),
+								callback: async () => await dialog.close()
+							},
+							merge: {
+								icon: '<i class="fas fa-sitemap"></i>',
+								label: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Merge'),
+								callback: async (html) => {
+									const val = $(html).find('#archive').val() as string;
+									if (isNaN(parseInt(val))) return;
+									const id = parseInt(val);
+									const source = DFChatArchive.getLogs().find(x => x.id == id);
+									this.archive.chats = (this.archive.chats as ChatMessage.Data[])
+										.concat(source.chats as ChatMessage.Data[])
+										.sort((a, b) => a.timestamp - b.timestamp);
+									DFChatArchive.updateChatArchive(this.archive);
+									this.render(false);
+									if (($(html).find('#delete')[0] as HTMLInputElement).checked) {
+										DFChatArchive.deleteChatArchive(id);
+									}
+								}
+							}
+						}
+					});
+					await dialog.render(true);
+				});
 
 				const log = html.find('#df-chat-log');
 				const messageHtml = [];
@@ -93,7 +133,7 @@ export default class DFChatArchiveViewer extends Application {
 									await DFChatArchive.updateChatArchive(this.archive);
 									$(messageHtml).hide(1000, () => messageHtml.remove());
 								}
-							})
+							});
 						});
 						messageHtml.push(html);
 					} catch (err) {

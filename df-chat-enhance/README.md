@@ -6,6 +6,7 @@ Multiple improvements to the chat system feature set. Brings a new Chat Archive 
 	- [Config](#Config)
 	- [Log Command Help](#Log-Command-Help)
 	- [Log Commands](#Log-Commands)
+	  - [GM Only Log](#GM-Only-Log)
 	  - [Right-Click Add to Log](#Right-Click-Add-to-Log)
 	  - [Quote Sources](#Quote-Sources)
 - [Roll Selector Buttons](#roll-selector-buttons)
@@ -13,6 +14,9 @@ Multiple improvements to the chat system feature set. Brings a new Chat Archive 
 	- [Create Archive](#Create-Archive)
 		- [Create Chat Archive Window](#Create-Chat-Archive-Window)
 	- [Manage Chat Archives](#Manage-Chat-Archives)
+		- [Edit Archive Name](#Edit-Archive-Name)
+		- [Delete Messages](#Delete-Messages)
+		- [Archive Merging](#Archive-Merging)
 - [Edit Sent Messages](#Edit-Sent-Messages)
 	- [Edit Last Message Keyboard Shortcut](#Edit-Last-Message-Keyboard-Shortcut)
 
@@ -41,7 +45,7 @@ At any time you can simply enter `/log` into the chat to display the help dialog
 | General Event | `/log ...message`<br />`/log e ...message`<br />`/log event ...message` | Logs a simple event message to the adventure log. |
 | Quote | `/log q <source> ...message`<br />`/log quote <source> ...message`<br />`/log q "<source with spaces" ...message`<br />`/log quote "<source with spaces" ...message` | Adds an entry Quote of the "Source". |
 
-### GM Only Log
+#### GM Only Log
 
 For any of the above commands, you can use `/gmlog` instead and the event/quote will be sent to the GM Only Adventure Log instead.
 
@@ -67,8 +71,7 @@ Will output into the log
 
 > [2021-02-12 4:35PM] (Susan) Bobby McFerrin said: "Don't worry, be happy!"
 
-
-## Roll Selector Buttons
+## Roll Selector Buttons ![Roll Types](../.assets/df-chat-enhance-privacy-roll-types.png)
 
 | Players | Game Masters |
 | :-: | :-: |
@@ -101,9 +104,21 @@ The windows is fairly self explanatory, you can select all the current chat mess
 
 You can view and delete archives from the archive manager. You'll find the ![manage chat archive](../.assets/df-chat-enhance-archive-manage-button.png) button in the sidebar settings tab. You can also see which ones are visible to your players
 
-|Manage Archives|View Archive|Edit Archive Name|
-|:-:|:-:|:-:|
-|![Manage archives](../.assets/df-chat-enhance-archive-manage.png)|![View archive](../.assets/df-chat-enhance-archive-viewer.png)|![View archive](../.assets/df-chat-enhance-archive-edit.png)|
+#### Edit Archive Name
+
+GMs will see a simple Pencil icon next to the Archive's name. Clicking this will open the name editing dialog.
+
+#### Delete Messages
+
+GMs will see the typical Trash Can button on archived messages that allows them to delete them individually.
+
+#### Archive Merging
+
+When viewing a Chat Archive, GMs will see a Merge button in the top right corner. This button presents a Dialog where you can select one of your other archives which can be merged into the one currently being viewed. It also gives a checkbox that if checked will delete the other archive that is being merged into the currently viewed one.
+
+|Manage Archives|View Archive|Edit Archive Name|Archive Merge|
+|:-:|:-:|:-:|:-:|
+|![Manage archives](../.assets/df-chat-enhance-archive-manage.png)|![View archive](../.assets/df-chat-enhance-archive-viewer.png)|![Edit archive](../.assets/df-chat-enhance-archive-edit.png)|![Merge archive](../.assets/df-chat-enhance-archive-merge.png)|
 
 ## Edit Sent Messages
 
