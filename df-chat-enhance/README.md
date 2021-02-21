@@ -6,15 +6,14 @@ Multiple improvements to the chat system feature set. Brings a new Chat Archive 
 	- [Config](#Config)
 	- [Log Command Help](#Log-Command-Help)
 	- [Log Commands](#Log-Commands)
-		- [Quote Sources](#Quote-Sources)
+	  - [Right-Click Add to Log](#Right-Click-Add-to-Log)
+	  - [Quote Sources](#Quote-Sources)
 - [Roll Selector Buttons](#roll-selector-buttons)
 - [Chat Archive](#Chat-Archive)
 	- [Create Archive](#Create-Archive)
 		- [Create Chat Archive Window](#Create-Chat-Archive-Window)
 	- [Manage Chat Archives](#Manage-Chat-Archives)
-	- [Future planned archive features](#Future-planned-archive-features)
 - [Edit Sent Messages](#Edit-Sent-Messages)
-- [Future planned improvements](#Future-planned-improvements)
 
 ##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
 
@@ -28,7 +27,7 @@ Access the config through the settings, or by entering `/log config` into the ch
 
 **It is NOT recommended for you to change anything in the section between the header and the horizontal line that denotes the end of the log**
 
-![](../.assets/df-chat-enhance-log-config.png)
+![](../.assets/df-chat-enhance-log-config.png) ![](../.assets/df-chat-enhance-log-config-select.png)
 
 ### Log Command Help
 
@@ -41,21 +40,31 @@ At any time you can simply enter `/log` into the chat to display the help dialog
 | General Event | `/log ...message`<br />`/log e ...message`<br />`/log event ...message` | Logs a simple event message to the adventure log. |
 | Quote | `/log q <source> ...message`<br />`/log quote <source> ...message`<br />`/log q "<source with spaces" ...message`<br />`/log quote "<source with spaces" ...message` | Adds an entry Quote of the "Source". |
 
-![](../.assets/df-chat-enhance-log-entries.png) ![](../.assets/df-chat-enhance-log-messages.png)
+### GM Only Log
+
+For any of the above commands, you can use `/gmlog` instead and the event/quote will be sent to the GM Only Adventure Log instead.
+
+![](../.assets/df-chat-enhance-log-entries.png)
+![](../.assets/df-chat-enhance-gmlog-entries.png)
+![](../.assets/df-chat-enhance-log-messages.png) ![](../.assets/df-chat-enhance-log-add-from-chat.png)
+
+#### Right-Click Add to Log
+
+You can right-click chat messages to add their contents as an Event or as a Quote. When adding as a quote, it will use the original message's sender as the [Quote Source](#Quote-Sources)
 
 #### Quote Sources
 
 You do not need to add quotes around the Source Name, unless there are spaces in the name. Such as the following:
-`/log q Bob Marley Don't worry, be happy!`
+`/log q Bobby McFerrin Don't worry, be happy!`
 Will output into the log
 
-> [2021-02-12 4:35PM] (Susan) Bob said: "Marley Don't worry, be happy!"
+> [2021-02-12 4:35PM] (Susan) Bobby said: "McFerrin Don't worry, be happy!"
 
 Instead if you add quotes around the name, it will allow the spaces.
-`/log q "Bob Marley" Don't worry, be happy!`
+`/log q "Bobby McFerrin" Don't worry, be happy!`
 Will output into the log
 
-> [2021-02-12 4:35PM] (Susan) Bob Marley said: "Don't worry, be happy!"
+> [2021-02-12 4:35PM] (Susan) Bobby McFerrin said: "Don't worry, be happy!"
 
 
 ## Roll Selector Buttons
@@ -89,11 +98,11 @@ The windows is fairly self explanatory, you can select all the current chat mess
 
 ### Manage Chat Archives
 
-You can view and delete archives from the archive manager. You'll find the ![manage chat archive](../.assets/df-chat-enhance-archive-manage-button.png) button in the sidebar settings tab.
+You can view and delete archives from the archive manager. You'll find the ![manage chat archive](../.assets/df-chat-enhance-archive-manage-button.png) button in the sidebar settings tab. You can also see which ones are visible to your players
 
-|Manage Archives|View Archive|
-|:-:|:-:|
-|![Manage archives](../.assets/df-chat-enhance-archive-manage.png)|![View archive](../.assets/df-chat-enhance-archive-viewer.png)|
+|Manage Archives|View Archive|Edit Archive Name|
+|:-:|:-:|:-:|
+|![Manage archives](../.assets/df-chat-enhance-archive-manage.png)|![View archive](../.assets/df-chat-enhance-archive-viewer.png)|![View archive](../.assets/df-chat-enhance-archive-edit.png)|
 
 ## Edit Sent Messages
 
@@ -101,14 +110,3 @@ You will now see a little edit button in the top right of messages you are allow
 
 ![](../.assets/df-chat-enhance-edit-message.png)
 
-## Future planned improvements
-
-### Message Archive
-
-- Delete individual messages from an archive.
-- Rename an archive.
-- Combine two archives together (sorted by time and removing any duplicate entries).
-- Allow GMs to set permissions on archives for players
-
-### Message Editor
-- Use [Shift + Up] (or some other combo) to quickly edit the last message sent
