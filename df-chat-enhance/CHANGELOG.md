@@ -6,7 +6,7 @@
 	- NEW! `/gmlog` command. You can now configure a GM Only log, separate from the general Adventure Log. This way you can make private note taking directly from the chat log without revealing the events to your players. This was sort of possible before by setting your settings in a certain way, but this is definitely simpler and a nice way to have both options.
 - Chat Archive: GMs can now set the player visibility of Chat Archives. This will allow players to view chat archives the GM has allowed them to see.
 - Chat Editing: you can now select the text in the "Original Message" area.
-- Roll Type Buttons: Adjusted colours to be more pleasing to the eye. (Yes this is subjective, but what're you gunna do about it!?)
+- Roll Type Buttons: Adjusted colours to be more pleasing to the eye (Yes this is subjective, but what're you gunna do about it!?). Don't worry, I've also tried to make them Accessible Colours for our colour impaired friends in the community 🙂 Each colour should be visually distinct from each other.
 
 ## Release 1.1.2 (2021-02-19)
 - Fixed Chat Commands initialization.
