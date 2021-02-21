@@ -326,7 +326,7 @@ export default class DFAdventureLogProcessor {
 		var messageHtml = $(messageText);
 		var article = html.find('article.df-adventure-log');
 		if (article.length == 0) {
-			await DFAdventureLogConfig.initializeJournal(false);
+			await DFAdventureLogConfig.initializeJournal(journalId, false, gmLog);
 			html = $(journal.data.content);
 			messageHtml = $(messageText);
 			article = html.find('article.df-adventure-log');
