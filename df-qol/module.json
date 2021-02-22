@@ -17,5 +17,8 @@
 	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/README.md",
 	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/CHANGELOG.md",
 	"manifestPlusVersion": "1.0.0",
-	"authors": [ { "name": "flamewave000", "discord": "flamewave000#6766", "url": "https://github.com/flamewave000" } ]
+	"authors": [ { "name": "flamewave000", "discord": "flamewave000#6766", "url": "https://github.com/flamewave000" } ],
+	"media": [
+		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" }
+	]
 }

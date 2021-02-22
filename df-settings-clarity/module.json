@@ -23,6 +23,7 @@
 	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues/new/choose",
 	"authors": [ { "name": "flamewave000", "discord": "flamewave000#6766", "url": "https://github.com/flamewave000" } ],
 	"media": [
-		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-settings-clarity.png" }
+		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-settings-clarity.png" },
+		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" }
 	]
 }
