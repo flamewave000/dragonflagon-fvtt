@@ -25,7 +25,7 @@ class DFSettingsClarity {
 
 	static formatName(name: string, data: ClientSettings.PartialData<any> | ClientSettings.PartialMenuSettings): string {
 		if (name.startsWith('👤') || name.startsWith('🌎'))
-			return;
+			return name;
 		var scope;
 		if (!!(data as ClientSettings.PartialData<any>).scope)
 			scope = DFSettingsClarity.types.includes((data as ClientSettings.PartialData<any>).scope)
@@ -34,11 +34,11 @@ class DFSettingsClarity {
 		else if (!!(data as ClientSettings.PartialMenuSettings).restricted)
 			scope = (data as ClientSettings.PartialMenuSettings) ? 'world' : 'client';
 		else {
-			console.warn('Unknown restriction on registered setting for ' + name + '"');
-			return name;
+			console.warn('Unknown restriction/scope on registered setting for ' + name + '". Defaulting to "client"');
+			scope = 'client';
 		}
-		if (scope === 'client') return !name ? '👤 ' : '👤 ' + game.i18n.localize(name);
-		else if (scope === 'world') return !name ? '🌎 ' : '🌎 ' + game.i18n.localize(name);
+		if (scope === 'client') return !name ? '👤' : '👤 ' + game.i18n.localize(name);
+		else if (scope === 'world') return !name ? '🌎' : '🌎 ' + game.i18n.localize(name);
 		return name;
 	}
 
