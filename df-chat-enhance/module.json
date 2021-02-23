@@ -1,8 +1,8 @@
 {
-	"name": "{{name}}",
-	"title": "{{title}}",
-	"description": "{{description}}",
-	"version": "{{version}}",
+	"name": "df-chat-enhance",
+	"title": "DF Chat Enhancements",
+	"description": "Various enhancements to the chat features.",
+	"version": "2.0.0",
 	"author": "flamewave000#6766",
 	"minimumCoreVersion": "0.7.9",
 	"compatibleCoreVersion": "0.7.9",
@@ -10,23 +10,48 @@
 		{ "name": "_chatcommands" },
 		{ "name": "lib-wrapper" }
 	],
-	"esmodules": "{{sources}}",
-	"styles": "{{css}}",
-	"languages": [
-		{ "lang": "en", "name": "English", "path": "lang/en.json" }
+	"esmodules": [
+		"src/CONFIG.js",
+		"src/archive.js",
+		"src/df-chat-enhance.js",
+		"src/edit.js",
+		"src/logger.js",
+		"src/privacy.js",
+		"src/archive/DFChatArchive.js",
+		"src/archive/DFChatArchiveManager.js",
+		"src/archive/DFChatArchiveNew.js",
+		"src/archive/DFChatArchiveViewer.js",
+		"src/archive/df-chat-archive.js",
+		"src/logger/DFAdventureLogConfig.js",
+		"src/logger/DFAdventureLogProcessor.js",
+		"src/logger/df-adventure-log.js",
+		"src/logger/libWrapper.d.js",
+		"src/privacy/df-chat-privacy.js",
+		"src/edit/DFChatEditor.js",
+		"src/edit/df-chat-edit.js"
 	],
-	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}",
-	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/{{name}}/LICENSE",
-	"manifest":	"https://dragonflagon.cafe/mods/man/{{name}}",
-	"download":	"https://dragonflagon.cafe/mods/pak/{{name}}",
-	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/README.md",
-	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/CHANGELOG.md",
+	"styles": [
+		"css/adventure-log.css",
+		"css/archive-manager.css",
+		"css/archive-new.css",
+		"css/chat-editor.css",
+		"css/privacy-button.css"
+	],
+	"languages": [
+		{ "lang": "en", "name": "English", "path": "lang/en.json" },
+		{ "lang": "pt-BR", "name": "Português (Brasil)", "path": "lang/pt-BR.json"}
+	],
+	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-chat-enhance",
+	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/df-chat-enhance/LICENSE",
+	"manifest":	"https://dragonflagon.cafe/mods/man/df-chat-enhance",
+	"download":	"https://dragonflagon.cafe/mods/pak/df-chat-enhance",
+	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-chat-enhance/README.md",
+	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-chat-enhance/CHANGELOG.md",
 	"manifestPlusVersion": "1.0.0",
 	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues/new/choose",
 	"authors": [ { "name": "flamewave000", "discord": "flamewave000#6766", "url": "https://github.com/flamewave000" } ],
 	"media": [
 		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-chat-enhance-cover.png" },
-		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" }
 		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-chat-enhance-archive-new.png" },
 		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-chat-enhance-archive-manage.png" },
 		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-chat-enhance-archive-new-window.png" },

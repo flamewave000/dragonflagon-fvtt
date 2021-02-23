@@ -1,19 +1,29 @@
 {
-	"I18N.LANGUAGE": "Português (Brasil)",
-	"I18N.MAINTAINERS": "Renato Innocenti",
-	"DRAGON_FLAGON.Thumbnail_Label": "Substituição de imagem de visualização",
+	"DRAGON_FLAGON.Thumbnail_Label": "Substituir imagem da miniatura",
 	"DRAGON_FLAGON.Thumbnail_Hint": "Caminho da Miniatura",
-	"DRAGON_FLAGON.Thumbnail_Button": "Procurar Arquivos",
+	"DRAGON_FLAGON.Thumbnail_Button": "Buscar Arquivo",
+	
 	"DRAGON_FLAGON.Nav_NavigateMenuItem": "Navegar",
 	"DRAGON_FLAGON.Nav_SettingOnClick": "Navegar quando a cena for clicada",
-	"DRAGON_FLAGON.Nav_SettingOnClickHint": "Quando uma cena é clicada na barra lateral, ela é aberta apara navegação (Sempre verdadeiro para jogadores). ATUALIZAÇÕES NA PRÓXIMA ALTERAÇÃO DE CENA",
-	"DRAGON_FLAGON.Nav_SettingOnClickPC": "Ativar guia de Cenas para jogadores",
-	"DRAGON_FLAGON.Nav_SettingOnClickPCHint": "(requer atualização) Permitir que os jogadores usem a guia Cenas para realizar a navegação.",
-	"DRAGON_FLAGON.Nav_SettingOnClickJournal": "Navegue quando uma referência de cena é clicada em um Diário",
-	"DRAGON_FLAGON.Nav_SettingOnClickJournalHint": "Se uma entrada de diário contiver um link de Cena, clicar nele permitirá que você navegue até essa cena.",
+	"DRAGON_FLAGON.Nav_SettingOnClickHint": "Quando uma Cena for clicada na barra lateral, ela será aberta para navegação (sempre verdadeiro para jogadores). ATUALIZAÇÕES NA PRÓXIMA ALTERAÇÃO DE CENA",
+	"DRAGON_FLAGON.Nav_SettingOnClickPC": "Ativar Diretório de Cenas para jogadores",
+	"DRAGON_FLAGON.Nav_SettingOnClickPCHint": "(requer atualização) Permite que os jogadores acessem a aba Cenas para navegar entre elas.",
+	"DRAGON_FLAGON.Nav_SettingOnClickJournal": "Navegar quando uma referência de Cena é clicada em um Diário",
+	"DRAGON_FLAGON.Nav_SettingOnClickJournalHint": "Se um registro de Diário contiver um link de Cena, clicar nele permitirá que você navegue até ela.",
+	"DRAGON_FLAGON.Nav_SettingOnClickJournalOnlyOne": "Execute o link da Cena imediatamente se apenas uma opção estiver disponível",
+	"DRAGON_FLAGON.Nav_SettingOnClickJournalOnlyOneHint": "Se apenas uma opção estiver disponível, não exiba a caixa de diálogo e apenas execute a ação imediatamente.",
+	
 	"DRAGON_FLAGON.Dialog_JournalTitle": "Navegação de Cena: ",
 	"DRAGON_FLAGON.Dialog_JournalMessage": "Como você gostaria de abrir esta Cena?",
 	"DRAGON_FLAGON.Dialog_JournalNavigate": "Navegar",
 	"DRAGON_FLAGON.Dialog_JournalJournal": "Diário",
-	"DRAGON_FLAGON.Dialog_JournalConfig": "Config"
+	"DRAGON_FLAGON.Dialog_JournalConfig": "Config",
+	
+	"DRAGON_FLAGON.Ratio_Denominator": "Denominador",
+	"DRAGON_FLAGON.Ratio_Numerator": "Numerador",
+	"DRAGON_FLAGON.Ratio_LockRatio": "Travar razão",
+	"DRAGON_FLAGON.Ratio_SizeRatio": "Razão",
+	"DRAGON_FLAGON.Ratio_ApplyRatio": "Aplicar razão customizada para largura/altura",
+	"DRAGON_FLAGON.Ratio_Scale": "Escala",
+	"DRAGON_FLAGON.Ratio_ApplyScale": "Multiplicar largura/altura pela escala"
 }
