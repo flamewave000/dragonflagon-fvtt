@@ -2,7 +2,8 @@
 	"private": true,
 	"name": "df-qol",
 	"version": "1.0.0",
-	"description": "Adds various Quality of Life improvements. These are small, light-weight, adjustments done to work out some of the kinks in Core FoundryVTT.",
+	"title": "{{title}}",
+	"description": "{{description}}",
 	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/",
 	"scripts": {
 		"build": "npx gulp --gulpfile=../gulpfile.js --cwd=./",

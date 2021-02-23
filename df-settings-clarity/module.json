@@ -1,7 +1,7 @@
 {
 	"name": "{{name}}",
-	"title": "DF Settings Clarity",
-	"description": "Displays a tag next to each module setting, indicating if it is a World setting (GM Only) or a client setting (Per User).",
+	"title": "{{title}}",
+	"description": "{{description}}",
 	"version": "{{version}}",
 	"author": "flamewave000#6766",
 	"minimumCoreVersion": "0.6.5",

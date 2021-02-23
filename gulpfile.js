@@ -65,7 +65,9 @@ function buildManifest(output = null) {
 			fs.readFile('module.json', (err, data) => {
 				const module = data.toString() // Inject the data into the module.json
 					.replaceAll('{{name}}', PACKAGE.name)
+					.replaceAll('{{title}}', PACKAGE.title)
 					.replaceAll('{{version}}', PACKAGE.version)
+					.replaceAll('{{description}}', PACKAGE.description)
 					.replace('"{{sources}}"', JSON.stringify(js, null, '\t').replaceAll('\n', '\n\t'))
 					.replace('"{{css}}"', JSON.stringify(css, null, '\t').replaceAll('\n', '\n\t'));
 				fs.writeFile((output || DIST) + 'module.json', module, cb); // save the module to the distribution directory
@@ -164,7 +166,7 @@ exports.zip = gulp.series(
 exports.watch = function () {
 	exports.default();
 	gulp.watch(SOURCE + GLOB, gulp.series(pdel(DIST + SOURCE), buildSource(true, false)));
-	gulp.watch(['module.json', 'package.json'], buildManifest());
+	gulp.watch([SOURCE + GLOB, CSS + GLOB, 'module.json', 'package.json'], buildManifest());
 	gulp.watch(LANG + GLOB, gulp.series(pdel(DIST + LANG), outputLanguages()));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(DIST + TEMPLATES), outputTemplates()));
 	gulp.watch(CSS + GLOB, gulp.series(pdel(DIST + CSS), outputStylesCSS()));
@@ -177,7 +179,7 @@ exports.devWatch = function () {
 	const devDist = DEV_DIST();
 	exports.dev();
 	gulp.watch(SOURCE + GLOB, gulp.series(plog('deleting: ' + devDist + SOURCE + GLOB), pdel(devDist + SOURCE + GLOB, { force: true }), buildSource(true, false, devDist), plog('sources done.')));
-	gulp.watch(['module.json', 'package.json'], gulp.series(reloadPackage, buildManifest(devDist), plog('manifest done.')));
+	gulp.watch([SOURCE + GLOB, CSS + GLOB, 'module.json', 'package.json'], gulp.series(reloadPackage, buildManifest(devDist), plog('manifest done.')));
 	gulp.watch(LANG + GLOB, gulp.series(pdel(devDist + LANG + GLOB, { force: true }), outputLanguages(devDist), plog('langs done.')));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(devDist + TEMPLATES + GLOB, { force: true }), outputTemplates(devDist), plog('templates done.')));
 	gulp.watch(CSS + GLOB, gulp.series(pdel(devDist + CSS + GLOB, { force: true }), outputStylesCSS(devDist), plog('css done.')));

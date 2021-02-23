@@ -1,7 +1,7 @@
 {
 	"name": "{{name}}",
-	"title": "Verbose Module Name",
-	"description": "Module description displayed in FoundryVTT Program",
+	"title": "{{title}}",
+	"description": "{{description}}",
 	"version": "{{version}}",
 	"author": "flamewave000#6766",
 	"minimumCoreVersion": "0.7.9",

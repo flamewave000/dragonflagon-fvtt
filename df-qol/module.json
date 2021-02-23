@@ -1,7 +1,7 @@
 {
 	"name": "{{name}}",
-	"title": "DragonFlagon Quality of Life",
-	"description": "Adds various Quality of Life improvements. These are small, light-weight, adjustments done to work out some of the kinks in Core FoundryVTT.",
+	"title": "{{title}}",
+	"description": "{{description}}",
 	"version": "{{version}}",
 	"author": "flamewave000#6766",
 	"minimumCoreVersion": "0.7.9",

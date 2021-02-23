@@ -2,7 +2,8 @@
 	"private": true,
 	"name": "df-curvy-walls",
 	"version": "1.3.4",
-	"description": "Generates wall segments along a curve",
+	"title": "DF Curvy Walls",
+	"description": "Creates wall segments along a Bezier Cubic or Quadratic curve or circle",
 	"main": "df-wall-curves.js",
 	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/",
 	"scripts": {
