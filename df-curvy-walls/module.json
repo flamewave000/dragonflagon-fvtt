@@ -1,30 +1,44 @@
 {
-	"name": "{{name}}",
-	"title": "{{title}}",
-	"description": "{{description}}",
-	"version": "{{version}}",
+	"name": "df-curvy-walls",
+	"title": "DF Curvy Walls",
+	"description": "Creates wall segments along a Bezier Cubic or Quadratic curve or circle",
+	"version": "1.3.4",
 	"author": "flamewave000#6766",
 	"minimumCoreVersion": "0.7.5",
 	"compatibleCoreVersion": "0.7.9",
-	"esmodules": "{{sources}}",
-	"styles": "{{css}}",
+	"esmodules": [
+		"src/BezierControl.js",
+		"src/BezierToolBar.js",
+		"src/df-wall-curves.js",
+		"src/lib.js",
+		"src/tools.js",
+		"src/lib/bezier.js",
+		"src/tools/BezierTool.js",
+		"src/tools/CircleTool.js",
+		"src/tools/CubicTool.js",
+		"src/tools/QuadTool.js",
+		"src/tools/ToolInputHandler.js"
+	],
+	"styles": [
+		"css/segment-controls.css"
+	],
 	"languages": [
 		{ "lang": "en", "path": "lang/en.json", "name": "English" },
 		{ "lang": "fr", "path": "lang/fr.json", "name": "French" },
 		{ "lang": "es", "path": "lang/es.json", "name": "Español" },
-		{ "lang": "ja", "path": "lang/ja.json", "name": "日本語" }
+		{ "lang": "ja", "path": "lang/ja.json", "name": "日本語" },
+		{ "lang": "pt-BR", "path": "lang/pt-BR.json", "name": "Português (Brasil)"}
 	],
-	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}",
-	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/{{name}}/LICENSE",
-	"manifest":	"https://dragonflagon.cafe/mods/man/{{name}}",
-	"download":	"https://dragonflagon.cafe/mods/pak/{{name}}",
-	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/README.md",
-	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/CHANGELOG.md",
+	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-curvy-walls",
+	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/df-curvy-walls/LICENSE",
+	"manifest":	"https://dragonflagon.cafe/mods/man/df-curvy-walls",
+	"download":	"https://dragonflagon.cafe/mods/pak/df-curvy-walls",
+	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-curvy-walls/README.md",
+	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-curvy-walls/CHANGELOG.md",
 	"manifestPlusVersion": "1.0.0",
 	"authors": [ { "name": "flamewave000", "discord": "flamewave000#6766", "url": "https://github.com/flamewave000" } ],
 	"media": [
 		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-cover.png" },
-		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" }
 		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-cubic.gif" },
 		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-quadratic.gif" },
 		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-ellipse.gif" }
