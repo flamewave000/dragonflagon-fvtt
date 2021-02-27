@@ -2,16 +2,16 @@
 	"private": true,
 	"name": "df-qol",
 	"version": "1.0.0",
-	"title": "{{title}}",
-	"description": "{{description}}",
+	"title": "DF Quality of Life",
+	"description": "A set of various small Quality of Life changes that don't quite fit in my other larger modules.",
 	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/",
 	"scripts": {
 		"build": "npx gulp --gulpfile=../gulpfile.js --cwd=./",
-		"start": "npx gulp watch --gulpfile=../gulpfile.js --cwd=./",
+		"watch": "npx gulp watch --gulpfile=../gulpfile.js --cwd=./",
 		"clean": "npx gulp clean --gulpfile=../gulpfile.js --cwd=./",
-		"dev-build": "npx gulp dev --gulpfile=../gulpfile.js --cwd=./",
-		"dev-start": "npx gulp devWatch --gulpfile=../gulpfile.js --cwd=./",
-		"dev-clean": "npx gulp devClean --gulpfile=../gulpfile.js --cwd=./",
+		"devbuild": "npx gulp dev --gulpfile=../gulpfile.js --cwd=./",
+		"devwatch": "npx gulp devWatch --gulpfile=../gulpfile.js --cwd=./",
+		"devclean": "npx gulp devClean --gulpfile=../gulpfile.js --cwd=./",
 		"release": "npx gulp zip --gulpfile=../gulpfile.js --cwd=./"
 	},
 	"repository": {
