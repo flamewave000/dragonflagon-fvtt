@@ -1,4 +1,3 @@
-import { SceneConfig } from "foundry-vtt-types/types/applications/sceneConfig";
 import DFSceneRatio from "./df-scene-ratio.js";
 
 declare class SceneExt extends Scene {

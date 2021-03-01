@@ -12,7 +12,8 @@
 		"dev-build": "npx gulp dev --gulpfile=../gulpfile.js --cwd=./",
 		"dev-start": "npx gulp devWatch --gulpfile=../gulpfile.js --cwd=./",
 		"dev-clean": "npx gulp devClean --gulpfile=../gulpfile.js --cwd=./",
-		"release": "npx gulp zip --gulpfile=../gulpfile.js --cwd=./"
+		"release": "npx gulp zip --gulpfile=../gulpfile.js --cwd=./",
+		"tag": "git tag -d ${npm_package_name}_${npm_package_version} 2>/dev/null ; git tag ${npm_package_name}_${npm_package_version} && git push -f origin ${npm_package_name}_${npm_package_version}"
 	},
 	"repository": {
 		"type": "git",
