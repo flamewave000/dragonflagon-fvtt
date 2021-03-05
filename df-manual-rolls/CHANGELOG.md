@@ -1,5 +1,10 @@
 # DF Manual Rolls
 
+## Release 1.2.0 (2021-03-04)
+- Fix: Minimum roll requests are now properly returned without prompting the user for a roll.
+- Fix: "Manual Roll" Chat flags will now no longer appear on chat cards that contain **only** RNG rolls.
+- New: "MR" and "RN" will now appear as flavour text on the individual Dice Terms. This shows exactly which numbers were manually entered, and which were randomly generated.
+
 ## Release 1.1.0 (2021-03-04)
 
 - Added support to display Roll Flavour Text in the prompt when it displays. ***DnD5e Only*** Support for other systems will depend on demand.

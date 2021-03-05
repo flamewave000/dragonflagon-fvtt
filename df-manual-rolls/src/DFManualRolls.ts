@@ -5,8 +5,13 @@ declare global {
 	}
 	interface DiceTerm {
 		dfManualRolls_flavor: string;
-		dfManualRolls_result: number;
 		dfManualRolls_roll({ minimize, maximize }?: { minimize: boolean; maximize: boolean }): DiceTerm.Result;
+
+	}
+	namespace DiceTerm {
+		interface Options {
+			isManualRoll?: boolean;
+		}
 	}
 	class DnD5eDice {
 		get d20Roll(): (args: { parts: Array<string> }) => Promise<any>;
@@ -46,8 +51,8 @@ export default class DFManualRolls {
 		Roll.prototype.dfManualRolls_identifyTerms = (Roll.prototype as any)._identifyTerms;
 		(Roll.prototype as any)._identifyTerms = function (formula: string, { step }: { step: number } = { step: 0 }) {
 			const terms: Roll.Terms = this.dfManualRolls_identifyTerms(formula, { step });
-			for(let term of terms) {
-				if(term instanceof DiceTerm)
+			for (let term of terms) {
+				if (term instanceof DiceTerm)
 					term.dfManualRolls_flavor = this.data.flavor || this.data.title;
 			}
 			return terms;
@@ -77,8 +82,10 @@ export default class DFManualRolls {
 					return this.dfManualRolls_roll({ minimize, maximize });
 				}
 				// If the user hits Cancel and wants to rollback to Foundry's Roller
-				if (value == null && DFManualRolls.rollback)
+				if (value == null && DFManualRolls.rollback) {
+					this.options.flavor = this.options.flavor ? `${this.flavor}:RN` : `RN`;
 					return this.dfManualRolls_roll({ minimize: minimize, maximize: maximize });
+				}
 				result = parseInt(value);
 				// Validate we were given an Integer in the set N∩[1,n]
 				if (!isNaN(value as any) && !isNaN(result) && result >= 1 && result <= this.faces)
@@ -87,7 +94,8 @@ export default class DFManualRolls {
 					message = game.i18n.localize("DF_MANUAL_ROLLS.PromptInvalid").replaceAll('{d}', this.faces.toString());
 			}
 			result = parseInt(value);
-			this.dfManualRolls_result = result;
+			this.options.isManualRoll = true;
+			this.options.flavor = this.options.flavor ? `${this.flavor}:MR` : `MR`;
 			const roll = { result, active: true };
 			this.results.push(roll);
 			return roll;

@@ -60,9 +60,12 @@ Hooks.on('ready', function () {
 		DFManualRolls.patch();
 });
 
-Hooks.on('createChatMessage', async (chatMessage) => {
+Hooks.on('createChatMessage', async (chatMessage: ChatMessage) => {
 	if (!chatMessage.isRoll || !DFManualRolls.flagged || !(DFManualRolls.enabled || DFManualRolls.forced)) return;
 	var flavor = game.i18n.localize("DF_MANUAL_ROLLS.Flag");
+	// If all of the manual rolls were cancelled, don't set the flag
+	if (!chatMessage.roll.terms.some((value) => value instanceof DiceTerm && value.options.isManualRoll))
+		return;
 	if (!!chatMessage.data.flavor)
 		flavor += " " + chatMessage.data.flavor;
 	await chatMessage.update({ flavor: flavor });
