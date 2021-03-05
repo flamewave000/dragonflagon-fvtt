@@ -59,6 +59,11 @@ export default class DFManualRolls {
 				this.results.push(roll);
 				return roll;
 			}
+			if (minimize) {
+				const roll = { result: Math.min(1, this.faces), active: true };
+				this.results.push(roll);
+				return roll;
+			}
 			console.log(this);
 			var value;
 			var message = null;
@@ -82,8 +87,6 @@ export default class DFManualRolls {
 					message = game.i18n.localize("DF_MANUAL_ROLLS.PromptInvalid").replaceAll('{d}', this.faces.toString());
 			}
 			result = parseInt(value);
-			// if (minimize) result = Math.min(1, this.faces);
-			if (maximize) result = this.faces;
 			this.dfManualRolls_result = result;
 			const roll = { result, active: true };
 			this.results.push(roll);
