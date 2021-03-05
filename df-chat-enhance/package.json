@@ -3,7 +3,7 @@
 	"version": "2.0.0",
 	"title": "DF Chat Enhancements",
 	"description": "Various enhancements to the chat features.",
-	"main": "src/df-chat-enhance.js",
+	"main": "src/df-chat-enhance.ts",
 	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/",
 	"scripts": {
 		"build": "npx gulp --gulpfile=../gulpfile.js --cwd=./",

@@ -4,7 +4,7 @@
 	"version": "1.3.4",
 	"title": "DF Curvy Walls",
 	"description": "Creates wall segments along a Bezier Cubic or Quadratic curve or circle",
-	"main": "df-wall-curves.js",
+	"main": "src/df-wall-curves.ts",
 	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/",
 	"scripts": {
 		"build": "npx gulp --gulpfile=../gulpfile.js --cwd=./",

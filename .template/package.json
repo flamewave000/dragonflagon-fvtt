@@ -1,8 +1,10 @@
 {
 	"private": true,
 	"name": "df-module-name",
+	"title": "DF Module Name",
 	"version": "1.0.0",
 	"description": "Description",
+	"main": "src/df-source.ts",
 	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/",
 	"scripts": {
 		"build": "npx gulp --gulpfile=../gulpfile.js --cwd=./",

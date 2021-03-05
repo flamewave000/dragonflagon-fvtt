@@ -7,6 +7,7 @@ const zip = require('gulp-zip');
 const rename = require('gulp-rename');
 const minify = require('gulp-minify');
 const tabify = require('gulp-tabify');
+const stringify = require('json-stringify-pretty-compact');
 
 const GLOB = '**/*';
 const DIST = 'dist/';
@@ -53,7 +54,7 @@ exports.step_buildSourceMin = buildSource(false, true);
  */
 function buildManifest(output = null) {
 	const files = []; // Collector for all the file paths
-	return (cb) => gulp.src(SOURCE + GLOB) // collect the source files
+	return (cb) => gulp.src(PACKAGE.main) // collect the source files
 		.pipe(rename({ extname: '.js' })) // rename their extensions to `.js`
 		.pipe(gulp.src(CSS + GLOB)) // grab all the CSS files
 		.on('data', file => files.push(file.path.replace(file.base, file.base.replace(file.cwd + '/', '')))) // Collect all the file paths
@@ -68,8 +69,8 @@ function buildManifest(output = null) {
 					.replaceAll('{{title}}', PACKAGE.title)
 					.replaceAll('{{version}}', PACKAGE.version)
 					.replaceAll('{{description}}', PACKAGE.description)
-					.replace('"{{sources}}"', JSON.stringify(js, null, '\t').replaceAll('\n', '\n\t'))
-					.replace('"{{css}}"', JSON.stringify(css, null, '\t').replaceAll('\n', '\n\t'));
+					.replace('"{{sources}}"', stringify(js, { indent: '\t' }))
+					.replace('"{{css}}"', stringify(css, { indent: '\t' }));
 				fs.writeFile((output || DIST) + 'module.json', module, cb); // save the module to the distribution directory
 			});
 		});
@@ -177,6 +178,7 @@ exports.watch = function () {
  */
 exports.devWatch = function () {
 	const devDist = DEV_DIST();
+	console.log('Dev Directory: ' + devDist);
 	exports.dev();
 	gulp.watch(SOURCE + GLOB, gulp.series(plog('deleting: ' + devDist + SOURCE + GLOB), pdel(devDist + SOURCE + GLOB, { force: true }), buildSource(true, false, devDist), plog('sources done.')));
 	gulp.watch([SOURCE + GLOB, CSS + GLOB, 'module.json', 'package.json'], gulp.series(reloadPackage, buildManifest(devDist), plog('manifest done.')));

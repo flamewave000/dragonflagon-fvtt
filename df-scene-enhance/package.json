@@ -5,6 +5,7 @@
 	"title": "DF Scene Enhancement",
 	"description": "A few enhancements to scene management for players and GMs.",
 	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/",
+	"main": "src/df-scene-enhance.ts",
 	"scripts": {
 		"build": "npx gulp --gulpfile=../gulpfile.js --cwd=./",
 		"watch": "npx gulp watch --gulpfile=../gulpfile.js --cwd=./",

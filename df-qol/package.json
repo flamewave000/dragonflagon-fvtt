@@ -5,6 +5,7 @@
 	"title": "DF Quality of Life",
 	"description": "A set of various small Quality of Life changes that don't quite fit in my other larger modules.",
 	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/",
+	"main": "src/df-qol.ts",
 	"scripts": {
 		"build": "npx gulp --gulpfile=../gulpfile.js --cwd=./",
 		"watch": "npx gulp watch --gulpfile=../gulpfile.js --cwd=./",
