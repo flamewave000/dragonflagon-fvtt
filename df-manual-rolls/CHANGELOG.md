@@ -1,5 +1,10 @@
 # DF Manual Rolls
 
+## Release 1.1.0 (2021-03-04)
+
+- Added support to display Roll Flavour Text in the prompt when it displays. ***DnD5e Only*** Support for other systems will depend on demand.
+- Note: Not all flavour texts will display when using something like BetterRolls.
+
 ## Release 1.0.0 (2021-02-05)
 
 - Official Release
