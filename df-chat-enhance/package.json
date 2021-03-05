@@ -35,8 +35,6 @@
 	},
 	"homepage": "https://github.com/flamewave000/dragonflagon-fvtt#readme",
 	"devDependencies": {
-		"@types/bezier-js": "0.0.8",
-		"@types/node": "^14.14.21",
 		"del": "^6.0.0",
 		"foundry-vtt-types": "github:flamewave000/foundry-vtt-types#foundry-0.7.9",
 		"gulp": "^4.0.2",
