@@ -22,8 +22,18 @@ function reloadPackage(cb) { PACKAGE = JSON.parse(fs.readFileSync('./package.jso
 function DEV_DIST() { return PACKAGE.devDir + PACKAGE.name + '/'; }
 
 String.prototype.replaceAll = function (pattern, replace) { return this.split(pattern).join(replace); }
-function pdel(patterns, options) { return () => { return del(patterns, options); }; }
-function plog(message) { return (cb) => { console.log(message); cb() }; }
+function pdel(patterns, options) { return desc(`deleting ${patterns}`, () => { return del(patterns, options); }); }
+function plog(message) { return desc('plog', (cb) => { console.log(message); cb() }); }
+/**
+ * Sets the gulp name for a lambda expression
+ * @param {string} name Name to be bound to the lambda
+ * @param {Function} lambda Expression to be named
+ * @returns {Function} lambda
+ */
+function desc(name, lambda) {
+	Object.assign(lambda, { displayName: name });
+	return lambda;
+}
 
 
 /**
@@ -31,7 +41,7 @@ function plog(message) { return (cb) => { console.log(message); cb() }; }
  * @param {Boolean} keepSources Include the TypeScript SourceMaps
  */
 function buildSource(keepSources, minifySources = false, output = null) {
-	return () => {
+	return desc('build Source', () => {
 		var stream = gulp.src(SOURCE + GLOB);
 		if (keepSources) stream = stream.pipe(sm.init())
 		stream = stream.pipe(ts.createProject("../tsconfig.json")())
@@ -43,7 +53,7 @@ function buildSource(keepSources, minifySources = false, output = null) {
 		}));
 		else stream = stream.pipe(tabify(4, false));
 		return stream.pipe(gulp.dest((output || DIST) + SOURCE));
-	}
+	});
 }
 exports.step_buildSourceDev = buildSource(true);
 exports.step_buildSource = buildSource(false);
@@ -54,7 +64,7 @@ exports.step_buildSourceMin = buildSource(false, true);
  */
 function buildManifest(output = null) {
 	const files = []; // Collector for all the file paths
-	return (cb) => gulp.src(PACKAGE.main) // collect the source files
+	return desc('build Manifest', (cb) => gulp.src(PACKAGE.main) // collect the source files
 		.pipe(rename({ extname: '.js' })) // rename their extensions to `.js`
 		.pipe(gulp.src(CSS + GLOB)) // grab all the CSS files
 		.on('data', file => files.push(file.path.replace(file.base, file.base.replace(file.cwd + '/', '')))) // Collect all the file paths
@@ -73,14 +83,14 @@ function buildManifest(output = null) {
 					.replace('"{{css}}"', stringify(css, { indent: '\t' }));
 				fs.writeFile((output || DIST) + 'module.json', module, cb); // save the module to the distribution directory
 			});
-		});
+		}));
 }
 exports.step_buildManifest = buildManifest();
 
-function outputLanguages(output = null) { return () => gulp.src(LANG + GLOB).pipe(gulp.dest((output || DIST) + LANG)); }
-function outputTemplates(output = null) { return () => gulp.src(TEMPLATES + GLOB).pipe(gulp.dest((output || DIST) + TEMPLATES)); }
-function outputStylesCSS(output = null) { return () => gulp.src(CSS + GLOB).pipe(gulp.dest((output || DIST) + CSS)); }
-function outputMetaFiles(output = null) { return () => gulp.src(['../LICENSE', 'README.md', 'CHANGELOG.md']).pipe(gulp.dest((output || DIST))); }
+function outputLanguages(output = null) { return desc('output Languages', () => gulp.src(LANG + GLOB).pipe(gulp.dest((output || DIST) + LANG))); }
+function outputTemplates(output = null) { return desc('output Templates', () => gulp.src(TEMPLATES + GLOB).pipe(gulp.dest((output || DIST) + TEMPLATES))); }
+function outputStylesCSS(output = null) { return desc('output Styles CSS', () => gulp.src(CSS + GLOB).pipe(gulp.dest((output || DIST) + CSS))); }
+function outputMetaFiles(output = null) { return desc('output Meta Files', () => gulp.src(['../LICENSE', 'README.md', 'CHANGELOG.md']).pipe(gulp.dest((output || DIST)))); }
 
 /**
  * Copy files to module named directory and then compress that folder into a zip
@@ -114,8 +124,8 @@ exports.step_outputDistToDevEnvironment = outputDistToDevEnvironment;
 /**
  * Simple clean command
  */
-exports.clean = pdel([DIST, BUNDLE]);
-exports.devClean = pdel([DEV_DIST()]);
+exports.clean = gulp.series(pdel([DIST, BUNDLE]));
+exports.devClean = gulp.series(pdel([DEV_DIST()]));
 /**
  * Default Build operation
  */
@@ -129,6 +139,7 @@ exports.default = gulp.series(
 		, outputStylesCSS()
 		, outputMetaFiles()
 	)
+	, plog('Build Complete')
 );
 /**
  * Extends the default build task by copying the result to the Development Environment
@@ -144,6 +155,7 @@ exports.dev = gulp.series(
 		, outputMetaFiles(DEV_DIST())
 	)
 	, outputDistToDevEnvironment
+	, plog('Dev Build Complete')
 );
 /**
  * Performs a default build and then zips the result into a bundle
