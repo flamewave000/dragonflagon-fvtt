@@ -36,6 +36,7 @@ export default class DFManualRolls {
 	static FORCED = 'manual-rolls-forced';
 	static FLAGGED = 'manual-rolls-flagged';
 	static ROLLBACK = 'manual-rolls-rollback';
+	static FLAVOUR_5E = 'manual-rolls-flavour5e';
 
 	static get enabled() { return game.settings.get(DFManualRolls.MODULE, DFManualRolls.ENABLED); }
 	static get forced() { return game.settings.get(DFManualRolls.MODULE, DFManualRolls.FORCED); }
@@ -44,10 +45,6 @@ export default class DFManualRolls {
 
 	static patch() {
 		if (!!DiceTerm.prototype.dfManualRolls_roll) return;
-		Roll.prototype.roll = function () {
-			console.log(this);
-			return this.evaluate();
-		}
 		Roll.prototype.dfManualRolls_identifyTerms = (Roll.prototype as any)._identifyTerms;
 		(Roll.prototype as any)._identifyTerms = function (formula: string, { step }: { step: number } = { step: 0 }) {
 			const terms: Roll.Terms = this.dfManualRolls_identifyTerms(formula, { step });
@@ -69,7 +66,6 @@ export default class DFManualRolls {
 				this.results.push(roll);
 				return roll;
 			}
-			console.log(this);
 			var value;
 			var message = null;
 			var flavour = (this.dfManualRolls_flavor) ? this.dfManualRolls_flavor + '\n\n' : '';

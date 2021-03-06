@@ -38,14 +38,17 @@ Unfortunately, Electron (what the Foundry app is built on) does not support all 
 
 There is always a potential conflict with any other module that modifies rolls. As of right now, the following popular modules have been tested and do not appear to have any issues. But if any do, please let me know via Discord or log an issue on GitHub.
 
-**Tested Dice Modules (✅ Works, ❌ Conflicts)**
+**Tested Dice Modules (✅ Works, ❌ Conflicts, ⭕ Partial)**
 
 - ✅ Better Rolls
 - ✅ Midi Quality of Life Improvements
 - ✅ Dice So Nice!
 - ✅ Dice Tray
 - ✅ Let Me Roll That For You
-
+- ⭕ Quick Rolls DnD5e (see notes below)
 ---
+
+### Quick Rolls (DnD5e)
+For DnD5e worlds, the prompt flavour text feature conflict with Quick Rolls' "re-roll" feature in the chat cards. To prevent this conflict, disable the "DnD5e: Add flavour text to prompts" feature in DF Manual Rolls' module settings.
 
 ##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
