@@ -68,8 +68,27 @@ export default class DFChatArchiveViewer extends Application {
 						dialog.render(true);
 					}, 1);
 				});
+				html.find('#print').on('click', async () => {
+					const clone = html.find('#df-chat-log').clone();
+					clone.addClass('df-chat-print');
+					$('body').addClass('df-chat-print');
+					$('#players').hide();
+					$('#hotbar').hide();
+					$('#sidebar').hide();
+					$('#controls').hide();
+					$('#navigation').hide();
+					$('body').append(clone);
+					window.print();
+					clone.remove();
+					$('#players').show();
+					$('#hotbar').show();
+					$('#sidebar').show();
+					$('#controls').show();
+					$('#navigation').show();
+					$('body').removeClass('df-chat-print');
+				});
 				html.find('#merge').on('click', async () => {
-					if(DFChatArchive.getLogs().length == 1) {
+					if (DFChatArchive.getLogs().length == 1) {
 						ui.notifications.info(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_Merge_OnlyOneArchive'));
 						return;
 					}

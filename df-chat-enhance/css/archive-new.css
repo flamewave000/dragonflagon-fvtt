@@ -24,12 +24,14 @@
 } */
 
 .archive-new table {
-	border:none;
+	border: none;
 	background: none;
 }
+
 .archive-new table tr {
 	background: none;
 }
+
 .archive-new table tr:nth-child(even) {
 	background: none;
 }
@@ -37,4 +39,26 @@
 .archive-new table tr td:first-child {
 	text-align: right;
 	padding-right: 1em;
+}
+
+#df-chat-log.df-chat-print {
+	background-color: white;
+	height: auto;
+	width: 100%;
+	position: relative;
+	top: 0;
+	left: 0;
+	margin: 0;
+	padding: 15px;
+	z-index: 10000000;
+	/* font-size: 14px;
+	line-height: 18px; */
+}
+body.df-chat-print {
+	width: unset;
+	height: unset;
+	margin: unset;
+	overflow: unset;
+	background: unset;
+	box-shadow: unset;
 }

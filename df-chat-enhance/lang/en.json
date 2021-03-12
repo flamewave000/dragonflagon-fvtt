@@ -44,6 +44,7 @@
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Visible": "Visible to players",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_DeleteTitle": "Delete Archived Message",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_DeleteContent": "Are you sure you wish to delete this message?",
+	"DF_CHAT_ARCHIVE.ArchiveViewer_Print": "Print this chat archive",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Merge": "Merge an archive into this one",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Title": "Merge Chat Archive",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Merge_SelectArchive": "Select a chat archive to merge into",

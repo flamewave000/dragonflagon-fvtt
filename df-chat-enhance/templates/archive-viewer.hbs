@@ -2,7 +2,8 @@
 	<h2 style="display:flex;align-items:center">
 		{{#if isGM}}<a id="edit" style="flex:0 0 auto;margin-right:0.5em"><i class="fas fa-pencil-alt"></i></a> {{/if}}
 		<span style="flex:1 0">{{name}}</span>
-		{{#if isGM}}<button id="merge" title="{{localize 'DF_CHAT_ARCHIVE.ArchiveViewer_Merge'}}" style="flex:0 0 auto;margin:0.25em 0;width:auto"><i class="fas fa-sitemap" style="margin:0"></i></button>{{/if}}
+		<button id="print" title={{localize 'DF_CHAT_ARCHIVE.ArchiveViewer_Print'}} style="flex:0 0 auto;margin:0.25em 0;width:auto"><i class="fas fa-print"></i></button>
+		{{#if isGM}}<button id="merge" title="{{localize 'DF_CHAT_ARCHIVE.ArchiveViewer_Merge'}}" style="flex:0 0 auto;margin:0.25em 0 0.25em 0.25em;width:auto"><i class="fas fa-sitemap" style="margin:0"></i></button>{{/if}}
 	</h2>
 	{{#if isGM}}
 	<div style="display:flex;flex:0 0 auto;color:#FFF;flex-flow:row wrap">
