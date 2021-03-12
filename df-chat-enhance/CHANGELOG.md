@@ -4,6 +4,7 @@
 - Added Portuguese (Brazil) localisations courtesy of [Brn086](https://github.com/Brn086) and [Matheus Clemente](https://github.com/mclemente)
 - Added sort option to Adventure Log so you can invert the direction of the line items.
 - Added the ability to print a chat archive.
+- Added cancel button to the Chat Edit window, for a clearer way to back out of an accidental edit.
 
 ## Release 2.0.0 (2021-02-20)
 - Adventure Log

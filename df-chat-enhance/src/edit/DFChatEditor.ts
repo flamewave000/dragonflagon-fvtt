@@ -25,6 +25,7 @@ export default class DFChatEditor extends FormApplication {
 		this.chatMessage = chatMessage;
 	}
 
+	/** @override */
 	getData(options?: any): any {
 		return mergeObject(options, {
 			messageText: this.chatMessage.data.content
@@ -33,6 +34,13 @@ export default class DFChatEditor extends FormApplication {
 		});
 	}
 
+	/** @override */
+	activateListeners(html: JQuery): void {
+		super.activateListeners(html);
+		html.find('#cancel').on('click', async () => await this.close());
+	}
+
+	/** @override */
 	async _updateObject(_event?: any, formData?: any) {
 		var data = formData.content as string;
 		data = data.replace(/\r?\n/gm, '<br/>');
@@ -43,6 +51,7 @@ export default class DFChatEditor extends FormApplication {
 			content: data
 		});
 	}
+	/** @override */
 	close(options?: FormApplication.CloseOptions) {
 		delete (this.chatMessage as any).chatEditor;
 		return super.close(options);

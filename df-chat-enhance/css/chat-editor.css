@@ -5,8 +5,17 @@
 
 .dfce-editor h3,
 .dfce-editor blockquote,
-.dfce-editor button {
+.dfce-editor-buttons {
 	flex: 0 0 auto;
+}
+
+
+.dfce-editor-buttons {
+	display: flex;
+	flex-flow: row nowrap;
+}
+.dfce-editor-buttons button {
+	flex: 1 0;
 }
 
 .dfce-editor blockquote {
