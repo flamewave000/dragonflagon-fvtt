@@ -23,7 +23,7 @@ function DEV_DIST() { return PACKAGE.devDir + PACKAGE.name + '/'; }
 
 String.prototype.replaceAll = function (pattern, replace) { return this.split(pattern).join(replace); }
 function pdel(patterns, options) { return desc(`deleting ${patterns}`, () => { return del(patterns, options); }); }
-function plog(message) { return desc('plog', (cb) => { console.log(message); cb() }); }
+function plog(message) { return desc('plog', (cb) => { cb(); console.log(message); }); }
 /**
  * Sets the gulp name for a lambda expression
  * @param {string} name Name to be bound to the lambda
@@ -111,7 +111,7 @@ function compressDistribution() {
 		, pdel(DIST + PACKAGE.name)
 	);
 }
-exports.step_buildManifest = compressDistribution();
+exports.step_compress = compressDistribution();
 
 /**
  * Outputs the current distribution folder to the Development Environment.
@@ -192,7 +192,7 @@ exports.devWatch = function () {
 	const devDist = DEV_DIST();
 	console.log('Dev Directory: ' + devDist);
 	exports.dev();
-	gulp.watch(SOURCE + GLOB, gulp.series(plog('deleting: ' + devDist + SOURCE + GLOB), pdel(devDist + SOURCE + GLOB, { force: true }), buildSource(true, false, devDist), plog('sources done.')));
+	gulp.watch(SOURCE + GLOB, gulp.series(pdel(devDist + SOURCE + GLOB, { force: true }), buildSource(true, false, devDist), plog('sources done.')));
 	gulp.watch([SOURCE + GLOB, CSS + GLOB, 'module.json', 'package.json'], gulp.series(reloadPackage, buildManifest(devDist), plog('manifest done.')));
 	gulp.watch(LANG + GLOB, gulp.series(pdel(devDist + LANG + GLOB, { force: true }), outputLanguages(devDist), plog('langs done.')));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(devDist + TEMPLATES + GLOB, { force: true }), outputTemplates(devDist), plog('templates done.')));

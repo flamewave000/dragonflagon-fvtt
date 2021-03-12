@@ -35,6 +35,7 @@ export default class DFAdventureLogProcessor {
 	static readonly PREF_GMONLY = 'df-log-gmonly';
 	static readonly PREF_GMONLY_WHISPER = 'df-log-gmonly-whisper';
 	static readonly PREF_MESSAGES = 'df-log-messages';
+	static readonly PREF_SORTDESC = 'df-log-sortdesc';
 	static logCommand: ChatCommand = null;
 	static gmlogCommand: ChatCommand = null;
 
@@ -157,6 +158,15 @@ export default class DFAdventureLogProcessor {
 			default: true,
 			config: true
 		});
+		game.settings.register(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_SORTDESC, {
+			name: 'DF_CHAT_LOG.Setting_SortDescendingName',
+			hint: 'DF_CHAT_LOG.Setting_SortDescendingHint',
+			scope: 'world',
+			type: Boolean,
+			default: false,
+			config: true,
+			onChange: () => this.resortLog()
+		})
 
 		Hooks.on('closeDFAdventureLogConfig', () => { DFAdventureLogProcessor.logConfig = null; });
 		if (!!(game as GameExt).chatCommands)
@@ -167,7 +177,7 @@ export default class DFAdventureLogProcessor {
 
 	static deregisterCommand() {
 		(game as GameExt).chatCommands.deregisterCommand(DFAdventureLogProcessor.logCommand);
-		if(!!DFAdventureLogProcessor.gmlogCommand)
+		if (!!DFAdventureLogProcessor.gmlogCommand)
 			(game as GameExt).chatCommands.deregisterCommand(DFAdventureLogProcessor.gmlogCommand);
 		DFAdventureLogProcessor.logCommand = null;
 		DFAdventureLogProcessor.gmlogCommand = null;
@@ -190,7 +200,7 @@ export default class DFAdventureLogProcessor {
 		(game as GameExt).chatCommands.registerCommand(DFAdventureLogProcessor.logCommand);
 
 		// If we are not the GM, early return to avoid registering the /gmlog command
-		if(!game.user.isGM) return;
+		if (!game.user.isGM) return;
 		// Register the /gmlog command
 		DFAdventureLogProcessor.gmlogCommand = (game as GameExt).chatCommands.createCommandFromData({
 			commandKey: "/gmlog",
@@ -331,7 +341,8 @@ export default class DFAdventureLogProcessor {
 			messageHtml = $(messageText);
 			article = html.find('article.df-adventure-log');
 		}
-		article.append(messageHtml);
+		const descending = game.settings.get(CONFIG.MOD_NAME, this.PREF_SORTDESC) as boolean;
+		if (descending) article.prepend(messageHtml); else article.append(messageHtml);
 		await journal.update({ content: $('<div></div>').append(html).html() });
 		const rollType = game.settings.get("core", "rollMode");
 		if (game.user.isGM) {
@@ -353,5 +364,29 @@ export default class DFAdventureLogProcessor {
 		// Post message to chat if Messages are enabled
 		if (game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_MESSAGES))
 			await ChatMessage.create(messageData as any, {});
+	}
+
+	static async resortLog() {
+		const descending = game.settings.get(CONFIG.MOD_NAME, this.PREF_SORTDESC) as boolean;
+		const journalAll = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL) as string;
+		const journalGM = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL_GM) as string;
+
+		const journalSort = async (journal: JournalEntry) => {
+			var html = $(journal.data.content);
+			const article = html.find('article.df-adventure-log');
+			const result = (article.find('p') as any).sort(function (a: HTMLElement, b: HTMLElement) {
+				return descending ?
+					$(b).find('span.dfal-ts').text().localeCompare($(a).find('span.dfal-ts').text()) :
+					$(a).find('span.dfal-ts').text().localeCompare($(b).find('span.dfal-ts').text());
+
+			})
+			article.html(result);
+			await journal.update({ content: $('<div></div>').append(html).html() });
+		}
+
+		if (game.journal.has(journalAll))
+			await journalSort(game.journal.get(journalAll));
+		if (game.journal.has(journalGM))
+			await journalSort(game.journal.get(journalGM));
 	}
 }

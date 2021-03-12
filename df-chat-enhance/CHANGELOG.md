@@ -1,5 +1,9 @@
 # DF Chat Enhancements
 
+## Release 2.1.0 (2021-03-11)
+- Added Portuguese (Brazil) localisations courtesy of [Brn086](https://github.com/Brn086) and [Matheus Clemente](https://github.com/mclemente)
+- Added sort option to Adventure Log so you can invert the direction of the line items.
+
 ## Release 2.0.0 (2021-02-20)
 - Adventure Log
 	- You can now right-click chats to add them as an event/quote to the adventure Log.

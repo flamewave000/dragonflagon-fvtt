@@ -1,4 +1,5 @@
 import CONFIG from "../CONFIG.js";
+import DFAdventureLogProcessor from "./DFAdventureLogProcessor.js";
 
 
 export default class DFAdventureLogConfig extends FormApplication {
@@ -85,7 +86,10 @@ export default class DFAdventureLogConfig extends FormApplication {
 			journal.data.content = '';
 		const html = $(journal.data.content);
 		const article = html.find('article[class="df-adventure-log"]');
-		if (article.length != 0) return;
+		if (article.length != 0) {
+			await DFAdventureLogProcessor.resortLog();
+			return;
+		}
 		await journal.update({
 			content: journal.data.content + `
 			<section>

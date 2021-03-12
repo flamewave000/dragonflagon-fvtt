@@ -72,6 +72,8 @@
 	"DF_CHAT_LOG.Setting_GmOnlyWhisperHint": "If the above GM Only setting is on, this will make all log entry chat messages be whispers",
 	"DF_CHAT_LOG.Setting_PrintMessagesName": "Adventure Log: Post logs to chat",
 	"DF_CHAT_LOG.Setting_PrintMessagesHint": "Post a message to the chat for new Adventure Log entries",
+	"DF_CHAT_LOG.Setting_SortDescendingName": "Adventure Log: Sort Newest on Top",
+	"DF_CHAT_LOG.Setting_SortDescendingHint": "Sort the adventure log with the newest messages at the top of the log, and oldest message at the bottom of the log.",
 	"DF_CHAT_LOG.Error_LibWrapperMissing": "You do not have libWrapper enabled. Adventure Log depends on this module and will not operate without it.",
 	"DF_CHAT_LOG.Error_ConfigGmOnly": "Only the GM is allowed to change the Adventure Log configuration.",
 	"DF_CHAT_LOG.Error_Disabled": "The Gamemaster has disabled the Adventure Log",
