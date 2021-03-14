@@ -32,3 +32,11 @@ article.df-adventure-log code {
 	font-size: smaller;
 	padding-top: 3px;
 }
+
+#dfal-save-changes {
+	background: rgb(128, 20, 20);
+	color: white;
+	flex: 0 0 auto;
+	margin: 0 2em;
+	width: auto;
+}
