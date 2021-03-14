@@ -4,7 +4,8 @@ export interface DFChatArchiveEntry {
 	id: number;
 	name: string;
 	file: string;
-	visible: boolean
+	visible: boolean;
+	filename: string;
 }
 
 export class DFChatArchive {
@@ -82,7 +83,8 @@ export class DFChatArchive {
 			id: newId,
 			name: name,
 			file: response.path,
-			visible: visible
+			visible: visible,
+			filename: fileName
 		};
 		this._logs.push(entry);
 		await game.settings.set(CONFIG.MOD_NAME, DFChatArchive.PREF_LOGS, JSON.stringify(this._logs, null, ''));
@@ -106,7 +108,7 @@ export class DFChatArchive {
 
 		if (newChats) {
 			const folderPath = game.settings.get(CONFIG.MOD_NAME, DFChatArchive.PREF_FOLDER) as string;
-			const file = new File([JSON.stringify(newChats)], archive.file, { type: 'application/json' });
+			const file = new File([JSON.stringify(newChats)], archive.filename, { type: 'application/json' });
 			const response = <any> await FilePicker.upload(this.DATA_FOLDER, folderPath, file, {});
 			if (!response.path)
 				throw new Error('Could not upload the archive to server side: ' + archive.id.toString());
@@ -123,7 +125,7 @@ export class DFChatArchive {
 		const folderPath = game.settings.get(CONFIG.MOD_NAME, DFChatArchive.PREF_FOLDER) as string;
 		// Can not delete file currently, truncate instead to make filtering easier.
 		await Promise.all(this._logs.map(entry => {
-			const file = new File([''], entry.file, { type: 'application/json' });
+			const file = new File([''], entry.filename, { type: 'application/json' });
 			return FilePicker.upload(this.DATA_FOLDER, folderPath, file, {});
 		}))
 		this._logs = [];
@@ -137,7 +139,7 @@ export class DFChatArchive {
 		const folderPath = game.settings.get(CONFIG.MOD_NAME, DFChatArchive.PREF_FOLDER) as string;
 		const entry = this._logs.find(x => x.id == id);
 		// Can not delete file currently, truncate instead to make filtering easier.
-		const file = new File([''], entry.file, { type: 'application/json' });
+		const file = new File([''], entry.filename, { type: 'application/json' });
 		await FilePicker.upload(this.DATA_FOLDER, folderPath, file, {});
 		this._logs.splice(this._logs.findIndex(x => x.id == id), 1);
 		await game.settings.set(CONFIG.MOD_NAME, DFChatArchive.PREF_LOGS, JSON.stringify(this._logs, null, ''));
