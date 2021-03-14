@@ -18,7 +18,7 @@ export default class DFChatArchiveViewer extends Application {
 			resizable: true,
 			title: 'DF_CHAT_ARCHIVE.ArchiveViewer_Title',
 			classes: ['df-chat-log-window']
-		});
+		} as any);
 		return options;
 	}
 
@@ -33,7 +33,7 @@ export default class DFChatArchiveViewer extends Application {
 	}
 
 	_renderInner(data: {}, options?: any): Promise<JQuery> {
-		return super._renderInner(data, options)
+		return (super._renderInner(data, options) as any)
 			.then(async (html: JQuery<HTMLElement>) => {
 				html.find("#visible").on('change', async (element) => {
 					this.archive.visible = (element.target as HTMLInputElement).checked;
@@ -71,21 +71,13 @@ export default class DFChatArchiveViewer extends Application {
 				html.find('#print').on('click', async () => {
 					const clone = html.find('#df-chat-log').clone();
 					clone.addClass('df-chat-print');
-					$('body').addClass('df-chat-print');
-					$('#players').hide();
-					$('#hotbar').hide();
-					$('#sidebar').hide();
-					$('#controls').hide();
-					$('#navigation').hide();
-					$('body').append(clone);
+					$('body').hide();
+					$('html').addClass('df-chat-print');
+					$('html').append(clone);
 					window.print();
 					clone.remove();
-					$('#players').show();
-					$('#hotbar').show();
-					$('#sidebar').show();
-					$('#controls').show();
-					$('#navigation').show();
-					$('body').removeClass('df-chat-print');
+					$('html').removeClass('df-chat-print');
+					$('body').show();
 				});
 				html.find('#merge').on('click', async () => {
 					if (DFChatArchive.getLogs().length == 1) {
@@ -113,10 +105,12 @@ export default class DFChatArchiveViewer extends Application {
 									if (isNaN(parseInt(val))) return;
 									const id = parseInt(val);
 									const source = DFChatArchive.getLogs().find(x => x.id == id);
-									this.archive.chats = (this.archive.chats as ChatMessage.Data[])
-										.concat(source.chats as ChatMessage.Data[])
+									const currentChats = await DFChatArchive.readChatArchive(this.archive.file);
+									const sourceChats = await DFChatArchive.readChatArchive(source.file);
+									const mergedChats = (currentChats as ChatMessage.Data[])
+										.concat(sourceChats as ChatMessage.Data[])
 										.sort((a, b) => a.timestamp - b.timestamp);
-									DFChatArchive.updateChatArchive(this.archive);
+									DFChatArchive.updateChatArchive(this.archive, mergedChats);
 									this.render(false);
 									if (($(html).find('#delete')[0] as HTMLInputElement).checked) {
 										DFChatArchive.deleteChatArchive(id);
@@ -130,37 +124,43 @@ export default class DFChatArchiveViewer extends Application {
 
 				const log = html.find('#df-chat-log');
 				const messageHtml = [];
-				for (let value of this.archive.chats as ChatMessage.Data[]) {
+				const currentChats = await DFChatArchive.readChatArchive(this.archive.file);
+				for (let value of currentChats as ChatMessage.Data[]) {
 					const chatMessage = value instanceof ChatMessage ? value : new ChatMessage(value);
 					try {
 						const html = $(await chatMessage.render());
 						// if we only have 1 message, don't allow it to be deleted. They might as well just delete the archive
-						if (this.archive.chats.length == 1)
+						if (currentChats.length == 1)
 							html.find('a.message-delete').hide();
 						html.find('a.message-delete').on('click', (element) => {
-							Dialog.confirm({
-								title: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveViewer_DeleteTitle"),
-								content: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveViewer_DeleteContent"),
-								defaultYes: false,
-								no: () => { },
-								yes: async () => {
-									const messageHtml = element.target.parentElement?.parentElement?.parentElement?.parentElement;
-									const id = messageHtml?.dataset?.messageId;
-									if (!id) return;
-									const index = this.archive.chats.findIndex((x: any) => x._id === id);
-									this.archive.chats.splice(index, 1);
-									await DFChatArchive.updateChatArchive(this.archive);
-									$(messageHtml).hide(1000, () => messageHtml.remove());
-								}
-							});
+							const messageHtml = element.target.parentElement?.parentElement?.parentElement?.parentElement;
+							const id = messageHtml?.dataset?.messageId;
+							if (!id) return;
+							const index = currentChats.findIndex((x: any) => x._id === id);
+							currentChats.splice(index, 1);
+							$(messageHtml).hide(500, () => messageHtml.remove());
 						});
 						messageHtml.push(html);
 					} catch (err) {
 						console.error(`Chat message ${chatMessage.id} failed to render.\n${err})`);
 					}
 				}
+
 				// Prepend the HTML
 				log.prepend(messageHtml);
+
+				html.find('#dfal-save-changes').on('click', async () => {
+					Dialog.confirm({
+						title: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveViewer_DeleteTitle"),
+						content: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveViewer_DeleteContent"),
+						defaultYes: false,
+						no: () => { },
+						yes: async () => {
+							await DFChatArchive.updateChatArchive(this.archive, currentChats);
+						}
+					});
+				});
+
 				return html;
 			});
 	}

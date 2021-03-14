@@ -13,16 +13,15 @@ export default class DFChatArchiveManager extends Application {
 			width: 300,
 			height: 500,
 			title: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveManager_Title")
-		});
+		} as any);
 		return options;
 	}
 
 	getData(options?: any) {
 		let data = super.getData(options) as any;
 		var messages = DFChatArchive.getLogs();
-		if (!game.user.isGM) {
+		if (!game.user.isGM)
 			messages = messages.filter(x => x.visible);
-		}
 		mergeObject(data, { messages: messages });
 		return data;
 	}
