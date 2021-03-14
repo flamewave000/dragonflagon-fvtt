@@ -93,7 +93,7 @@
 	"DF_CHAT_LOG.Config_NoSelection": "---",
 	"DF_CHAT_LOG.Config_ClearContent": "清除日志的所有内容",
 	"DF_CHAT_LOG.Config_GmClearContent": "清除仅限 GM 的日志的所有内容",
-	"DF_CHAT_LOG.Config_JournalPermissions": "所有提交日志时间的玩家需要编辑选择的日志的权限。",
+	"DF_CHAT_LOG.Config_JournalPermissions": "所有提交日志事件的玩家需要编辑选择的日志的权限。",
 	"DF_CHAT_LOG.ContextMenu_AsEvent": "为冒险日志记录事件",
 	"DF_CHAT_LOG.ContextMenu_AsQuote": "为冒险日志记录引述",
 	"DF_CHAT_LOG.ContextMenu_AsGmEvent": "为 GM 冒险日志记录事件",
