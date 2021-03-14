@@ -14,7 +14,7 @@ export default class DFAdventureLogConfig extends FormApplication {
 			resizable: false,
 			minimizable: false,
 			title: game.i18n.localize("DF_CHAT_LOG.Config_Title")
-		});
+		} as any);
 		return options;
 	}
 

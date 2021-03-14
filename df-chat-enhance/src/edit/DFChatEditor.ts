@@ -17,7 +17,7 @@ export default class DFChatEditor extends FormApplication {
 			popOut: true,
 			title: 'DF_CHAT_EDIT.Editor_Title',
 			template: 'modules/df-chat-enhance/templates/chat-edit.hbs'
-		});
+		} as any);
 	}
 
 	constructor(chatMessage: ChatMessage) {

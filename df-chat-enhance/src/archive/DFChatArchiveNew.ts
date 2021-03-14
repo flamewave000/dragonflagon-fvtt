@@ -11,7 +11,7 @@ export default class DFChatArchiveNew extends FormApplication {
 			resizable: false,
 			minimizable: false,
 			title: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveNew_Title")
-		});
+		} as any);
 		return options;
 	}
 
