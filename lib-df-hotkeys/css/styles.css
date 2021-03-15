@@ -1,0 +1,45 @@
+#DFHotkeyConfig select {
+	margin-left: 0.5em;
+}
+
+#DFHotkeyConfig tr td {
+	text-align: center;
+}
+
+#DFHotkeyConfig tr td:first-child,
+#DFHotkeyConfig thead th:first-child {
+	text-align: right;
+}
+
+#DFHotkeyConfig form {
+	display: flex;
+	flex-flow: row wrap;
+}
+
+#DFHotkeyConfig form input {
+	margin: 0;
+}
+
+#DFHotkeyConfig form h2,
+#DFHotkeyConfig form h3,
+#DFHotkeyConfig form p,
+#DFHotkeyConfig form table {
+	flex: 0 0 100%;
+}
+
+#DFHotkeyConfig form button {
+	flex: 1 0;
+}
+
+#DFHotkeyConfig form label {
+	display: inline-block;
+	margin: 0 0.375em;
+}
+
+#DFHotkeyConfig form label>span {
+	vertical-align: middle;
+}
+
+#DFHotkeyConfig form label>input {
+	vertical-align: middle;
+}

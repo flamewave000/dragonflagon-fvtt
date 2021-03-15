@@ -1,0 +1,16 @@
+{
+	"lib-df-hotkeys.ModName": "Library: DF Hotkeys",
+
+	"DF_HOTKEYS.Config_Title": "Hotkeys Configuration",
+	"DF_HOTKEYS.Config_Warning": "Beware <code>Ctrl+W</code> on Chromium browsers (Chrome, Edge, Brave). This combo will close the browser.",
+	"DF_HOTKEYS.Config_Table_Name": "Hotkey Name",
+	"DF_HOTKEYS.Config_Table_Key": "Key Binding",
+	"DF_HOTKEYS.Config_Table_Mods": "Modifiers",
+	"DF_HOTKEYS.Config_Reset": "Reset to Defaults",
+	"DF_HOTKEYS.Config_Save": "Save",
+	"DF_HOTKEYS.GeneralGroup_Label": "General Hotkeys",
+	"DF_HOTKEYS.ReloadRequired_Title": "Reload Required",
+	"DF_HOTKEYS.ReloadRequired_Content": "<p>A reload is required for your changes to go into effect.</p>",
+	"DF_HOTKEYS.ReloadRequired_Positive": "Reload Now",
+	"DF_HOTKEYS.ReloadRequired_Negative": "I'll Reload Myself"
+}

@@ -73,5 +73,4 @@ declare class libWrapper {
 	 * @param {string} module    The module identifier, i.e. the 'name' field in your module's manifest.
 	 */
 	static clear_module(module: string): void;
-
 }
