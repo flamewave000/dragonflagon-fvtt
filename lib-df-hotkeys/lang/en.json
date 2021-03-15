@@ -9,6 +9,7 @@
 	"DF_HOTKEYS.Config_Reset": "Reset to Defaults",
 	"DF_HOTKEYS.Config_Save": "Save",
 	"DF_HOTKEYS.GeneralGroup_Label": "General Hotkeys",
+	"DF_HOTKEYS.SelectTool": "Select Tool",
 	"DF_HOTKEYS.ReloadRequired_Title": "Reload Required",
 	"DF_HOTKEYS.ReloadRequired_Content": "<p>A reload is required for your changes to go into effect.</p>",
 	"DF_HOTKEYS.ReloadRequired_Positive": "Reload Now",

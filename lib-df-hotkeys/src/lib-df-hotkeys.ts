@@ -1,102 +1,38 @@
-
-import { KeyMap, Hotkeys } from './Hotkeys.js';
-
-import { HotkeyConfig } from './HotkeyConfig.js';
-
-
+import * as HotkeysModule from './Hotkeys.js';
 declare global {
-	const hotkeys: typeof Hotkeys
+	export type Hotkeys = HotkeysModule.Hotkeys;
+	export const Hotkeys: typeof HotkeysModule.Hotkeys;
+	export type KeyMap = HotkeysModule.KeyMap;
+	export type HotkeyGroup = HotkeysModule.HotkeyGroup;
+	export type HotkeySetting = HotkeysModule.HotkeySetting;
 }
-
-Object.freeze(Hotkeys);
-
-// Define as property so that it can't be deleted
-delete (globalThis as any).hotkeys;
-Object.defineProperty(globalThis, 'hotkeys', {
-	get: () => Hotkeys,
-	set: (value) => { throw `Hotkeys: Not allowed to re-assign the global instance of Hotkeys` },
-	configurable: false
-});
-
+(<any>window).Hotkeys = HotkeysModule.Hotkeys;
 {
 	(Hotkeys as any)._init();
 }
 
-
-class SETTINGS {
-	static readonly MOD_NAME = 'lib-df-hotkeys';
-	static register<T>(key: string, config: ClientSettings.PartialData<T>) { game.settings.register(SETTINGS.MOD_NAME, key, config); }
-	static get<T>(key: string): T { return game.settings.get(SETTINGS.MOD_NAME, key); }
-	static async set<T>(key: string, value: T): Promise<T> { return await game.settings.set(SETTINGS.MOD_NAME, key, value); }
-	static default<T>(key: string): T { return game.settings.settings.get(`${SETTINGS.MOD_NAME}.${key}`).default; }
-	static typeOf<T>(): ConstructorOf<T> { return Object as any; }
-}
-
+import { HotkeyConfig } from './HotkeyConfig.js';
 Hooks.once('init', function () {
 	HotkeyConfig.init();
-
-	SETTINGS.register<KeyMap>('test1', {
+	const MOD_NAME = 'lib-df-hotkeys';
+	const PREF_SELECT = 'select';
+	game.settings.register(MOD_NAME, PREF_SELECT, {
 		scope: 'world',
 		config: false,
 		default: {
-			key: hotkeys.keys.Digit1,
-			alt: true,
+			key: Hotkeys.keys.KeyS,
+			alt: false,
 			ctrl: false,
 			shift: false
 		},
 		type: Object as any
 	});
-	SETTINGS.register<KeyMap>('test2', {
-		scope: 'world',
-		config: false,
-		default: {
-			key: hotkeys.keys.Digit2,
-			alt: true,
-			ctrl: false,
-			shift: false
-		},
-		type: Object as any
-	});
-	SETTINGS.register<KeyMap>('test3', {
-		scope: 'world',
-		config: false,
-		default: {
-			key: hotkeys.keys.Digit3,
-			alt: true,
-			ctrl: false,
-			shift: false
-		},
-		type: Object as any
-	});
-
-	hotkeys.registerShortcut({
-		name: 'test1',
-		label: 'Test 1',
-		get: () => SETTINGS.get<KeyMap>('test1'),
-		set: async (value: KeyMap) => await SETTINGS.set('test1', value),
-		default: () => SETTINGS.default('test1'),
-		handle: _ => { console.log('You hit Alt + 1') },
-	});
-	hotkeys.registerShortcut({
-		name: 'test2',
-		label: 'Test 2',
-		get: () => SETTINGS.get<KeyMap>('test2'),
-		set: async (value: KeyMap) => await SETTINGS.set('test2', value),
-		default: () => SETTINGS.default('test2'),
-		handle: _ => { console.log('You hit Alt + 2') },
-	});
-	hotkeys.registerGroup({
-		name: 'group1',
-		label: 'Group 1',
-		description: 'Optional description goes here'
-	});
-	hotkeys.registerShortcut({
-		name: 'test3',
-		label: 'Test 3',
-		group: 'group1',
-		get: () => SETTINGS.get<KeyMap>('test3'),
-		set: async (value: KeyMap) => await SETTINGS.set('test3', value),
-		default: () => SETTINGS.default('test3'),
-		handle: _ => { console.log('You hit Alt + 3') },
+	Hotkeys.registerShortcut({
+		name: MOD_NAME + '.' + PREF_SELECT,
+		label: 'DF_HOTKEYS.SelectTool',
+		get: () => game.settings.get(MOD_NAME, PREF_SELECT),
+		set: async (value: KeyMap) => game.settings.set(MOD_NAME, PREF_SELECT, value),
+		default: () => { return { key: Hotkeys.keys.KeyS, alt: false, ctrl: false, shift: false } },
+		handle: _ => (ui.controls as any)._onClickTool({ preventDefault: function () { }, currentTarget: { dataset: { tool: PREF_SELECT } } }),
 	});
 });

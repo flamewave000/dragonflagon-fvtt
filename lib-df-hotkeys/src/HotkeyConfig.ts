@@ -1,5 +1,3 @@
-import { HotkeySetting, KeyMap, SettingGroup } from './Hotkeys.js';
-
 
 interface Options {
 	keys: { key: string, label: string }[]
@@ -21,6 +19,13 @@ interface FormData {
 	}
 }
 
+interface SettingGroup {
+	name: string,
+	label: string,
+	description: string,
+	items: HotkeySetting[]
+}
+
 export class HotkeyConfig extends FormApplication<Options> {
 	private static readonly PREF_MENU = "HotkeySettingsMenu";
 
@@ -36,7 +41,7 @@ export class HotkeyConfig extends FormApplication<Options> {
 			width: 525,
 			id: 'DFHotkeyConfig',
 			template: 'modules/lib-df-hotkeys/templates/HotkeyConfig.hbs'
-		});
+		} as FormApplication.Options);
 	}
 
 	static init() {
@@ -50,8 +55,8 @@ export class HotkeyConfig extends FormApplication<Options> {
 
 	getData(options?: Application.RenderOptions): Options {
 		return {
-			keys: hotkeys.keys.entries,
-			groups: [...((hotkeys as any)._settings as Map<string, SettingGroup>).values()]
+			keys: Hotkeys.keys.entries,
+			groups: [...((Hotkeys as any)._settings as Map<string, SettingGroup>).values()]
 				.filter(x => x.items.length > 0)
 				.map(g => {
 					return {
@@ -73,7 +78,7 @@ export class HotkeyConfig extends FormApplication<Options> {
 	async _updateObject(event: Event, formData?: any) {
 		if (!formData) return;
 		const data = expandObject(formData) as FormData;
-		const groups = (hotkeys as any)._settings as Map<string, SettingGroup>;
+		const groups = (Hotkeys as any)._settings as Map<string, SettingGroup>;
 		for (let groupKey of Object.keys(data)) {
 			const group = groups.get(groupKey);
 			if (!group) continue;
@@ -90,7 +95,7 @@ export class HotkeyConfig extends FormApplication<Options> {
 		super.activateListeners(html);
 		html.find('#reset').on('click', (e) => {
 			e.preventDefault();
-			const groups = [...((hotkeys as any)._settings as Map<string, SettingGroup>).values()].filter(x => x.items.length > 0);
+			const groups = [...((Hotkeys as any)._settings as Map<string, SettingGroup>).values()].filter(x => x.items.length > 0);
 			for (let group of groups) {
 				group.items.forEach(x => {
 					const defValue = x.default();

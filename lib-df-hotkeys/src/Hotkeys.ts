@@ -40,7 +40,7 @@ export interface HotkeyGroup {
 	description?: string;
 }
 
-export interface SettingGroup {
+interface SettingGroup {
 	name: string,
 	label: string,
 	description: string,
@@ -54,8 +54,7 @@ export class Hotkeys {
 	private static _handled = new Set<string>();
 	private static _settings = new Map<string, SettingGroup>();
 	private static _settingsNames = new Set<string>();
-
-	static get keys(): typeof Keys { return Keys; }
+	static readonly keys = new Keys();
 
 	private static _metaKey(event: KeyboardEvent): number {
 		return (event.altKey ? 0x1 : 0) | (event.ctrlKey ? 0x2 : 0) | (event.shiftKey ? 0x4 : 0);
@@ -120,19 +119,19 @@ export class Hotkeys {
 	/**
 	 * Registers a new hotkey configuration.
 	 * @param config Hotkey configuration.
-	 * @param throwIfExists If true, will throw an error if a config with that name already exists; default true.
+	 * @param throwOnFail If true, will throw an error if a config with that name already exists, or an explicit group was given but does not exist; default true.
 	 * @returns The ID for the registration, used for De-Registration, or null if it failed to be registered.
 	 */
-	static registerShortcut(config: HotkeySetting, throwIfExists: boolean = false): boolean {
+	static registerShortcut(config: HotkeySetting, throwOnFail: boolean = true): boolean {
 		if (this._settingsNames.has(config.name)) {
-			if (throwIfExists) throw Error(`'${config.name}' has already been registered`);
+			if (throwOnFail) throw Error(`The '${config.name}' hotkey has already been registered!`);
 			else return false;
 		}
 		this._settingsNames.add(config.name);
 		if (!config.group)
 			config.group = Hotkeys.GENERAL;
 		else if (!this._settings.has(config.group)) {
-			if (throwIfExists) throw Error(`'${config.group}' does not exist. Please make sure you call registerConfigGroup() before adding configurations for a custom group.`);
+			if (throwOnFail) throw Error(`The '${config.group}' group does not exist. Please make sure you call Hotkeys.registerGroup() before adding hotkeys for a custom group.`);
 			else return false;
 		}
 		this._settings.get(config.group).items.push(config);
@@ -173,12 +172,12 @@ export class Hotkeys {
 	/**
 	 * Registers a new Settings Group for hotkeys.
 	 * @param group Group settings, requiring the name and label. Description is optional.
-	 * @param throwIfExists If true, will throw an error if a group already exists for the given name; default false.
+	 * @param throwOnFail If true, will throw an error if a group already exists for the given name; default true.
 	 * @returns true if the group has been registered; otherwise false if the group already exists.
 	 */
-	static registerGroup(group: HotkeyGroup, throwIfExists: boolean = false): boolean {
+	static registerGroup(group: HotkeyGroup, throwOnFail: boolean = true): boolean {
 		if (this._settings.has(group.name)) {
-			if (throwIfExists) throw Error(`'${group.name}' has already been registered`);
+			if (throwOnFail) throw Error(`The '${group.name}' group has already been registered!`);
 			return false;
 		}
 		this._settings.set(group.name, {
