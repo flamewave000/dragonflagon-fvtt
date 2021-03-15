@@ -68,7 +68,7 @@ export class DFChatArchive {
 				FilePicker.createDirectory(origin, folder, {});
 		})
 		.catch(_ => { throw new Error('Could not access the archive folder: ' + folder) });
-	} 
+	}
 
 	static getLogs(): DFChatArchiveEntry[] { return this._logs; }
 	static getArchive(id: number): DFChatArchiveEntry { return this._logs.find(x => x.id == id); }
@@ -155,6 +155,9 @@ export class DFChatArchive {
 	}
 
 	static async upgradeFromDatabaseEntries() {
+		if (!game.user.isGM)
+			return;
+
 		const folderPath = game.settings.get(CONFIG.MOD_NAME, DFChatArchive.PREF_FOLDER) as string;
 		const needUpgrades = this._logs
 			.filter(x => (<any> x as ObsoleteDFChatArchiveEntry).chats)
@@ -190,12 +193,13 @@ export class DFChatArchive {
 				console.log('DF Chat Enhancements upgraded the entry: ', entry);
 			}
 		}
-
-		await game.settings.set(CONFIG.MOD_NAME, DFChatArchive.PREF_LOGS, JSON.stringify(this._logs, null, ''));
-		if (DFChatArchive._updateListener != null)
-			DFChatArchive._updateListener();
 		
-		if (newEntries.length > 0)
+		if (newEntries.length > 0) {
+			await game.settings.set(CONFIG.MOD_NAME, DFChatArchive.PREF_LOGS, JSON.stringify(this._logs, null, ''));
+			if (DFChatArchive._updateListener != null)
+				DFChatArchive._updateListener();
+
 			ui.notifications.info('DF Chat Enhancements records upgraded.');
+		}
 	}
 }
