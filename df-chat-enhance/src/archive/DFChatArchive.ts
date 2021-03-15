@@ -8,6 +8,13 @@ export interface DFChatArchiveEntry {
 	filename: string;
 }
 
+export interface ObsoleteDFChatArchiveEntry {
+	id: number;
+	name: string;
+	chats: ChatMessage[] | ChatMessage.Data[];
+	visible: boolean;
+}
+
 export class DFChatArchive {
 	private static readonly PREF_LOGS = 'logs';
 	private static readonly PREF_CID = 'currentId';
@@ -145,5 +152,50 @@ export class DFChatArchive {
 		await game.settings.set(CONFIG.MOD_NAME, DFChatArchive.PREF_LOGS, JSON.stringify(this._logs, null, ''));
 		if (DFChatArchive._updateListener != null)
 			DFChatArchive._updateListener();
+	}
+
+	static async upgradeFromDatabaseEntries() {
+		const folderPath = game.settings.get(CONFIG.MOD_NAME, DFChatArchive.PREF_FOLDER) as string;
+		const needUpgrades = this._logs
+			.filter(x => (<any> x as ObsoleteDFChatArchiveEntry).chats)
+			.map(x => (<any> x as ObsoleteDFChatArchiveEntry));
+
+		console.log('DF Chat Enhancements is upgrading obsolete entries: ', needUpgrades);
+		if (needUpgrades.length > 0)
+			ui.notifications.info('Upgrading DF Chat Enhancements obsolete format records.');
+
+		const newEntries: DFChatArchiveEntry[] = [];
+		for (let entry of needUpgrades) {
+			const fileName = `${game.world.name}_${entry.id}_${entry.name}.json`
+				.replace(/[\/\?<>\\:\*\|"]|[\x00-\x1f\x80-\x9f]/g, '_');
+			const file = new File([JSON.stringify(entry.chats)], fileName, { type: 'application/json' });
+			const response = <any> await FilePicker.upload(this.DATA_FOLDER, folderPath, file, {});
+			if (response.path) {
+				newEntries.push({
+					id: entry.id,
+					name: entry.name,
+					file: response.path,
+					visible: entry.visible,
+					filename: fileName
+				} as DFChatArchiveEntry);
+			}
+		}
+
+		console.log('DF Chat Enhancements upgraded with new entries: ', newEntries);
+		for (let entry of newEntries) {
+			if (needUpgrades.some(x => x.id == entry.id)) {
+				this._logs.splice(this._logs.findIndex(x => x.id == entry.id), 1);
+				this._logs.push(entry);
+
+				console.log('DF Chat Enhancements upgraded the entry: ', entry);
+			}
+		}
+
+		await game.settings.set(CONFIG.MOD_NAME, DFChatArchive.PREF_LOGS, JSON.stringify(this._logs, null, ''));
+		if (DFChatArchive._updateListener != null)
+			DFChatArchive._updateListener();
+		
+		if (newEntries.length > 0)
+			ui.notifications.info('DF Chat Enhancements records upgraded.');
 	}
 }

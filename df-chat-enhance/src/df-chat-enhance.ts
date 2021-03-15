@@ -1,4 +1,4 @@
-import initDFChatArchive from "./archive/df-chat-archive.js";
+import * as DFChatArchive from "./archive/df-chat-archive.js";
 import initDFChatEdit from "./edit/df-chat-edit.js";
 import * as DFAdventureLog from "./logger/df-adventure-log.js";
 import initDFChatPrivacy from "./privacy/df-chat-privacy.js";
@@ -15,12 +15,13 @@ Hooks.once('init', function() {
 	 * chat window, while the privacy changes those buttons
 	 * from <a> tags to <button> tags if enabled.
 	 */
-	initDFChatArchive();
+	DFChatArchive.init();
 	initDFChatPrivacy();
 	DFAdventureLog.init();
 });
 
 Hooks.once('ready', function() {
+	DFChatArchive.ready();
 	if (!game.modules.get('lib-wrapper')?.active) {
 		console.error('Missing libWrapper module dependency');
 		if (game.user.isGM)
