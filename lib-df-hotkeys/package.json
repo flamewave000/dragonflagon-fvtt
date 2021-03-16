@@ -2,10 +2,9 @@
 	"private": true,
 	"name": "lib-df-hotkeys",
 	"title": "Library: DF Hotkeys",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Library for providing a way for modules to register keyboard shortcuts",
 	"main": "src/lib-df-hotkeys.ts",
-	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/",
 	"scripts": {
 		"build": "npx gulp --sm",
 		"watch": "npx gulp watch --sm",

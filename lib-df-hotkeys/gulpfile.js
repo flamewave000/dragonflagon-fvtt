@@ -24,7 +24,8 @@ const CSS = 'css/';
 
 var PACKAGE = JSON.parse(fs.readFileSync('./package.json'));
 function reloadPackage(cb) { PACKAGE = JSON.parse(fs.readFileSync('./package.json')); cb(); }
-function DEV_DIST() { return PACKAGE.devDir + PACKAGE.name + '/'; }
+var DEV_DIR = fs.readFileSync('../dev').toString().trim();
+function DEV_DIST() { return DEV_DIR + PACKAGE.name + '/'; }
 
 String.prototype.replaceAll = function (pattern, replace) { return this.split(pattern).join(replace); }
 function pdel(patterns, options) { return desc(`deleting ${patterns}`, () => { return del(patterns, options); }); }

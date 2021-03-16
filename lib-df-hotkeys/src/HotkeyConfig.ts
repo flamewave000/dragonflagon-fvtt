@@ -13,12 +13,6 @@ interface Options {
 	}[]
 }
 
-interface FormData {
-	[groupName: string]: {
-		[name: string]: KeyMap;
-	}
-}
-
 interface SettingGroup {
 	name: string,
 	label: string,
@@ -76,17 +70,48 @@ export class HotkeyConfig extends FormApplication<Options> {
 		};
 	}
 
-	async _updateObject(event: Event, formData?: any) {
+	async _updateObject(event: Event, formData?: { [key: string]: any }) {
 		if (!formData) return;
-		const data = expandObject(formData) as FormData;
-		const groups = (Hotkeys as any)._settings as Map<string, SettingGroup>;
-		for (let groupKey of Object.keys(data)) {
-			const group = groups.get(groupKey);
-			if (!group) continue;
-			for (let itemKey of Object.keys(data[groupKey])) {
-				const item = group.items.find(x => x.name === itemKey);
-				if (!itemKey) continue;
-				await item.set(data[groupKey][itemKey]);
+
+		// Process group settings
+		const settings = (Hotkeys as any)._settings as Map<string, SettingGroup>;
+		const groups = new Map<string, Map<string, HotkeySetting>>();
+		settings.forEach(x => groups.set(x.name, new Map(x.items.map(x => [x.name, x]))));
+
+		var key = '';
+		const saveData = new Map<string, Map<string, string[]>>();
+		for (let entry of Object.keys(formData)) {
+
+			const tokens = entry.split('.');
+			const group = saveData.has(tokens[0]) ? saveData.get(tokens[0]) : saveData.set(tokens[0], new Map()).get(tokens[0]);
+			const key = tokens.slice(1, tokens.length - 1).join('.');
+			const item = group.has(key) ? group.get(key) : group.set(key, []).get(key);
+			item.push(tokens[tokens.length - 1]);
+		}
+		for (let groupName of saveData.keys()) {
+			if (!groups.has(groupName)) {
+				console.error(`Did not find hotkey group with the name "${groupName}"`);
+				continue;
+			}
+			const group = groups.get(groupName);
+			for (let itemName of saveData.get(groupName).keys()) {
+				if (!group.has(itemName)) {
+					console.error(`Did not find hotkey with the name "${itemName}"`);
+					continue;
+				}
+				const item = group.get(itemName);
+				const rootKey = `${groupName}.${itemName}.`;
+				const keyMap: KeyMap = {
+					key: formData[rootKey + 'key'],
+					alt: formData[rootKey + 'alt'],
+					ctrl: formData[rootKey + 'ctrl'],
+					shift: formData[rootKey + 'shift']
+				}
+				if (keyMap.key === undefined) { console.error(`HotkeyConfig: "${itemName}" was missing 'key' field`); continue; }
+				if (keyMap.alt === undefined) { console.error(`HotkeyConfig: "${itemName}" was missing 'alt' field`); continue; }
+				if (keyMap.ctrl === undefined) { console.error(`HotkeyConfig: "${itemName}" was missing 'ctrl' field`); continue; }
+				if (keyMap.shift === undefined) { console.error(`HotkeyConfig: "${itemName}" was missing 'shift' field`); continue; }
+				await item.set(keyMap);
 			}
 		}
 		HotkeyConfig.requestReload();
