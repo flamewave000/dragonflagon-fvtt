@@ -3,7 +3,7 @@ import { Keys } from "./Keys.js";
 /** Simple KeyMap for a Hotkey */
 export interface KeyMap {
 	/** The key code to be listned for */
-	key: string;
+	key: string | String;
 	/** Does the Alt key need to be pressed at the same time? */
 	alt: boolean;
 	/** Does the Ctrl key need to be pressed at the same time? */
@@ -15,11 +15,11 @@ export interface KeyMap {
 /** Hotkey Configuration Registration */
 export interface HotkeySetting {
 	/** optional: Group to be included in with their own header. Default: General Group */
-	group?: string;
+	group?: string | String;
 	/** Unique variable name to be used in the layout. Recommend: 'module-name.myHotkey' */
-	name: string;
+	name: string | String;
 	/** Label to be displayed in the layout. This will be localized when injected into the HTML */
-	label: string;
+	label: string | String;
 	/** The default setting for this hotkey */
 	default(): KeyMap;
 	/** Function for retrieving the current hotkey setting */
@@ -33,27 +33,27 @@ export interface HotkeySetting {
 /** Hotkey Group Configuration */
 export interface HotkeyGroup {
 	/** Unique name of the group. */
-	name: string;
+	name: string | String;
 	/** Displayed in the HTML header for the group. */
-	label: string;
+	label: string | String;
 	/** Optional description of the group */
-	description?: string;
+	description?: string | String;
 }
 
 interface SettingGroup {
-	name: string,
-	label: string,
-	description: string,
+	name: string | String,
+	label: string | String,
+	description: string | String,
 	items: HotkeySetting[]
 }
 
 export class Hotkeys {
 	private static readonly GENERAL = 'general';
 	private static _id_iterator = 0;
-	private static _handlers = new Map<number, Map<string, HotkeySetting[]>>();
-	private static _handled = new Set<string>();
-	private static _settings = new Map<string, SettingGroup>();
-	private static _settingsNames = new Set<string>();
+	private static _handlers = new Map<number, Map<String, HotkeySetting[]>>();
+	private static _handled = new Set<String>();
+	private static _settings = new Map<String, SettingGroup>();
+	private static _settingsNames = new Set<String>();
 	static readonly keys = new Keys();
 
 	private static _metaKey(event: KeyboardEvent): number {
@@ -64,10 +64,10 @@ export class Hotkeys {
 			|| event.key === 'Ctrl'
 			|| event.key === 'Alt';
 	}
-	private static _genId(meta: number, key: string): string {
+	private static _genId(meta: number, key: String): String {
 		return `${++this._id_iterator}:${meta.toString(16)}:${key}`;
 	}
-	private static _parseId(id: string): { meta: number, key: string, id: number } {
+	private static _parseId(id: String): { meta: number, key: String, id: number } {
 		const first = id.indexOf(':');
 		const second = id.indexOf(':', first + 1);
 		const idNum = id.substr(0, first);
@@ -123,22 +123,43 @@ export class Hotkeys {
 	 * @returns The ID for the registration, used for De-Registration, or null if it failed to be registered.
 	 */
 	static registerShortcut(config: HotkeySetting, throwOnFail: boolean = true): boolean {
-		if (this._settingsNames.has(config.name)) {
-			if (throwOnFail) throw Error(`The '${config.name}' hotkey has already been registered!`);
-			else return false;
+		const errors: string[] = [];
+		// Validate our data structure
+		if (typeof (config.name) !== 'string' && !((<any>config.name) instanceof String))
+			errors.push('Hotkeys.registerShortcut(): config.name must be a string!');
+		if (typeof (config.label) !== 'string' && !((<any>config.name) instanceof String))
+			errors.push('Hotkeys.registerShortcut(): config.label must be a string!');
+		if (config.group !== undefined && config.group !== null && typeof (config.group) !== 'string' && !((<any>config.name) instanceof String))
+			errors.push('Hotkeys.registerShortcut(): config.group must be null, undefined, or a string!');
+		if (!(config.get instanceof Function))
+			errors.push('Hotkeys.registerShortcut(): config.get must be a Function!');
+		if (!(config.set instanceof Function))
+			errors.push('Hotkeys.registerShortcut(): config.set must be a Function!');
+		if (!(config.default instanceof Function))
+			errors.push('Hotkeys.registerShortcut(): config.default must be a Function!');
+		if (!(config.handle instanceof Function))
+			errors.push('Hotkeys.registerShortcut(): config.handle must be a Function!');
+		if (this._settingsNames.has(config.name))
+			errors.push(`Hotkeys.registerShortcut(): '${config.name}' hotkey has already been registered!`);
+		if (errors.length > 0) {
+			if (throwOnFail)
+				throw Error(errors.join(',\n'));
+			this._printErrors(errors, new Error().stack);
+			return false;
 		}
+
 		this._settingsNames.add(config.name);
 		if (!config.group)
 			config.group = Hotkeys.GENERAL;
 		else if (!this._settings.has(config.group)) {
-			if (throwOnFail) throw Error(`The '${config.group}' group does not exist. Please make sure you call Hotkeys.registerGroup() before adding hotkeys for a custom group.`);
+			if (throwOnFail) throw Error(`Hotkeys.registerShortcut(): '${config.group}' group does not exist. Please make sure you call Hotkeys.registerGroup() before adding hotkeys for a custom group.`);
 			else return false;
 		}
 		this._settings.get(config.group).items.push(config);
 
 		const keyMap: KeyMap = config.get();
 		const metaKey: number = (keyMap.alt ? 0x1 : 0) | (keyMap.ctrl ? 0x2 : 0) | (keyMap.shift ? 0x4 : 0);
-		const metaHandlers: Map<string, HotkeySetting[]> = this._getOrDefault(this._handlers, metaKey, () => new Map());
+		const metaHandlers: Map<String, HotkeySetting[]> = this._getOrDefault(this._handlers, metaKey, () => new Map());
 		const eventHandlers: HotkeySetting[] = this._getOrDefault(metaHandlers, keyMap.key, () => []);
 		eventHandlers.push(config)
 		return true;
@@ -149,7 +170,7 @@ export class Hotkeys {
 	 * @param id ID of the Hotkey to be de-registered.
 	 * @returns true if a handler was found and removed; false if no handler was found for the given key.
 	 */
-	static deregisterShortcut(name: string): boolean {
+	static deregisterShortcut(name: string | String): boolean {
 		var found = false;
 		for (let group of this._settings.values()) {
 			const idx = group.items.findIndex(x => x.name === name);
@@ -176,10 +197,25 @@ export class Hotkeys {
 	 * @returns true if the group has been registered; otherwise false if the group already exists.
 	 */
 	static registerGroup(group: HotkeyGroup, throwOnFail: boolean = true): boolean {
-		if (this._settings.has(group.name)) {
-			if (throwOnFail) throw Error(`The '${group.name}' group has already been registered!`);
+		// Validate HotkeyGroup data structure
+		const errors: string[] = [];
+		if (typeof (group.name) !== 'string' && !((<any>group.name) instanceof String))
+			errors.push('Hotkeys.registerGroup(): group.name must be a string!');
+		if (typeof (group.label) !== 'string' && !((<any>group.label) instanceof String))
+			errors.push('Hotkeys.registerGroup(): group.label must be a string!');
+		if (typeof (group.label) !== 'string' && !((<any>group.label) instanceof String))
+			errors.push('Hotkeys.registerGroup(): group.label must be a string!');
+		if (group.description !== undefined && group.description !== null && typeof (group.description) !== 'string' && !((<any>group.description) instanceof String))
+			errors.push('Hotkeys.registerGroup(): group.description must be null, undefined, or a string!');
+		if (this._settings.has(group.name))
+			errors.push(`Hotkeys.registerGroup(): '${group.name}' group has already been registered!`);
+		if (errors.length > 0) {
+			if (throwOnFail)
+				throw Error(errors.join(',\n'));
+			this._printErrors(errors, new Error().stack);
 			return false;
 		}
+
 		this._settings.set(group.name, {
 			name: group.name,
 			label: group.label,
@@ -187,5 +223,9 @@ export class Hotkeys {
 			items: []
 		});
 		return true;
+	}
+
+	private static _printErrors(errors: string[], stack: string) {
+		console.error(errors.join(',\n') + '\n' + stack);
 	}
 }

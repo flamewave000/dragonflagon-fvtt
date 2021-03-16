@@ -28,7 +28,7 @@ All modules that wish to use the library should declare a dependency in their ma
 
 ## For TypeScript Projects
 
-You will find the Typing Definitions file `lib-df-hotkeys.d.ts` in the [latest release](https://github.com/flamewave000/dragonflagon-fvtt/releases/tag/lib-df-hotkeys_1.0.1) that you can include in your project.
+You will find the Typing Definitions file `lib-df-hotkeys.d.ts` in the [latest release](https://github.com/flamewave000/dragonflagon-fvtt/releases/tag/lib-df-hotkeys_1.0.2) that you can include in your project.
 
 ### Important Data Types
 

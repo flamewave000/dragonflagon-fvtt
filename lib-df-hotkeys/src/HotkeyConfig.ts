@@ -1,22 +1,22 @@
 
 interface Options {
-	keys: { key: string, label: string }[]
+	keys: { key: String, label: String }[]
 	groups: {
-		name: string,
-		label: string,
-		description: string,
+		name: String,
+		label: String,
+		description: String,
 		items: {
-			name: string,
-			label: string,
+			name: String,
+			label: String,
 			map: KeyMap
 		}[]
 	}[]
 }
 
 interface SettingGroup {
-	name: string,
-	label: string,
-	description: string,
+	name: String,
+	label: String,
+	description: String,
 	items: HotkeySetting[]
 }
 
@@ -51,7 +51,7 @@ export class HotkeyConfig extends FormApplication<Options> {
 	getData(options?: Application.RenderOptions): Options {
 		return {
 			keys: Hotkeys.keys.entries,
-			groups: [...((Hotkeys as any)._settings as Map<string, SettingGroup>).values()]
+			groups: [...((Hotkeys as any)._settings as Map<String, SettingGroup>).values()]
 				.filter(x => x.items.length > 0)
 				.map(g => {
 					return {
@@ -74,12 +74,12 @@ export class HotkeyConfig extends FormApplication<Options> {
 		if (!formData) return;
 
 		// Process group settings
-		const settings = (Hotkeys as any)._settings as Map<string, SettingGroup>;
-		const groups = new Map<string, Map<string, HotkeySetting>>();
+		const settings = (Hotkeys as any)._settings as Map<String, SettingGroup>;
+		const groups = new Map<String, Map<String, HotkeySetting>>();
 		settings.forEach(x => groups.set(x.name, new Map(x.items.map(x => [x.name, x]))));
 
 		var key = '';
-		const saveData = new Map<string, Map<string, string[]>>();
+		const saveData = new Map<String, Map<String, String[]>>();
 		for (let entry of Object.keys(formData)) {
 
 			const tokens = entry.split('.');
@@ -100,18 +100,18 @@ export class HotkeyConfig extends FormApplication<Options> {
 					continue;
 				}
 				const item = group.get(itemName);
-				const rootKey = `${groupName}.${itemName}.`;
-				const keyMap: KeyMap = {
+				const rootKey: string = `${groupName}.${itemName}.`;
+				const keyMap: Partial<KeyMap> = {
 					key: formData[rootKey + 'key'],
 					alt: formData[rootKey + 'alt'],
 					ctrl: formData[rootKey + 'ctrl'],
 					shift: formData[rootKey + 'shift']
 				}
-				if (keyMap.key === undefined) { console.error(`HotkeyConfig: "${itemName}" was missing 'key' field`); continue; }
-				if (keyMap.alt === undefined) { console.error(`HotkeyConfig: "${itemName}" was missing 'alt' field`); continue; }
-				if (keyMap.ctrl === undefined) { console.error(`HotkeyConfig: "${itemName}" was missing 'ctrl' field`); continue; }
-				if (keyMap.shift === undefined) { console.error(`HotkeyConfig: "${itemName}" was missing 'shift' field`); continue; }
-				await item.set(keyMap);
+				if (keyMap.key === undefined || typeof(keyMap.key) !== 'string') { console.error(`HotkeyConfig: "${itemName}" was missing 'key' field`); continue; }
+				if (keyMap.alt === undefined || typeof(keyMap.alt) !== 'boolean') { console.error(`HotkeyConfig: "${itemName}" was missing 'alt' field`); continue; }
+				if (keyMap.ctrl === undefined || typeof(keyMap.ctrl) !== 'boolean') { console.error(`HotkeyConfig: "${itemName}" was missing 'ctrl' field`); continue; }
+				if (keyMap.shift === undefined || typeof(keyMap.shift) !== 'boolean') { console.error(`HotkeyConfig: "${itemName}" was missing 'shift' field`); continue; }
+				await item.set(keyMap as KeyMap);
 			}
 		}
 		HotkeyConfig.requestReload();
@@ -121,11 +121,11 @@ export class HotkeyConfig extends FormApplication<Options> {
 		super.activateListeners(html);
 		html.find('#reset').on('click', (e) => {
 			e.preventDefault();
-			const groups = [...((Hotkeys as any)._settings as Map<string, SettingGroup>).values()].filter(x => x.items.length > 0);
+			const groups = [...((Hotkeys as any)._settings as Map<String, SettingGroup>).values()].filter(x => x.items.length > 0);
 			for (let group of groups) {
 				group.items.forEach(x => {
 					const defValue = x.default();
-					$(`#DFHotkeyConfig select[name="${group.name}.${x.name}.key"]`).val(defValue.key);
+					$(`#DFHotkeyConfig select[name="${group.name}.${x.name}.key"]`).val(defValue.key.toString());
 					($(`#DFHotkeyConfig input[name="${group.name}.${x.name}.alt"]`)[0] as HTMLInputElement).checked = defValue.alt;
 					($(`#DFHotkeyConfig input[name="${group.name}.${x.name}.ctrl"]`)[0] as HTMLInputElement).checked = defValue.ctrl;
 					($(`#DFHotkeyConfig input[name="${group.name}.${x.name}.shift"]`)[0] as HTMLInputElement).checked = defValue.shift;

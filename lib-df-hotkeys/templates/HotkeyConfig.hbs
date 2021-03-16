@@ -21,7 +21,7 @@
 					<select name="{{group.name}}.{{item.name}}.key" data-dtype="String">
 						<option value="">---</option>
 						{{#each ../../keys}}
-						<option value="{{key}}" {{#if (eq key item.map.key)}} selected{{/if}}>{{label}}</option>
+						<option value="{{key}}" {{#if (eq key item.map.key)}} selected{{/if}}>{{localize label}}</option>
 						{{/each}}
 					</select>
 				</td>
