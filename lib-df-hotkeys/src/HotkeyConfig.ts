@@ -49,7 +49,8 @@ export class HotkeyConfig extends FormApplication<Options> {
 			restricted: true,
 			type: HotkeyConfig,
 			icon: 'fas fa-keyboard',
-			label: 'DF_HOTKEYS.Config_Title'
+			label: 'DF_HOTKEYS.Config_Title',
+			name: 'DF_HOTKEYS.Config_Title'
 		});
 	}
 

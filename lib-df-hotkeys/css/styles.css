@@ -38,6 +38,7 @@
 
 #DFHotkeyConfig form label>span {
 	vertical-align: middle;
+	margin-right: 0.5em;
 }
 
 #DFHotkeyConfig form label>input {

@@ -27,7 +27,7 @@ export interface HotkeySetting {
 	/** Function for saving the new hotkey setting */
 	set(value: KeyMap): Promise<KeyMap>;
 	/** Function to handle the execution of the hotkey */
-	handle(name: string): void;
+	handle(self: HotkeySetting): void;
 }
 
 /** Hotkey Group Configuration */
@@ -93,7 +93,7 @@ export class Hotkeys {
 			return;
 		}
 		event.preventDefault();
-		eventHandlers.forEach(x => x.handle(x.name));
+		eventHandlers.forEach(x => x.handle(x));
 		this._handled.add(event.code);
 	}
 	private static _handleKeyUp(event: KeyboardEvent) {

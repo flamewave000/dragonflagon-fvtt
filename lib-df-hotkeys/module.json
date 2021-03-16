@@ -12,7 +12,7 @@
 		{ "lang": "en", "name": "English", "path": "lang/en.json" }
 	],
 	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}",
-	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/{{name}}/LICENSE",
+	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/LICENSE",
 	"manifest":	"https://dragonflagon.cafe/mods/man/{{name}}",
 	"download":	"https://dragonflagon.cafe/mods/pak/{{name}}",
 	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/README.md",
