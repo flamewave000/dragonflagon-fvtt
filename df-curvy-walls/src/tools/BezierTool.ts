@@ -17,7 +17,7 @@ export abstract class BezierTool {
 		fontSize: 24,
 		fill: "#BBBBBB",
 		stroke: "#111111",
-		strokeThickness: 1,
+		strokeThickness: 4,
 		dropShadow: false,
 		dropShadowColor: "#000000",
 		dropShadowBlur: Math.max(Math.round(24 / 16), 2),
@@ -28,11 +28,13 @@ export abstract class BezierTool {
 
 	private _mode: ToolMode = ToolMode.NotPlaced;
 	protected bezier: Bezier;
-	protected lastSegmentFetch: PIXI.Point[] = [];
+	protected lastSegmentFetch: PIXI.Point[] | PIXI.Point[][] = [];
 	abstract get handles(): PIXI.Point[]
 	abstract get bounds(): PIXI.Bounds;
 	abstract lineA: PIXI.Point;
 	abstract lineB: PIXI.Point;
+
+	public segments: number = 8;
 
 	get lineCenter(): PIXI.Point {
 		return new PIXI.Point(
@@ -54,14 +56,17 @@ export abstract class BezierTool {
 		}
 	};
 
-	constructor() {
+	constructor(segments: number = 10) {
 		this.bezier = new Bezier(this.initialPoints());
+		this.segments = segments;
 	}
 	abstract initialPoints(): number[];
 	abstract drawHandles(context: PIXI.Graphics): void;
 	abstract checkPointForDrag(point: PIXI.Point): InputHandler | null;
+	checkPointForClick(point: PIXI.Point): boolean { return false; }
+	clearContext(context: PIXI.Graphics): void {}
 
-	getSegments(count: number): PIXI.Point[] {
+	getSegments(count: number): PIXI.Point[] | PIXI.Point[][] {
 		if (this.mode == ToolMode.NotPlaced) return [];
 		this.bezier.points = this.handles;
 		this.bezier.update();

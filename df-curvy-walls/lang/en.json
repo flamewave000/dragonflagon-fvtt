@@ -1,7 +1,9 @@
 {
+	"df-curvy-walls.errorLibWrapperMissing": "'DF Curvy Walls' requires the 'libWrapper' module. Please install and activate 'libWrapper'.",
 	"df-curvy-walls.cubic": "Cubic Bézier Curve",
 	"df-curvy-walls.quadratic": "Quadratic Bézier Curve",
 	"df-curvy-walls.circle": "Ellipse Curve",
+	"df-curvy-walls.rectangle": "Rectangle",
 	"df-curvy-walls.increment": "Increase Segments",
 	"df-curvy-walls.decrement": "Decrease Segments",
 	"df-curvy-walls.apply": "Apply curve walls to layer",

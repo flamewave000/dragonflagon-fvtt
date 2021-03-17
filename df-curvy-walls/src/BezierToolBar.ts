@@ -11,20 +11,20 @@ export interface ToolUI {
 	html?: String
 }
 export class BezierToolBar extends FormApplication {
-	static get defaultOptions() {
-		const options: Application.Options = {
+	static get defaultOptions(): FormApplication.Options {
+		const options: Partial<FormApplication.Options> = {
 			classes: ['form'],
 			left: 98,
 			popOut: false,
-			template: 'modules/df-curvy-walls/templates/segment-controls.html',
+			template: 'modules/df-curvy-walls/templates/segment-controls.hbs',
 			id: 'bezier-config',
 			title: game.i18n.localize('Curvy Walls Options'),
+			editable: game.user.isGM,
+			closeOnSubmit: false,
+			submitOnChange: true,
+			submitOnClose: true
 		};
-		(options as any)['editable'] = game.user.isGM;
-		(options as any)['closeOnSubmit'] = false;
-		(options as any)['submitOnChange'] = true;
-		(options as any)['submitOnClose'] = true;
-		return mergeObject(super.defaultOptions, options);
+		return mergeObject(super.defaultOptions, options as FormApplication.Options);
 	}
 
 	private renderHookId: number = 0;
@@ -37,6 +37,7 @@ export class BezierToolBar extends FormApplication {
 
 	/** @override */
 	async close(options?: FormApplication.CloseOptions): Promise<void> {
+		super.close(options);
 		Hooks.off('renderBezierToolBar', this.renderHookId);
 	}
 
@@ -83,12 +84,12 @@ export class BezierToolBar extends FormApplication {
 	 * @private
 	 */
 	async _updateObject(event: any) {
-	// 	if (!event.submitter) return;
-	// 	const data = this.getData();
-	// 	const coreTools = ((data as any).coreTools as Array<ToolUI>);
-	// 	const extraTools = ((data as any).extraTools as Array<ToolUI>);
-	// 	coreTools.concat(...extraTools)
-	// 		.find(e => e.name === event.submitter.dataset.tool)
-	// 		.onClick($(event.submitter));
+		// 	if (!event.submitter) return;
+		// 	const data = this.getData();
+		// 	const coreTools = ((data as any).coreTools as Array<ToolUI>);
+		// 	const extraTools = ((data as any).extraTools as Array<ToolUI>);
+		// 	coreTools.concat(...extraTools)
+		// 		.find(e => e.name === event.submitter.dataset.tool)
+		// 		.onClick($(event.submitter));
 	}
 }

@@ -13,6 +13,7 @@ const dts = require('bundle-dts');
 const replace = require('gulp-replace');
 const cleanCss = require('gulp-clean-css');
 const jsonminify = require('gulp-jsonminify');
+const notify = require('gulp-notify');
 
 const GLOB = '**/*';
 const DIST = 'dist/';
@@ -144,7 +145,7 @@ exports.default = gulp.series(
 		, outputStylesCSS()
 		, outputMetaFiles()
 	)
-	, plog('Build Complete')
+	, notify('Build Complete')
 );
 /**
  * Extends the default build task by copying the result to the Development Environment
@@ -159,7 +160,7 @@ exports.dev = gulp.series(
 		, outputStylesCSS(DEV_DIST())
 		, outputMetaFiles(DEV_DIST())
 	)
-	, plog('Dev Build Complete')
+	, notify('Dev Build Complete')
 );
 /**
  * Performs a default build and then zips the result into a bundle
@@ -195,13 +196,14 @@ exports.zip = gulp.series(
 	)
 	, compressDistribution()
 	, pdel([DIST])
+	, notify('Bundling complete.')
 );
 /**
  * Sets up a file watch on the project to detect any file changes and automatically rebuild those components.
  */
 exports.watch = function () {
 	exports.default();
-	gulp.watch(SOURCE + GLOB, gulp.series(pdel(DIST + SOURCE), buildSource()));
+	gulp.watch(SOURCE + GLOB, gulp.series(pdel(DIST + SOURCE), buildSource(), notify('Build Complete')));
 	gulp.watch([SOURCE + GLOB, CSS + GLOB, 'module.json', 'package.json'], buildManifest());
 	gulp.watch(LANG + GLOB, gulp.series(pdel(DIST + LANG), outputLanguages()));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(DIST + TEMPLATES), outputTemplates()));
@@ -215,7 +217,7 @@ exports.devWatch = function () {
 	const devDist = DEV_DIST();
 	console.log('Dev Directory: ' + devDist);
 	exports.dev();
-	gulp.watch(SOURCE + GLOB, gulp.series(pdel(devDist + SOURCE + GLOB, { force: true }), buildSource(devDist), plog('sources done.')));
+	gulp.watch(SOURCE + GLOB, gulp.series(pdel(devDist + SOURCE + GLOB, { force: true }), buildSource(devDist), notify('Dev Build Complete')));
 	gulp.watch([SOURCE + GLOB, CSS + GLOB, 'module.json', 'package.json'], gulp.series(reloadPackage, buildManifest(devDist), plog('manifest done.')));
 	gulp.watch(LANG + GLOB, gulp.series(pdel(devDist + LANG + GLOB, { force: true }), outputLanguages(devDist), plog('langs done.')));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(devDist + TEMPLATES + GLOB, { force: true }), outputTemplates(devDist), plog('templates done.')));

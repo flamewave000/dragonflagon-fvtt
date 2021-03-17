@@ -177,7 +177,7 @@ export default class CircleTool extends BezierTool {
 		this.drawHandle(context, 0x4444ff, this.sliceHandle.getHandlePoint(this.getCenter()));
 	}
 	protected drawSegmentLabel(context: PIXI.Graphics) {
-		const text = BezierTool.createText(`↔${this.lastSegmentFetch.length - 1}`);
+		const text = BezierTool.createText(`⊷${this.lastSegmentFetch.length - 1}`);
 		text.position = this.lineCenter;
 		context.addChild(text);
 	}

@@ -1,5 +1,6 @@
 const gulp = require('gulp');
-var fs = require('fs')
+const fs = require('fs')
+const path = require('path');
 const del = require('del');
 const ts = require('gulp-typescript');
 const sm = require('gulp-sourcemaps');
@@ -8,6 +9,7 @@ const rename = require('gulp-rename');
 const minify = require('gulp-minify');
 const tabify = require('gulp-tabify');
 const stringify = require('json-stringify-pretty-compact');
+const notify = require('gulp-notify');
 
 const GLOB = '**/*';
 const DIST = 'dist/';
@@ -19,11 +21,22 @@ const CSS = 'css/';
 
 var PACKAGE = JSON.parse(fs.readFileSync('./package.json'));
 function reloadPackage(cb) { PACKAGE = JSON.parse(fs.readFileSync('./package.json')); cb(); }
-function DEV_DIST() { return PACKAGE.devDir + PACKAGE.name + '/'; }
+var DEV_DIR = fs.readFileSync('../dev').toString().trim();
+function DEV_DIST() { return DEV_DIR + PACKAGE.name + '/'; }
 
 String.prototype.replaceAll = function (pattern, replace) { return this.split(pattern).join(replace); }
 function pdel(patterns, options) { return desc(`deleting ${patterns}`, () => { return del(patterns, options); }); }
 function plog(message) { return desc('plog', (cb) => { cb(); console.log(message); }); }
+function pnotify(message, title = null) {
+	const options = {
+		message: message,
+		onLast: true,
+		icon: path.join(__dirname, '.assets', 'logo.png'),
+		wait: true
+	};
+	if (title) options.title = title;
+	return desc('notify', () => gulp.src('package.json').pipe(notify(options)));
+}
 /**
  * Sets the gulp name for a lambda expression
  * @param {string} name Name to be bound to the lambda
@@ -139,7 +152,7 @@ exports.default = gulp.series(
 		, outputStylesCSS()
 		, outputMetaFiles()
 	)
-	, plog('Build Complete')
+	, pnotify('Build Complete')
 );
 /**
  * Extends the default build task by copying the result to the Development Environment
@@ -155,7 +168,7 @@ exports.dev = gulp.series(
 		, outputMetaFiles(DEV_DIST())
 	)
 	, outputDistToDevEnvironment
-	, plog('Dev Build Complete')
+	, pnotify('Dev Build Complete')
 );
 /**
  * Performs a default build and then zips the result into a bundle
@@ -178,7 +191,7 @@ exports.zip = gulp.series(
  */
 exports.watch = function () {
 	exports.default();
-	gulp.watch(SOURCE + GLOB, gulp.series(pdel(DIST + SOURCE), buildSource(true, false)));
+	gulp.watch(SOURCE + GLOB, gulp.series(pdel(DIST + SOURCE), buildSource(true, false), pnotify('Build Complete')));
 	gulp.watch([SOURCE + GLOB, CSS + GLOB, 'module.json', 'package.json'], buildManifest());
 	gulp.watch(LANG + GLOB, gulp.series(pdel(DIST + LANG), outputLanguages()));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(DIST + TEMPLATES), outputTemplates()));
@@ -192,8 +205,8 @@ exports.devWatch = function () {
 	const devDist = DEV_DIST();
 	console.log('Dev Directory: ' + devDist);
 	exports.dev();
-	gulp.watch(SOURCE + GLOB, gulp.series(pdel(devDist + SOURCE + GLOB, { force: true }), buildSource(true, false, devDist), plog('sources done.')));
-	gulp.watch([SOURCE + GLOB, CSS + GLOB, 'module.json', 'package.json'], gulp.series(reloadPackage, buildManifest(devDist), plog('manifest done.')));
+	gulp.watch(SOURCE + GLOB, gulp.series(pdel(devDist + SOURCE + GLOB, { force: true }), buildSource(true, false, devDist), pnotify('Dev Build Complete')));
+	gulp.watch([CSS + GLOB, 'module.json', 'package.json'], gulp.series(reloadPackage, buildManifest(devDist), plog('manifest done.')));
 	gulp.watch(LANG + GLOB, gulp.series(pdel(devDist + LANG + GLOB, { force: true }), outputLanguages(devDist), plog('langs done.')));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(devDist + TEMPLATES + GLOB, { force: true }), outputTemplates(devDist), plog('templates done.')));
 	gulp.watch(CSS + GLOB, gulp.series(pdel(devDist + CSS + GLOB, { force: true }), outputStylesCSS(devDist), plog('css done.')));

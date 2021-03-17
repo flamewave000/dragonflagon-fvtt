@@ -1,0 +1,14 @@
+{
+	"df-curvy-walls.cubic": "3次ベジェ曲線",
+	"df-curvy-walls.quadratic": "2次ベジェ曲線",
+	"df-curvy-walls.circle": "楕円曲線",
+	"df-curvy-walls.increment": "セグメントを増やす",
+	"df-curvy-walls.decrement": "セグメントを減らす",
+	"df-curvy-walls.apply": "レイヤーに壁を適用する",
+	"df-curvy-walls.cancel": "ツールクリア",
+	"df-curvy-walls.cubic_lock_handles": "線の終端とハンドルを固定",
+	"df-curvy-walls.ellipse_close": "開口部を閉じる",
+	"df-curvy-walls.ellipse_finish_slice": "スライス位置に短い壁を追加",
+	"df-curvy-walls.ellipse_increment": "角度スナップを増やす",
+	"df-curvy-walls.ellipse_decrement": "角度スナップを減らす"
+}

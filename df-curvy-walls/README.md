@@ -4,9 +4,13 @@
 
 Adds Bezier Curves and Ellipse tools to the walls layer. This gives you the ability to generate wall segments along a curve quickly and easily. You can also increase or decrease the number of wall segments used along the curve.
 
-| Cubic Bezier Curve | Quadratic Bezier Curve | Ellipse With Slicing |
-| :-: | :-: | :-: |
-| [![Quadratic Curve](../.assets/df-curvy-walls-cubic.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/18) | [![Quadratic Curve](../.assets/df-curvy-walls-quadratic.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/19) | [![Quadratic Curve](../.assets/df-curvy-walls-ellipse.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/20) |
+| Cubic Bezier Curve | Quadratic Bezier Curve |
+| :-: | :-: |
+| [![Cubic Curve](../.assets/df-curvy-walls-cubic.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/18) | [![Quadratic Curve](../.assets/df-curvy-walls-quadratic.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/19) |
+
+| Ellipse With Slicing | Rectangle with Segmented Sides |
+| :-: | :-: |
+| [![Ellipse Curve](../.assets/df-curvy-walls-ellipse.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/20) | [![Rectangle](../.assets/df-curvy-walls-rectangle.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/20) |
 
 ##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
 
@@ -17,6 +21,10 @@ Supports both a Quadratic and Cubic curve to give differing forms of curve gener
 ## Ellipse Curve
 
 Generates a simple ellipse that can be squished and stretched. You can cut a "slice" out of the ellipse to create an opening, and you can specify the arc offset of the walls so the segments are position at the right point along the curve.
+
+## Rectangle Tool
+
+Generates walls in a rectangle. This also allows you to specify the number of segments for each side, including having a side with no walls!
 
 ## Uses the Current Wall Type Selection
 

@@ -1,5 +1,10 @@
 # DF Curvy Walls
 
+## Release 2.0.0 (2021-03-17)
+- Fixed Memory Issues! I was not managing my PIXI graphics properly, but now it is much more efficient and no longer causes memory leaks.
+- NEW! Rectangle Tool. You can now draw rectangles that allow you to increment/decrement the number of segments on each side.
+- Fixed odd issue with Ellipse missing a wall when using certain numbers of wall segments.
+
 ## Release 1.3.4 (2021-02-15)
 - Potential fix for a randomly occurring error.
 - Fixed the url for the Manifest+ Media Cover (was missing the image).
