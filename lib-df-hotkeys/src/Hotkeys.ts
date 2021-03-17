@@ -11,7 +11,6 @@ export interface KeyMap {
 	/** Does the Shift key need to be pressed at the same time? */
 	shift: boolean;
 }
-
 /** Hotkey Configuration Registration */
 export interface HotkeySetting {
 	/** optional: Group to be included in with their own header. Default: General Group */
@@ -20,6 +19,11 @@ export interface HotkeySetting {
 	name: string | String;
 	/** Label to be displayed in the layout. This will be localized when injected into the HTML */
 	label: string | String;
+	/**
+	 * Accept repeated KeyDown events, this occurs if the user is holding the key down, it will
+	 * send additional events that are spaced out according to the user's key press repeat settings.
+	 */
+	repeat?: boolean;
 	/** The default setting for this hotkey */
 	default(): KeyMap;
 	/** Function for retrieving the current hotkey setting */
@@ -27,7 +31,21 @@ export interface HotkeySetting {
 	/** Function for saving the new hotkey setting */
 	set(value: KeyMap): Promise<KeyMap>;
 	/** Function to handle the execution of the hotkey */
-	handle(self: HotkeySetting): void;
+	/** @deprecated Use HotkeySetting.onKeyDown and HotkeySetting.onKeyUp */
+	handle?(self: HotkeySetting): void;
+	/**
+	 * Function to handle the execution of the Hot Key Down event.
+	 * @param self Convenience reference to this HotkeySetting object
+	 * @param repeated	Optional: This will only be defined if `repeat: true` has been set.
+	 * 					It will be false on the first Key Down event, but true on any subsequent
+	 * 					Key Down events caused by the user holding the key down.
+	 */
+	onKeyDown?(self: HotkeySetting, repeated?: boolean): void;
+	/**
+	 * Function to handle the execution of the Hot Key Up event.
+	 * @param self Convenience reference to this HotkeySetting object
+	 */
+	onKeyUp?(self: HotkeySetting): void;
 }
 
 /** Hotkey Group Configuration */
@@ -80,7 +98,7 @@ export class Hotkeys {
 		};
 	}
 	private static _handleKeyDown(event: KeyboardEvent) {
-		if (this._handled.has(event.code) || this._isMeta(event)) return;
+		if (/*this._handled.has(event.code) || */this._isMeta(event)) return;
 		const metaKey = this._metaKey(event);
 		const metaHandlers = this._handlers.get(metaKey);
 		if (!metaHandlers) {
@@ -88,12 +106,16 @@ export class Hotkeys {
 			return;
 		}
 		const eventHandlers = metaHandlers.get(event.code);
-		if (!eventHandlers) {
+		if (!eventHandlers || eventHandlers.length == 0) {
 			this._handled.add(event.code);
 			return;
 		}
 		event.preventDefault();
-		eventHandlers.forEach(x => x.handle(x));
+		for (let handler of eventHandlers) {
+			if (event.repeat && !handler.repeat) continue;
+			if (!!handler.onKeyDown) handler.repeat ? handler.onKeyDown(handler, event.repeat ?? false) : handler.onKeyDown(handler)
+			else if (!!handler.handle) handler.handle(handler);
+		}
 		this._handled.add(event.code);
 	}
 	private static _handleKeyUp(event: KeyboardEvent) {
@@ -119,7 +141,8 @@ export class Hotkeys {
 	/**
 	 * Registers a new hotkey configuration.
 	 * @param config Hotkey configuration.
-	 * @param throwOnFail If true, will throw an error if a config with that name already exists, or an explicit group was given but does not exist; default true.
+	 * @param throwOnFail	If true, will throw an error if a config with that name already exists, or 
+	 *						an explicit group was given but does not exist; default true.
 	 * @returns The ID for the registration, used for De-Registration, or null if it failed to be registered.
 	 */
 	static registerShortcut(config: HotkeySetting, throwOnFail: boolean = true): boolean {
@@ -127,9 +150,9 @@ export class Hotkeys {
 		// Validate our data structure
 		if (typeof (config.name) !== 'string' && !((<any>config.name) instanceof String))
 			errors.push('Hotkeys.registerShortcut(): config.name must be a string!');
-		if (typeof (config.label) !== 'string' && !((<any>config.name) instanceof String))
+		if (typeof (config.label) !== 'string' && !((<any>config.label) instanceof String))
 			errors.push('Hotkeys.registerShortcut(): config.label must be a string!');
-		if (config.group !== undefined && config.group !== null && typeof (config.group) !== 'string' && !((<any>config.name) instanceof String))
+		if (config.group !== undefined && config.group !== null && typeof (config.group) !== 'string' && !((<any>config.group) instanceof String))
 			errors.push('Hotkeys.registerShortcut(): config.group must be null, undefined, or a string!');
 		if (!(config.get instanceof Function))
 			errors.push('Hotkeys.registerShortcut(): config.get must be a Function!');
@@ -137,8 +160,12 @@ export class Hotkeys {
 			errors.push('Hotkeys.registerShortcut(): config.set must be a Function!');
 		if (!(config.default instanceof Function))
 			errors.push('Hotkeys.registerShortcut(): config.default must be a Function!');
-		if (!(config.handle instanceof Function))
+		if (!!config.handle && !(config.handle instanceof Function))
 			errors.push('Hotkeys.registerShortcut(): config.handle must be a Function!');
+		if (!!config.onKeyDown && !(config.onKeyDown instanceof Function))
+			errors.push('Hotkeys.registerShortcut(): config.onKeyDown must be a Function!');
+		if (!!config.onKeyUp && !(config.onKeyUp instanceof Function))
+			errors.push('Hotkeys.registerShortcut(): config.onKeyUp must be a Function!');
 		if (this._settingsNames.has(config.name))
 			errors.push(`Hotkeys.registerShortcut(): '${config.name}' hotkey has already been registered!`);
 		if (errors.length > 0) {
@@ -146,6 +173,10 @@ export class Hotkeys {
 				throw Error(errors.join(',\n'));
 			this._printErrors(errors, new Error().stack);
 			return false;
+		}
+
+		if (!!config.handle) {
+			console.warn(`Hotkeys: The configuration "${config.name}" is using the deprecated 'handle()' function. Please use 'onKeyDown' and/or 'onKeyUp' instead.\nThis function will still work for now, but will be removed in a later update.`)
 		}
 
 		this._settingsNames.add(config.name);
@@ -201,8 +232,6 @@ export class Hotkeys {
 		const errors: string[] = [];
 		if (typeof (group.name) !== 'string' && !((<any>group.name) instanceof String))
 			errors.push('Hotkeys.registerGroup(): group.name must be a string!');
-		if (typeof (group.label) !== 'string' && !((<any>group.label) instanceof String))
-			errors.push('Hotkeys.registerGroup(): group.label must be a string!');
 		if (typeof (group.label) !== 'string' && !((<any>group.label) instanceof String))
 			errors.push('Hotkeys.registerGroup(): group.label must be a string!');
 		if (group.description !== undefined && group.description !== null && typeof (group.description) !== 'string' && !((<any>group.description) instanceof String))

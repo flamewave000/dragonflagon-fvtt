@@ -42,10 +42,10 @@ Hooks.once('init', function () {
 		get: () => game.settings.get(MOD_NAME, PREF_SELECT),
 		set: async (value: KeyMap) => game.settings.set(MOD_NAME, PREF_SELECT, value),
 		default: () => { return { key: Hotkeys.keys.KeyS, alt: false, ctrl: false, shift: false } },
-		handle: (self: HotkeySetting) => (ui.controls as any)._onClickTool({ preventDefault: function () { }, currentTarget: { dataset: { tool: PREF_SELECT } } }),
+		onKeyDown: (self: HotkeySetting) => (ui.controls as any)._onClickTool({ preventDefault: function () { }, currentTarget: { dataset: { tool: PREF_SELECT } } }),
 	});
 
-	
+
 	// SETTINGS.register<KeyMap>('test1', {
 	// 	scope: 'world',
 	// 	config: false,
@@ -86,7 +86,8 @@ Hooks.once('init', function () {
 	// 	get: () => SETTINGS.get<KeyMap>('test1'),
 	// 	set: async (value: KeyMap) => await SETTINGS.set('test1', value),
 	// 	default: () => SETTINGS.default('test1'),
-	// 	handle: (self: HotkeySetting) => { console.log('You hit Alt + 1') },
+	// 	onKeyDown: (self: HotkeySetting) => { console.log('You pressed Alt + 1') },
+	// 	onKeyUp: (self: HotkeySetting) => { console.log('You released Alt + 1') },
 	// });
 	// Hotkeys.registerGroup({
 	// 	name: 'group1',
@@ -100,15 +101,19 @@ Hooks.once('init', function () {
 	// 	get: () => SETTINGS.get<KeyMap>('test2'),
 	// 	set: async (value: KeyMap) => await SETTINGS.set('test2', value),
 	// 	default: () => SETTINGS.default('test2'),
-	// 	handle: (self: HotkeySetting) => { console.log('You hit Alt + 2') },
+	// 	onKeyUp: (self: HotkeySetting) => { console.log('You released Alt + 2') },
 	// });
+	// var count = 0;
 	// Hotkeys.registerShortcut({
 	// 	name: 'test3',
 	// 	label: 'Example Custom Group Hotkey 1',
 	// 	group: 'group1',
+	// 	repeat: true,
 	// 	get: () => SETTINGS.get<KeyMap>('test3'),
 	// 	set: async (value: KeyMap) => await SETTINGS.set('test3', value),
 	// 	default: () => SETTINGS.default('test3'),
-	// 	handle: (self: HotkeySetting) => { console.log('You hit Alt + 3') },
+	// 	onKeyDown: (self: HotkeySetting, repeat: boolean) => {
+	// 		console.log(`You hit Alt + 3 exactly ${++count} ${count > 1 ? 'times' : 'time'}, repeat flag: ${repeat}`)
+	// 	},
 	// });
 });

@@ -28,7 +28,7 @@ All modules that wish to use the library should declare a dependency in their ma
 
 ## For TypeScript Projects
 
-You will find the Typing Definitions file `lib-df-hotkeys.d.ts` in the [latest release](https://github.com/flamewave000/dragonflagon-fvtt/releases/tag/lib-df-hotkeys_1.0.2) that you can include in your project.
+You will find the Typing Definitions file `lib-df-hotkeys.d.ts` in the [latest release](https://github.com/flamewave000/dragonflagon-fvtt/releases/tag/lib-df-hotkeys_1.1.0) that you can include in your project.
 
 ### Important Data Types
 
@@ -48,11 +48,16 @@ interface KeyMap {
 /** Hotkey Configuration Registration */
 interface HotkeySetting {
 	/** optional: Group to be included in with their own header. Default: General Group */
-	group?: string;
+	group?: string | String;
 	/** Unique variable name to be used in the layout. Recommend: 'module-name.myHotkey' */
-	name: string;
+	name: string | String;
 	/** Label to be displayed in the layout. This will be localized when injected into the HTML */
-	label: string;
+	label: string | String;
+	/**
+	 * Accept repeated KeyDown events, this occurs if the user is holding the key down, it will
+	 * send additional events that are spaced out according to the user's key press repeat settings.
+	 */
+	repeat?: boolean;
 	/** The default setting for this hotkey */
 	default(): KeyMap;
 	/** Function for retrieving the current hotkey setting */
@@ -60,7 +65,21 @@ interface HotkeySetting {
 	/** Function for saving the new hotkey setting */
 	set(value: KeyMap): Promise<KeyMap>;
 	/** Function to handle the execution of the hotkey */
-	handle(self: HotkeySetting): void;
+	/** @deprecated Use HotkeySetting.onKeyDown and HotkeySetting.onKeyUp */
+	handle?(self: HotkeySetting): void;
+	/**
+	 * Function to handle the execution of the Hot Key Down event.
+	 * @param self Convenience reference to this HotkeySetting object
+	 * @param repeated	Optional: This will only be defined if `repeat: true` has been set.
+	 * 					It will be false on the first Key Down event, but true on any subsequent
+	 * 					Key Down events caused by the user holding the key down.
+	 */
+	onKeyDown?(self: HotkeySetting, repeated?: boolean): void;
+	/**
+	 * Function to handle the execution of the Hot Key Up event.
+	 * @param self Convenience reference to this HotkeySetting object
+	 */
+	onKeyUp?(self: HotkeySetting): void;
 }
 
 /** Hotkey Group Configuration */
@@ -88,7 +107,7 @@ Hooks.once('init', function() {
 		get: () => game.settings.get('my-module', 'my-hotkey'),
 		set: async value => await game.settings.set('my-module', 'my-hotkey', value),
 		default: () => { return { key: hotkeys.keys.KeyQ, alt: false, ctrl: false, shift: false }; },
-		handle: self => { console.log('You hit my custom hotkey!') },
+		onKeyDown: self => { console.log('You hit my custom hotkey!') },
 	});
     /* Hotkeys.registerShortcut(config: HotkeySetting, throwOnError?: boolean): boolean */
     hotkeys.registerShortcut({...}, false);
@@ -105,7 +124,7 @@ Hooks.once('init', function() {
 		get: () => game.settings.get('my-module', 'my-hotkey'),
 		set: async (value: KeyMap) => await game.settings.set('my-module', 'my-hotkey', value),
 		default: () => { return { key: hotkeys.keys.KeyQ, alt: false, ctrl: false, shift: false }; },
-		handle: (self: HotkeySetting) => { console.log('You hit my custom hotkey!') },
+		onKeyDown: (self: HotkeySetting) => { console.log('You hit my custom hotkey!') },
 	});
     /* Hotkeys.registerShortcut(config: HotkeySetting, throwOnError?: boolean): boolean */
     hotkeys.registerShortcut({...}, false);
@@ -137,7 +156,7 @@ Hooks.once('init', function() {
 		get: () => game.settings.get('my-module', 'my-hotkey'),
 		set: async value => await game.settings.set('my-module', 'my-hotkey', value),
 		default: () => { return { key: hotkeys.keys.KeyQ, alt: false, ctrl: false, shift: false }; },
-		handle: self => { console.log('You hit my custom hotkey!') },
+		onKeyDown: self => { console.log('You hit my custom hotkey!') },
 	});
 });
 ```
@@ -163,7 +182,7 @@ Hooks.once('init', function() {
 		get: () => game.settings.get('my-module', 'my-hotkey'),
 		set: async (value: KeyMap) => await game.settings.set('my-module', 'my-hotkey', value),
 		default: () => { return { key: hotkeys.keys.KeyQ, alt: false, ctrl: false, shift: false }; },
-		handle: (self: HotkeySetting) => { console.log('You hit my custom hotkey!') },
+		onKeyDown: (self: HotkeySetting) => { console.log('You hit my custom hotkey!') },
 	});
 });
 ```

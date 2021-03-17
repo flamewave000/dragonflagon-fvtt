@@ -1,5 +1,6 @@
 const gulp = require('gulp');
-var fs = require('fs')
+const fs = require('fs')
+const path = require('path');
 const del = require('del');
 const ts = require('gulp-typescript');
 const sourcemaps = require('gulp-sourcemaps');
@@ -31,6 +32,16 @@ function DEV_DIST() { return DEV_DIR + PACKAGE.name + '/'; }
 String.prototype.replaceAll = function (pattern, replace) { return this.split(pattern).join(replace); }
 function pdel(patterns, options) { return desc(`deleting ${patterns}`, () => { return del(patterns, options); }); }
 function plog(message) { return desc('plog', (cb) => { cb(); console.log(message); }); }
+function pnotify(message, title = null) {
+	const options = {
+		message: message,
+		onLast: true,
+		icon: path.join(__dirname, '.assets', 'logo.png'),
+		wait: true
+	};
+	if (title) options.title = title;
+	return desc('notify', () => gulp.src('package.json').pipe(notify(options)));
+}
 /**
  * Sets the gulp name for a lambda expression
  * @param {string} name Name to be bound to the lambda
@@ -53,7 +64,7 @@ function buildSource(output = null) {
 		const minifySources = process.argv.includes('--min');
 		var stream = gulp.src(SOURCE + GLOB);
 		if (keepSources) stream = stream.pipe(sourcemaps.init())
-		stream = stream.pipe(ts.createProject("tsconfig.json")());
+		stream = stream.pipe(ts.createProject("../tsconfig.json")());
 		if (minifySources)
 			stream = stream.pipe(minify({
 				ext: { min: '.js' },
@@ -145,7 +156,7 @@ exports.default = gulp.series(
 		, outputStylesCSS()
 		, outputMetaFiles()
 	)
-	, notify('Build Complete')
+	, pnotify('Build Complete')
 );
 /**
  * Extends the default build task by copying the result to the Development Environment
@@ -160,7 +171,7 @@ exports.dev = gulp.series(
 		, outputStylesCSS(DEV_DIST())
 		, outputMetaFiles(DEV_DIST())
 	)
-	, notify('Dev Build Complete')
+	,pnotify('Dev Build Complete')
 );
 /**
  * Performs a default build and then zips the result into a bundle
@@ -196,14 +207,14 @@ exports.zip = gulp.series(
 	)
 	, compressDistribution()
 	, pdel([DIST])
-	, notify('Bundling complete.')
+	,pnotify('Bundling complete.')
 );
 /**
  * Sets up a file watch on the project to detect any file changes and automatically rebuild those components.
  */
 exports.watch = function () {
 	exports.default();
-	gulp.watch(SOURCE + GLOB, gulp.series(pdel(DIST + SOURCE), buildSource(), notify('Build Complete')));
+	gulp.watch(SOURCE + GLOB, gulp.series(pdel(DIST + SOURCE), buildSource(),pnotify('Build Complete')));
 	gulp.watch([SOURCE + GLOB, CSS + GLOB, 'module.json', 'package.json'], buildManifest());
 	gulp.watch(LANG + GLOB, gulp.series(pdel(DIST + LANG), outputLanguages()));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(DIST + TEMPLATES), outputTemplates()));
@@ -217,7 +228,7 @@ exports.devWatch = function () {
 	const devDist = DEV_DIST();
 	console.log('Dev Directory: ' + devDist);
 	exports.dev();
-	gulp.watch(SOURCE + GLOB, gulp.series(pdel(devDist + SOURCE + GLOB, { force: true }), buildSource(devDist), notify('Dev Build Complete')));
+	gulp.watch(SOURCE + GLOB, gulp.series(pdel(devDist + SOURCE + GLOB, { force: true }), buildSource(devDist),pnotify('Dev Build Complete')));
 	gulp.watch([CSS + GLOB, 'module.json', 'package.json'], gulp.series(reloadPackage, buildManifest(devDist), plog('manifest done.')));
 	gulp.watch(LANG + GLOB, gulp.series(pdel(devDist + LANG + GLOB, { force: true }), outputLanguages(devDist), plog('langs done.')));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(devDist + TEMPLATES + GLOB, { force: true }), outputTemplates(devDist), plog('templates done.')));
