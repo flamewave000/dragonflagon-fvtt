@@ -3,12 +3,16 @@ const fs = require('fs')
 const path = require('path');
 const del = require('del');
 const ts = require('gulp-typescript');
-const sm = require('gulp-sourcemaps');
+const sourcemaps = require('gulp-sourcemaps');
 const zip = require('gulp-zip');
 const rename = require('gulp-rename');
 const minify = require('gulp-minify');
 const tabify = require('gulp-tabify');
 const stringify = require('json-stringify-pretty-compact');
+const rollup = require('gulp-better-rollup');
+const replace = require('gulp-replace');
+const cleanCss = require('gulp-clean-css');
+const jsonminify = require('gulp-jsonminify');
 const notify = require('gulp-notify');
 
 const GLOB = '**/*';
@@ -53,24 +57,31 @@ function desc(name, lambda) {
  * Compile the source code into the distribution directory
  * @param {Boolean} keepSources Include the TypeScript SourceMaps
  */
-function buildSource(keepSources, minifySources = false, output = null) {
+function buildSource(output = null) {
 	return desc('build Source', () => {
+		// const keepSources = process.argv.includes('--sm');
+		// const minifySources = process.argv.includes('--min');
 		var stream = gulp.src(SOURCE + GLOB);
-		if (keepSources) stream = stream.pipe(sm.init())
-		stream = stream.pipe(ts.createProject("../tsconfig.json")())
-		if (keepSources) stream = stream.pipe(sm.write())
-		if (minifySources) stream = stream.pipe(minify({
-			ext: { min: '.js' },
-			mangle: false,
-			noSource: true
-		}));
-		else stream = stream.pipe(tabify(4, false));
+		// if (keepSources) stream = stream.pipe(sourcemaps.init())
+		stream = stream.pipe(ts.createProject("../tsconfig.json")());
+		// if (minifySources)
+		// 	stream = stream.pipe(minify({
+		// 		ext: { min: '.js' },
+		// 		mangle: false,
+		// 		noSource: true
+		// 	}));
+		// if (keepSources) stream = stream.pipe(sourcemaps.write({
+		// 	sourceRoot: file =>
+		// 		'../'.repeat(file.path
+		// 			.split('src/')[1]
+		// 			.split('/').length - 1) || './'
+		// }))
+		// if (!minifySources) stream = stream.pipe(tabify(4, false));
 		return stream.pipe(gulp.dest((output || DIST) + SOURCE));
 	});
 }
-exports.step_buildSourceDev = buildSource(true);
-exports.step_buildSource = buildSource(false);
-exports.step_buildSourceMin = buildSource(false, true);
+exports.step_buildSourceDev = gulp.series(pdel(DEV_DIST() + SOURCE), buildSource(DEV_DIST()));
+exports.step_buildSource = gulp.series(pdel(DIST + SOURCE), buildSource());
 
 /**
  * Builds the module manifest based on the package, sources, and css.
@@ -100,9 +111,9 @@ function buildManifest(output = null) {
 }
 exports.step_buildManifest = buildManifest();
 
-function outputLanguages(output = null) { return desc('output Languages', () => gulp.src(LANG + GLOB).pipe(gulp.dest((output || DIST) + LANG))); }
-function outputTemplates(output = null) { return desc('output Templates', () => gulp.src(TEMPLATES + GLOB).pipe(gulp.dest((output || DIST) + TEMPLATES))); }
-function outputStylesCSS(output = null) { return desc('output Styles CSS', () => gulp.src(CSS + GLOB).pipe(gulp.dest((output || DIST) + CSS))); }
+function outputLanguages(output = null) { return desc('output Languages', () => gulp.src(LANG + GLOB).pipe(jsonminify()).pipe(gulp.dest((output || DIST) + LANG))); }
+function outputTemplates(output = null) { return desc('output Templates', () => gulp.src(TEMPLATES + GLOB).pipe(replace(/\t/g, '')).pipe(replace(/\>\n\</g, '><')).pipe(gulp.dest((output || DIST) + TEMPLATES))); }
+function outputStylesCSS(output = null) { return desc('output Styles CSS', () => gulp.src(CSS + GLOB).pipe(cleanCss()).pipe(gulp.dest((output || DIST) + CSS))); }
 function outputMetaFiles(output = null) { return desc('output Meta Files', () => gulp.src(['../LICENSE', 'README.md', 'CHANGELOG.md']).pipe(gulp.dest((output || DIST)))); }
 
 /**
@@ -127,14 +138,6 @@ function compressDistribution() {
 exports.step_compress = compressDistribution();
 
 /**
- * Outputs the current distribution folder to the Development Environment.
- */
-function outputDistToDevEnvironment() {
-	return gulp.src(DIST + GLOB).pipe(gulp.dest(PACKAGE.devDir + PACKAGE.name));
-}
-exports.step_outputDistToDevEnvironment = outputDistToDevEnvironment;
-
-/**
  * Simple clean command
  */
 exports.clean = gulp.series(pdel([DIST, BUNDLE]));
@@ -145,7 +148,7 @@ exports.devClean = gulp.series(pdel([DEV_DIST()]));
 exports.default = gulp.series(
 	pdel([DIST])
 	, gulp.parallel(
-		buildSource(true, false)
+		buildSource()
 		, buildManifest()
 		, outputLanguages()
 		, outputTemplates()
@@ -160,23 +163,28 @@ exports.default = gulp.series(
 exports.dev = gulp.series(
 	pdel([DEV_DIST() + GLOB], { force: true }),
 	gulp.parallel(
-		buildSource(true, false, DEV_DIST())
+		buildSource(DEV_DIST())
 		, buildManifest(DEV_DIST())
 		, outputLanguages(DEV_DIST())
 		, outputTemplates(DEV_DIST())
 		, outputStylesCSS(DEV_DIST())
 		, outputMetaFiles(DEV_DIST())
 	)
-	, outputDistToDevEnvironment
 	, pnotify('Dev Build Complete')
 );
 /**
  * Performs a default build and then zips the result into a bundle
  */
 exports.zip = gulp.series(
-	pdel([DIST])
+	pdel([DIST, BUNDLE])
 	, gulp.parallel(
-		buildSource(false, false)
+		gulp.series(
+			buildSource()
+			, () => gulp.src(DIST + PACKAGE.main.replace('.ts', '.js')).pipe(rollup('es')).pipe(gulp.dest(DIST + '.temp/'))
+			, pdel(DIST + SOURCE)
+			, () => gulp.src(DIST + '.temp/' + GLOB).pipe(gulp.dest(DIST + SOURCE))
+			, pdel(DIST + '.temp/')
+		)
 		, buildManifest()
 		, outputLanguages()
 		, outputTemplates()
@@ -185,13 +193,14 @@ exports.zip = gulp.series(
 	)
 	, compressDistribution()
 	, pdel([DIST])
+	, pnotify('Bundling complete.')
 );
 /**
  * Sets up a file watch on the project to detect any file changes and automatically rebuild those components.
  */
 exports.watch = function () {
 	exports.default();
-	gulp.watch(SOURCE + GLOB, gulp.series(pdel(DIST + SOURCE), buildSource(true, false), pnotify('Build Complete')));
+	gulp.watch(SOURCE + GLOB, gulp.series(pdel(DIST + SOURCE), buildSource(), pnotify('Build Complete')));
 	gulp.watch([SOURCE + GLOB, CSS + GLOB, 'module.json', 'package.json'], buildManifest());
 	gulp.watch(LANG + GLOB, gulp.series(pdel(DIST + LANG), outputLanguages()));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(DIST + TEMPLATES), outputTemplates()));
@@ -205,7 +214,7 @@ exports.devWatch = function () {
 	const devDist = DEV_DIST();
 	console.log('Dev Directory: ' + devDist);
 	exports.dev();
-	gulp.watch(SOURCE + GLOB, gulp.series(pdel(devDist + SOURCE + GLOB, { force: true }), buildSource(true, false, devDist), pnotify('Dev Build Complete')));
+	gulp.watch(SOURCE + GLOB, gulp.series(pdel(devDist + SOURCE + GLOB, { force: true }), buildSource(devDist), pnotify('Dev Build Complete')));
 	gulp.watch([CSS + GLOB, 'module.json', 'package.json'], gulp.series(reloadPackage, buildManifest(devDist), plog('manifest done.')));
 	gulp.watch(LANG + GLOB, gulp.series(pdel(devDist + LANG + GLOB, { force: true }), outputLanguages(devDist), plog('langs done.')));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(devDist + TEMPLATES + GLOB, { force: true }), outputTemplates(devDist), plog('templates done.')));

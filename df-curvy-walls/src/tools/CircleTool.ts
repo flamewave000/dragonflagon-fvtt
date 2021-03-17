@@ -138,6 +138,8 @@ export default class CircleTool extends BezierTool {
 		while (angle >= sliceAngle) {
 			points.push(this.createVector(this.arcHandle.rawAngle + angle, magnitude, origin));
 			angle -= deltaTheta;
+			if(angle < 1e-10 && angle > -1e-10)
+				angle = 0;
 		}
 		// If we stopped short of the slice handle, add a small step to go the rest of the way
 		if (CircleTool.finishSliceIfShort && angle != sliceAngle && sliceAngle != 0) {
