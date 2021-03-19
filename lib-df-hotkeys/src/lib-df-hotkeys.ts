@@ -1,4 +1,6 @@
+// Import and declare the classes/interfaces Global
 import * as HotkeysModule from './Hotkeys.js';
+// This is mainly just to generate proper Type Definitions files
 declare global {
 	export type Hotkeys = HotkeysModule.Hotkeys;
 	export const Hotkeys: typeof HotkeysModule.Hotkeys;
@@ -6,26 +8,20 @@ declare global {
 	export type HotkeyGroup = HotkeysModule.HotkeyGroup;
 	export type HotkeySetting = HotkeysModule.HotkeySetting;
 }
-(<any>window).Hotkeys = HotkeysModule.Hotkeys;
+// Initialize Hotkeys on the global scope
 {
-	(Hotkeys as any)._init();
+	(<any>window).Hotkeys = HotkeysModule.Hotkeys;
+	(<any>Hotkeys)._init();
 }
 
-// class SETTINGS {
-// 	static readonly MOD_NAME = 'lib-df-hotkeys';
-// 	static register<T>(key: string, config: ClientSettings.PartialData<T>) { game.settings.register(SETTINGS.MOD_NAME, key, config); }
-// 	static get<T>(key: string): T { return game.settings.get(SETTINGS.MOD_NAME, key); }
-// 	static async set<T>(key: string, value: T): Promise<T> { return await game.settings.set(SETTINGS.MOD_NAME, key, value); }
-// 	static default<T>(key: string): T { return game.settings.settings.get(`${SETTINGS.MOD_NAME}.${key}`).default; }
-// 	static typeOf<T>(): ConstructorOf<T> { return Object as any; }
-// }
 
 import { HotkeyConfig } from './HotkeyConfig.js';
+import SETTINGS from './Settings.js';
+SETTINGS.init('lib-df-hotkeys')
 Hooks.once('init', function () {
 	HotkeyConfig.init();
-	const MOD_NAME = 'lib-df-hotkeys';
 	const PREF_SELECT = 'select';
-	game.settings.register(MOD_NAME, PREF_SELECT, {
+	SETTINGS.register(PREF_SELECT, {
 		scope: 'world',
 		config: false,
 		default: {
@@ -34,18 +30,20 @@ Hooks.once('init', function () {
 			ctrl: false,
 			shift: false
 		},
-		type: Object as any
+		type: SETTINGS.typeOf<KeyMap>()
 	});
 	Hotkeys.registerShortcut({
-		name: MOD_NAME + '.' + PREF_SELECT,
+		name: `${SETTINGS.MOD_NAME}.${PREF_SELECT}`,
 		label: 'DF_HOTKEYS.SelectTool',
-		get: () => game.settings.get(MOD_NAME, PREF_SELECT),
-		set: async (value: KeyMap) => game.settings.set(MOD_NAME, PREF_SELECT, value),
-		default: () => { return { key: Hotkeys.keys.KeyS, alt: false, ctrl: false, shift: false } },
-		onKeyDown: (self: HotkeySetting) => (ui.controls as any)._onClickTool({ preventDefault: function () { }, currentTarget: { dataset: { tool: PREF_SELECT } } }),
+		get: () => SETTINGS.get(PREF_SELECT),
+		set: async (value: KeyMap) => SETTINGS.set(PREF_SELECT, value),
+		default: () => SETTINGS.default(PREF_SELECT),
+		onKeyDown: (self: HotkeySetting) =>
+			(<any>ui.controls)._onClickTool({ preventDefault: () => { }, currentTarget: { dataset: { tool: PREF_SELECT } } }),
 	});
 
 
+	// #region ****** Demo Hotkeys ******
 	// SETTINGS.register<KeyMap>('test1', {
 	// 	scope: 'world',
 	// 	config: false,
@@ -116,4 +114,5 @@ Hooks.once('init', function () {
 	// 		console.log(`You hit Alt + 3 exactly ${++count} ${count > 1 ? 'times' : 'time'}, repeat flag: ${repeat}`)
 	// 	},
 	// });
+	// #endregion
 });

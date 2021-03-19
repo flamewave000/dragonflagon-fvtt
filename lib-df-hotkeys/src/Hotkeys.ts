@@ -82,23 +82,8 @@ export class Hotkeys {
 			|| event.key === 'Ctrl'
 			|| event.key === 'Alt';
 	}
-	private static _genId(meta: number, key: String): String {
-		return `${++this._id_iterator}:${meta.toString(16)}:${key}`;
-	}
-	private static _parseId(id: String): { meta: number, key: String, id: number } {
-		const first = id.indexOf(':');
-		const second = id.indexOf(':', first + 1);
-		const idNum = id.substr(0, first);
-		const meta = id.substr(first + 1, second - (first + 1));
-		const key = id.substr(second + 1, id.length - (second + 1));
-		return {
-			id: parseInt(idNum),
-			meta: parseInt(meta, 16),
-			key: key
-		};
-	}
 	private static _handleKeyDown(event: KeyboardEvent) {
-		if (/*this._handled.has(event.code) || */this._isMeta(event)) return;
+		if (this._isMeta(event)) return;
 		const metaKey = this._metaKey(event);
 		const metaHandlers = this._handlers.get(metaKey);
 		if (!metaHandlers) {

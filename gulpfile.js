@@ -10,6 +10,7 @@ const minify = require('gulp-minify');
 const tabify = require('gulp-tabify');
 const stringify = require('json-stringify-pretty-compact');
 const rollup = require('gulp-better-rollup');
+const dts = require('bundle-dts');
 const replace = require('gulp-replace');
 const cleanCss = require('gulp-clean-css');
 const jsonminify = require('gulp-jsonminify');
@@ -59,29 +60,47 @@ function desc(name, lambda) {
  */
 function buildSource(output = null) {
 	return desc('build Source', () => {
-		// const keepSources = process.argv.includes('--sm');
-		// const minifySources = process.argv.includes('--min');
+		const keepSources = process.argv.includes('--sm');
+		const minifySources = process.argv.includes('--min');
 		var stream = gulp.src(SOURCE + GLOB);
-		// if (keepSources) stream = stream.pipe(sourcemaps.init())
+		if (keepSources) stream = stream.pipe(sourcemaps.init())
 		stream = stream.pipe(ts.createProject("../tsconfig.json")());
-		// if (minifySources)
-		// 	stream = stream.pipe(minify({
-		// 		ext: { min: '.js' },
-		// 		mangle: false,
-		// 		noSource: true
-		// 	}));
-		// if (keepSources) stream = stream.pipe(sourcemaps.write({
-		// 	sourceRoot: file =>
-		// 		'../'.repeat(file.path
-		// 			.split('src/')[1]
-		// 			.split('/').length - 1) || './'
-		// }))
-		// if (!minifySources) stream = stream.pipe(tabify(4, false));
+		if (minifySources)
+			stream = stream.pipe(minify({
+				ext: { min: '.js' },
+				mangle: false,
+				noSource: true
+			}));
+		if (keepSources) stream = stream.pipe(sourcemaps.write({
+			sourceRoot: file => '../'.repeat(file.path
+				.split('src/')[1]
+				.split('/').length - 1) || './'
+		}))
+		if (!minifySources) stream = stream.pipe(tabify(4, false));
 		return stream.pipe(gulp.dest((output || DIST) + SOURCE));
 	});
 }
 exports.step_buildSourceDev = gulp.series(pdel(DEV_DIST() + SOURCE), buildSource(DEV_DIST()));
 exports.step_buildSource = gulp.series(pdel(DIST + SOURCE), buildSource());
+
+function copyDevDistToLocalDist() {
+	return gulp.src(DEV_DIST() + SOURCE + GLOB).pipe(gulp.dest('../' + DIST + SOURCE));
+}
+
+function generateTypings(entry, outputName, destination) {
+	return desc('generating typings for ' + entry, () => gulp.src(entry)
+		.pipe(dts())
+		.pipe(tabify(4, false))
+		.pipe(rename(outputName + '.d.ts'))
+		.pipe(replace(/\.js/g, ''))
+		.pipe(replace(/declare module ".+" \{\n/g, ''))
+		.pipe(replace(/\timport .+\n/g, ''))
+		.pipe(replace(/^\}\n?/mg, ''))
+		.pipe(replace(/^\t/mg, ''))
+		.pipe(replace(/^export (class|interface)/mg, 'declare $1'))
+		.pipe(replace(/^\tprivate .+\n/mg, ''))
+		.pipe(gulp.dest(destination)));
+}
 
 /**
  * Builds the module manifest based on the package, sources, and css.
@@ -110,6 +129,29 @@ function buildManifest(output = null) {
 		}));
 }
 exports.step_buildManifest = buildManifest();
+
+/**
+ * Builds a shim if one has been declared.
+ */
+function buildShim() {
+	if (!PACKAGE.shim) return plog('no shim');
+	return gulp.parallel(
+		gulp.series(
+			desc('build shim', () =>
+				gulp.src(SOURCE + GLOB)
+					.pipe(ts.createProject("../tsconfig.json")())
+					.pipe(tabify(4, false))
+					.pipe(gulp.dest(DIST + '.shim/' + SOURCE)))
+			, desc('output shim', () =>
+				gulp.src(DIST + '.shim/' + PACKAGE.shim.replace('.ts', '.js'))
+					.pipe(rollup('es'))
+					.pipe(rename(PACKAGE.name + '.shim.js'))
+					.pipe(gulp.dest(DIST)))
+			, pdel(DIST + '.shim/')
+		),
+		generateTypings(PACKAGE.shim, PACKAGE.name + '.shim', DIST)
+	);
+}
 
 function outputLanguages(output = null) { return desc('output Languages', () => gulp.src(LANG + GLOB).pipe(jsonminify()).pipe(gulp.dest((output || DIST) + LANG))); }
 function outputTemplates(output = null) { return desc('output Templates', () => gulp.src(TEMPLATES + GLOB).pipe(replace(/\t/g, '')).pipe(replace(/\>\n\</g, '><')).pipe(gulp.dest((output || DIST) + TEMPLATES))); }
@@ -140,8 +182,8 @@ exports.step_compress = compressDistribution();
 /**
  * Simple clean command
  */
-exports.clean = gulp.series(pdel([DIST, BUNDLE]));
-exports.devClean = gulp.series(pdel([DEV_DIST()]));
+exports.clean = gulp.series(pdel([DIST, BUNDLE, '../' + DIST]));
+exports.devClean = gulp.series(pdel([DEV_DIST(), '../' + DIST]));
 /**
  * Default Build operation
  */
@@ -170,8 +212,13 @@ exports.dev = gulp.series(
 		, outputStylesCSS(DEV_DIST())
 		, outputMetaFiles(DEV_DIST())
 	)
+	, copyDevDistToLocalDist
 	, pnotify('Dev Build Complete')
 );
+/**
+ * Builds the shim
+ */
+exports.shim = buildShim();
 /**
  * Performs a default build and then zips the result into a bundle
  */
@@ -183,8 +230,14 @@ exports.zip = gulp.series(
 			, () => gulp.src(DIST + PACKAGE.main.replace('.ts', '.js')).pipe(rollup('es')).pipe(gulp.dest(DIST + '.temp/'))
 			, pdel(DIST + SOURCE)
 			, () => gulp.src(DIST + '.temp/' + GLOB).pipe(gulp.dest(DIST + SOURCE))
-			, pdel(DIST + '.temp/')
+			, pdel([DIST + '.temp/'])
 		)
+		, gulp.series(
+			buildShim()
+			, desc('moving shim to bundle', () =>
+				gulp.src(DIST + PACKAGE.name + '.shim.*').pipe(gulp.dest(BUNDLE)))
+		)
+		, generateTypings(PACKAGE.main, PACKAGE.name, BUNDLE)
 		, buildManifest()
 		, outputLanguages()
 		, outputTemplates()
@@ -214,7 +267,7 @@ exports.devWatch = function () {
 	const devDist = DEV_DIST();
 	console.log('Dev Directory: ' + devDist);
 	exports.dev();
-	gulp.watch(SOURCE + GLOB, gulp.series(pdel(devDist + SOURCE + GLOB, { force: true }), buildSource(devDist), pnotify('Dev Build Complete')));
+	gulp.watch(SOURCE + GLOB, gulp.series(pdel(devDist + SOURCE + GLOB, { force: true }), buildSource(devDist), copyDevDistToLocalDist, pnotify('Dev Build Complete')));
 	gulp.watch([CSS + GLOB, 'module.json', 'package.json'], gulp.series(reloadPackage, buildManifest(devDist), plog('manifest done.')));
 	gulp.watch(LANG + GLOB, gulp.series(pdel(devDist + LANG + GLOB, { force: true }), outputLanguages(devDist), plog('langs done.')));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(devDist + TEMPLATES + GLOB, { force: true }), outputTemplates(devDist), plog('templates done.')));
