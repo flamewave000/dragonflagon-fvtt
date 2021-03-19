@@ -2,7 +2,7 @@
 	"private": true,
 	"name": "lib-df-hotkeys",
 	"title": "Library: DF Hotkeys",
-	"version": "1.1.0",
+	"version": "2.0.0",
 	"description": "Library for providing a way for modules to register keyboard shortcuts",
 	"main": "src/lib-df-hotkeys.ts",
 	"shim": "src/Shim.ts",

@@ -107,10 +107,10 @@ export class HotkeyConfig extends FormApplication<Options> {
 					ctrl: formData[rootKey + 'ctrl'],
 					shift: formData[rootKey + 'shift']
 				}
-				if (keyMap.key === undefined || typeof(keyMap.key) !== 'string') { console.error(`HotkeyConfig: "${itemName}" was missing 'key' field`); continue; }
-				if (keyMap.alt === undefined || typeof(keyMap.alt) !== 'boolean') { console.error(`HotkeyConfig: "${itemName}" was missing 'alt' field`); continue; }
-				if (keyMap.ctrl === undefined || typeof(keyMap.ctrl) !== 'boolean') { console.error(`HotkeyConfig: "${itemName}" was missing 'ctrl' field`); continue; }
-				if (keyMap.shift === undefined || typeof(keyMap.shift) !== 'boolean') { console.error(`HotkeyConfig: "${itemName}" was missing 'shift' field`); continue; }
+				if (keyMap.key === undefined || typeof (keyMap.key) !== 'string') { console.error(`HotkeyConfig: "${itemName}" was missing 'key' field`); continue; }
+				if (keyMap.alt === undefined || typeof (keyMap.alt) !== 'boolean') { console.error(`HotkeyConfig: "${itemName}" was missing 'alt' field`); continue; }
+				if (keyMap.ctrl === undefined || typeof (keyMap.ctrl) !== 'boolean') { console.error(`HotkeyConfig: "${itemName}" was missing 'ctrl' field`); continue; }
+				if (keyMap.shift === undefined || typeof (keyMap.shift) !== 'boolean') { console.error(`HotkeyConfig: "${itemName}" was missing 'shift' field`); continue; }
 				await item.set(keyMap as KeyMap);
 			}
 		}
@@ -124,7 +124,7 @@ export class HotkeyConfig extends FormApplication<Options> {
 			const groups = [...((Hotkeys as any)._settings as Map<String, SettingGroup>).values()].filter(x => x.items.length > 0);
 			for (let group of groups) {
 				group.items.forEach(x => {
-					const defValue = x.default();
+					const defValue = x.default instanceof Function ? x.default() : x.default;
 					$(`#DFHotkeyConfig select[name="${group.name}.${x.name}.key"]`).val(defValue.key.toString());
 					($(`#DFHotkeyConfig input[name="${group.name}.${x.name}.alt"]`)[0] as HTMLInputElement).checked = defValue.alt;
 					($(`#DFHotkeyConfig input[name="${group.name}.${x.name}.ctrl"]`)[0] as HTMLInputElement).checked = defValue.ctrl;

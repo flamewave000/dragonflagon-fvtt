@@ -1,4 +1,5 @@
 import { Keys } from "./Keys.js";
+import SETTINGS from "./Settings.js";
 
 /** Simple KeyMap for a Hotkey */
 export interface KeyMap {
@@ -24,12 +25,12 @@ export interface HotkeySetting {
 	 * send additional events that are spaced out according to the user's key press repeat settings.
 	 */
 	repeat?: boolean;
-	/** The default setting for this hotkey */
-	default(): KeyMap;
-	/** Function for retrieving the current hotkey setting */
-	get(): KeyMap;
-	/** Function for saving the new hotkey setting */
-	set(value: KeyMap): Promise<KeyMap>;
+	/** The default setting for this hotkey, can be a static KeyMap, or a function that returns the default. */
+	default: KeyMap | (() => KeyMap);
+	/** Function for retrieving the current hotkey setting. If defined, you must also provide a `set` function. */
+	get?(): KeyMap;
+	/** Function for saving the new hotkey setting. If defined, you must also provide a `get` function */
+	set?(value: KeyMap): Promise<KeyMap>;
 	/** Function to handle the execution of the hotkey */
 	/** @deprecated Use HotkeySetting.onKeyDown and HotkeySetting.onKeyUp */
 	handle?(self: HotkeySetting): void;
@@ -139,12 +140,17 @@ export class Hotkeys {
 			errors.push('Hotkeys.registerShortcut(): config.label must be a string!');
 		if (config.group !== undefined && config.group !== null && typeof (config.group) !== 'string' && !((<any>config.group) instanceof String))
 			errors.push('Hotkeys.registerShortcut(): config.group must be null, undefined, or a string!');
-		if (!(config.get instanceof Function))
+
+		if (!!config.get && !(config.get instanceof Function))
 			errors.push('Hotkeys.registerShortcut(): config.get must be a Function!');
-		if (!(config.set instanceof Function))
+		if (!!config.set && !(config.set instanceof Function))
 			errors.push('Hotkeys.registerShortcut(): config.set must be a Function!');
-		if (!(config.default instanceof Function))
-			errors.push('Hotkeys.registerShortcut(): config.default must be a Function!');
+		if (!config.set !== !config.get)
+			errors.push('Hotkeys.registerShortcut(): If either `get` or `set` is defined, both must be defined!')
+
+		if (!(config.default instanceof Function) && (config.default.key === undefined || config.default.alt === undefined || config.default.ctrl === undefined || config.default.shift === undefined))
+			errors.push('Hotkeys.registerShortcut(): config.default must be either a Function or a KeyMap!');
+
 		if (!!config.handle && !(config.handle instanceof Function))
 			errors.push('Hotkeys.registerShortcut(): config.handle must be a Function!');
 		if (!!config.onKeyDown && !(config.onKeyDown instanceof Function))
@@ -162,6 +168,17 @@ export class Hotkeys {
 
 		if (!!config.handle) {
 			console.warn(`Hotkeys: The configuration "${config.name}" is using the deprecated 'handle()' function. Please use 'onKeyDown' and/or 'onKeyUp' instead.\nThis function will still work for now, but will be removed in a later update.`)
+		}
+
+		if (!config.get) {
+			SETTINGS.register<KeyMap>('KEYMAP.' + config.name, {
+				scope: 'world',
+				config: false,
+				type: SETTINGS.typeOf(),
+				default: config.default instanceof Function ? config.default() : config.default
+			});
+			config.get = () => SETTINGS.get('KEYMAP.' + config.name);
+			config.set = value => SETTINGS.set('KEYMAP.' + config.name, value);
 		}
 
 		this._settingsNames.add(config.name);

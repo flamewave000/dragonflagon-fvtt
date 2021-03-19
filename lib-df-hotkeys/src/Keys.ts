@@ -47,6 +47,26 @@ export class Keys {
 		Numpad8: { key: 'Numpad8', label: 'DF_HOTKEYS.Numpad8' },
 		Numpad9: { key: 'Numpad9', label: 'DF_HOTKEYS.Numpad9' },
 		Numpad0: { key: 'Numpad0', label: 'DF_HOTKEYS.Numpad0' },
+		NumpadDecimal: { key: 'NumpadDecimal', label: 'DF_HOTKEYS.NumpadDecimal' },
+		NumpadDivide: { key: 'NumpadDivide', label: 'DF_HOTKEYS.NumpadDivide' },
+		NumpadMultiply: { key: 'NumpadMultiply', label: 'DF_HOTKEYS.NumpadMultiply' },
+		NumpadSubtract: { key: 'NumpadSubtract', label: 'DF_HOTKEYS.NumpadSubtract' },
+		NumpadAdd: { key: 'NumpadAdd', label: 'DF_HOTKEYS.NumpadAdd' },
+		NumpadEnter: { key: 'NumpadEnter', label: 'DF_HOTKEYS.NumpadEnter' },
+		Backspace: { key: 'Backspace', label: 'DF_HOTKEYS.Backspace' },
+		Enter: { key: 'Enter', label: 'DF_HOTKEYS.Enter' },
+		ShiftRight: { key: 'ShiftRight', label: 'DF_HOTKEYS.ShiftRight' },
+		ShiftLeft: { key: 'ShiftLeft', label: 'DF_HOTKEYS.ShiftLeft' },
+		Insert: { key: 'Insert', label: 'DF_HOTKEYS.Insert' },
+		Delete: { key: 'Delete', label: 'DF_HOTKEYS.Delete' },
+		PageUp: { key: 'PageUp', label: 'DF_HOTKEYS.PageUp' },
+		PageDown: { key: 'PageDown', label: 'DF_HOTKEYS.PageDown' },
+		Home: { key: 'Home', label: 'DF_HOTKEYS.Home' },
+		End: { key: 'End', label: 'DF_HOTKEYS.End' },
+		ControlLeft: { key: 'ControlLeft', label: 'DF_HOTKEYS.ControlLeft' },
+		ControlRight: { key: 'ControlRight', label: 'DF_HOTKEYS.ControlRight' },
+		AltRight: { key: 'AltRight', label: 'DF_HOTKEYS.AltRight' },
+		AltLeft: { key: 'AltLeft', label: 'DF_HOTKEYS.AltLeft' },
 		BracketLeft: { key: 'BracketLeft', label: 'DF_HOTKEYS.BracketLeft' },
 		BracketRight: { key: 'BracketRight', label: 'DF_HOTKEYS.BracketRight' },
 		Slash: { key: 'Slash', label: 'DF_HOTKEYS.Slash' },
@@ -109,6 +129,26 @@ export class Keys {
 	get Numpad8() { return this._data.Numpad8.key; }
 	get Numpad9() { return this._data.Numpad9.key; }
 	get Numpad0() { return this._data.Numpad0.key; }
+	get NumpadDecimal() { return this._data.NumpadDecimal.key; }
+	get NumpadDivide() { return this._data.NumpadDivide.key; }
+	get NumpadMultiply() { return this._data.NumpadMultiply.key; }
+	get NumpadSubtract() { return this._data.NumpadSubtract.key; }
+	get NumpadAdd() { return this._data.NumpadAdd.key; }
+	get NumpadEnter() { return this._data.NumpadEnter.key; }
+	get Backspace() { return this._data.Backspace.key; }
+	get Enter() { return this._data.Enter.key; }
+	get ShiftRight() { return this._data.ShiftRight.key; }
+	get ShiftLeft() { return this._data.ShiftLeft.key; }
+	get Insert() { return this._data.Insert.key; }
+	get Delete() { return this._data.Delete.key; }
+	get PageUp() { return this._data.PageUp.key; }
+	get PageDown() { return this._data.PageDown.key; }
+	get Home() { return this._data.Home.key; }
+	get End() { return this._data.End.key; }
+	get ControlLeft() { return this._data.ControlLeft.key; }
+	get ControlRight() { return this._data.ControlRight.key; }
+	get AltRight() { return this._data.AltRight.key; }
+	get AltLeft() { return this._data.AltLeft.key; }
 	get BracketLeft() { return this._data.BracketLeft.key; }
 	get BracketRight() { return this._data.BracketRight.key; }
 	get Slash() { return this._data.Slash.key; }
