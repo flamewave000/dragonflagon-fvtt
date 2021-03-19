@@ -22,7 +22,9 @@ Here is an example of hotkeys registered to both the General group, and a Custom
 	- [Important Data Types](#Important-Data-Types)
 	- [Register Hotkey](#Register-Hotkey)
 	- [Register a Group](#Register-a-Group)
-- [Shim: How to Use](#Shim-How-to-Use)
+- [Shim](#Shim)
+	- [How to Use](#How-to-Use-Shim)
+	- [For TypeScript Devs](#For-the-Fellow-TypeScript-Devs)
 
 ## How to Use
 
@@ -41,7 +43,7 @@ Hooks.once('ready', function() {
 	if (!game.modules.get('lib-df-hotkeys')?.active) {
 		console.error('Missing lib-df-hotkeys module dependency');
 		if (game.user.isGM)
-			ui.notifications.error("'My Module' requires the 'Library: DF Hotkeys' module. Please install and 	activate this dependency.");
+			ui.notifications.error("'My Module' requires the 'Library: DF Hotkeys' module. Please install and activate this dependency.");
 		// Perform alternative code to handle missing library
 		return;
 	}
@@ -232,7 +234,7 @@ Hooks.once('init', function() {
 
 **Requires your module use `esmodules` in its manifest file** 
 
-### How to Use
+### How to Use Shim
 
 If you reeeeaaaallly don't want to add a dependency to your module manifest, you can include the generated Shim into any module. What this shim does is provide the core functionality of the Hotkeys Library. This means you can register hotkeys and such as normal, but the difference is that users will not be able to customize the assigned hotkeys. It will also perfectly integrate into the actual Hotkeys module as well. It does this by first checking if Hotkeys already exists in the Global namespace. If it does exist, it will simply return a reference to that global Hotkeys library definition. Otherwise, it will return the shim version.
 
@@ -259,3 +261,4 @@ Hooks.once('init', function() {
 There is also a Type Definition file for the Shim that you can include in your project to get those delicious typings!
 You will find this file (`lib-df-hotkeys.shim.d.ts`) in the latest release for [Library: DF Hotkeys](https://github.com/flamewave000/dragonflagon-fvtt/releases/tag/lib-df-hotkeys_2.0.0)
 
+[top](#For-Module-Developers)

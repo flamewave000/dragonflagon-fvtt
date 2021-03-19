@@ -191,6 +191,7 @@ exports.default = gulp.series(
 	pdel([DIST])
 	, gulp.parallel(
 		buildSource()
+		, buildShim()
 		, buildManifest()
 		, outputLanguages()
 		, outputTemplates()
@@ -253,8 +254,8 @@ exports.zip = gulp.series(
  */
 exports.watch = function () {
 	exports.default();
-	gulp.watch(SOURCE + GLOB, gulp.series(pdel(DIST + SOURCE), buildSource(), pnotify('Build Complete')));
-	gulp.watch([SOURCE + GLOB, CSS + GLOB, 'module.json', 'package.json'], buildManifest());
+	gulp.watch(SOURCE + GLOB, gulp.series(pdel(DIST + SOURCE), gulp.parallel(buildSource(), buildShim()), pnotify('Build Complete')));
+	gulp.watch([CSS + GLOB, 'module.json', 'package.json'], buildManifest());
 	gulp.watch(LANG + GLOB, gulp.series(pdel(DIST + LANG), outputLanguages()));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(DIST + TEMPLATES), outputTemplates()));
 	gulp.watch(CSS + GLOB, gulp.series(pdel(DIST + CSS), outputStylesCSS()));
