@@ -1,5 +1,8 @@
 # DF Curvy Walls
 
+## Release 2.1.0 (2021-03-18)
+- Added soft-dependency on Library: DF Hotkeys.
+
 ## Release 2.0.0 (2021-03-17)
 - Fixed Memory Issues! I was not managing my PIXI graphics properly, but now it is much more efficient and no longer causes memory leaks.
 - NEW! Rectangle Tool. You can now draw rectangles that allow you to increment/decrement the number of segments on each side.
