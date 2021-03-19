@@ -1,0 +1,3 @@
+ - Add Quick Table Rolls
+ - Add AutoFocus of any rendered entity creator (Journal, Actor, Etc.) that auto-focuses the text field.
+ - 

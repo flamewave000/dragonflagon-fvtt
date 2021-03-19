@@ -1,0 +1,42 @@
+{
+	"private": true,
+	"name": "df-settings-clarity",
+	"version": "2.1.4",
+	"title": "DF Settings Clarity",
+	"description": "Displays a tag next to each module setting, indicating if it is a World setting (GM Only) or a client setting (Per User).",
+	"devDir": "/mnt/d/flame/Documents/FoundryVTT/Data/modules/",
+	"main": "src/df-settings-clarity.ts",
+	"scripts": {
+		"build": "npx gulp --gulpfile=../gulpfile.js --cwd=./",
+		"watch": "npx gulp watch --gulpfile=../gulpfile.js --cwd=./",
+		"clean": "npx gulp clean --gulpfile=../gulpfile.js --cwd=./",
+		"devbuild": "npx gulp dev --gulpfile=../gulpfile.js --cwd=./",
+		"devwatch": "npx gulp devWatch --gulpfile=../gulpfile.js --cwd=./",
+		"devclean": "npx gulp devClean --gulpfile=../gulpfile.js --cwd=./",
+		"release": "npx gulp zip --gulpfile=../gulpfile.js --cwd=./",
+		"tag": "git tag -d ${npm_package_name}_${npm_package_version} 2>/dev/null ; git tag ${npm_package_name}_${npm_package_version} && git push -f origin ${npm_package_name}_${npm_package_version}"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/flamewave000/dragonflagon-fvtt.git"
+	},
+	"author": "flamewave000#6766",
+	"license": "GPLv3",
+	"bugs": {
+		"url": "https://github.com/flamewave000/dragonflagon-fvtt/issues"
+	},
+	"homepage": "https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-module-name",
+	"devDependencies": {
+		"del": "^6.0.0",
+		"foundry-vtt-types": "github:flamewave000/foundry-vtt-types#foundry-0.7.9",
+		"gulp": "^4.0.2",
+		"gulp-cli": "^2.3.0",
+		"gulp-minify": "^3.1.0",
+		"gulp-rename": "^2.0.0",
+		"gulp-sourcemaps": "^3.0.0",
+		"gulp-tabify": "0.0.2",
+		"gulp-typescript": "^6.0.0-alpha.1",
+		"gulp-zip": "^5.0.2",
+		"typescript": "^4.1.3"
+	}
+}

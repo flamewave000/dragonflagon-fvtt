@@ -1,0 +1,37 @@
+.dfce-editor {
+	display: flex;
+	flex-flow: column;
+}
+
+.dfce-editor h3,
+.dfce-editor blockquote,
+.dfce-editor-buttons {
+	flex: 0 0 auto;
+}
+
+
+.dfce-editor-buttons {
+	display: flex;
+	flex-flow: row nowrap;
+}
+.dfce-editor-buttons button {
+	flex: 1 0;
+}
+
+.dfce-editor blockquote {
+	user-select: text;
+}
+
+.dfce-editor textarea {
+	flex: 1 0;
+}
+
+p.df-edited {
+	font-size: xx-small;
+	font-style: italic;
+}
+
+a.message-edit {
+	flex: 0 0 auto;
+	margin-right: 0.125em;
+}

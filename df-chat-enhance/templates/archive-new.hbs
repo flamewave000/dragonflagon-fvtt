@@ -1,0 +1,35 @@
+<form class="archive-new">
+	<table>
+		<tr>
+			<td><label for="dfca-name">{{localize "DF_CHAT_ARCHIVE.ArchiveNew_Name"}}</label></td>
+			<td><input id="dfca-name" type="text" name="name" placeholder="{{localize "DF_CHAT_ARCHIVE.ArchiveNew_NameHint"}}" class="active" data-dtype="String"></td>
+		</tr>
+		<tr>
+			<td><input id="dfca-visible" type="checkbox" name="visible"></td>
+			<td><label for="dfca-visible">{{localize "DF_CHAT_ARCHIVE.ArchiveNew_Visible"}}</label></td>
+		</tr>
+		<tr>
+			<td><input id="dfca-all" type="radio" name="date-or-all" value="all" class="active" data-dtype="String" checked></td>
+			<td><label for="dfca-all">{{localize "DF_CHAT_ARCHIVE.ArchiveNew_All"}}</label></td>
+		</tr>
+		<tr>
+			<td><input id="dfca-date" type="radio" name="date-or-all" value="date" class="active" data-dtype="String"></td>
+			<td><label for="dfca-date">{{localize "DF_CHAT_ARCHIVE.ArchiveNew_Date"}}</label></td>
+		</tr>
+		<tr>
+			<td><label>{{localize "DF_CHAT_ARCHIVE.ArchiveNew_FromDate"}}</label></td>
+			<td><input id="dfca-from" type="datetime-local" name="from" disabled></td>
+		</tr>
+		<tr>
+			<td><label>{{localize "DF_CHAT_ARCHIVE.ArchiveNew_ToDate"}}</label></td>
+			<td><input id="dfca-to" type="datetime-local" name="to" disabled></td>
+		</tr>
+		<tr>
+			<td><input id="dfca-delete" type="checkbox" name="delete" {{#if shouldDelete}}checked{{/if}}></td>
+			<td><label for="dfca-delete">{{localize "DF_CHAT_ARCHIVE.ArchiveNew_Delete"}}</label></td>
+		</tr>
+		<tr>
+			<td colspan="2" style="padding:0"><button type="submit" style="width:100%" name="submit"><i class="fas fa-archive"></i>{{localize "DF_CHAT_ARCHIVE.ArchiveNew_Submit"}}</button></td>
+		</tr>
+	</table>
+</form>

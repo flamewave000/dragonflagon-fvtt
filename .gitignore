@@ -1,1 +1,6 @@
 *.zip
+**/node_modules/
+**/dist/
+**/bundle/
+**/package-lock.json
+dev

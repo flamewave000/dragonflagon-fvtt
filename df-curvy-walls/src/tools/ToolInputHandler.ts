@@ -5,19 +5,19 @@ export abstract class InputHandler {
 	abstract stop(origin: Point, destination: Point, event: PIXI.InteractionEvent): void;
 	abstract cancel(): void;
 	static finalPoint(point: Point, snap: boolean = true) {
-		return ((canvas as any).walls as WallsLayer)._getWallEndpointCoordinates(point, { snap: snap });
+		return ((canvas as any).walls as any/*WallsLayer*/)._getWallEndpointCoordinates(point, { snap: snap });
 	}
 
 	protected get walls(): WallsLayer { return (canvas as any).walls as WallsLayer; }
 
 	shouldSnap(event: PIXI.InteractionEvent) {
-		const { origin, originalEvent } = event.data;
-		return this.walls._forceSnap || !originalEvent.shiftKey;
+		const { originalEvent } = event.data;
+		return (this.walls as any/*WallsLayer*/)._forceSnap || !originalEvent.shiftKey;
 	}
 
 	getWallEndPoint(origin: PIXI.Point, snap: boolean): PIXI.Point {
 		// Determine the starting coordinates
-		return new PIXI.Point(...this.walls._getWallEndpointCoordinates(origin, { snap }));
+		return new PIXI.Point(...(this.walls as any/*WallsLayer*/)._getWallEndpointCoordinates(origin, { snap }));
 	}
 }
 

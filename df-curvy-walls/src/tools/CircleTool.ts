@@ -138,6 +138,8 @@ export default class CircleTool extends BezierTool {
 		while (angle >= sliceAngle) {
 			points.push(this.createVector(this.arcHandle.rawAngle + angle, magnitude, origin));
 			angle -= deltaTheta;
+			if(angle < 1e-10 && angle > -1e-10)
+				angle = 0;
 		}
 		// If we stopped short of the slice handle, add a small step to go the rest of the way
 		if (CircleTool.finishSliceIfShort && angle != sliceAngle && sliceAngle != 0) {
@@ -177,7 +179,7 @@ export default class CircleTool extends BezierTool {
 		this.drawHandle(context, 0x4444ff, this.sliceHandle.getHandlePoint(this.getCenter()));
 	}
 	protected drawSegmentLabel(context: PIXI.Graphics) {
-		const text = BezierTool.createText(`↔${this.lastSegmentFetch.length - 1}`);
+		const text = BezierTool.createText(`⊷${this.lastSegmentFetch.length - 1}`);
 		text.position = this.lineCenter;
 		context.addChild(text);
 	}

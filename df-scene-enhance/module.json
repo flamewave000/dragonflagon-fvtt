@@ -1,24 +1,28 @@
 {
-	"name": "df-scene-enhance",
-	"title": "DF Scene Enhancement",
-	"description": "A few enhancements to scene management for players and GMs.",
-	"version": "3.2.2",
+	"name": "{{name}}",
+	"title": "{{title}}",
+	"description": "{{description}}",
+	"version": "{{version}}",
 	"author": "flamewave000#6766",
 	"minimumCoreVersion": "0.7.4",
 	"compatibleCoreVersion": "0.7.9",
-	"esmodules": [ "df-scene-ratio.js", "df-scene-thumb.js", "df-scene-nav.js", "df-scene-journal.js" ],
+	"esmodules": "{{sources}}",
 	"languages": [
 		{ "lang": "en", "path": "lang/en.json", "name": "English" },
 		{ "lang": "fr", "path": "lang/fr.json", "name": "Française" },
 		{ "lang": "pt-BR", "path": "lang/pt-BR.json", "name": "Português (Brasil)" },
 		{ "lang": "es", "path": "lang/es.json", "name": "Español" }
 	],
-	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-scene-enhance",
-	"license":	"https://github.com/flamewave000/dragonflagon-fvtt/raw/master/df-scene-enhance/LICENSE",
-	"manifest":	"https://dragonflagon.cafe/mods/man/df-scene-enhance",
-	"download":	"https://dragonflagon.cafe/mods/pak/df-scene-enhance",
-	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-scene-enhance/README.md",
-	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-scene-enhance/CHANGELOG.md",
+	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}",
+	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/{{name}}/LICENSE",
+	"manifest":	"https://dragonflagon.cafe/mods/man/{{name}}",
+	"download":	"https://dragonflagon.cafe/mods/pak/{{name}}",
+	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/README.md",
+	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/CHANGELOG.md",
 	"manifestPlusVersion": "1.0.0",
-	"authors": [ { "name": "flamewave000", "discord": "flamewave000#6766", "url": "https://github.com/flamewave000" } ]
+	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues",
+	"authors": [ { "name": "flamewave000", "discord": "flamewave000#6766", "url": "https://github.com/flamewave000" } ],
+	"media": [
+		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" }
+	]
 }

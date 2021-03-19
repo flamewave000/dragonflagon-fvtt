@@ -1,5 +1,18 @@
 # DF Scene Enhancement Changes
 
+## Release 3.3.2 (2021-02-17)
+- Fixed reported conflict with the module "Calendar/Weather"
+
+## Release 3.3.1 (2021-02-15)
+- Fixed conflict with the Laptop Form Fix module.
+- Fixed fields not injecting when returning from the Grid Config window.
+
+## Release 3.3.0 (2021-02-06)
+- Fixed major issue with Player Scenes tab. They were able to access the Configure and Import/Export actions. This has been fixed and they will now only see the "View Scene" option. Thank you [Doresain](https://github.com/Doresain) for reporting this issue.
+
+## Release 3.2.3 (2021-02-06)
+- Added Spanish localization for new features, courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
+
 ## Release 3.2.1/2 (2021-02-04)
 - Implemented new release system for all Dragon Flagon modules.
 
@@ -15,6 +28,7 @@
 - Added Spanish corrections courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
 
 ## Release 3.1.1 (2021-1-15)
+
 - Added Spanish localization, courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
 
 ## Version 3.1 (2021-1-11)

@@ -1,22 +1,33 @@
 
 import { BezierTool, ToolMode } from './tools/BezierTool.js';
 import CircleTool from './tools/CircleTool.js';
+import RectangleTool from './tools/RectangleTool.js';
 import CubicTool from './tools/CubicTool.js';
 import QuadTool from './tools/QuadTool.js';
 import { InputHandler } from './tools/ToolInputHandler.js';
 
-declare interface WallsLayerExt extends WallsLayer {
-	dfWallCurves_onDragLeftStart(event: PIXI.InteractionEvent): void
-	dfWallCurves_onDragLeftMove(event: PIXI.InteractionEvent): void
-	dfWallCurves_onDragLeftDrop(event: PIXI.InteractionEvent): void
-	dfWallCurves_onDragLeftCancel(event: PIXI.InteractionEvent): void
+declare global {
+	// interface WallsLayer {
+	// 	dfWallCurves_onClickLeft(event: PIXI.InteractionEvent): void
+	// 	dfWallCurves_onDragLeftStart(event: PIXI.InteractionEvent): void
+	// 	dfWallCurves_onDragLeftMove(event: PIXI.InteractionEvent): void
+	// 	dfWallCurves_onDragLeftDrop(event: PIXI.InteractionEvent): void
+	// 	dfWallCurves_onDragLeftCancel(event: PIXI.InteractionEvent): void
+	// }
+	namespace PIXI {
+		interface InteractionData {
+			origin: PIXI.Point;
+			destination: PIXI.Point;
+		}
+	}
 }
 
 export enum Mode {
 	None,
 	Cube,
 	Quad,
-	Circ
+	Circ,
+	Rect
 }
 
 function unsetTool(name: string) {
@@ -28,24 +39,35 @@ MODE_NAMES[Mode.None] = 'undefined';
 MODE_NAMES[Mode.Quad] = 'bezierquad';
 MODE_NAMES[Mode.Cube] = 'beziercube';
 MODE_NAMES[Mode.Circ] = 'beziercirc';
+MODE_NAMES[Mode.Rect] = 'bezierrect';
 const unsetters: { [key: number]: Function } = {};
 unsetters[Mode.None] = () => { }
 unsetters[Mode.Quad] = () => unsetTool(MODE_NAMES[Mode.Quad]);
 unsetters[Mode.Cube] = () => unsetTool(MODE_NAMES[Mode.Cube]);
 unsetters[Mode.Circ] = () => unsetTool(MODE_NAMES[Mode.Circ]);
+unsetters[Mode.Rect] = () => unsetTool(MODE_NAMES[Mode.Rect]);
+
+class WallPool {
+	static readonly walls: Wall[] = [];
+	static acquire(wallData: Wall.Data): Wall {
+		const result = this.walls.pop() ?? new Wall(wallData);
+		result.data = wallData;
+		return result;
+	}
+	static release(wall: Wall) { this.walls.push(wall); }
+}
 
 export class BezierControl {
 	private static _instance: BezierControl;
 	private inputManager = new KeyboardInputManager();
 	private _mode = Mode.None;
-	private wallsLayer: WallsLayerExt;
+	private wallsLayer: WallsLayer;
 	private walls: Wall[] = [];
 	private currentHandler?: InputHandler = null;
 	private _activeTool?: BezierTool = null;
-	private _segments = 10;
-	get segments(): number { return this._segments; }
+	get segments(): number { return this._activeTool.segments; }
 	set segments(value: number) {
-		this._segments = Math.clamped(value, 1, 64);
+		this._activeTool.segments = Math.clamped(value, 1, 64);
 		if (this.mode != Mode.None)
 			this.render();
 	}
@@ -86,9 +108,13 @@ export class BezierControl {
 		this.setMode(enabled, Mode.Circ);
 		this._activeTool = new CircleTool();
 	}
+	toggleRectangle(enabled: boolean) {
+		this.setMode(enabled, Mode.Rect);
+		this._activeTool = new RectangleTool();
+	}
 
 	async apply() {
-		if (this.activeTool.mode != ToolMode.Placed) return;
+		if (!this.activeTool || this.activeTool.mode != ToolMode.Placed) return;
 		await Wall.create(this.walls.map(e => e.data), {});
 		this.clearTool();
 	}
@@ -101,27 +127,34 @@ export class BezierControl {
 		this.render();
 	}
 
-	injectControls(controls: Control[]) {
-		const curveTools: Tool[] = [
+	injectControls(controls: SceneControl[]) {
+		const curveTools: SceneControlTool[] = [
 			{
 				name: MODE_NAMES[Mode.Cube],
 				title: "df-curvy-walls.cubic",
 				icon: 'fas fa-bezier-curve',
-				onClick: (newToggleState: boolean) => this.toggleCubic(newToggleState),
+				onClick: (toggled: boolean) => this.toggleCubic(toggled),
 				toggle: true
 			},
 			{
 				name: MODE_NAMES[Mode.Quad],
 				title: "df-curvy-walls.quadratic",
 				icon: 'fas fa-project-diagram',
-				onClick: (newToggleState: boolean) => this.toggleQuadratic(newToggleState),
+				onClick: (toggled: boolean) => this.toggleQuadratic(toggled),
 				toggle: true
 			},
 			{
 				name: MODE_NAMES[Mode.Circ],
 				title: "df-curvy-walls.circle",
 				icon: 'fas fa-circle',
-				onClick: (newToggleState: boolean) => this.toggleCircle(newToggleState),
+				onClick: (toggled: boolean) => this.toggleCircle(toggled),
+				toggle: true
+			},
+			{
+				name: MODE_NAMES[Mode.Rect],
+				title: "df-curvy-walls.rectangle",
+				icon: 'fas fa-vector-square',
+				onClick: (toggled: boolean) => this.toggleRectangle(toggled),
 				toggle: true
 			}
 		];
@@ -135,92 +168,128 @@ export class BezierControl {
 		this.walls = [];
 	}
 
-	static _onDragLeftStart(event: PIXI.InteractionEvent) {
+	static _onClickLeft(wrapped: Function, event: PIXI.InteractionEvent) {
 		const self = BezierControl.instance;
-		if (self.mode == Mode.None || self.activeTool == null) return self.wallsLayer.dfWallCurves_onDragLeftStart(event);
+		if (self.mode == Mode.None || self.activeTool == null) return wrapped(event);
+		if (self.activeTool.checkPointForClick(event.data.origin))
+			self.render();
+		console.log('_onClickLeft');
+	}
+	static _onDragLeftStart(wrapped: Function, event: PIXI.InteractionEvent) {
+		const self = BezierControl.instance;
+		if (self.mode == Mode.None || self.activeTool == null) return wrapped(event);
 		self.currentHandler = self.activeTool.checkPointForDrag(event.data.origin);
 		if (self.currentHandler == null) return;
 		self.currentHandler.start(event.data.origin, event.data.destination, event);
 		self.render();
+		console.log('_onDragLeftStart');
 	}
-	static _onDragLeftMove(event: PIXI.InteractionEvent) {
+	static _onDragLeftMove(wrapped: Function, event: PIXI.InteractionEvent) {
 		const self = BezierControl.instance;
-		if (self.mode == Mode.None || !self.currentHandler) return self.wallsLayer.dfWallCurves_onDragLeftMove(event);
+		if (self.mode == Mode.None || !self.currentHandler) return wrapped(event);
 		self.currentHandler.move(event.data.origin, event.data.destination, event);
 		self.render();
+		console.log('_onDragLeftMove');
 	}
-	static _onDragLeftDrop(event: PIXI.InteractionEvent) {
+	static _onDragLeftDrop(wrapped: Function, event: PIXI.InteractionEvent) {
 		const self = BezierControl.instance;
-		if (self.mode == Mode.None || !self.currentHandler) return self.wallsLayer.dfWallCurves_onDragLeftDrop(event);
+		if (self.mode == Mode.None || !self.currentHandler) return wrapped(event);
 		self.currentHandler.stop(event.data.origin, event.data.destination, event);
 		self.currentHandler = null;
 		self.render();
+		console.log('_onDragLeftDrop');
 	}
-	static _onDragLeftCancel(event: PIXI.InteractionEvent) {
+	static _onDragLeftCancel(wrapped: Function, event: PIXI.InteractionEvent) {
 		const self = BezierControl.instance;
-		if (self.mode == Mode.None) return self.wallsLayer.dfWallCurves_onDragLeftCancel(event);
+		if (self.mode == Mode.None) return wrapped(event);
 		else if (!self.currentHandler) return;
 		self.currentHandler.cancel();
 		self.currentHandler = null;
 		self.render();
+		console.log('_onDragLeftCancel');
 	}
 
+	private graphicsContext = new PIXI.Graphics(null);
 	render() {
-		this.wallsLayer.preview.removeChildren();
+		this.wallsLayer.preview.removeChildren()
 		if (this.activeTool == null) return;
-		const points = this.activeTool?.getSegments(this.segments);
-		if (points.length == 0) return;
+		const pointData = this.activeTool?.getSegments(this.segments);
+		if (pointData.length == 0) return;
 		this.walls.length
-		const wallData = this.wallsLayer._getWallDataFromActiveTool(game.activeTool);
+		const wallData = (<any>this.wallsLayer)._getWallDataFromActiveTool(game.activeTool) as Wall.Data;
 
-		while (this.walls.length > points.length - 1) {
+		while (this.walls.length > pointData.length - 1) {
 			const wall = this.walls.pop();
+			WallPool.release(wall);
 			this.wallsLayer.preview.removeChild(wall);
 		}
-		for (var c = 0; c < points.length - 1; c++) {
-			const data = duplicate(wallData);
-			data.c = [points[c].x, points[c].y, points[c + 1].x, points[c + 1].y]
-			if (c == this.walls.length) {
-				this.walls.push(new Wall(data, undefined));
-				this.wallsLayer.preview.addChild(this.walls[c]);
-				this.walls[c].draw();
-			} else {
-				this.walls[c].data = data;
-				this.wallsLayer.preview.addChild(this.walls[c]);
-				this.walls[c].refresh();
+		if ((<PIXI.Point>pointData[0]).x !== undefined) {
+			const points = pointData as PIXI.Point[];
+			for (var c = 0; c < points.length - 1; c++) {
+				const data = duplicate(wallData) as Wall.Data;
+				data.c = [points[c].x, points[c].y, points[c + 1].x, points[c + 1].y]
+				if (c == this.walls.length) {
+					this.walls.push(WallPool.acquire(data));
+					this.wallsLayer.preview.addChild(this.walls[c]);
+					this.walls[c].draw();
+				} else {
+					this.walls[c].data = data;
+					this.wallsLayer.preview.addChild(this.walls[c]);
+					this.walls[c].refresh();
+				}
 			}
 		}
-		const graphics = new PIXI.Graphics(null);
-		this.wallsLayer.preview.addChild(graphics);
-		this.activeTool.drawHandles(graphics);
+		else if ((<PIXI.Point>(<PIXI.Point[]>pointData[0])[0]).x !== undefined) {
+			const points = pointData as PIXI.Point[][];
+			if (this.walls.length > points.length) {
+				const wall = this.walls.pop();
+				WallPool.release(wall);
+				this.wallsLayer.preview.removeChild(wall);
+			}
+			for (var c = 0; c < points.length; c++) {
+				const data = duplicate(wallData) as Wall.Data;
+				data.c = [points[c][0].x, points[c][0].y, points[c][1].x, points[c][1].y]
+				if (c == this.walls.length) {
+					this.walls.push(WallPool.acquire(data));
+					this.wallsLayer.preview.addChild(this.walls[c]);
+					this.walls[c].draw();
+				} else {
+					this.walls[c].data = data;
+					this.wallsLayer.preview.addChild(this.walls[c]);
+					this.walls[c].refresh();
+				}
+			}
+		}
+
+		this.activeTool.clearContext(this.graphicsContext);
+		this.graphicsContext.removeChildren().forEach(x => x.destroy());
+		this.graphicsContext.clear();
+		this.wallsLayer.preview.addChild(this.graphicsContext);
+		this.activeTool.drawHandles(this.graphicsContext);
 	}
 
 	patchWallsLayer() {
-		const layer = canvas.getLayer("WallsLayer");
-		this.wallsLayer = layer as WallsLayerExt;
-		this.wallsLayer.dfWallCurves_onDragLeftStart = this.wallsLayer._onDragLeftStart;
-		this.wallsLayer.dfWallCurves_onDragLeftMove = this.wallsLayer._onDragLeftMove;
-		this.wallsLayer.dfWallCurves_onDragLeftDrop = this.wallsLayer._onDragLeftDrop;
-		this.wallsLayer.dfWallCurves_onDragLeftCancel = this.wallsLayer._onDragLeftCancel;
-		this.wallsLayer._onDragLeftStart = BezierControl._onDragLeftStart;
-		this.wallsLayer._onDragLeftMove = BezierControl._onDragLeftMove;
-		this.wallsLayer._onDragLeftDrop = BezierControl._onDragLeftDrop;
-		this.wallsLayer._onDragLeftCancel = BezierControl._onDragLeftCancel;
+		const layer = (<Canvas>canvas).getLayer("WallsLayer");
+		this.wallsLayer = layer as WallsLayer;
+		const MOD_NAME = 'df-curvy-walls';
+		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onClickLeft', BezierControl._onClickLeft, 'MIXED');
+		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftStart', BezierControl._onDragLeftStart, 'MIXED');
+		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftMove', BezierControl._onDragLeftMove, 'MIXED');
+		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftDrop', BezierControl._onDragLeftDrop, 'MIXED');
+		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftCancel', BezierControl._onDragLeftCancel, 'MIXED');
 		window.addEventListener('keydown', this.inputManager.onKeyDown.bind(this.inputManager));
 		window.addEventListener('keyup', this.inputManager.onKeyUp.bind(this.inputManager));
-		Hooks.on('requestCurvyWallsRedraw', () => {
-			this.render();
-		});
+		Hooks.on('requestCurvyWallsRedraw', () => this.render());
 	}
 
-	static findControl(name: string): Control | undefined {
-		return (ui.controls.controls as Control[]).find(e => e.name === name);
+	static findControl(name: string): SceneControl | undefined {
+		return ui.controls.controls.find(e => e.name === name);
 	}
-	static findTool(name: string, control?: string): Tool | undefined {
+	static findTool(name: string, control?: string): SceneControlTool | undefined {
 		if (control != undefined)
-			return (ui.controls.controls as Control[]).find(e => e.name === control).tools.find(e => e.name === name);
+			return ui.controls.controls.find(e => e.name === control).tools.find(e => e.name === name);
 		for (var c = 0; c < ui.controls.controls.length; c++) {
-			const control = ui.controls.controls[c] as Control;
+			const control = ui.controls.controls[c];
 			const tool = control.tools.find(e => e.name === name);
 			if (tool != undefined) return tool;
 		}

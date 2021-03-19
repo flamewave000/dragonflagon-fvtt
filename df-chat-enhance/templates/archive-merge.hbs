@@ -1,0 +1,9 @@
+<section style="display:flex;flex-flow:row wrap;align-items:center">
+	<p style="flex:1 0 100%">{{localize 'DF_CHAT_ARCHIVE.ArchiveViewer_Merge_SelectArchive'}} {{name}}</p>
+	<select id="archive" name="archive" style="flex:1 0 100%">
+		{{#each archives}}
+		<option value="{{id}}">{{name}}</option>
+		{{/each}}
+	</select>
+	<input style="flex:0 0 auto" type="checkbox" id="delete"><label for="delete">{{localize 'DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Delete'}}</label>
+</section>
