@@ -55,18 +55,18 @@ class Keys {
 			NumpadEnter: { key: 'NumpadEnter', label: 'DF_HOTKEYS.NumpadEnter' },
 			Backspace: { key: 'Backspace', label: 'DF_HOTKEYS.Backspace' },
 			Enter: { key: 'Enter', label: 'DF_HOTKEYS.Enter' },
-			ShiftRight: { key: 'ShiftRight', label: 'DF_HOTKEYS.ShiftRight' },
-			ShiftLeft: { key: 'ShiftLeft', label: 'DF_HOTKEYS.ShiftLeft' },
+			// ShiftRight: { key: 'ShiftRight', label: 'DF_HOTKEYS.ShiftRight' },
+			// ShiftLeft: { key: 'ShiftLeft', label: 'DF_HOTKEYS.ShiftLeft' },
+			// ControlLeft: { key: 'ControlLeft', label: 'DF_HOTKEYS.ControlLeft' },
+			// ControlRight: { key: 'ControlRight', label: 'DF_HOTKEYS.ControlRight' },
+			// AltRight: { key: 'AltRight', label: 'DF_HOTKEYS.AltRight' },
+			// AltLeft: { key: 'AltLeft', label: 'DF_HOTKEYS.AltLeft' },
 			Insert: { key: 'Insert', label: 'DF_HOTKEYS.Insert' },
 			Delete: { key: 'Delete', label: 'DF_HOTKEYS.Delete' },
 			PageUp: { key: 'PageUp', label: 'DF_HOTKEYS.PageUp' },
 			PageDown: { key: 'PageDown', label: 'DF_HOTKEYS.PageDown' },
 			Home: { key: 'Home', label: 'DF_HOTKEYS.Home' },
 			End: { key: 'End', label: 'DF_HOTKEYS.End' },
-			ControlLeft: { key: 'ControlLeft', label: 'DF_HOTKEYS.ControlLeft' },
-			ControlRight: { key: 'ControlRight', label: 'DF_HOTKEYS.ControlRight' },
-			AltRight: { key: 'AltRight', label: 'DF_HOTKEYS.AltRight' },
-			AltLeft: { key: 'AltLeft', label: 'DF_HOTKEYS.AltLeft' },
 			BracketLeft: { key: 'BracketLeft', label: 'DF_HOTKEYS.BracketLeft' },
 			BracketRight: { key: 'BracketRight', label: 'DF_HOTKEYS.BracketRight' },
 			Slash: { key: 'Slash', label: 'DF_HOTKEYS.Slash' },
@@ -138,18 +138,18 @@ class Keys {
 	get NumpadEnter() { return this._data.NumpadEnter.key; }
 	get Backspace() { return this._data.Backspace.key; }
 	get Enter() { return this._data.Enter.key; }
-	get ShiftRight() { return this._data.ShiftRight.key; }
-	get ShiftLeft() { return this._data.ShiftLeft.key; }
+	// get ShiftRight() { return this._data.ShiftRight.key; }
+	// get ShiftLeft() { return this._data.ShiftLeft.key; }
+	// get ControlLeft() { return this._data.ControlLeft.key; }
+	// get ControlRight() { return this._data.ControlRight.key; }
+	// get AltRight() { return this._data.AltRight.key; }
+	// get AltLeft() { return this._data.AltLeft.key; }
 	get Insert() { return this._data.Insert.key; }
 	get Delete() { return this._data.Delete.key; }
 	get PageUp() { return this._data.PageUp.key; }
 	get PageDown() { return this._data.PageDown.key; }
 	get Home() { return this._data.Home.key; }
 	get End() { return this._data.End.key; }
-	get ControlLeft() { return this._data.ControlLeft.key; }
-	get ControlRight() { return this._data.ControlRight.key; }
-	get AltRight() { return this._data.AltRight.key; }
-	get AltLeft() { return this._data.AltLeft.key; }
 	get BracketLeft() { return this._data.BracketLeft.key; }
 	get BracketRight() { return this._data.BracketRight.key; }
 	get Slash() { return this._data.Slash.key; }
@@ -186,45 +186,82 @@ class SETTINGS {
 	static typeOf() { return Object; }
 }
 
+/** This is just a helper for printing the list of errors with a call stack */
+function printErrors(errors) {
+	console.error(errors.join(',\n') + '\n' + (new Error().stack));
+}
 class Hotkeys {
 	static _metaKey(event) {
 		return (event.altKey ? 0x1 : 0) | (event.ctrlKey ? 0x2 : 0) | (event.shiftKey ? 0x4 : 0);
 	}
 	static _isMeta(event) {
-		return event.key === 'Shift'
-			|| event.key === 'Ctrl'
-			|| event.key === 'Alt';
+		return event.key === 'Shift' || event.key === 'Ctrl' || event.key === 'Alt';
 	}
 	static _handleKeyDown(event) {
 		var _a;
+		// Ignore the regular meta keys Shift, Ctrl, and Alt
 		if (this._isMeta(event))
 			return;
+		// Verify we are not focused on a text field
+		if (document.activeElement instanceof HTMLInputElement)
+			return;
+		if (document.activeElement instanceof HTMLTextAreaElement)
+			return;
+		// generate the meta key bit flag
 		const metaKey = this._metaKey(event);
+		// Get the hotkeys that use the meta key combination
 		const metaHandlers = this._handlers.get(metaKey);
-		if (!metaHandlers) {
-			this._handled.add(event.code);
+		// If there are no hotkeys in this meta-group, return
+		if (!metaHandlers || metaHandlers.size == 0)
 			return;
-		}
+		// Get the event handlers for the given key press
 		const eventHandlers = metaHandlers.get(event.code);
-		if (!eventHandlers || eventHandlers.length == 0) {
-			this._handled.add(event.code);
+		// If there are no handlers for this key, return
+		if (!eventHandlers || eventHandlers.length == 0)
 			return;
-		}
+		// Prevent propagation of the event to other handlers
 		event.preventDefault();
+		// Make a note that this key has been processed
+		this._handled.add(event.code);
+		// Notify the event handlers of the key press
 		for (let handler of eventHandlers) {
 			if (event.repeat && !handler.repeat)
 				continue;
 			if (!!handler.onKeyDown)
 				handler.repeat ? handler.onKeyDown(handler, (_a = event.repeat) !== null && _a !== void 0 ? _a : false) : handler.onKeyDown(handler);
+			// Check for backwards compatible `handle` function
 			else if (!!handler.handle)
 				handler.handle(handler);
 		}
-		this._handled.add(event.code);
 	}
 	static _handleKeyUp(event) {
+		// If we don't have a Down event for this key, ignore it
 		if (!this._handled.has(event.code))
 			return;
+		// Remove the down event from the handled list
 		this._handled.delete(event.code);
+		// generate the meta key bit flag
+		const metaKey = this._metaKey(event);
+		// Get the hotkeys that use the meta key combination
+		const metaHandlers = this._handlers.get(metaKey);
+		// If there are no hotkeys in this meta-group, return
+		if (!metaHandlers || metaHandlers.size == 0)
+			return;
+		// Get the event handlers for the given key release
+		const eventHandlers = metaHandlers.get(event.code);
+		// If there are no handlers for this key, return
+		if (!eventHandlers || eventHandlers.length == 0)
+			return;
+		// Prevent propagation of the event to other handlers
+		event.preventDefault();
+		// Make a note that this key has been processed
+		this._handled.add(event.code);
+		// Notify the event handlers of the key release
+		for (let handler of eventHandlers) {
+			if (!handler.onKeyUp)
+				continue;
+			handler.onKeyUp(handler);
+		}
 	}
 	static _init() {
 		window.addEventListener("keydown", this._handleKeyDown.bind(this));
@@ -247,6 +284,7 @@ class Hotkeys {
 	* @param config Hotkey configuration.
 	* @param throwOnFail	If true, will throw an error if a config with that name already exists, or
 	*						an explicit group was given but does not exist; default true.
+	* @throws Error if the hotkey already exists, or the config is malformed.
 	* @returns The ID for the registration, used for De-Registration, or null if it failed to be registered.
 	*/
 	static registerShortcut(config, throwOnFail = true) {
@@ -267,42 +305,52 @@ class Hotkeys {
 		if (!(config.default instanceof Function) && (config.default.key === undefined || config.default.alt === undefined || config.default.ctrl === undefined || config.default.shift === undefined))
 			errors.push('Hotkeys.registerShortcut(): config.default must be either a Function or a KeyMap!');
 		if (!!config.handle && !(config.handle instanceof Function))
-			errors.push('Hotkeys.registerShortcut(): config.handle must be a Function!');
+			errors.push('Hotkeys.registerShortcut(): DEPRECATED! config.handle must be a Function!');
 		if (!!config.onKeyDown && !(config.onKeyDown instanceof Function))
 			errors.push('Hotkeys.registerShortcut(): config.onKeyDown must be a Function!');
 		if (!!config.onKeyUp && !(config.onKeyUp instanceof Function))
 			errors.push('Hotkeys.registerShortcut(): config.onKeyUp must be a Function!');
 		if (this._settingsNames.has(config.name))
 			errors.push(`Hotkeys.registerShortcut(): '${config.name}' hotkey has already been registered!`);
+		// If there were errors report them
 		if (errors.length > 0) {
 			if (throwOnFail)
 				throw Error(errors.join(',\n'));
-			this._printErrors(errors, new Error().stack);
+			printErrors(errors);
 			return false;
 		}
+		// Post a warning in the console that the `handle` function is deprecated
 		if (!!config.handle) {
 			console.warn(`Hotkeys: The configuration "${config.name}" is using the deprecated 'handle()' function. Please use 'onKeyDown' and/or 'onKeyUp' instead.\nThis function will still work for now, but will be removed in a later update.`);
 		}
+		// If there is no `get` function defined, host the hotkey setting
 		if (!config.get) {
+			// Register a setting for the hotkey
 			SETTINGS.register('KEYMAP.' + config.name, {
 				scope: 'world',
 				config: false,
 				type: SETTINGS.typeOf(),
 				default: config.default instanceof Function ? config.default() : config.default
 			});
+			// Bind the `get` and `set` to the new setting
 			config.get = () => SETTINGS.get('KEYMAP.' + config.name);
 			config.set = value => SETTINGS.set('KEYMAP.' + config.name, value);
 		}
+		// Add the new configuration name to the Quick Lookup Table
 		this._settingsNames.add(config.name);
+		// If there is no group defined, add it to the general group
 		if (!config.group)
 			config.group = Hotkeys.GENERAL;
+		// Otherwise, if a custom group is added, verify that it exists
 		else if (!this._settings.has(config.group)) {
 			if (throwOnFail)
 				throw Error(`Hotkeys.registerShortcut(): '${config.group}' group does not exist. Please make sure you call Hotkeys.registerGroup() before adding hotkeys for a custom group.`);
 			else
 				return false;
 		}
+		// Add the configuration to the assigned group
 		this._settings.get(config.group).items.push(config);
+		// Add the configuration to the event handlers registry
 		const keyMap = config.get();
 		const metaKey = (keyMap.alt ? 0x1 : 0) | (keyMap.ctrl ? 0x2 : 0) | (keyMap.shift ? 0x4 : 0);
 		const metaHandlers = this._getOrDefault(this._handlers, metaKey, () => new Map());
@@ -317,6 +365,7 @@ class Hotkeys {
 	*/
 	static deregisterShortcut(name) {
 		var found = false;
+		// Remove the configuration from the groups
 		for (let group of this._settings.values()) {
 			const idx = group.items.findIndex(x => x.name === name);
 			if (idx < 0)
@@ -325,8 +374,10 @@ class Hotkeys {
 			found = true;
 			break;
 		}
+		// If a config with the given name could not be found in the groups, return failure
 		if (!found)
 			return false;
+		// Remove the configuration from the Meta Key list
 		for (let meta of this._handlers.values()) {
 			for (let handlers of meta.values()) {
 				const idx = handlers.findIndex(x => x.name === name);
@@ -335,12 +386,14 @@ class Hotkeys {
 				handlers.splice(idx, 1);
 			}
 		}
-		return found;
+		// Return success
+		return true;
 	}
 	/**
 	* Registers a new Settings Group for hotkeys.
 	* @param group Group settings, requiring the name and label. Description is optional.
 	* @param throwOnFail If true, will throw an error if a group already exists for the given name; default true.
+	* @throws Error if the group already exists, or the config is malformed.
 	* @returns true if the group has been registered; otherwise false if the group already exists.
 	*/
 	static registerGroup(group, throwOnFail = true) {
@@ -355,12 +408,14 @@ class Hotkeys {
 			errors.push('Hotkeys.registerGroup(): group.description must be null, undefined, or a string!');
 		if (this._settings.has(group.name))
 			errors.push(`Hotkeys.registerGroup(): '${group.name}' group has already been registered!`);
+		// If there were errors report them
 		if (errors.length > 0) {
 			if (throwOnFail)
 				throw Error(errors.join(',\n'));
-			this._printErrors(errors, new Error().stack);
+			printErrors(errors);
 			return false;
 		}
+		// Register the new group
 		this._settings.set(group.name, {
 			name: group.name,
 			label: group.label,
@@ -369,12 +424,8 @@ class Hotkeys {
 		});
 		return true;
 	}
-	static _printErrors(errors, stack) {
-		console.error(errors.join(',\n') + '\n' + stack);
-	}
 }
 Hotkeys.GENERAL = 'general';
-Hotkeys._id_iterator = 0;
 Hotkeys._handlers = new Map();
 Hotkeys._handled = new Set();
 Hotkeys._settings = new Map();
@@ -383,12 +434,20 @@ Hotkeys.keys = new Keys();
 
 let hotkeys = undefined;
 Hooks.once('init', function () {
+	// If the Hotkeys library is present and activated
+	// @ts-expect-error
 	if (window.Hotkeys) {
-		hotkeys = window.Hotkeys;
+		// Just grab a reference to the global Hotkeys library and return
+		hotkeys =
+			// @ts-expect-error
+			window.Hotkeys;
 		return;
 	}
+	// There is no global definition of the Hotkeys Library
+	// Generate the Shim and initialize it
 	SETTINGS.init('lib-df-hotkeys');
 	hotkeys = Hotkeys;
+	// @ts-expect-error
 	hotkeys._init();
 });
 

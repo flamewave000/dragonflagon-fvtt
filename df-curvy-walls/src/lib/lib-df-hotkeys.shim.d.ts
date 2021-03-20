@@ -64,18 +64,12 @@ declare class Keys {
 	get NumpadEnter(): string;
 	get Backspace(): string;
 	get Enter(): string;
-	get ShiftRight(): string;
-	get ShiftLeft(): string;
 	get Insert(): string;
 	get Delete(): string;
 	get PageUp(): string;
 	get PageDown(): string;
 	get Home(): string;
 	get End(): string;
-	get ControlLeft(): string;
-	get ControlRight(): string;
-	get AltRight(): string;
-	get AltLeft(): string;
 	get BracketLeft(): string;
 	get BracketRight(): string;
 	get Slash(): string;
@@ -151,6 +145,7 @@ declare class Hotkeys {
 	* @param config Hotkey configuration.
 	* @param throwOnFail	If true, will throw an error if a config with that name already exists, or
 	*						an explicit group was given but does not exist; default true.
+	* @throws Error if the hotkey already exists, or the config is malformed.
 	* @returns The ID for the registration, used for De-Registration, or null if it failed to be registered.
 	*/
 	static registerShortcut(config: HotkeySetting, throwOnFail?: boolean): boolean;
@@ -164,6 +159,7 @@ declare class Hotkeys {
 	* Registers a new Settings Group for hotkeys.
 	* @param group Group settings, requiring the name and label. Description is optional.
 	* @param throwOnFail If true, will throw an error if a group already exists for the given name; default true.
+	* @throws Error if the group already exists, or the config is malformed.
 	* @returns true if the group has been registered; otherwise false if the group already exists.
 	*/
 	static registerGroup(group: HotkeyGroup, throwOnFail?: boolean): boolean;
