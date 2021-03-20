@@ -51,7 +51,8 @@ export class HotkeyConfig extends FormApplication<Options> {
 	getData(options?: Application.RenderOptions): Options {
 		return {
 			keys: Hotkeys.keys.entries,
-			groups: [...((Hotkeys as any)._settings as Map<String, SettingGroup>).values()]
+			// @ts-expect-error
+			groups: [...(Hotkeys._settings as Map<String, SettingGroup>).values()]
 				.filter(x => x.items.length > 0)
 				.map(g => {
 					return {
@@ -74,7 +75,8 @@ export class HotkeyConfig extends FormApplication<Options> {
 		if (!formData) return;
 
 		// Process group settings
-		const settings = (Hotkeys as any)._settings as Map<String, SettingGroup>;
+		// @ts-expect-error
+		const settings = Hotkeys._settings as Map<String, SettingGroup>;
 		const groups = new Map<String, Map<String, HotkeySetting>>();
 		settings.forEach(x => groups.set(x.name, new Map(x.items.map(x => [x.name, x]))));
 
@@ -121,7 +123,8 @@ export class HotkeyConfig extends FormApplication<Options> {
 		super.activateListeners(html);
 		html.find('#reset').on('click', (e) => {
 			e.preventDefault();
-			const groups = [...((Hotkeys as any)._settings as Map<String, SettingGroup>).values()].filter(x => x.items.length > 0);
+			// @ts-expect-error
+			const groups = [...(Hotkeys._settings as Map<String, SettingGroup>).values()].filter(x => x.items.length > 0);
 			for (let group of groups) {
 				group.items.forEach(x => {
 					const defValue = x.default instanceof Function ? x.default() : x.default;

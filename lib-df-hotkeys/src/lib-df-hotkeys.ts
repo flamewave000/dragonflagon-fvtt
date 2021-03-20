@@ -10,14 +10,18 @@ declare global {
 }
 // Initialize Hotkeys on the global scope
 {
-	(<any>window).Hotkeys = HotkeysModule.Hotkeys;
-	(<any>Hotkeys)._init();
+	// @ts-expect-error
+	window.Hotkeys = HotkeysModule.Hotkeys;
+	// @ts-expect-error
+	Hotkeys._init();
 }
 
 
 import { HotkeyConfig } from './HotkeyConfig.js';
 import SETTINGS from './Settings.js';
+// Initializes the SETTINGS helper with the name of this module
 SETTINGS.init('lib-df-hotkeys')
+
 Hooks.once('init', function () {
 	HotkeyConfig.init();
 	const PREF_SELECT = 'select';
@@ -53,7 +57,7 @@ Hooks.once('init', function () {
 	// 		ctrl: false,
 	// 		shift: false
 	// 	},
-	// 	type: Object as any
+	// 	type: SETTINGS.typeOf<KeyMap>()
 	// });
 	// SETTINGS.register<KeyMap>('test2', {
 	// 	scope: 'world',
@@ -64,7 +68,7 @@ Hooks.once('init', function () {
 	// 		ctrl: false,
 	// 		shift: false
 	// 	},
-	// 	type: Object as any
+	// 	type: SETTINGS.typeOf<KeyMap>()
 	// });
 	// SETTINGS.register<KeyMap>('test3', {
 	// 	scope: 'world',
@@ -75,7 +79,7 @@ Hooks.once('init', function () {
 	// 		ctrl: false,
 	// 		shift: false
 	// 	},
-	// 	type: Object as any
+	// 	type: SETTINGS.typeOf<KeyMap>()
 	// });
 
 	// Hotkeys.registerShortcut({
