@@ -1,16 +1,42 @@
 import { } from "./lib/fuzzysort.js";
 
 abstract class SettingsProcessor {
-	static readonly options = {
-		keys: ['text'],
-		limit: Infinity,
-		threshold: -100000,
-		allowTypo: false,
-	}
 	static readonly DELIM = ' `````` ';
 	abstract processSettings(html: JQuery<HTMLElement>): void;
 	abstract injectSearch(html: JQuery<HTMLElement>): JQuery<HTMLInputElement>;
 	abstract performSearch(pattern: string): void;
+
+	protected _updateLabels(text: string, div: JQuery<HTMLElement>, percentage?: number) {
+		var [label, hint] = text.split(SettingsProcessor.DELIM);
+		if (percentage !== undefined) {
+			if (isNaN(percentage)) percentage = 0;
+			const [redPerc, greenPerc] = percentage <= 0.5
+				? [percentage / 0.5, 1] // <= 0.5, calc green to yellow
+				: [1, 1 - ((percentage - 0.5) / 0.5)]; // > 0.5, calc yellow to red
+			const red = Math.round(redPerc * 255).toString(16).padStart(2, '0');
+			const green = Math.round(greenPerc * 255).toString(16).padStart(2, '0');
+			div.css('border-left', `thick solid #${red}${green}00`);
+			div.css('padding-left', '6px');
+		}
+		else {
+			div.css('border-left', '');
+			div.css('padding-left', '');
+		}
+		div.find('>label').html(label);
+		if (div[0].classList.contains('submenu'))
+			div.find('button>label').html(hint);
+		else
+			div.find('.notes').html(hint);
+	}
+	protected _getOptions(query: string): Fuzzysort.KeysOptions<any> {
+		const threshold = Math.min(100000, 10000 + ((query.length - 2) * 10000));
+		return {
+			keys: ['text'],
+			limit: Infinity,
+			threshold: -threshold,
+			allowTypo: false,
+		}
+	}
 }
 
 interface DefaultModuleItem { el: JQuery<HTMLElement>, text: string }
@@ -57,33 +83,26 @@ class DefaultSettingsProcessor extends SettingsProcessor {
 		if (pattern.length < 2) {
 			for (let item of this._settings) {
 				item.el.show();
-				[label, hint] = item.text.split(SettingsProcessor.DELIM);
-				item.el.find('>label').html(label);
-				if (item.el[0].classList.contains('submenu'))
-					item.el.find('button>label').html(hint);
-				else
-					item.el.find('.notes').html(hint);
+				this._updateLabels(item.text, item.el);
 			}
 			return;
 		}
-		const results = fuzzysort.go(pattern, this._settings, SettingsProcessor.options);
+		const results = fuzzysort.go(pattern, this._settings, this._getOptions(pattern));
+		console.log(results.map(x => x.score));
 		for (let c = 0; c < this._settings.length; c++) {
 			const resultIdx = results.findIndex(x => x.obj === this._settings[c]);
-			var label = '';
-			var hint = '';
+			var text: string;
+			var percentage: number = undefined;
 			if (resultIdx >= 0) {
 				this._settings[c].el.show();
-				[label, hint] = fuzzysort.highlight(results[resultIdx][0]).split(SettingsProcessor.DELIM);
+				text = fuzzysort.highlight(results[resultIdx][0]);
+				percentage = resultIdx / (results.length - 1);
 			}
 			else {
 				this._settings[c].el.hide();
-				[label, hint] = this._settings[c].text.split(SettingsProcessor.DELIM);
+				text = this._settings[c].text;
 			}
-			this._settings[c].el.find('>label').html(label);
-			if (this._settings[c].el[0].classList.contains('submenu'))
-				this._settings[c].el.find('button>label').html(hint);
-			else
-				this._settings[c].el.find('.notes').html(hint);
+			this._updateLabels(text, this._settings[c].el, percentage);
 		}
 	}
 }
@@ -144,6 +163,7 @@ class TidyUiSettingsProcessor extends SettingsProcessor {
 		if (pattern.length < 2) {
 			for (let item of this._settings) {
 				item.el.show();
+				super._updateLabels(item.text, item.el);
 			}
 			for (let article of this._articles.entries()) {
 				this._articles.set(article[0], false);
@@ -151,28 +171,25 @@ class TidyUiSettingsProcessor extends SettingsProcessor {
 			}
 			return;
 		}
-		const results = fuzzysort.go(pattern, this._settings, SettingsProcessor.options);
+		const results = fuzzysort.go(pattern, this._settings, this._getOptions(pattern));
 		for (let article of this._articles.keys()) {
 			this._articles.set(article, false);
 		}
 		for (let c = 0; c < this._settings.length; c++) {
 			const resultIdx = results.findIndex(x => x.obj === this._settings[c]);
-			var label = '';
-			var hint = '';
+			var text: string;
+			var percentage: number = undefined;
 			if (resultIdx >= 0) {
 				this._articles.set(this._settings[c].article, true);
 				this._settings[c].el.show();
-				[label, hint] = fuzzysort.highlight(results[resultIdx][0]).split(SettingsProcessor.DELIM);
+				text = fuzzysort.highlight(results[resultIdx][0]);
+				percentage = resultIdx / (results.length - 1);
 			}
 			else {
 				this._settings[c].el.hide();
-				[label, hint] = this._settings[c].text.split(SettingsProcessor.DELIM);
+				text = this._settings[c].text;
 			}
-			this._settings[c].el.find('>label').html(label);
-			if (this._settings[c].el[0].classList.contains('submenu'))
-				this._settings[c].el.find('button>label').html(hint);
-			else
-				this._settings[c].el.find('.notes').html(hint);
+			this._updateLabels(text, this._settings[c].el, percentage)
 		}
 		for (let article of this._articles.entries()) {
 			this._toggleArticle($(article[0]), article[1]);

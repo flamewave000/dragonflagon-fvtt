@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"name": "df-settings-clarity",
-	"version": "3.0.0",
+	"version": "3.1.0",
 	"title": "DF Settings Clarity",
 	"description": "Displays a tag next to each module setting, indicating if it is a World setting (GM Only) or a client setting (Per User).",
 	"main": "src/df-settings-clarity.ts",
