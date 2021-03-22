@@ -1,4 +1,6 @@
 {
-	"DRAGON_FLAGON.SettingsClarity_world": "GM Seulement",
-	"DRAGON_FLAGON.SettingsClarity_client": "Par Utilisateur"
+	"DF_SETTINGS_CLARITY.Scope_world": "GM Seulement",
+	"DF_SETTINGS_CLARITY.Scope_client": "Par Utilisateur",
+	"DF_SETTINGS_CLARITY.SearchPlaceholder": "Commencez à taper pour rechercher une config",
+	"DF_SETTINGS_CLARITY.SearchClear": "Effacer l'entrée de recherche"
 }

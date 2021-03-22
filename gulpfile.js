@@ -232,6 +232,8 @@ exports.zip = gulp.series(
 			, pdel(DIST + SOURCE)
 			, () => gulp.src(DIST + '.temp/' + GLOB).pipe(gulp.dest(DIST + SOURCE))
 			, pdel([DIST + '.temp/'])
+			, plog(JSON.parse(fs.readFileSync('./module.json').toString()).scripts)
+			, desc('outputing scripts', () => gulp.src(JSON.parse(fs.readFileSync('./module.json').toString()).scripts, {base: SOURCE}).pipe(gulp.dest(DIST + SOURCE)))
 		)
 		, gulp.series(
 			buildShim()

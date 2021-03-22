@@ -1,5 +1,8 @@
 # DF Settings Clarity
 
+## Release 3.0.0 (2021-03-21)
+- New Fuzzy Search for module settings!
+
 ## Release 2.1.4 (2021-02-22)
 - If a setting/menu does not have the `scope` or `restriction` flag set, it will now default to `client`.
 
