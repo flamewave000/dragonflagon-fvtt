@@ -182,8 +182,8 @@ exports.step_compress = compressDistribution();
 /**
  * Simple clean command
  */
-exports.clean = gulp.series(pdel([DIST, BUNDLE, '../' + DIST]));
-exports.devClean = gulp.series(pdel([DEV_DIST(), '../' + DIST]));
+exports.clean = gulp.series(pdel([DIST, BUNDLE, '../' + DIST], { force: true }));
+exports.devClean = gulp.series(pdel([DEV_DIST(), '../' + DIST], { force: true }));
 /**
  * Default Build operation
  */
@@ -232,8 +232,12 @@ exports.zip = gulp.series(
 			, pdel(DIST + SOURCE)
 			, () => gulp.src(DIST + '.temp/' + GLOB).pipe(gulp.dest(DIST + SOURCE))
 			, pdel([DIST + '.temp/'])
-			, plog(JSON.parse(fs.readFileSync('./module.json').toString()).scripts)
-			, desc('outputing scripts', () => gulp.src(JSON.parse(fs.readFileSync('./module.json').toString()).scripts, {base: SOURCE}).pipe(gulp.dest(DIST + SOURCE)))
+			, (() => {
+				const scripts = JSON.parse(fs.readFileSync('./module.json').toString()).scripts;
+				return scripts
+					? desc('outputing scripts', (cb) => gulp.src(scripts, { base: SOURCE }).pipe(gulp.dest(DIST + SOURCE)))
+					: plog('no scripts');
+			})()
 		)
 		, gulp.series(
 			buildShim()
