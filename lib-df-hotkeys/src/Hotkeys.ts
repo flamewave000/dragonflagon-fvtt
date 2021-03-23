@@ -37,16 +37,18 @@ export interface HotkeySetting {
 	/**
 	 * Function to handle the execution of the Hot Key Down event.
 	 * @param self Convenience reference to this HotkeySetting object
+	 * @param event The original KeyboardEvent
 	 * @param repeated	Optional: This will only be defined if `repeat: true` has been set.
 	 * 					It will be false on the first Key Down event, but true on any subsequent
 	 * 					Key Down events caused by the user holding the key down.
 	 */
-	onKeyDown?(self: HotkeySetting, repeated?: boolean): void;
+	onKeyDown?(self: HotkeySetting, event: KeyboardEvent, repeated?: boolean): void;
 	/**
 	 * Function to handle the execution of the Hot Key Up event.
 	 * @param self Convenience reference to this HotkeySetting object
+	 * @param event The original KeyboardEvent
 	 */
-	onKeyUp?(self: HotkeySetting): void;
+	onKeyUp?(self: HotkeySetting, event: KeyboardEvent): void;
 }
 
 /** Hotkey Group Configuration */
@@ -108,10 +110,9 @@ export class Hotkeys {
 		this._handled.add(event.code);
 		// Notify the event handlers of the key press
 		for (let handler of eventHandlers) {
+			if (!handler.onKeyDown) continue;
 			if (event.repeat && !handler.repeat) continue;
-			if (!!handler.onKeyDown) handler.repeat ? handler.onKeyDown(handler, event.repeat ?? false) : handler.onKeyDown(handler)
-			// Check for backwards compatible `handle` function
-			else if (!!handler.handle) handler.handle(handler);
+			handler.onKeyDown(handler, event, event.repeat);
 		}
 	}
 	private static _handleKeyUp(event: KeyboardEvent) {
@@ -136,7 +137,7 @@ export class Hotkeys {
 		// Notify the event handlers of the key release
 		for (let handler of eventHandlers) {
 			if (!handler.onKeyUp) continue;
-			handler.onKeyUp(handler);
+			handler.onKeyUp(handler, event);
 		}
 	}
 

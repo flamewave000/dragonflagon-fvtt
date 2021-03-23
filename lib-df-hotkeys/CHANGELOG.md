@@ -1,5 +1,10 @@
 # DragonFlagon Hotkeys Library
 
+## Release 2.2.0 (2021-03-23)
+- Fix: Hotkeys were stealing input from elements that were made editable. These types of elements will now be handled the same as Input and TextArea elements.
+- Added: `onKeyDown` and `onKeyUp` will now receive the original keyboard events.
+- Localisation: Japanese translation courtesy of Touge
+
 ## Release 2.1.0 (2021-03-19)
 - Re-added onKeyUp handling. This change somehow got reverted before I did my previouse release 🤦‍♂️
 - Bug Fix: Hotkeys will now be ignored if the user currently has a Text Field or Text Area currently focused.
