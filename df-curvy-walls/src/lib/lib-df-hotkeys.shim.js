@@ -198,14 +198,15 @@ class Hotkeys {
 		return event.key === 'Shift' || event.key === 'Ctrl' || event.key === 'Alt';
 	}
 	static _handleKeyDown(event) {
-		var _a;
 		// Ignore the regular meta keys Shift, Ctrl, and Alt
 		if (this._isMeta(event))
 			return;
-		// Verify we are not focused on a text field
+		// Verify we are not focused on an input or text field, or an editable element
 		if (document.activeElement instanceof HTMLInputElement)
 			return;
 		if (document.activeElement instanceof HTMLTextAreaElement)
+			return;
+		if (document.activeElement.getAttribute('contenteditable') === 'true')
 			return;
 		// generate the meta key bit flag
 		const metaKey = this._metaKey(event);
@@ -225,13 +226,11 @@ class Hotkeys {
 		this._handled.add(event.code);
 		// Notify the event handlers of the key press
 		for (let handler of eventHandlers) {
+			if (!handler.onKeyDown)
+				continue;
 			if (event.repeat && !handler.repeat)
 				continue;
-			if (!!handler.onKeyDown)
-				handler.repeat ? handler.onKeyDown(handler, (_a = event.repeat) !== null && _a !== void 0 ? _a : false) : handler.onKeyDown(handler);
-			// Check for backwards compatible `handle` function
-			else if (!!handler.handle)
-				handler.handle(handler);
+			handler.onKeyDown(handler, event, event.repeat);
 		}
 	}
 	static _handleKeyUp(event) {
@@ -260,7 +259,7 @@ class Hotkeys {
 		for (let handler of eventHandlers) {
 			if (!handler.onKeyUp)
 				continue;
-			handler.onKeyUp(handler);
+			handler.onKeyUp(handler, event);
 		}
 	}
 	static _init() {

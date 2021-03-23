@@ -118,16 +118,18 @@ declare interface HotkeySetting {
 	/**
 	* Function to handle the execution of the Hot Key Down event.
 	* @param self Convenience reference to this HotkeySetting object
+	* @param event The original KeyboardEvent
 	* @param repeated	Optional: This will only be defined if `repeat: true` has been set.
 	* 					It will be false on the first Key Down event, but true on any subsequent
 	* 					Key Down events caused by the user holding the key down.
 	*/
-	onKeyDown?(self: HotkeySetting, repeated?: boolean): void;
+	onKeyDown?(self: HotkeySetting, event: KeyboardEvent, repeated?: boolean): void;
 	/**
 	* Function to handle the execution of the Hot Key Up event.
 	* @param self Convenience reference to this HotkeySetting object
+	* @param event The original KeyboardEvent
 	*/
-	onKeyUp?(self: HotkeySetting): void;
+	onKeyUp?(self: HotkeySetting, event: KeyboardEvent): void;
 }
 /** Hotkey Group Configuration */
 declare interface HotkeyGroup {

@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"name": "df-curvy-walls",
-	"version": "2.1.0",
+	"version": "2.1.1",
 	"title": "DF Curvy Walls",
 	"description": "Creates wall segments along a Bezier Cubic or Quadratic curve or circle",
 	"main": "src/df-wall-curves.js",
