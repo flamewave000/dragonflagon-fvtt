@@ -88,9 +88,10 @@ export class Hotkeys {
 	private static _handleKeyDown(event: KeyboardEvent) {
 		// Ignore the regular meta keys Shift, Ctrl, and Alt
 		if (this._isMeta(event)) return;
-		// Verify we are not focused on a text field
+		// Verify we are not focused on an input or text field, or an editable element
 		if (document.activeElement instanceof HTMLInputElement) return;
 		if (document.activeElement instanceof HTMLTextAreaElement) return;
+		if (document.activeElement.getAttribute('contenteditable') === 'true') return;
 		// generate the meta key bit flag
 		const metaKey = this._metaKey(event);
 		// Get the hotkeys that use the meta key combination

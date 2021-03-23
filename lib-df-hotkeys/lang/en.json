@@ -1,5 +1,5 @@
 {
-	"lib-df-hotkeys.ModName": "Library: DF Hotkeys",
+	"DF_HOTKEYS.ModName": "Library: DF Hotkeys",
 
 	"DF_HOTKEYS.Config_Title": "Hotkeys Settings",
 	"DF_HOTKEYS.Config_Warning": "Beware <code>Ctrl+W</code> on Chromium browsers (Chrome, Edge, Brave). This combo will close the browser.",

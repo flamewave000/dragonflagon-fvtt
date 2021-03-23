@@ -1,5 +1,5 @@
 {
-	"lib-df-hotkeys.ModName": "Library: DF Hotkeys",
+	"DF_HOTKEYS.ModName": "Library: DF Hotkeys",
 
 	"DF_HOTKEYS.Config_Title": "ホットキー設定",
 	"DF_HOTKEYS.Config_Warning": "Chromiumブラウザ（Chrome / Edge / Brave）では<code>Ctrl+W</code>に注意してください。この組み合わせは標準で「現在のタブを閉じる」動作に割り当てられています。<br />また割り当てキーの表記に併記があるものは前者がJIS配列用、後者がUS配列用です。",
