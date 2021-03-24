@@ -41,7 +41,7 @@
 	"DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Title": "Edit Archive Name",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Save": "Save name",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Cancel": "Cancel",
-	"DF_CHAT_ARCHIVE.ArchiveViewer_SaveChanges": "Apply Deletion",
+	"DF_CHAT_ARCHIVE.ArchiveViewer_SaveChanges": "Save Deletions",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Visible": "Visible to players",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_DeleteTitle": "Delete Archived Messages",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_DeleteContent": "Are you sure you wish to apply all previous deletion?",
@@ -53,6 +53,7 @@
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Cancel": "Cancel",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Merge": "Merge",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Merge_OnlyOneArchive": "There are no other archives available for merging",
+	"DF_CHAT_ARCHIVE.ArchiveViewer_Error_Delete_All":"Cannot delete all of the chats in an Archive. If you wish to delete an archive, please do so from the Archive Manager.",
 
 
 	

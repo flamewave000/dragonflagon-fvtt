@@ -103,8 +103,8 @@ export default class DFChatArchiveViewer extends Application {
 									if (isNaN(parseInt(val))) return;
 									const id = parseInt(val);
 									const source = DFChatArchive.getLogs().find(x => x.id == id);
-									const currentChats = await DFChatArchive.readChatArchive(this.archive.file);
-									const sourceChats = await DFChatArchive.readChatArchive(source.file);
+									const currentChats = await DFChatArchive.getArchiveContents(this.archive);
+									const sourceChats = await DFChatArchive.getArchiveContents(source);
 									const mergedChats = (currentChats as ChatMessage.Data[])
 										.concat(sourceChats as ChatMessage.Data[])
 										.sort((a, b) => a.timestamp - b.timestamp);
@@ -122,7 +122,9 @@ export default class DFChatArchiveViewer extends Application {
 
 				const log = html.find('#df-chat-log');
 				const messageHtml = [];
-				const currentChats = await DFChatArchive.readChatArchive(this.archive.file);
+				var currentChats = await DFChatArchive.getArchiveContents(this.archive);
+				const deletionList: string[] = [];
+				const deleteButton = html.find('#dfal-save-changes');
 				for (let value of currentChats as ChatMessage.Data[]) {
 					const chatMessage = value instanceof ChatMessage ? value : new ChatMessage(value);
 					try {
@@ -130,13 +132,22 @@ export default class DFChatArchiveViewer extends Application {
 						// if we only have 1 message, don't allow it to be deleted. They might as well just delete the archive
 						if (currentChats.length == 1)
 							html.find('a.message-delete').hide();
-						html.find('a.message-delete').on('click', (element) => {
-							const messageHtml = element.target.parentElement?.parentElement?.parentElement?.parentElement;
-							const id = messageHtml?.dataset?.messageId;
-							if (!id) return;
-							const index = currentChats.findIndex((x: any) => x._id === id);
-							currentChats.splice(index, 1);
-							$(messageHtml).hide(500, () => messageHtml.remove());
+						html.find('a.message-delete').on('click', (event) => {
+							const messageHtml = $(event.target.parentElement?.parentElement?.parentElement?.parentElement);
+							const buttonIcon = $(event.target);
+							if (messageHtml.hasClass('dfal-deleted')) {
+								messageHtml.removeClass('dfal-deleted');
+								buttonIcon.removeClass('fa-redo-alt');
+								buttonIcon.addClass('fa-trash');
+								deletionList.splice(deletionList.findIndex(x => x === messageHtml.attr('data-message-id')), 1);
+							} else {
+								messageHtml.addClass('dfal-deleted');
+								buttonIcon.removeClass('fa-trash');
+								buttonIcon.addClass('fa-redo-alt');
+								deletionList.push(messageHtml.attr('data-message-id'));
+							}
+							if (deletionList.length > 0) deleteButton.show();
+							else deleteButton.hide();
 						});
 						messageHtml.push(html);
 					} catch (err) {
@@ -147,13 +158,24 @@ export default class DFChatArchiveViewer extends Application {
 				// Prepend the HTML
 				log.prepend(messageHtml);
 
-				html.find('#dfal-save-changes').on('click', async () => {
+				deleteButton.hide();
+				deleteButton.on('click', async () => {
+					console.log(deletionList);
+					if(deletionList.length === currentChats.length) {
+						ui.notifications.warn(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_Error_Delete_All'));
+						return;
+					}
 					Dialog.confirm({
 						title: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveViewer_DeleteTitle"),
 						content: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveViewer_DeleteContent"),
 						defaultYes: false,
 						no: () => { },
 						yes: async () => {
+							for(let id of deletionList) {
+								const message = html.find(`li[data-message-id="${id}"]`);
+								message.hide(500, () => message.remove());
+							}
+							currentChats = currentChats.filter(x => !deletionList.includes(x._id));
 							await DFChatArchive.updateChatArchive(this.archive, currentChats);
 						}
 					});
