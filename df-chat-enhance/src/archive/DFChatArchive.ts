@@ -4,7 +4,6 @@ import SETTINGS from '../SETTINGS.js';
 export interface DFChatArchiveEntry {
 	id: number;
 	name: string;
-	world: string;
 	visible: boolean;
 	filename: string;
 	filepath: string;
@@ -30,52 +29,52 @@ export class DFChatArchive {
 	}
 
 	static registerSettings() {
-		SETTINGS.register(DFChatArchive.PREF_LOGS, {
+		SETTINGS.register(this.PREF_LOGS, {
 			scope: 'world',
 			config: false,
-			type: String,
+			type: Object,
 			default: '[]',
 			onChange: () => {
-				if (DFChatArchive._updateListener != null)
-					DFChatArchive._updateListener();
+				if (this._updateListener != null)
+					this._updateListener();
 			}
 		});
-		SETTINGS.register(DFChatArchive.PREF_CID, {
+		SETTINGS.register(this.PREF_CID, {
 			scope: 'world',
 			config: false,
 			type: Number,
 			default: 0
 		});
-		SETTINGS.register(DFChatArchive.PREF_FOLDER, {
+		SETTINGS.register(this.PREF_FOLDER, {
 			scope: 'world',
 			config: false,
 			type: String,
 			default: `worlds/${game.world.name}/chat-archive`,
 			onChange: () => {
-				this.createArchiveFolderIfMissing(DFChatArchive.DATA_FOLDER, game.settings.get(CONFIG.MOD_NAME, DFChatArchive.PREF_FOLDER));
-				if (DFChatArchive._updateListener != null)
-					DFChatArchive._updateListener();
+				this.createArchiveFolderIfMissing(this.DATA_FOLDER, SETTINGS.get(this.PREF_FOLDER));
+				if (this._updateListener != null)
+					this._updateListener();
 			}
 		});
-		this.createArchiveFolderIfMissing(DFChatArchive.DATA_FOLDER, game.settings.get(CONFIG.MOD_NAME, DFChatArchive.PREF_FOLDER));
+		this.createArchiveFolderIfMissing(this.DATA_FOLDER, SETTINGS.get(this.PREF_FOLDER));
 	}
 
 	private static createArchiveFolderIfMissing(origin: string, folder: string) {
 		FilePicker.browse(origin, folder)
 			.then(loc => {
-				if (loc.target == '.')
+				if (loc.target == 'worlds/' + game.world.name)
 					FilePicker.createDirectory(origin, folder, {});
 			})
 			.catch(_ => { throw new Error('Could not access the archive folder: ' + folder) });
 	}
 
-	static getLogs(): DFChatArchiveEntry[] { return SETTINGS.get<DFChatArchiveEntry[]>(this.PREF_LOGS).filter(x => x.world === game.world.name); }
+	static getLogs(): DFChatArchiveEntry[] { return SETTINGS.get<DFChatArchiveEntry[]>(this.PREF_LOGS); }
 	static getArchive(id: number): DFChatArchiveEntry { return this.getLogs().find(x => x.id == id); }
 	static exists(id: number): boolean { return !!this.getLogs().find(x => x.id == id); }
 
 	private static async _generateChatArchiveFile(id: number, name: string, chats: ChatMessage[] | ChatMessage.ChatData[], visible: boolean): Promise<DFChatArchiveEntry> {
 		// Get the folder path
-		const folderPath = SETTINGS.get<string>(DFChatArchive.PREF_FOLDER);
+		const folderPath = SETTINGS.get<string>(this.PREF_FOLDER);
 		// Generate the system safe filename
 		const fileName = encodeURI(`${id}_${name}.json`);
 		// Create the File and contents
@@ -87,7 +86,6 @@ export class DFChatArchive {
 			id: id,
 			name: name,
 			visible: visible,
-			world: game.world.name,
 			filepath: response.path,
 			filename: fileName
 		};
@@ -95,32 +93,32 @@ export class DFChatArchive {
 	}
 
 	static async createChatArchive(name: string, chats: ChatMessage[], visible: boolean): Promise<DFChatArchiveEntry> {
-		var newId = (game.settings.get(CONFIG.MOD_NAME, DFChatArchive.PREF_CID) as number) + 1;
-		game.settings.set(CONFIG.MOD_NAME, DFChatArchive.PREF_CID, newId);
+		var newId = SETTINGS.get<number>(this.PREF_CID) + 1;
+		SETTINGS.set(this.PREF_CID, newId);
 		const entry = await this._generateChatArchiveFile(newId, name, chats, visible);
 		const logs = SETTINGS.get<DFChatArchiveEntry[]>(this.PREF_LOGS);
 		logs.push(entry);
-		await SETTINGS.set(DFChatArchive.PREF_LOGS, JSON.stringify(logs, null, ''));
-		if (DFChatArchive._updateListener != null)
-			DFChatArchive._updateListener();
+		await SETTINGS.set(this.PREF_LOGS, logs);
+		if (this._updateListener != null)
+			this._updateListener();
 		return entry;
 	}
 
-	static async readChatArchive(filePath: string): Promise<ChatMessage[] | ChatMessage.Data[]> {
-		const response = await fetch(filePath);
-		const data = await response.json().catch(error => console.error(`Failed to read JSON for archive ${filePath}\n${error}`));
+	static async getArchiveContents(archive: DFChatArchiveEntry): Promise<(ChatMessage | ChatMessage.Data)[]> {
+		const response = await fetch(archive.filepath);
+		const data = await response.json().catch(error => console.error(`Failed to read JSON for archive ${archive.filepath}\n${error}`));
 		if (response.ok)
-			return data as ChatMessage[] | ChatMessage.Data[];
+			return data as (ChatMessage | ChatMessage.Data)[];
 		else
-			throw new Error('Could not access the archive from server side: ' + filePath);
+			throw new Error('Could not access the archive from server side: ' + archive.filepath);
 	}
 
-	static async updateChatArchive(archive: DFChatArchiveEntry, newChatData?: ChatMessage[] | ChatMessage.Data[]): Promise<DFChatArchiveEntry> {
+	static async updateChatArchive(archive: DFChatArchiveEntry, newChatData?: (ChatMessage | ChatMessage.Data)[]): Promise<DFChatArchiveEntry> {
 		if (!this.getLogs().find(x => x.id == archive.id))
 			throw new Error('Could not locate an archive for the given ID: ' + archive.id.toString());
 		// If we are updating the contents of an archive
 		if (!!newChatData) {
-			const folderPath = SETTINGS.get<string>(DFChatArchive.PREF_FOLDER);
+			const folderPath = SETTINGS.get<string>(this.PREF_FOLDER);
 			const file = new File([JSON.stringify(newChatData)], archive.filename, { type: 'application/json' });
 			const response: {
 				path?: string;
@@ -129,24 +127,22 @@ export class DFChatArchive {
 			if (!response.path)
 				throw new Error('Could not upload the archive to server side: ' + archive.id.toString());
 		}
-		if (DFChatArchive._updateListener != null)
-			DFChatArchive._updateListener();
+		if (this._updateListener != null)
+			this._updateListener();
 		return archive;
 	}
 
 	static async deleteAll() {
 		const folderPath = SETTINGS.get<string>(this.PREF_FOLDER);
 		var logs = SETTINGS.get<DFChatArchiveEntry[]>(this.PREF_LOGS);
-
 		// Can not delete files currently, truncate instead to make filtering easier.
-		await Promise.all(logs.filter(x => x.world === game.world.name).map(archive => {
+		await Promise.all(logs.map(archive => {
 			const file = new File([''], archive.filename, { type: 'application/json' });
 			return FilePicker.upload(this.DATA_FOLDER, folderPath, file, {});
 		}));
-		logs = logs.filter(x => x.world !== game.world.name);
-		await SETTINGS.set(DFChatArchive.PREF_LOGS, JSON.stringify(logs));
-		if (DFChatArchive._updateListener != null)
-			DFChatArchive._updateListener();
+		await SETTINGS.set(this.PREF_LOGS, logs);
+		if (this._updateListener != null)
+			this._updateListener();
 	}
 
 	static async deleteChatArchive(id: Number) {
@@ -162,16 +158,19 @@ export class DFChatArchive {
 		const file = new File([''], entry.filename, { type: 'application/json' });
 		await FilePicker.upload(this.DATA_FOLDER, folderPath, file, {});
 		logs.splice(entryIdx, 1);
-		await SETTINGS.set(DFChatArchive.PREF_LOGS, JSON.stringify(logs, null, ''));
-		if (DFChatArchive._updateListener != null)
-			DFChatArchive._updateListener();
+		await SETTINGS.set(this.PREF_LOGS, logs);
+		if (this._updateListener != null)
+			this._updateListener();
 	}
 
 	static async upgradeFromDatabaseEntries() {
 		if (!game.user.isGM)
 			return;
 
-		const logData: ObsoleteDFChatArchiveEntry[] | DFChatArchiveEntry[] = SETTINGS.get(this.PREF_LOGS);
+		var logData: ObsoleteDFChatArchiveEntry[] | DFChatArchiveEntry[] = SETTINGS.get(this.PREF_LOGS);
+		if (logData instanceof String) {
+			logData = JSON.parse(logData.toString());
+		}
 		const needUpgrades = (<ObsoleteDFChatArchiveEntry[]>logData).filter(x => x.chats !== undefined);
 		const logs = (<DFChatArchiveEntry[]>logData).filter(x => x.filename !== undefined);
 
@@ -184,14 +183,14 @@ export class DFChatArchive {
 			newEntries.push(await this._generateChatArchiveFile(entry.id, entry.name, entry.chats, entry.visible));
 		}
 
-		console.log('DF Chat Enhancements: upgraded entries: ', JSON.stringify(newEntries, null, '\t'));
+		console.log('DF Chat Enhancements: upgraded entries: ', JSON.stringify(newEntries.map(x => x.filepath), null, '\t'));
 		logs.push(...newEntries);
 
 		if (newEntries.length > 0) {
-			await SETTINGS.set(DFChatArchive.PREF_LOGS, JSON.stringify(logs, null, ''));
-			if (DFChatArchive._updateListener != null)
-				DFChatArchive._updateListener();
+			await SETTINGS.set(this.PREF_LOGS, logs);
+			if (this._updateListener != null)
+				this._updateListener();
+			ui.notifications.info('DF Chat Enhancements: Migration complete.');
 		}
-		ui.notifications.info('DF Chat Enhancements: Migration complete.');
 	}
 }
