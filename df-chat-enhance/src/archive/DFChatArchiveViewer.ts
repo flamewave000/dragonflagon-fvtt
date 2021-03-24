@@ -10,16 +10,14 @@ export default class DFChatArchiveViewer extends Application {
 	}
 
 	static get defaultOptions() {
-		const options = Application.defaultOptions;
-		mergeObject(options, {
+		return mergeObject(Application.defaultOptions as Partial<Application.Options>, {
 			template: "modules/df-chat-enhance/templates/archive-viewer.hbs",
 			width: 300,
 			height: 500,
 			resizable: true,
 			title: 'DF_CHAT_ARCHIVE.ArchiveViewer_Title',
 			classes: ['df-chat-log-window']
-		} as any);
-		return options;
+		}) as Application.Options;
 	}
 
 	getData(options = {}) {
@@ -33,7 +31,7 @@ export default class DFChatArchiveViewer extends Application {
 	}
 
 	_renderInner(data: {}, options?: any): Promise<JQuery> {
-		return (super._renderInner(data, options) as any)
+		return (super._renderInner(data, options) as Promise<JQuery>)
 			.then(async (html: JQuery<HTMLElement>) => {
 				html.find("#visible").on('change', async (element) => {
 					this.archive.visible = (element.target as HTMLInputElement).checked;

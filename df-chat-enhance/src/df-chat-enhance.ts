@@ -3,7 +3,13 @@ import initDFChatEdit from "./edit/df-chat-edit.js";
 import * as DFAdventureLog from "./logger/df-adventure-log.js";
 import initDFChatPrivacy from "./privacy/df-chat-privacy.js";
 
-(Application.prototype as any)._recalculateDimensions = function () {
+declare global {
+	interface Application {
+		_recalculateDimensions(): void;
+	}
+}
+
+(<any>Application.prototype)._recalculateDimensions = function () {
 	this.element[0].style.height = '';
 	this.element[0].style.width = '';
 	this.setPosition({});

@@ -8,14 +8,12 @@ export default class DFAdventureLogConfig extends FormApplication {
 	static readonly PREF_CONFIG = 'log-config-menu';
 
 	static get defaultOptions() {
-		const options = FormApplication.defaultOptions;
-		mergeObject(options, {
+		return mergeObject(FormApplication.defaultOptions as Partial<FormApplication.Options>, {
 			template: "modules/df-chat-enhance/templates/log-config.hbs",
 			resizable: false,
 			minimizable: false,
 			title: game.i18n.localize("DF_CHAT_LOG.Config_Title")
-		} as any);
-		return options;
+		}) as FormApplication.Options;
 	}
 
 	static setupSettings() {
@@ -40,7 +38,7 @@ export default class DFAdventureLogConfig extends FormApplication {
 	}
 
 	getData(options?: any) {
-		const data = super.getData(options) as any;
+		const data = super.getData(options);
 		const keys = game.journal.keys();
 		const selectedLog = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL) as string;
 		const selectedGMLog = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL_GM) as string;
@@ -61,7 +59,7 @@ export default class DFAdventureLogConfig extends FormApplication {
 		logJournals = logJournals.sort((a, b) => a.name.localeCompare(b.name));
 		gmlogJournals = gmlogJournals.sort((a, b) => a.name.localeCompare(b.name));
 
-		mergeObject(data, {
+		mergeObject(data as any, {
 			logJournals: logJournals,
 			gmlogJournals: gmlogJournals,
 		});
