@@ -2,6 +2,8 @@ import * as DFChatArchive from "./archive/df-chat-archive.js";
 import initDFChatEdit from "./edit/df-chat-edit.js";
 import * as DFAdventureLog from "./logger/df-adventure-log.js";
 import initDFChatPrivacy from "./privacy/df-chat-privacy.js";
+import SETTINGS from "./SETTINGS.js";
+SETTINGS.init('df-chat-enhance');
 
 declare global {
 	interface Application {
