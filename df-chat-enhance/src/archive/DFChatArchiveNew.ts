@@ -1,18 +1,16 @@
 import { DFChatArchive } from "./DFChatArchive.js";
 import CONFIG from '../CONFIG.js';
 
-export default class DFChatArchiveNew extends FormApplication {
+export default class DFChatArchiveNew extends FormApplication<{ shouldDelete: boolean }> {
 	static readonly PREF_DELETE = 'new-should-delete';
 	static readonly PREF_HIDE_EXPORT = 'hide-export';
 	static get defaultOptions() {
-		const options = FormApplication.defaultOptions;
-		mergeObject(options, {
+		return mergeObject(FormApplication.defaultOptions as Partial<FormApplication.Options>, {
 			template: "modules/df-chat-enhance/templates/archive-new.hbs",
 			resizable: false,
 			minimizable: false,
 			title: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveNew_Title")
-		} as any);
-		return options;
+		}) as FormApplication.Options;
 	}
 
 	static registerSettings() {
@@ -25,11 +23,9 @@ export default class DFChatArchiveNew extends FormApplication {
 	}
 
 	getData(options?: any) {
-		const data = super.getData(options) as any;
-		mergeObject(data, {
-			shouldDelete: game.settings.get(CONFIG.MOD_NAME, DFChatArchiveNew.PREF_DELETE) as Boolean
+		return mergeObject(super.getData(options), {
+			shouldDelete: game.settings.get(CONFIG.MOD_NAME, DFChatArchiveNew.PREF_DELETE) as boolean
 		});
-		return data;
 	}
 
 	async _updateObject(_event?: any, formData?: any) {
@@ -41,7 +37,7 @@ export default class DFChatArchiveNew extends FormApplication {
 			throw Error(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveNew_ErrorNameMissing'));
 		}
 
-		var chats = [...((ui.chat as any).collection as Map<String, ChatMessage>).values()];
+		var chats = [...(ui.chat.collection as Map<String, ChatMessage>).values()];
 
 		// If we are selecting a date range
 		if (formData['date-or-all'] === 'date') {
@@ -59,7 +55,7 @@ export default class DFChatArchiveNew extends FormApplication {
 		// If we don't want to delete the messages, return
 		if (!formData.delete) return;
 
-		for(let chat of chats) {
+		for (let chat of chats) {
 			chat.delete();
 		}
 	}
@@ -72,12 +68,12 @@ export default class DFChatArchiveNew extends FormApplication {
 				html.find('#dfca-all').on('change', () => {
 					from.prop('disabled', true);
 					to.prop('disabled', true);
-					(this as any)._recalculateDimensions();
+					this._recalculateDimensions();
 				});
 				html.find('#dfca-date').on('change', () => {
 					from.prop('disabled', false);
 					to.prop('disabled', false);
-					(this as any)._recalculateDimensions();
+					this._recalculateDimensions();
 				});
 				return html;
 			});

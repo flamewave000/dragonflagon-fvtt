@@ -6,7 +6,7 @@ export default class CONFIG {
 			title: game.i18n.localize("DF_CHAT_ENHANCE.ReloadGameTitle"),
 			content: game.i18n.localize("DF_CHAT_ENHANCE.ReloadGameContent"),
 			defaultYes: true
-		} as any) as any as Boolean) {
+		})) {
 			window.location.reload();
 		}
 	}

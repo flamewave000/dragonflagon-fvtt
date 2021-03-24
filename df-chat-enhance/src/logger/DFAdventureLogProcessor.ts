@@ -1,8 +1,23 @@
 
 import CONFIG from '../CONFIG.js';
 import DFAdventureLogConfig from './DFAdventureLogConfig.js';
-//import './libWrapper.js';
 
+declare global {
+	interface String {
+		trimStart(): string
+	}
+}
+if (!String.prototype.trimStart) {
+	String.prototype.trimStart = function () {
+		const whitespace = [' ', '\n', '\r'];
+		var index = -1;
+		for (let c = 0; c < this.length; c++) {
+			if (whitespace.every(x => x !== this[c])) break;
+			index = c;
+		}
+		return this.substr(index + 1);
+	}
+}
 
 declare interface ChatCommand {
 	commandKey: String;
@@ -53,7 +68,7 @@ export default class DFAdventureLogProcessor {
 					return enabled && (!gmOnly || isGM);
 				},
 				callback: (header) => {
-					const chatData = ((ui.chat as any).collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+					const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
 					DFAdventureLogProcessor._commandProcessor(chatData.content, false);
 					return {};
 				}
@@ -68,7 +83,7 @@ export default class DFAdventureLogProcessor {
 					return enabled && (!gmOnly || isGM);
 				},
 				callback: (header) => {
-					const chatData = ((ui.chat as any).collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+					const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
 					if (chatData.content.trimStart().startsWith('"'))
 						DFAdventureLogProcessor._commandProcessor('q ' + chatData.content, false);
 					else
@@ -86,7 +101,7 @@ export default class DFAdventureLogProcessor {
 					return enabled && (!gmOnly || isGM);
 				},
 				callback: (header) => {
-					const chatData = ((ui.chat as any).collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+					const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
 					DFAdventureLogProcessor._commandProcessor(chatData.content, true);
 					return {};
 				}
@@ -101,7 +116,7 @@ export default class DFAdventureLogProcessor {
 					return enabled && (!gmOnly || isGM);
 				},
 				callback: (header) => {
-					const chatData = ((ui.chat as any).collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+					const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
 					if (chatData.content.trimStart().startsWith('"'))
 						DFAdventureLogProcessor._commandProcessor('q ' + chatData.content, true);
 					else
@@ -239,15 +254,8 @@ export default class DFAdventureLogProcessor {
 			return;
 		}
 
-		const speaker = ChatMessage.getSpeaker({ user: game.user } as any);
-		const messageData: {
-			flavor: string,
-			user: string,
-			speaker: ChatMessage.SpeakerData,
-			type: number,
-			content: string,
-			whisper?: string[]
-		} = {
+		const speaker = ChatMessage.getSpeaker({ user: game.user } as Partial<ChatMessage.SpeakerCreateData>);
+		const messageData: DeepPartial<ChatMessage.CreateData> = {
 			flavor: '',
 			user: game.user._id,
 			speaker: speaker,
@@ -363,7 +371,7 @@ export default class DFAdventureLogProcessor {
 		}
 		// Post message to chat if Messages are enabled
 		if (game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_MESSAGES))
-			await ChatMessage.create(messageData as any, {});
+			await ChatMessage.create(messageData, {});
 	}
 
 	static async resortLog() {

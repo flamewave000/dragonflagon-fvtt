@@ -8,6 +8,7 @@ export interface DFChatArchiveEntry {
 	filename: string;
 }
 
+/** @deprecated */
 export interface ObsoleteDFChatArchiveEntry {
 	id: number;
 	name: string;

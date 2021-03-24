@@ -5,20 +5,18 @@ export default class DFChatArchiveManager extends Application {
 	static chatViewers: Map<Number, DFChatArchiveViewer> = new Map();
 
 	static get defaultOptions() {
-		const options = Application.defaultOptions;
-		mergeObject(options, {
+		return mergeObject(Application.defaultOptions as Partial<Application.Options>, {
 			template: "modules/df-chat-enhance/templates/archive-manager.hbs",
 			resizable: true,
 			minimizable: true,
 			width: 300,
 			height: 500,
 			title: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveManager_Title")
-		} as any);
-		return options;
+		}) as Application.Options;
 	}
 
 	getData(options?: any) {
-		let data = super.getData(options) as any;
+		let data = super.getData(options);
 		var messages = DFChatArchive.getLogs();
 		if (!game.user.isGM)
 			messages = messages.filter(x => x.visible);
@@ -93,7 +91,7 @@ export default class DFChatArchiveManager extends Application {
 
 	private async _archiveChanged() {
 		var logs = DFChatArchive.getLogs();
-		if(!game.user.isGM)
+		if (!game.user.isGM)
 			logs = logs.filter(x => x.visible);
 		const archiveContainer = this.element.find('#dfca-archives');
 		archiveContainer.empty();
