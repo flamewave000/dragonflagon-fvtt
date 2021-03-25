@@ -84,6 +84,7 @@
 	"DF_CHAT_LOG.Error_NoJournalSetGM": "There is no journal set for use as an Adventure Log. Use \"<code>/log config</code>\" to set one",
 	"DF_CHAT_LOG.Error_MissingQuote": "You are missing the closing quote for {0}",
 	"DF_CHAT_LOG.Error_MissingMessage": "You did not supply a message",
+	"DF_CHAT_LOG.Error_ApiLog_NotGm": "You must be a GM to log events to the GM Adventure Log",
 	"DF_CHAT_LOG.Log_Header": "Adventure Log",
 	"DF_CHAT_LOG.GMLog_Header": "GM Only Adventure Log",
 	"DF_CHAT_LOG.Log_Event": "<p><code><span class=\"dfal-ts\">{0}</span></code>&nbsp;(<span class=\"dfal-na\">{1}</span>)&nbsp;<span class=\"dfal-ev\">{2}</span></p>",

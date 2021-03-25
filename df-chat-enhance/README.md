@@ -71,6 +71,29 @@ Will output into the log
 
 > [2021-02-12 4:35PM] (Susan) Bobby McFerrin said: "Don't worry, be happy!"
 
+### Macro API
+
+You can post messages to the Adventure Logs using a custom Macro. To do so, simply use the following:
+
+```JavaScript
+// Log an Event to the Adventure Log
+AdventureLog.event("Something happened!")
+// (GM Only) Log an Event to the GM Adventure Log
+AdventureLog.gmevent("The players did something!")
+// Log a Quote to the Adventure Log
+AdventureLog.quote("Bob", "Don't worry, be happy!")
+// (GM Only) Log a Quote to the GM Adventure Log
+AdventureLog.gmquote("Bob", "Don't worry, be happy!")
+
+// If you want the event/quote posted to the chat, add "true" to the call
+AdventureLog.event("Something happened!", true)
+AdventureLog.quote("Bob", "Don't worry, be happy!", true)
+
+// (GM Only) GM logs will be whispered to yourself
+AdventureLog.gmevent("The players did something!", true)
+AdventureLog.gmquote("Bob", "Don't worry, be happy!", true)
+```
+
 ## Roll Selector Buttons ![Roll Types](../.assets/df-chat-enhance-privacy-roll-types.png)
 
 | Players | Game Masters |
