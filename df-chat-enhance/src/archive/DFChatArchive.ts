@@ -33,7 +33,7 @@ export class DFChatArchive {
 			scope: 'world',
 			config: false,
 			type: Object,
-			default: '[]',
+			default: [],
 			onChange: () => {
 				if (this._updateListener != null)
 					this._updateListener();
