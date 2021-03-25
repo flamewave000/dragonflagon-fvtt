@@ -140,7 +140,7 @@ export class DFChatArchive {
 			const file = new File([''], archive.filename, { type: 'application/json' });
 			return FilePicker.upload(this.DATA_FOLDER, folderPath, file, {});
 		}));
-		await SETTINGS.set(this.PREF_LOGS, logs);
+		await SETTINGS.set(this.PREF_LOGS, []);
 		if (this._updateListener != null)
 			this._updateListener();
 	}
