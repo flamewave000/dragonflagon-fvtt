@@ -1,5 +1,8 @@
 # DF Chat Enhancements
 
+## Release 3.0.1 (2021-03-26)
+- Hotfix: New data storage solution for Chat Archive had a couple hiccups. Should be fixed now. Thanks to [hmqgg](https://github.com/hmqgg) for making a swift fix for the issue.
+
 ## Release 3.0.0 (2021-03-24)
 - Converted chat log storage over to using physical files on the server to prevent settings database bloat. The initiali groundwork for this change is courtesy of [hmqgg](https://github.com/hmqgg).
 - Chinese Localization: courtesy of [hmqgg](https://github.com/hmqgg).
