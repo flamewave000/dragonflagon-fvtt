@@ -3,20 +3,12 @@ import GroupFilter from './GroupFilter.js';
 import { HotkeyConfig } from './HotkeyConfig.js';
 import {_Hotkeys } from './Hotkeys.js';
 import { KeyMap, HotkeySetting } from './Hotkeys.js';
-// This is mainly just to generate proper Type Definitions files
-// declare global {
-// 	export type GroupFilter = HotkeyConfigModule.GroupFilter;
-// 	export type Hotkeys = _Hotkeys;
-// 	export const Hotkeys: typeof _Hotkeys;
-// 	export type KeyMap = HotkeysModule.KeyMap;
-// 	export type HotkeyGroup = HotkeysModule.HotkeyGroup;
-// 	export type HotkeySetting = HotkeysModule.HotkeySetting;
-// }
-export const Hotkeys: typeof _Hotkeys = _Hotkeys;
+
 // Initialize Hotkeys on the global scope
+export const Hotkeys: typeof _Hotkeys = _Hotkeys;
 {
 	// @ts-expect-error
-	window.Hotkeys = HotkeysModule.Hotkeys;
+	window.Hotkeys = Hotkeys;
 	// @ts-expect-error
 	Hotkeys._init();
 	Hotkeys.showConfig = async function (title: string, filters: (string | RegExp | GroupFilter)[]) {
