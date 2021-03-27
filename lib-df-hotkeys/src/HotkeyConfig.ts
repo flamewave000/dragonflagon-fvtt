@@ -1,6 +1,9 @@
+import GroupFilter from "./GroupFilter.js";
+import { KeyMap, HotkeySetting, _Hotkeys } from "./Hotkeys.js";
 
 interface Options {
-	keys: { key: String, label: String }[]
+	title: string | undefined;
+	keys: { key: String, label: String }[];
 	groups: {
 		name: String,
 		label: String,
@@ -10,7 +13,7 @@ interface Options {
 			label: String,
 			map: KeyMap
 		}[]
-	}[]
+	}[];
 }
 
 interface SettingGroup {
@@ -20,8 +23,16 @@ interface SettingGroup {
 	items: HotkeySetting[]
 }
 
+function isGroupFilter(object: string | RegExp | GroupFilter): object is GroupFilter {
+	return object instanceof Object && 'group' in object && 'hotkeys' in object;
+}
+function isStringRegex(object: string | RegExp | GroupFilter): object is (string | RegExp) {
+	return typeof (object) === 'string' || object instanceof RegExp || object instanceof String;
+}
+
 export class HotkeyConfig extends FormApplication<Options> {
 	private static readonly PREF_MENU = "HotkeySettingsMenu";
+	private _filters: (string | RegExp | GroupFilter)[];
 
 
 	static get defaultOptions(): FormApplication.Options {
@@ -48,12 +59,48 @@ export class HotkeyConfig extends FormApplication<Options> {
 		});
 	}
 
+	constructor(titleOverride:string, filter?: (string | RegExp | GroupFilter)[]) {
+		super({}, {
+			title: titleOverride
+		});
+		this._filters = filter;
+	}
+
+	private _filterGroups(groups: SettingGroup[]): SettingGroup[] {
+		if (!this._filters || !(this._filters instanceof Array) || this._filters.length === 0) return groups;
+		// Start by filtering groups by name
+		return groups.filter(group => this._filters.some(pattern =>
+			isGroupFilter(pattern)
+				? group.name.match(pattern.group)
+				: group.name.match(pattern)))
+			.map(group => <SettingGroup>{
+				name: group.name,
+				description: group.description,
+				label: group.label,
+				items: group.items.filter(item => this._filters.some(pattern => {
+					if (isGroupFilter(pattern) && item.group.match(pattern.group) !== null) {
+						// If the groupFilter has no hotkey filters, auto-success
+						return pattern.hotkeys.length === 0
+							// If any of the hotkey patterns match
+							|| pattern.hotkeys.some(gfPattern => item.name.match(gfPattern) !== null);
+					}
+					// If we are a string/regex and the pattern matches the group name
+					else if (isStringRegex(pattern))
+						return item.group.match(pattern) !== null;
+					return false;
+				}))
+			});
+	}
+
 	getData(options?: Application.RenderOptions): Options {
 		return {
-			keys: Hotkeys.keys.entries,
+			title: !!this._filters ? this.options.title : undefined,
+			keys: _Hotkeys.keys.entries,
 			// @ts-expect-error
-			groups: [...(Hotkeys._settings as Map<String, SettingGroup>).values()]
+			groups: this._filterGroups([...Hotkeys._settings.values()])
+				// filter out empty groups
 				.filter(x => x.items.length > 0)
+				// map the group items into view data
 				.map(g => {
 					return {
 						name: g.name,
@@ -76,14 +123,12 @@ export class HotkeyConfig extends FormApplication<Options> {
 
 		// Process group settings
 		// @ts-expect-error
-		const settings = Hotkeys._settings as Map<String, SettingGroup>;
+		const settings = _Hotkeys._settings;
 		const groups = new Map<String, Map<String, HotkeySetting>>();
 		settings.forEach(x => groups.set(x.name, new Map(x.items.map(x => [x.name, x]))));
 
-		var key = '';
 		const saveData = new Map<String, Map<String, String[]>>();
 		for (let entry of Object.keys(formData)) {
-
 			const tokens = entry.split('.');
 			const group = saveData.has(tokens[0]) ? saveData.get(tokens[0]) : saveData.set(tokens[0], new Map()).get(tokens[0]);
 			const key = tokens.slice(1, tokens.length - 1).join('.');

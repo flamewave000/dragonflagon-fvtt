@@ -98,6 +98,7 @@ function generateTypings(entry, outputName, destination) {
 		.pipe(replace(/^\}\n?/mg, ''))
 		.pipe(replace(/^\t/mg, ''))
 		.pipe(replace(/^export (class|interface)/mg, 'declare $1'))
+		.pipe(replace(/^export default (class|interface)/mg, 'declare $1'))
 		.pipe(replace(/^\tprivate .+\n/mg, ''))
 		.pipe(gulp.dest(destination)));
 }

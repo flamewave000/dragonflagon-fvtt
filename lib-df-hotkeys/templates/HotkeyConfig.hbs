@@ -1,5 +1,6 @@
 <form>
-	<blockquote>{{{localize 'DF_HOTKEYS.Config_Warning'}}}</blockquote>
+	{{#if title}}<h1>{{title}}</h1>{{/if}}
+	{{#unless title}}<blockquote>{{{localize 'DF_HOTKEYS.Config_Warning'}}}</blockquote>{{/unless}}
 	{{#each groups as | group |}}
 	<h2>{{localize group.label}}</h2>
 	{{#if group.description}}
@@ -45,6 +46,8 @@
 	</table>
 	<br>
 	{{/each}}
+	{{#if title}}<blockquote>{{{localize 'DF_HOTKEYS.Config_Warning'}}}</blockquote>{{/if}}
+	{{#if title}}<i style="flex:0 0 100%;margin:1em 0">{{localize 'DF_HOTKEYS.Config_Provider'}}</i>{{/if}}
 	<button id="reset"><i class="fas fa-redo"></i> {{localize 'DF_HOTKEYS.Config_Reset'}}</button>
 	<button type="submit"><i class="fas fa-save"></i> {{localize 'DF_HOTKEYS.Config_Save'}}</button>
 </form>

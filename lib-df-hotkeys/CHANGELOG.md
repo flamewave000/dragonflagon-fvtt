@@ -1,5 +1,9 @@
 # DragonFlagon Hotkeys Library
 
+## Release 2.3.0 (2021-03-27)
+- Added ability to display your own filtered version of the Hotkeys Config menu.
+- Fixed some of the Type Definitions which were not generating well.
+
 ## Release 2.2.0 (2021-03-23)
 - Fix: Hotkeys were stealing input from elements that were made editable. These types of elements will now be handled the same as Input and TextArea elements.
 - Added: `onKeyDown` and `onKeyUp` will now receive the original keyboard events.

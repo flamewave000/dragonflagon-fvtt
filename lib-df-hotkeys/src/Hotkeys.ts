@@ -1,3 +1,4 @@
+import GroupFilter from "./GroupFilter.js";
 import { Keys } from "./Keys.js";
 import SETTINGS from "./Settings.js";
 
@@ -73,13 +74,14 @@ function printErrors(errors: string[]) {
 	console.error(errors.join(',\n') + '\n' + (new Error().stack));
 }
 
-export class Hotkeys {
+export class _Hotkeys {
 	private static readonly GENERAL = 'general';
 	private static _handlers = new Map<number, Map<String, HotkeySetting[]>>();
 	private static _handled = new Set<String>();
 	private static _settings = new Map<String, SettingGroup>();
 	private static _settingsNames = new Set<String>();
 	static readonly keys = new Keys();
+	static get isShim(): boolean { return false; }
 
 	private static _metaKey(event: KeyboardEvent): number {
 		return (event.altKey ? 0x1 : 0) | (event.ctrlKey ? 0x2 : 0) | (event.shiftKey ? 0x4 : 0);
@@ -144,8 +146,8 @@ export class Hotkeys {
 	private static _init() {
 		window.addEventListener("keydown", this._handleKeyDown.bind(this));
 		window.addEventListener("keyup", this._handleKeyUp.bind(this));
-		this._settings.set(Hotkeys.GENERAL, {
-			name: Hotkeys.GENERAL,
+		this._settings.set(_Hotkeys.GENERAL, {
+			name: _Hotkeys.GENERAL,
 			label: 'DF_HOTKEYS.GeneralGroup_Label',
 			description: '',
 			items: []
@@ -155,6 +157,23 @@ export class Hotkeys {
 		if (map.has(key)) return map.get(key);
 		map.set(key, defValue());
 		return map.get(key);
+	}
+
+	/**
+	 * Displays the HotkeyConfig settings but filters the options available to the ones defined by filter.
+	 * @param title The title for the menu window.
+	 * @param filters The filters to apply to the HotkeyConfig dialog.
+	 */
+	static async showConfig(title: string, filters: (string | RegExp | GroupFilter)[]) {
+		throw new Error("The Shim does not contain the HotkeysConfig application. Please only use this function when DF Hotkeys is activated.");
+	}
+	/**
+	 * Returns a specialized constructor for the HotkeyConfig settings with filtering.
+	 * @param title The title for the menu window.
+	 * @param filters The filters to apply to the HotkeyConfig dialog.
+	 */
+	static createConfig(title: string, filters: (string | RegExp | GroupFilter)[]): any {
+		throw new Error("The Shim does not contain the HotkeysConfig application. Please only use this function when DF Hotkeys is activated.");
 	}
 
 	/**
@@ -217,7 +236,7 @@ export class Hotkeys {
 		this._settingsNames.add(config.name);
 		// If there is no group defined, add it to the general group
 		if (!config.group)
-			config.group = Hotkeys.GENERAL;
+			config.group = _Hotkeys.GENERAL;
 		// Otherwise, if a custom group is added, verify that it exists
 		else if (!this._settings.has(config.group)) {
 			if (throwOnFail) throw Error(`Hotkeys.registerShortcut(): '${config.group}' group does not exist. Please make sure you call Hotkeys.registerGroup() before adding hotkeys for a custom group.`);

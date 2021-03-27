@@ -1,23 +1,46 @@
 // Import and declare the classes/interfaces Global
-import * as HotkeysModule from './Hotkeys.js';
+import GroupFilter from './GroupFilter.js';
+import { HotkeyConfig } from './HotkeyConfig.js';
+import {_Hotkeys } from './Hotkeys.js';
+import { KeyMap, HotkeySetting } from './Hotkeys.js';
 // This is mainly just to generate proper Type Definitions files
-declare global {
-	export type Hotkeys = HotkeysModule.Hotkeys;
-	export const Hotkeys: typeof HotkeysModule.Hotkeys;
-	export type KeyMap = HotkeysModule.KeyMap;
-	export type HotkeyGroup = HotkeysModule.HotkeyGroup;
-	export type HotkeySetting = HotkeysModule.HotkeySetting;
-}
+// declare global {
+// 	export type GroupFilter = HotkeyConfigModule.GroupFilter;
+// 	export type Hotkeys = _Hotkeys;
+// 	export const Hotkeys: typeof _Hotkeys;
+// 	export type KeyMap = HotkeysModule.KeyMap;
+// 	export type HotkeyGroup = HotkeysModule.HotkeyGroup;
+// 	export type HotkeySetting = HotkeysModule.HotkeySetting;
+// }
+export const Hotkeys: typeof _Hotkeys = _Hotkeys;
 // Initialize Hotkeys on the global scope
 {
 	// @ts-expect-error
 	window.Hotkeys = HotkeysModule.Hotkeys;
 	// @ts-expect-error
 	Hotkeys._init();
+	Hotkeys.showConfig = async function (title: string, filters: (string | RegExp | GroupFilter)[]) {
+		if (!title || title === '')
+			throw new Error('You must provide a title for the config menu');
+		if (!filters || filters.length === 0)
+			throw new Error('You must provide at least one filter');
+		const config = new HotkeyConfig(title, filters);
+		await config.render(true);
+	}
+	Hotkeys.createConfig = function (title: string, filters: (string | RegExp | GroupFilter)[]) {
+		if (!title || title === '')
+			throw new Error('You must provide a title for the config menu');
+		if (!filters || filters.length === 0)
+			throw new Error('You must provide at least one filter');
+		return class Sepcialized extends HotkeyConfig {
+			constructor() {
+				super(title, filters);
+			}
+		};
+	}
 }
 
 
-import { HotkeyConfig } from './HotkeyConfig.js';
 import SETTINGS from './Settings.js';
 // Initializes the SETTINGS helper with the name of this module
 SETTINGS.init('lib-df-hotkeys')
