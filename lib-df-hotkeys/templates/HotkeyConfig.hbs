@@ -19,7 +19,7 @@
 			<tr>
 				<td>{{localize item.label}}</td>
 				<td>
-					<select name="{{group.name}}.{{item.name}}.key" data-dtype="String">
+					<select name="{{group.name}}::{{item.name}}::key" data-dtype="String">
 						<option value="">---</option>
 						{{#each ../../keys}}
 						<option value="{{key}}" {{#if (eq key item.map.key)}} selected{{/if}}>{{localize label}}</option>
@@ -29,15 +29,15 @@
 				<td>
 					<label>
 						<span>Shift</span>
-						<input type="checkbox" name="{{group.name}}.{{item.name}}.shift" {{#if item.map.shift}}checked{{/if}} />
+						<input type="checkbox" name="{{group.name}}::{{item.name}}::shift" {{#if item.map.shift}}checked{{/if}} />
 					</label>
 					<label>
 						<span>Ctrl</span>
-						<input type="checkbox" name="{{group.name}}.{{item.name}}.ctrl" {{#if item.map.ctrl}}checked{{/if}} />
+						<input type="checkbox" name="{{group.name}}::{{item.name}}::ctrl" {{#if item.map.ctrl}}checked{{/if}} />
 					</label>
 					<label>
 						<span>Alt</span>
-						<input type="checkbox" name="{{group.name}}.{{item.name}}.alt" {{#if item.map.alt}}checked{{/if}} />
+						<input type="checkbox" name="{{group.name}}::{{item.name}}::alt" {{#if item.map.alt}}checked{{/if}} />
 					</label>
 				</td>
 			</tr>

@@ -189,6 +189,8 @@ export class _Hotkeys {
 		// Validate our data structure
 		if (typeof (config.name) !== 'string' && !(config.name instanceof String))
 			errors.push('Hotkeys.registerShortcut(): config.name must be a string!');
+		if (config.name.includes('::'))
+			errors.push('Hotkeys.registerShortcut(): config.name cannot contain "::"');
 		if (typeof (config.label) !== 'string' && !(config.label instanceof String))
 			errors.push('Hotkeys.registerShortcut(): config.label must be a string!');
 		if (config.group !== undefined && config.group !== null && typeof (config.group) !== 'string' && !(config.group instanceof String))
@@ -295,6 +297,8 @@ export class _Hotkeys {
 		const errors: string[] = [];
 		if (typeof (group.name) !== 'string' && !(group.name instanceof String))
 			errors.push('Hotkeys.registerGroup(): group.name must be a string!');
+		if (group.name.includes('::'))
+			errors.push('Hotkeys.registerGroup(): group.name cannot contain "::"');
 		if (typeof (group.label) !== 'string' && !(group.label instanceof String))
 			errors.push('Hotkeys.registerGroup(): group.label must be a string!');
 		if (group.description !== undefined && group.description !== null && typeof (group.description) !== 'string' && !(group.description instanceof String))

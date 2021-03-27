@@ -1,7 +1,7 @@
 // Import and declare the classes/interfaces Global
 import GroupFilter from './GroupFilter.js';
 import { HotkeyConfig } from './HotkeyConfig.js';
-import {_Hotkeys } from './Hotkeys.js';
+import { _Hotkeys } from './Hotkeys.js';
 import { KeyMap, HotkeySetting } from './Hotkeys.js';
 
 // Initialize Hotkeys on the global scope
@@ -59,6 +59,19 @@ Hooks.once('init', function () {
 		default: () => SETTINGS.default(PREF_SELECT),
 		onKeyDown: (self: HotkeySetting) =>
 			(<any>ui.controls)._onClickTool({ preventDefault: () => { }, currentTarget: { dataset: { tool: PREF_SELECT } } }),
+	});
+
+	Hotkeys.registerGroup({
+		name: 'monks-little-details.tool-swap',
+		label: 'Monks Litle Details, Tool Swap',
+		description: 'Use these keys to swap between tools'
+	});
+	Hotkeys.registerShortcut({
+		name: 'monks-little-details.change-token-control',
+		label: 'Change To Token Layer',
+		group: 'monks-little-details.tool-swap',
+		default: { key: Hotkeys.keys.KeyG, alt: false, ctrl: false, shift: true },
+		onKeyDown: (e) => { console.log('test'); }
 	});
 
 
@@ -129,7 +142,7 @@ Hooks.once('init', function () {
 	// 	get: () => SETTINGS.get<KeyMap>('test3'),
 	// 	set: async (value: KeyMap) => await SETTINGS.set('test3', value),
 	// 	default: () => SETTINGS.default('test3'),
-	// 	onKeyDown: (self: HotkeySetting, repeat: boolean) => {
+	// 	onKeyDown: (self: HotkeySetting, event: KeyboardEvent, repeat: boolean) => {
 	// 		console.log(`You hit Alt + 3 exactly ${++count} ${count > 1 ? 'times' : 'time'}, repeat flag: ${repeat}`)
 	// 	},
 	// });

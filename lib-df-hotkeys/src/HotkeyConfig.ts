@@ -129,9 +129,9 @@ export class HotkeyConfig extends FormApplication<Options> {
 
 		const saveData = new Map<String, Map<String, String[]>>();
 		for (let entry of Object.keys(formData)) {
-			const tokens = entry.split('.');
+			const tokens = entry.split('::');
 			const group = saveData.has(tokens[0]) ? saveData.get(tokens[0]) : saveData.set(tokens[0], new Map()).get(tokens[0]);
-			const key = tokens.slice(1, tokens.length - 1).join('.');
+			const key = tokens[1];
 			const item = group.has(key) ? group.get(key) : group.set(key, []).get(key);
 			item.push(tokens[tokens.length - 1]);
 		}
@@ -147,7 +147,7 @@ export class HotkeyConfig extends FormApplication<Options> {
 					continue;
 				}
 				const item = group.get(itemName);
-				const rootKey: string = `${groupName}.${itemName}.`;
+				const rootKey: string = `${groupName}::${itemName}::`;
 				const keyMap: Partial<KeyMap> = {
 					key: formData[rootKey + 'key'],
 					alt: formData[rootKey + 'alt'],
@@ -169,14 +169,14 @@ export class HotkeyConfig extends FormApplication<Options> {
 		html.find('#reset').on('click', (e) => {
 			e.preventDefault();
 			// @ts-expect-error
-			const groups = [...(Hotkeys._settings as Map<String, SettingGroup>).values()].filter(x => x.items.length > 0);
+			const groups = this._filterGroups([..._Hotkeys._settings.values()]).filter(x => x.items.length > 0);
 			for (let group of groups) {
 				group.items.forEach(x => {
 					const defValue = x.default instanceof Function ? x.default() : x.default;
-					$(`#DFHotkeyConfig select[name="${group.name}.${x.name}.key"]`).val(defValue.key.toString());
-					($(`#DFHotkeyConfig input[name="${group.name}.${x.name}.alt"]`)[0] as HTMLInputElement).checked = defValue.alt;
-					($(`#DFHotkeyConfig input[name="${group.name}.${x.name}.ctrl"]`)[0] as HTMLInputElement).checked = defValue.ctrl;
-					($(`#DFHotkeyConfig input[name="${group.name}.${x.name}.shift"]`)[0] as HTMLInputElement).checked = defValue.shift;
+					$(`#DFHotkeyConfig select[name="${group.name}::${x.name}::key"]`).val(defValue.key.toString());
+					($(`#DFHotkeyConfig input[name="${group.name}::${x.name}::alt"]`)[0] as HTMLInputElement).checked = defValue.alt;
+					($(`#DFHotkeyConfig input[name="${group.name}::${x.name}::ctrl"]`)[0] as HTMLInputElement).checked = defValue.ctrl;
+					($(`#DFHotkeyConfig input[name="${group.name}::${x.name}::shift"]`)[0] as HTMLInputElement).checked = defValue.shift;
 				});
 			}
 		});
