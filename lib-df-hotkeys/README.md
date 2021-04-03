@@ -61,7 +61,7 @@ Hooks.once('ready', function() {
 
 ### For TypeScript Projects
 
-You will find the Typing Definitions file `lib-df-hotkeys.d.ts` in the [latest release](https://github.com/flamewave000/dragonflagon-fvtt/releases/tag/lib-df-hotkeys_2.3.2) that you can include in your project.
+You will find the Typing Definitions file `lib-df-hotkeys.d.ts` in the [latest release](https://github.com/flamewave000/dragonflagon-fvtt/releases/tag/lib-df-hotkeys_2.3.3) that you can include in your project.
 
 ---
 
@@ -317,7 +317,7 @@ class Hotkeys {
 If you reeeeaaaallly don't want to add a dependency to your module manifest, you can include the generated Shim into any module. What this shim does is provide the core functionality of the Hotkeys Library. This means you can register hotkeys and such as normal, but the difference is that users will not be able to customize the assigned hotkeys. It will also perfectly integrate into the actual Hotkeys module as well. It does this by first checking if Hotkeys already exists in the Global namespace. If it does exist, it will simply return a reference to that global Hotkeys library definition. Otherwise, it will return the shim version.
 
 First you need to add the shim file `lib-df-hotkeys.shim.js` to your project.
-You will find this file in the latest release for [Library: DF Hotkeys](https://github.com/flamewave000/dragonflagon-fvtt/releases/tag/lib-df-hotkeys_2.3.2)
+You will find this file in the latest release for [Library: DF Hotkeys](https://github.com/flamewave000/dragonflagon-fvtt/releases/tag/lib-df-hotkeys_2.3.3)
 
 Next you will need to simply import the hotkeys shim in which ever JavaScript/TypeScript module files you intend to use it.
 
@@ -349,6 +349,6 @@ Hooks.once('init', function() {
 ### For the Fellow TypeScript Devs
 
 There is also a Type Definition file for the Shim that you can include in your project to get those delicious typings!
-You will find this file (`lib-df-hotkeys.shim.d.ts`) in the latest release for [Library: DF Hotkeys](https://github.com/flamewave000/dragonflagon-fvtt/releases/tag/lib-df-hotkeys_2.3.2)
+You will find this file (`lib-df-hotkeys.shim.d.ts`) in the latest release for [Library: DF Hotkeys](https://github.com/flamewave000/dragonflagon-fvtt/releases/tag/lib-df-hotkeys_2.3.3)
 
 [top](#For-Module-Developers)

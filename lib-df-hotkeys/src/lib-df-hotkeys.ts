@@ -61,20 +61,6 @@ Hooks.once('init', function () {
 			(<any>ui.controls)._onClickTool({ preventDefault: () => { }, currentTarget: { dataset: { tool: PREF_SELECT } } }),
 	});
 
-	Hotkeys.registerGroup({
-		name: 'monks-little-details.tool-swap',
-		label: 'Monks Litle Details, Tool Swap',
-		description: 'Use these keys to swap between tools'
-	});
-	Hotkeys.registerShortcut({
-		name: 'monks-little-details.change-token-control',
-		label: 'Change To Token Layer',
-		group: 'monks-little-details.tool-swap',
-		default: { key: Hotkeys.keys.KeyG, alt: false, ctrl: false, shift: true },
-		onKeyDown: (e) => { console.log('test'); }
-	});
-
-
 	// #region ****** Demo Hotkeys ******
 	// SETTINGS.register<KeyMap>('test1', {
 	// 	scope: 'world',

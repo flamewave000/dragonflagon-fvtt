@@ -1,5 +1,8 @@
 # DragonFlagon Hotkeys Library
 
+## Release 2.3.3 (2021-04-03)
+- Removed some code that was accidentally left in after testing an issue for a user.
+
 ## Release 2.3.2 (2021-03-27)
 - Fixed issue with resetting settings from a custom config.
 - Corrected issue with groups having a period '.' in the name. Group and Hotkey names cannot contain '::' as it is used as a delimiter in the HTML input field names.
