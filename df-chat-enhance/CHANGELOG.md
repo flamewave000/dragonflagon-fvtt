@@ -1,5 +1,13 @@
 # DF Chat Enhancements
 
+## Release 3.0.1 (2021-03-26)
+- Hotfix: New data storage solution for Chat Archive had a couple hiccups. Should be fixed now. Thanks to [hmqgg](https://github.com/hmqgg) for making a swift fix for the issue.
+
+## Release 3.0.0 (2021-03-24)
+- Converted chat log storage over to using physical files on the server to prevent settings database bloat. The initiali groundwork for this change is courtesy of [hmqgg](https://github.com/hmqgg).
+- Chinese Localization: courtesy of [hmqgg](https://github.com/hmqgg).
+- Exposed Adventure Log as an API that will allow users to log events via Macros.
+
 ## Release 2.1.0 (2021-03-11)
 - Added Portuguese (Brazil) localisations courtesy of [Brn086](https://github.com/Brn086) and [Matheus Clemente](https://github.com/mclemente)
 - Added sort option to Adventure Log so you can invert the direction of the line items.

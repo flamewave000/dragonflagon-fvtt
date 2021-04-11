@@ -2,9 +2,10 @@ import DFChatArchiveNew from "./DFChatArchiveNew.js";
 import DFChatArchiveManager from "./DFChatArchiveManager.js";
 import { DFChatArchive } from "./DFChatArchive.js";
 import CONFIG from "../CONFIG.js";
+import SETTINGS from "../SETTINGS.js";
 
 
-export default function initDFChatArchive() {
+export function init() {
 
 	var archiveNew: DFChatArchiveNew = null;
 	var archiveManager: DFChatArchiveManager = null;
@@ -12,7 +13,7 @@ export default function initDFChatArchive() {
 	DFChatArchive.registerSettings();
 	DFChatArchiveNew.registerSettings();
 
-	game.settings.register(CONFIG.MOD_NAME, DFChatArchiveNew.PREF_HIDE_EXPORT, {
+	SETTINGS.register(DFChatArchiveNew.PREF_HIDE_EXPORT, {
 		name: 'DF_CHAT_ARCHIVE.Settings_HideExport',
 		scope: 'world',
 		type: Boolean,
@@ -65,4 +66,9 @@ export default function initDFChatArchive() {
 	Hooks.on(`renderDFChatArchiveNew`, function (app: any, html: JQuery, data: any) {
 		html.find('input[type="text"]')[0].focus();
 	});
+}
+
+export function ready() {
+	// Fire and forget.
+	DFChatArchive.upgradeFromDatabaseEntries();
 }

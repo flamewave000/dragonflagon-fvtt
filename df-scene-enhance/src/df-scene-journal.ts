@@ -12,7 +12,7 @@ declare interface DataSet {
 	id: string;
 }
 
-class DFSceneJournal {
+export default class DFSceneJournal {
 	static MODULE = 'df-scene-enhance';
 	static ON_CLICK_JOURNAL = 'nav-on-click-journal';
 	static ON_CLICK_JOURNAL_ONLY_ONE = 'nav-on-click-journal-only-one';
@@ -74,43 +74,17 @@ class DFSceneJournal {
 	 * modified for `Target 2` to display a dialog for navigation.
 	 */
 	static async onClickEntityLink(event: JQuery.ClickEvent) {
-		event.preventDefault();
-		const a: EventTarget = event.currentTarget;
-		const dataset: DataSet = (a as any).dataset;
-		let entity = null;
-
-		// Target 1 - Compendium Link
-		if (dataset.pack) {
-			const pack = game.packs.get(dataset.pack);
-			let id = dataset.id;
-			if (dataset.lookup) {
-				if (!pack.index.length) await pack.getIndex();
-				const entry = pack.index.find(i => (i._id === dataset.lookup) || (i.name === dataset.lookup));
-				id = entry._id;
-			}
-			entity = id ? await pack.getEntity(id) : null;
-		}
-
-		// Target 2 - World Entity Link MODIFIED SECTION
-		else {
-			const cls = (CONFIG[dataset.entity] as any).entityClass;
-			entity = cls.collection.get(dataset.id);
+		const dataset: DataSet = event.currentTarget.dataset;
+		if (!dataset.pack) {
+			const cls = (<any>CONFIG[dataset.entity]).entityClass;
+			const entity = cls.collection.get(dataset.id);
 			if (entity.entity === "Scene") {
+				event.preventDefault();
 				return DFSceneJournal.displayDialog(entity);
 			}
 		}
-		if (!entity) return;
-
-		// Action 1 - Execute an Action
-		if (entity.entity === "Macro") {
-			if (!entity.hasPerm(game.user, "LIMITED")) {
-				return ui.notifications.warn(`You do not have permission to use this ${entity.entity}.`);
-			}
-			return entity.execute();
-		}
-
-		// Action 2 - Render the Entity sheet
-		return entity.sheet.render(true);
+		// @ts-ignore
+		return TextEditor._onClickEntityLink(event);
 	}
 
 	static patchTextEditor(newValue?: Boolean) {
@@ -128,28 +102,28 @@ class DFSceneJournal {
 			body.on("click", "a.entity-link", (TextEditor as any)._onClickEntityLink);
 		}
 	}
+
+	static init() {
+		game.settings.register(DFSceneJournal.MODULE, DFSceneJournal.ON_CLICK_JOURNAL, {
+			name: "DRAGON_FLAGON.Nav_SettingOnClickJournal",
+			hint: "DRAGON_FLAGON.Nav_SettingOnClickJournalHint",
+			scope: "world",
+			config: true,
+			type: Boolean,
+			default: true,
+			onChange: value => DFSceneJournal.patchTextEditor(value)
+		});
+		game.settings.register(DFSceneJournal.MODULE, DFSceneJournal.ON_CLICK_JOURNAL_ONLY_ONE, {
+			name: "DRAGON_FLAGON.Nav_SettingOnClickJournalOnlyOne",
+			hint: "DRAGON_FLAGON.Nav_SettingOnClickJournalOnlyOneHint",
+			scope: "scene",
+			config: true,
+			type: Boolean,
+			default: false
+		});
+	}
+
+	static ready() {
+		DFSceneJournal.patchTextEditor();
+	}
 }
-
-Hooks.once('init', function () {
-	game.settings.register(DFSceneJournal.MODULE, DFSceneJournal.ON_CLICK_JOURNAL, {
-		name: "DRAGON_FLAGON.Nav_SettingOnClickJournal",
-		hint: "DRAGON_FLAGON.Nav_SettingOnClickJournalHint",
-		scope: "world",
-		config: true,
-		type: Boolean,
-		default: true,
-		onChange: value => DFSceneJournal.patchTextEditor(value)
-	});
-	game.settings.register(DFSceneJournal.MODULE, DFSceneJournal.ON_CLICK_JOURNAL_ONLY_ONE, {
-		name: "DRAGON_FLAGON.Nav_SettingOnClickJournalOnlyOne",
-		hint: "DRAGON_FLAGON.Nav_SettingOnClickJournalOnlyOneHint",
-		scope: "scene",
-		config: true,
-		type: Boolean,
-		default: false
-	});
-});
-
-Hooks.on('ready', function () {
-	DFSceneJournal.patchTextEditor();
-});

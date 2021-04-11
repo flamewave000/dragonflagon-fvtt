@@ -19,10 +19,61 @@
 	padding: 6px;
 	display: inline-block;
 }
+
 .df-settings-clarity-tooltip img {
 	width: 20px;
 	height: 32px;
 	top: 12.5px;
 	border: none;
 	position: relative;
+}
+
+#dfsc_search {
+	margin: 1em 0;
+	flex: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	border: 1px solid rgba(0, 0, 0, .3);
+	border-radius: 3px;
+	height: 34px;
+	margin-right: 2px;
+	margin-bottom: 16px;
+}
+
+#dfsc_search>input {
+	outline: none;
+	padding: 0 38px 0 8px;
+	height: 100%;
+	border: none;
+	border-radius: 3px;
+}
+
+#dfsc_search>button {
+	display: flex;
+	position: absolute;
+	right: 8px;
+	top: 50%;
+	transform: translate(0, -50%);
+	width: 24px;
+	height: 24px;
+	justify-content: center;
+	align-items: center;
+	border: none;
+	border-radius: 50%;
+	padding: 0;
+	margin: 0;
+}
+#dfsc_search>button>i {
+	margin: 0;
+}
+
+#dfsc_search.tidy-ui {
+	margin: -8px 0 16px 0;
+}
+
+.settings-list b {
+	background: yellow;
+	color: black;
 }

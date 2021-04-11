@@ -4,9 +4,15 @@
 	"description": "{{description}}",
 	"version": "{{version}}",
 	"author": "flamewave000#6766",
-	"minimumCoreVersion": "0.7.5",
+	"minimumCoreVersion": "0.7.9",
 	"compatibleCoreVersion": "0.7.9",
-	"dependencies": [ { "name": "lib-wrapper" } ],
+	"dependencies": [
+		{ "name": "lib-wrapper" },
+		{
+			"name": "lib-df-hotkeys",
+			"manifest": "https://dragonflagon.cafe/mods/man/lib-df-hotkeys"
+		}
+	],
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [

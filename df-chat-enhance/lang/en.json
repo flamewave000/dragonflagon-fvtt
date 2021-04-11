@@ -41,9 +41,10 @@
 	"DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Title": "Edit Archive Name",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Save": "Save name",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Cancel": "Cancel",
+	"DF_CHAT_ARCHIVE.ArchiveViewer_SaveChanges": "Save Deletions",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Visible": "Visible to players",
-	"DF_CHAT_ARCHIVE.ArchiveViewer_DeleteTitle": "Delete Archived Message",
-	"DF_CHAT_ARCHIVE.ArchiveViewer_DeleteContent": "Are you sure you wish to delete this message?",
+	"DF_CHAT_ARCHIVE.ArchiveViewer_DeleteTitle": "Delete Archived Messages",
+	"DF_CHAT_ARCHIVE.ArchiveViewer_DeleteContent": "Are you sure you wish to apply all previous deletion?",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Print": "Print this chat archive",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Merge": "Merge an archive into this one",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Title": "Merge Chat Archive",
@@ -52,6 +53,7 @@
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Cancel": "Cancel",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Merge": "Merge",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Merge_OnlyOneArchive": "There are no other archives available for merging",
+	"DF_CHAT_ARCHIVE.ArchiveViewer_Error_Delete_All":"Cannot delete all of the chats in an Archive. If you wish to delete an archive, please do so from the Archive Manager.",
 
 
 	
@@ -82,6 +84,7 @@
 	"DF_CHAT_LOG.Error_NoJournalSetGM": "There is no journal set for use as an Adventure Log. Use \"<code>/log config</code>\" to set one",
 	"DF_CHAT_LOG.Error_MissingQuote": "You are missing the closing quote for {0}",
 	"DF_CHAT_LOG.Error_MissingMessage": "You did not supply a message",
+	"DF_CHAT_LOG.Error_ApiLog_NotGm": "You must be a GM to log events to the GM Adventure Log",
 	"DF_CHAT_LOG.Log_Header": "Adventure Log",
 	"DF_CHAT_LOG.GMLog_Header": "GM Only Adventure Log",
 	"DF_CHAT_LOG.Log_Event": "<p><code><span class=\"dfal-ts\">{0}</span></code>&nbsp;(<span class=\"dfal-na\">{1}</span>)&nbsp;<span class=\"dfal-ev\">{2}</span></p>",

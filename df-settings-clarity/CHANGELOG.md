@@ -1,5 +1,12 @@
 # DF Settings Clarity
 
+## Release 3.1.0 (2021-03-22)
+- Added a coloured indicator to the left of results that show how strong the match is compared to the others. Green is the best match, Red is the worst, colours inbetween green and red lay somewhere inbetween best and worst.
+- Adjusted search strictness. Now it goes from strict to lax as you add text. Fewer letters require a more perfect match, while a lot of text requires a much more relaxed match.
+
+## Release 3.0.0 (2021-03-21)
+- New Fuzzy Search for module settings!
+
 ## Release 2.1.4 (2021-02-22)
 - If a setting/menu does not have the `scope` or `restriction` flag set, it will now default to `client`.
 

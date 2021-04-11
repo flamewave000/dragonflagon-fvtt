@@ -2,6 +2,12 @@ import CONFIG from "../CONFIG.js";
 import DFChatEditor from './DFChatEditor.js';
 
 
+declare global {
+	interface ChatMessage {
+		chatEditor: DFChatEditor
+	}
+}
+
 const PREF_EDIT_ALLOWED = 'edit-allowed';
 const PREF_GM_ALL = 'gm-edit-all';
 
@@ -37,7 +43,7 @@ export default function initDFChatEdit() {
 		// We have used the Shift+Up combo to edit previously sent message
 		if (code === "ArrowUp" && event.shiftKey) {
 			event.preventDefault();
-			var messages = [...((ui.chat as any).collection as Map<string, ChatMessage>).values()];
+			var messages = [...(ui.chat.collection as Map<string, ChatMessage>).values()];
 			// Perform an inverted sort ( n<0 before, n=0 same, n>0 after )
 			messages = messages.sort((a, b) => b.data.timestamp - a.data.timestamp);
 			const message = messages.find(x => x.data.user === game.user.id);
@@ -58,11 +64,11 @@ function editChatMessage(this: ChatMessage) {
 		processAllMessages();
 		return;
 	}
-	if (!!(this as any).chatEditor) {
-		(this as any).chatEditor.bringToTop();
+	if (!!this.chatEditor) {
+		this.chatEditor.bringToTop();
 	} else {
-		(this as any).chatEditor = new DFChatEditor(this);
-		(this as any).chatEditor.render(true);
+		this.chatEditor = new DFChatEditor(this);
+		this.chatEditor.render(true);
 	}
 }
 
@@ -77,7 +83,7 @@ function processAllMessages() {
 
 function processChatMessage(chatMessage: ChatMessage, html: JQuery<HTMLElement>, data: any) {
 	// If we are catching the render of an archived message
-	if(!((ui.chat as any).collection as Map<string, ChatMessage>).has(chatMessage.id))
+	if(!(ui.chat.collection as Map<string, ChatMessage>).has(chatMessage.id))
 		return;
 	// If an edit button has already been placed
 	if (html.find('a.button.message-edit').length != 0) {

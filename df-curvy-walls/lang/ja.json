@@ -1,7 +1,9 @@
 {
+	"df-curvy-walls.errorLibWrapperMissing": "「DF Curvy Walls」には「libWrapper」モジュールが必要です。「libWrapper」をインストールして有効にしてください。",
 	"df-curvy-walls.cubic": "3次ベジェ曲線",
 	"df-curvy-walls.quadratic": "2次ベジェ曲線",
 	"df-curvy-walls.circle": "楕円曲線",
+	"df-curvy-walls.rectangle": "矩形",
 	"df-curvy-walls.increment": "セグメントを増やす",
 	"df-curvy-walls.decrement": "セグメントを減らす",
 	"df-curvy-walls.apply": "レイヤーに壁を適用する",

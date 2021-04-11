@@ -1,4 +1,4 @@
-class DFSceneNav {
+export default class DFSceneNav {
 	static MODULE = 'df-scene-enhance';
 	static ON_CLICK = 'nav-on-click';
 	static ON_CLICK_PLAYER = 'nav-on-click-player';
@@ -93,36 +93,35 @@ class DFSceneNav {
 			}
 		});
 	}
+	static init() {
+		game.settings.register(DFSceneNav.MODULE, DFSceneNav.ON_CLICK, {
+			name: "DRAGON_FLAGON.Nav_SettingOnClick",
+			hint: "DRAGON_FLAGON.Nav_SettingOnClickHint",
+			scope: "world",
+			config: true,
+			type: Boolean,
+			default: true,
+			onChange: value => DFSceneNav.patchSceneDirectoryClick(value, false)
+		});
+		game.settings.register(DFSceneNav.MODULE, DFSceneNav.ON_CLICK_PLAYER, {
+			name: "DRAGON_FLAGON.Nav_SettingOnClickPC",
+			hint: "DRAGON_FLAGON.Nav_SettingOnClickPCHint",
+			scope: "world",
+			config: true,
+			type: Boolean,
+			default: true,
+			onChange: value => DFSceneNav.patchSceneDirectoryClick(value, true)
+		});
+
+		Handlebars.registerHelper('dfCheck', function (scene) {
+			return ((game.user && game.user.isGM) || !scene.data.navName) ? scene.data.name : scene.data.navName;
+		})
+
+		DFSceneNav.patchSceneDirectory();
+		DFSceneNav.patchSidebar();
+	}
+
+	static ready() {
+		DFSceneNav.patchSceneDirectoryClick();
+	}
 }
-
-Hooks.once('init', function () {
-	game.settings.register(DFSceneNav.MODULE, DFSceneNav.ON_CLICK, {
-		name: "DRAGON_FLAGON.Nav_SettingOnClick",
-		hint: "DRAGON_FLAGON.Nav_SettingOnClickHint",
-		scope: "world",
-		config: true,
-		type: Boolean,
-		default: true,
-		onChange: value => DFSceneNav.patchSceneDirectoryClick(value, false)
-	});
-	game.settings.register(DFSceneNav.MODULE, DFSceneNav.ON_CLICK_PLAYER, {
-		name: "DRAGON_FLAGON.Nav_SettingOnClickPC",
-		hint: "DRAGON_FLAGON.Nav_SettingOnClickPCHint",
-		scope: "world",
-		config: true,
-		type: Boolean,
-		default: true,
-		onChange: value => DFSceneNav.patchSceneDirectoryClick(value, true)
-	});
-
-	Handlebars.registerHelper('dfCheck', function (scene) {
-		return ((game.user && game.user.isGM) || !scene.data.navName) ? scene.data.name : scene.data.navName;
-	})
-
-	DFSceneNav.patchSceneDirectory();
-	DFSceneNav.patchSidebar();
-});
-
-Hooks.on('ready', function () {
-	DFSceneNav.patchSceneDirectoryClick();
-});

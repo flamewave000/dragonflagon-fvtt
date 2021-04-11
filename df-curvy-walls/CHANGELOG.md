@@ -1,5 +1,13 @@
 # DF Curvy Walls
 
+## Release 2.1.1 (2021-03-23)
+- Updated Hotkeys shim and added hard dependency for the library.
+- Japanese Locale update courtesy of Touge, Brother Sharp.
+
+## Release 2.1.0 (2021-03-18)
+- Added soft-dependency on Library: DF Hotkeys using its new Shim.
+- Spanish localization update courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
+
 ## Release 2.0.0 (2021-03-17)
 - Fixed Memory Issues! I was not managing my PIXI graphics properly, but now it is much more efficient and no longer causes memory leaks.
 - NEW! Rectangle Tool. You can now draw rectangles that allow you to increment/decrement the number of segments on each side.

@@ -1,12 +1,18 @@
 import CONFIG from "../CONFIG.js";
 
 
-const ICONS_FOR_KNOWN_ROLL_TYPES = {
-	'roll': 'fas fa-dice-d20',
-	'gmroll': 'fas fa-user-secret',
-	'blindroll': 'fas fa-user-ninja',
-	'selfroll': 'fas fa-ghost'
-} as any;
+const ICONS_FOR_KNOWN_ROLL_TYPES: {
+	[key: string]: string;
+	roll: string;
+	gmroll: string;
+	blindroll: string;
+	selfroll: string;
+} = {
+	roll: 'fas fa-dice-d20',
+	gmroll: 'fas fa-user-secret',
+	blindroll: 'fas fa-user-ninja',
+	selfroll: 'fas fa-ghost'
+};
 
 function calcColour(current: number, count: number): string {
 	return `rgb(${(current / count) * 255},${(1 - (current / count)) * 255},0)`;
@@ -47,7 +53,7 @@ async function handleChatLogRendering(chat: ChatLog, html: JQuery<HTMLElement>, 
 	html.find('select.roll-type-select').after(buttonHtml);
 	html.find('select.roll-type-select').remove();
 
-	if(!game.settings.get(CONFIG.MOD_NAME, 'replace-buttons'))
+	if (!game.settings.get(CONFIG.MOD_NAME, 'replace-buttons'))
 		return;
 
 	// Adjust the button container to remove the extra margin since those buttons are now moving in.

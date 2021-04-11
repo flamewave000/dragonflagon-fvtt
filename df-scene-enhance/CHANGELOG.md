@@ -1,5 +1,8 @@
 # DF Scene Enhancement Changes
 
+## Release 3.3.3 (2021-03-30)
+- Fixed a permissions issue with Journal entity links.
+
 ## Release 3.3.2 (2021-02-17)
 - Fixed reported conflict with the module "Calendar/Weather"
 

@@ -1,23 +1,42 @@
 // Import and declare the classes/interfaces Global
-import * as HotkeysModule from './Hotkeys.js';
-// This is mainly just to generate proper Type Definitions files
-declare global {
-	export type Hotkeys = HotkeysModule.Hotkeys;
-	export const Hotkeys: typeof HotkeysModule.Hotkeys;
-	export type KeyMap = HotkeysModule.KeyMap;
-	export type HotkeyGroup = HotkeysModule.HotkeyGroup;
-	export type HotkeySetting = HotkeysModule.HotkeySetting;
-}
-// Initialize Hotkeys on the global scope
-{
-	(<any>window).Hotkeys = HotkeysModule.Hotkeys;
-	(<any>Hotkeys)._init();
-}
-
-
+import GroupFilter from './GroupFilter.js';
 import { HotkeyConfig } from './HotkeyConfig.js';
+import { _Hotkeys } from './Hotkeys.js';
+import { KeyMap, HotkeySetting } from './Hotkeys.js';
+
+// Initialize Hotkeys on the global scope
+export const Hotkeys: typeof _Hotkeys = _Hotkeys;
+{
+	// @ts-expect-error
+	window.Hotkeys = Hotkeys;
+	// @ts-expect-error
+	Hotkeys._init();
+	Hotkeys.showConfig = async function (title: string, filters: (string | RegExp | GroupFilter)[]) {
+		if (!title || title === '')
+			throw new Error('You must provide a title for the config menu');
+		if (!filters || filters.length === 0)
+			throw new Error('You must provide at least one filter');
+		const config = new HotkeyConfig(title, filters);
+		await config.render(true);
+	}
+	Hotkeys.createConfig = function (title: string, filters: (string | RegExp | GroupFilter)[]) {
+		if (!title || title === '')
+			throw new Error('You must provide a title for the config menu');
+		if (!filters || filters.length === 0)
+			throw new Error('You must provide at least one filter');
+		return class Sepcialized extends HotkeyConfig {
+			constructor() {
+				super(title, filters);
+			}
+		};
+	}
+}
+
+
 import SETTINGS from './Settings.js';
+// Initializes the SETTINGS helper with the name of this module
 SETTINGS.init('lib-df-hotkeys')
+
 Hooks.once('init', function () {
 	HotkeyConfig.init();
 	const PREF_SELECT = 'select';
@@ -42,7 +61,6 @@ Hooks.once('init', function () {
 			(<any>ui.controls)._onClickTool({ preventDefault: () => { }, currentTarget: { dataset: { tool: PREF_SELECT } } }),
 	});
 
-
 	// #region ****** Demo Hotkeys ******
 	// SETTINGS.register<KeyMap>('test1', {
 	// 	scope: 'world',
@@ -53,7 +71,7 @@ Hooks.once('init', function () {
 	// 		ctrl: false,
 	// 		shift: false
 	// 	},
-	// 	type: Object as any
+	// 	type: SETTINGS.typeOf<KeyMap>()
 	// });
 	// SETTINGS.register<KeyMap>('test2', {
 	// 	scope: 'world',
@@ -64,7 +82,7 @@ Hooks.once('init', function () {
 	// 		ctrl: false,
 	// 		shift: false
 	// 	},
-	// 	type: Object as any
+	// 	type: SETTINGS.typeOf<KeyMap>()
 	// });
 	// SETTINGS.register<KeyMap>('test3', {
 	// 	scope: 'world',
@@ -75,7 +93,7 @@ Hooks.once('init', function () {
 	// 		ctrl: false,
 	// 		shift: false
 	// 	},
-	// 	type: Object as any
+	// 	type: SETTINGS.typeOf<KeyMap>()
 	// });
 
 	// Hotkeys.registerShortcut({
@@ -110,7 +128,7 @@ Hooks.once('init', function () {
 	// 	get: () => SETTINGS.get<KeyMap>('test3'),
 	// 	set: async (value: KeyMap) => await SETTINGS.set('test3', value),
 	// 	default: () => SETTINGS.default('test3'),
-	// 	onKeyDown: (self: HotkeySetting, repeat: boolean) => {
+	// 	onKeyDown: (self: HotkeySetting, event: KeyboardEvent, repeat: boolean) => {
 	// 		console.log(`You hit Alt + 3 exactly ${++count} ${count > 1 ? 'times' : 'time'}, repeat flag: ${repeat}`)
 	// 	},
 	// });

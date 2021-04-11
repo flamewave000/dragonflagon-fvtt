@@ -1,0 +1,62 @@
+#df-chat-log {
+	margin-block-start: 0;
+	padding-inline-start: 0;
+	overflow-y: scroll;
+}
+
+#df-chat-log .message {
+	border: 2px solid #6f6c66;
+	border-radius: 5px;
+	margin: 3px;
+}
+
+.df-chat-log-window .window-content {
+	background: none;
+}
+
+.df-chat-log-window h2 {
+	flex-grow: 0;
+	color: white;
+	margin: 0 0 0.25rem
+}
+
+#df-chat-log.df-chat-print {
+	background-color: white;
+	height: auto;
+	width: 100%;
+	position: relative;
+	top: 0;
+	left: 0;
+	margin: 0;
+	padding: 15px;
+	z-index: 10000000;
+}
+
+#df-chat-log .dfal-deleted {
+	background: brown;
+}
+
+#df-chat-log .dfal-deleted * {
+	color: white;
+	text-decoration: line-through;
+}
+#df-chat-log .dfal-deleted a.button.message-delete * {
+	text-decoration: unset;
+}
+
+body.df-chat-print {
+	width: unset;
+	height: unset;
+	margin: unset;
+	overflow: unset;
+	background: unset;
+	box-shadow: unset;
+}
+
+#dfal-save-changes {
+	background: rgb(128, 20, 20);
+	color: white;
+	flex: 0 0 auto;
+	margin: 0 2em;
+	width: auto;
+}

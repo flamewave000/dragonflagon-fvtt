@@ -4,8 +4,9 @@
 	"description": "{{description}}",
 	"version": "{{version}}",
 	"author": "flamewave000#6766",
-	"minimumCoreVersion": "0.6.5",
+	"minimumCoreVersion": "0.7.9",
 	"compatibleCoreVersion": "0.7.9",
+	"scripts": [ "src/lib/fuzzysort.js" ],
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [

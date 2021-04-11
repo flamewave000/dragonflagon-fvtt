@@ -1,4 +1,4 @@
-
+import { hotkeys } from './lib/lib-df-hotkeys.shim.js';
 import { BezierTool, ToolMode } from './tools/BezierTool.js';
 import CircleTool from './tools/CircleTool.js';
 import RectangleTool from './tools/RectangleTool.js';
@@ -7,13 +7,6 @@ import QuadTool from './tools/QuadTool.js';
 import { InputHandler } from './tools/ToolInputHandler.js';
 
 declare global {
-	// interface WallsLayer {
-	// 	dfWallCurves_onClickLeft(event: PIXI.InteractionEvent): void
-	// 	dfWallCurves_onDragLeftStart(event: PIXI.InteractionEvent): void
-	// 	dfWallCurves_onDragLeftMove(event: PIXI.InteractionEvent): void
-	// 	dfWallCurves_onDragLeftDrop(event: PIXI.InteractionEvent): void
-	// 	dfWallCurves_onDragLeftCancel(event: PIXI.InteractionEvent): void
-	// }
 	namespace PIXI {
 		interface InteractionData {
 			origin: PIXI.Point;
@@ -59,7 +52,6 @@ class WallPool {
 
 export class BezierControl {
 	private static _instance: BezierControl;
-	private inputManager = new KeyboardInputManager();
 	private _mode = Mode.None;
 	private wallsLayer: WallsLayer;
 	private walls: Wall[] = [];
@@ -173,7 +165,6 @@ export class BezierControl {
 		if (self.mode == Mode.None || self.activeTool == null) return wrapped(event);
 		if (self.activeTool.checkPointForClick(event.data.origin))
 			self.render();
-		console.log('_onClickLeft');
 	}
 	static _onDragLeftStart(wrapped: Function, event: PIXI.InteractionEvent) {
 		const self = BezierControl.instance;
@@ -182,14 +173,12 @@ export class BezierControl {
 		if (self.currentHandler == null) return;
 		self.currentHandler.start(event.data.origin, event.data.destination, event);
 		self.render();
-		console.log('_onDragLeftStart');
 	}
 	static _onDragLeftMove(wrapped: Function, event: PIXI.InteractionEvent) {
 		const self = BezierControl.instance;
 		if (self.mode == Mode.None || !self.currentHandler) return wrapped(event);
 		self.currentHandler.move(event.data.origin, event.data.destination, event);
 		self.render();
-		console.log('_onDragLeftMove');
 	}
 	static _onDragLeftDrop(wrapped: Function, event: PIXI.InteractionEvent) {
 		const self = BezierControl.instance;
@@ -197,7 +186,6 @@ export class BezierControl {
 		self.currentHandler.stop(event.data.origin, event.data.destination, event);
 		self.currentHandler = null;
 		self.render();
-		console.log('_onDragLeftDrop');
 	}
 	static _onDragLeftCancel(wrapped: Function, event: PIXI.InteractionEvent) {
 		const self = BezierControl.instance;
@@ -206,7 +194,6 @@ export class BezierControl {
 		self.currentHandler.cancel();
 		self.currentHandler = null;
 		self.render();
-		console.log('_onDragLeftCancel');
 	}
 
 	private graphicsContext = new PIXI.Graphics(null);
@@ -277,8 +264,45 @@ export class BezierControl {
 		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftMove', BezierControl._onDragLeftMove, 'MIXED');
 		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftDrop', BezierControl._onDragLeftDrop, 'MIXED');
 		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftCancel', BezierControl._onDragLeftCancel, 'MIXED');
-		window.addEventListener('keydown', this.inputManager.onKeyDown.bind(this.inputManager));
-		window.addEventListener('keyup', this.inputManager.onKeyUp.bind(this.inputManager));
+
+		if (!game.modules.get('lib-df-hotkeys')?.active) {
+			console.error('Missing lib-df-hotkeys module dependency');
+			if (game.user.isGM)
+				ui.notifications.notify("DF Curvy Walls recommends you install the 'Library: DF Hotkeys' module");
+		}
+
+		hotkeys.registerGroup({
+			name: MOD_NAME,
+			label: 'DF Curvy Walls'
+		})
+		hotkeys.registerShortcut({
+			name: `${MOD_NAME}.apply`,
+			label: 'df-curvy-walls.apply',
+			group: MOD_NAME,
+			default: { key: hotkeys.keys.Enter, alt: false, ctrl: false, shift: false },
+			onKeyDown: () => BezierControl.instance.apply()
+		});
+		hotkeys.registerShortcut({
+			name: `${MOD_NAME}.cancel`,
+			label: 'df-curvy-walls.cancel',
+			group: MOD_NAME,
+			default: { key: hotkeys.keys.Delete, alt: false, ctrl: false, shift: false },
+			onKeyDown: () => BezierControl.instance.clearTool()
+		});
+		hotkeys.registerShortcut({
+			name: `${MOD_NAME}.increment`,
+			label: 'df-curvy-walls.increment',
+			group: MOD_NAME,
+			default: { key: hotkeys.keys.Equal, alt: false, ctrl: false, shift: false },
+			onKeyDown: () => BezierControl.instance.segments++
+		});
+		hotkeys.registerShortcut({
+			name: `${MOD_NAME}.decrement`,
+			label: 'df-curvy-walls.decrement',
+			group: MOD_NAME,
+			default: { key: hotkeys.keys.Minus, alt: false, ctrl: false, shift: false },
+			onKeyDown: () => BezierControl.instance.segments--
+		});
 		Hooks.on('requestCurvyWallsRedraw', () => this.render());
 	}
 
@@ -294,36 +318,5 @@ export class BezierControl {
 			if (tool != undefined) return tool;
 		}
 		return undefined;
-	}
-}
-
-class KeyboardInputManager {
-	private _currentKeys = new Set<string>()
-	onKeyDown(event: KeyboardEvent) {
-		const key = game.keyboard.getKey(event);
-		if (key! in ["Enter", "Delete", "Backspace", "-", "="]) return;
-		if (this._currentKeys.size == 0) return;
-		this._currentKeys.add(key);
-	}
-	onKeyUp(event: KeyboardEvent) {
-		const key = game.keyboard.getKey(event);
-		if (key! in this._currentKeys) return;
-		event.preventDefault();
-		switch (key) {
-			case "Enter":
-				BezierControl.instance.apply();
-				break;
-			case "Delete":
-			case "Backspace":
-				BezierControl.instance.clearTool();
-				break;
-			case "-":
-				BezierControl.instance.segments--;
-				break;
-			case "=":
-				BezierControl.instance.segments++;
-				break;
-		}
-		this._currentKeys.clear();
 	}
 }

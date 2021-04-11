@@ -98,6 +98,7 @@ function generateTypings(entry, outputName, destination) {
 		.pipe(replace(/^\}\n?/mg, ''))
 		.pipe(replace(/^\t/mg, ''))
 		.pipe(replace(/^export (class|interface)/mg, 'declare $1'))
+		.pipe(replace(/^export default (class|interface)/mg, 'declare $1'))
 		.pipe(replace(/^\tprivate .+\n/mg, ''))
 		.pipe(gulp.dest(destination)));
 }
@@ -182,8 +183,8 @@ exports.step_compress = compressDistribution();
 /**
  * Simple clean command
  */
-exports.clean = gulp.series(pdel([DIST, BUNDLE, '../' + DIST]));
-exports.devClean = gulp.series(pdel([DEV_DIST(), '../' + DIST]));
+exports.clean = gulp.series(pdel([DIST, BUNDLE, '../' + DIST], { force: true }));
+exports.devClean = gulp.series(pdel([DEV_DIST(), '../' + DIST], { force: true }));
 /**
  * Default Build operation
  */
@@ -232,6 +233,12 @@ exports.zip = gulp.series(
 			, pdel(DIST + SOURCE)
 			, () => gulp.src(DIST + '.temp/' + GLOB).pipe(gulp.dest(DIST + SOURCE))
 			, pdel([DIST + '.temp/'])
+			, (() => {
+				const scripts = JSON.parse(fs.readFileSync('./module.json').toString()).scripts;
+				return scripts
+					? desc('outputing scripts', (cb) => gulp.src(scripts, { base: SOURCE }).pipe(gulp.dest(DIST + SOURCE)))
+					: plog('no scripts');
+			})()
 		)
 		, gulp.series(
 			buildShim()

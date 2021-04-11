@@ -8,8 +8,7 @@ export default class DFChatEditor extends FormApplication {
 	 * @see {@link Application.defaultOptions}
 	 */
 	static get defaultOptions(): FormApplication.Options {
-		var data = FormApplication.defaultOptions;
-		return mergeObject(data, {
+		return mergeObject(FormApplication.defaultOptions as Partial<FormApplication.Options>, {
 			closeOnSubmit: true,
 			editable: true,
 			resizable: true,
@@ -17,7 +16,7 @@ export default class DFChatEditor extends FormApplication {
 			popOut: true,
 			title: 'DF_CHAT_EDIT.Editor_Title',
 			template: 'modules/df-chat-enhance/templates/chat-edit.hbs'
-		});
+		}) as FormApplication.Options;
 	}
 
 	constructor(chatMessage: ChatMessage) {
@@ -53,7 +52,7 @@ export default class DFChatEditor extends FormApplication {
 	}
 	/** @override */
 	close(options?: FormApplication.CloseOptions) {
-		delete (this.chatMessage as any).chatEditor;
+		delete this.chatMessage.chatEditor;
 		return super.close(options);
 	}
 }

@@ -12,6 +12,10 @@ Here is an example of hotkeys registered to both the General group, and a Custom
 
 ![Example of hotkeys](../.assets/lib-df-hotkeys-example.png)
 
+## Contributors
+
+- Touge: Japanese localization
+
 ##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
 
 # For Module Developers
@@ -57,7 +61,7 @@ Hooks.once('ready', function() {
 
 ### For TypeScript Projects
 
-You will find the Typing Definitions file `lib-df-hotkeys.d.ts` in the [latest release](https://github.com/flamewave000/dragonflagon-fvtt/releases/tag/lib-df-hotkeys_2.0.0) that you can include in your project.
+You will find the Typing Definitions file `lib-df-hotkeys.d.ts` in the [latest release](https://github.com/flamewave000/dragonflagon-fvtt/releases/tag/lib-df-hotkeys_2.3.3) that you can include in your project.
 
 ---
 
@@ -228,6 +232,80 @@ Hooks.once('init', function() {
 
 [top](#For-Module-Developers)
 
+### Show Your Own Config Menu
+
+The standard library will have a menu button in the module configuration settings that displays ALL of the registered hotkey settings. This can get very cluttered. The library provides a way for you to display your own dialog containing only the settings and groups that you want to show. This is done through a set of filters, and you provide your own title for the config window's titlebar.
+
+*Note: This feature is not available in the Shim, please check if "Library: DF Hotkeys" is activated before trying to use this*
+
+#### How to show a config
+
+The way to do this, is to call `Hotkeys.showConfig(title: string, filters: [])` as shown here:
+
+```javascript
+await Hotkeys.showConfig('My Title', ['my-module.my-group']);
+```
+
+This will display the config menu and only show the settings assigned to the group with the id: `my-module.my-group`.
+
+#### How to get a config constructor
+
+For the purposes of registering your own Menus in FoundryVTT, you need to provide the registrar an actual "Constructor" of a FormApplication for it to instantiate on your behalf. You will find the `Hotkeys.createConfig(...)` function will give you that.
+
+```javascript
+game.settings.registerMenu('my-module-name', {
+	name: 'My Hotkeys!'
+	type: Hotkeys.createConfig('My Title', ['my-module.my-group']),
+});
+```
+
+#### Complex Filtering
+
+I've likely way over-engineered this filtering mechanism, but alas, I had fun...🤣
+
+You can do much more complex filtering with intermixed Regular Expressions, and additional Hotkey Filtering within groups via exact name match or Regular Expression matching. Please be aware that filters are INCLUSIVE, this means that a group/hotkey only needs to successfully match against one filter pattern to be included.
+
+```javascript
+await Hotkeys.showConfig('My Fancy Config',[
+	// You can mix exact group names with regex
+	'df-curvy-walls', // these will all match
+	'df-curvy.+',     // the same group
+	/df-cur.+/,       // RegExp objects are also allowed
+	// You can also perform matches on the hotkeys within a group themselves
+	{
+		group: 'df-curvy-walls',
+		hotkeys: [ 'df-curvy-walls.apply', 'df-curvy-walls.cancel' ]
+	},
+	{
+		// You can also use regex to apply the filter to multiple groups
+		group: 'df-curvy-.+',
+		// these hotkey names can also be regex strings or RegExp objects
+		hotkeys: [
+			/.+\.(in|de)crement/,
+            '.+\\.(in|de)crement'
+		]
+	},
+	// You can also include options from the default "general" group
+	{ group: 'general', hotkeys: [...] }
+]);
+```
+
+For a full understanding of the filter parameter, you can find the Type Definition for the function call here:
+
+```TypeScript
+export interface GroupFilter {
+	group: string | RegExp;
+	hotkeys: (string | RegExp)[];
+}
+class Hotkeys {
+	static async showConfig(title: string, filters: (string | RegExp | GroupFilter)[])
+}
+```
+
+
+
+
+
 ---
 
 ## Shim
@@ -239,7 +317,7 @@ Hooks.once('init', function() {
 If you reeeeaaaallly don't want to add a dependency to your module manifest, you can include the generated Shim into any module. What this shim does is provide the core functionality of the Hotkeys Library. This means you can register hotkeys and such as normal, but the difference is that users will not be able to customize the assigned hotkeys. It will also perfectly integrate into the actual Hotkeys module as well. It does this by first checking if Hotkeys already exists in the Global namespace. If it does exist, it will simply return a reference to that global Hotkeys library definition. Otherwise, it will return the shim version.
 
 First you need to add the shim file `lib-df-hotkeys.shim.js` to your project.
-You will find this file in the latest release for [Library: DF Hotkeys](https://github.com/flamewave000/dragonflagon-fvtt/releases/tag/lib-df-hotkeys_2.0.0)
+You will find this file in the latest release for [Library: DF Hotkeys](https://github.com/flamewave000/dragonflagon-fvtt/releases/tag/lib-df-hotkeys_2.3.3)
 
 Next you will need to simply import the hotkeys shim in which ever JavaScript/TypeScript module files you intend to use it.
 
@@ -253,12 +331,24 @@ Hooks.once('init', function() {
 		default: { key: hotkeys.keys.KeyA, alt: false, ctrl: false, shift: false },
 		onKeyDown: () => console.log('Whoa! it worked without the library activated!')
 	});
+
+	/** If you want to use the Custom Config feature,
+	 * you will need to check if the actualy Hotkeys
+	 * library module is activated. You can quickly
+	 * check using the following:
+	 */
+	if (hotkeys.isShim !== true) {
+		game.settings.registerMenu('my-module-name', {
+			name: 'My Hotkeys!'
+			type: Hotkeys.createConfig('My Title', ['my-module.my-group']),
+		});
+	}
 });
 ```
 
 ### For the Fellow TypeScript Devs
 
 There is also a Type Definition file for the Shim that you can include in your project to get those delicious typings!
-You will find this file (`lib-df-hotkeys.shim.d.ts`) in the latest release for [Library: DF Hotkeys](https://github.com/flamewave000/dragonflagon-fvtt/releases/tag/lib-df-hotkeys_2.0.0)
+You will find this file (`lib-df-hotkeys.shim.d.ts`) in the latest release for [Library: DF Hotkeys](https://github.com/flamewave000/dragonflagon-fvtt/releases/tag/lib-df-hotkeys_2.3.3)
 
 [top](#For-Module-Developers)

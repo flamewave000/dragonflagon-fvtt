@@ -1,8 +1,24 @@
 
 import CONFIG from '../CONFIG.js';
+import SETTINGS from '../SETTINGS.js';
 import DFAdventureLogConfig from './DFAdventureLogConfig.js';
-//import './libWrapper.js';
 
+declare global {
+	interface String {
+		trimStart(): string
+	}
+}
+if (!String.prototype.trimStart) {
+	String.prototype.trimStart = function () {
+		const whitespace = [' ', '\n', '\r'];
+		var index = -1;
+		for (let c = 0; c < this.length; c++) {
+			if (whitespace.every(x => x !== this[c])) break;
+			index = c;
+		}
+		return this.substr(index + 1);
+	}
+}
 
 declare interface ChatCommand {
 	commandKey: String;
@@ -47,14 +63,14 @@ export default class DFAdventureLogProcessor {
 				name: 'DF_CHAT_LOG.ContextMenu_AsEvent',
 				icon: '<i style="color:SeaGreen" class="fas fa-edit"></i>',
 				condition: () => {
-					const enabled = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE);
+					const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
 					const isGM = game.user.isGM;
-					const gmOnly = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_GMONLY);
+					const gmOnly = SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY);
 					return enabled && (!gmOnly || isGM);
 				},
 				callback: (header) => {
-					const chatData = ((ui.chat as any).collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
-					DFAdventureLogProcessor._commandProcessor(chatData.content, false);
+					const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+					DFAdventureLogProcessor.commandProcessor(chatData.content, false);
 					return {};
 				}
 			});
@@ -62,17 +78,17 @@ export default class DFAdventureLogProcessor {
 				name: 'DF_CHAT_LOG.ContextMenu_AsQuote',
 				icon: '<i style="color:SeaGreen" class="fas fa-quote-right"></i>',
 				condition: () => {
-					const enabled = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE);
+					const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
 					const isGM = game.user.isGM;
-					const gmOnly = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_GMONLY);
+					const gmOnly = SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY);
 					return enabled && (!gmOnly || isGM);
 				},
 				callback: (header) => {
-					const chatData = ((ui.chat as any).collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+					const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
 					if (chatData.content.trimStart().startsWith('"'))
-						DFAdventureLogProcessor._commandProcessor('q ' + chatData.content, false);
+						DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, false);
 					else
-						DFAdventureLogProcessor._commandProcessor(`q "${game.users.get(chatData.user).name}" ${chatData.content}`, false);
+						DFAdventureLogProcessor.commandProcessor(`q "${game.users.get(chatData.user).name}" ${chatData.content}`, false);
 					return {};
 				}
 			});
@@ -80,14 +96,14 @@ export default class DFAdventureLogProcessor {
 				name: 'DF_CHAT_LOG.ContextMenu_AsGmEvent',
 				icon: '<i style="color:FireBrick" class="fas fa-edit"></i>',
 				condition: () => {
-					const enabled = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE);
+					const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
 					const isGM = game.user.isGM;
-					const gmOnly = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_GMONLY);
+					const gmOnly = SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY);
 					return enabled && (!gmOnly || isGM);
 				},
 				callback: (header) => {
-					const chatData = ((ui.chat as any).collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
-					DFAdventureLogProcessor._commandProcessor(chatData.content, true);
+					const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+					DFAdventureLogProcessor.commandProcessor(chatData.content, true);
 					return {};
 				}
 			});
@@ -95,17 +111,17 @@ export default class DFAdventureLogProcessor {
 				name: 'DF_CHAT_LOG.ContextMenu_AsGmQuote',
 				icon: '<i style="color:FireBrick" class="fas fa-quote-right"></i>',
 				condition: () => {
-					const enabled = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE);
+					const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
 					const isGM = game.user.isGM;
-					const gmOnly = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_GMONLY);
+					const gmOnly = SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY);
 					return enabled && (!gmOnly || isGM);
 				},
 				callback: (header) => {
-					const chatData = ((ui.chat as any).collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+					const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
 					if (chatData.content.trimStart().startsWith('"'))
-						DFAdventureLogProcessor._commandProcessor('q ' + chatData.content, true);
+						DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, true);
 					else
-						DFAdventureLogProcessor._commandProcessor(`q "${game.users.get(chatData.user).name}" ${chatData.content}`, true);
+						DFAdventureLogProcessor.commandProcessor(`q "${game.users.get(chatData.user).name}" ${chatData.content}`, true);
 					return {};
 				}
 			});
@@ -114,7 +130,7 @@ export default class DFAdventureLogProcessor {
 	}
 
 	static setupSettings() {
-		game.settings.register(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE, {
+		SETTINGS.register(DFAdventureLogProcessor.PREF_ENABLE, {
 			scope: 'world',
 			name: 'DF_CHAT_LOG.Setting_EnableTitle',
 			hint: 'DF_CHAT_LOG.Setting_EnableHint',
@@ -128,7 +144,7 @@ export default class DFAdventureLogProcessor {
 					DFAdventureLogProcessor.registerCommand();
 			}
 		});
-		game.settings.register(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_GMONLY, {
+		SETTINGS.register(DFAdventureLogProcessor.PREF_GMONLY, {
 			name: 'DF_CHAT_LOG.Setting_GmOnlyTitle',
 			hint: 'DF_CHAT_LOG.Setting_GmOnlyHint',
 			scope: 'world',
@@ -142,7 +158,7 @@ export default class DFAdventureLogProcessor {
 					DFAdventureLogProcessor.registerCommand();
 			}
 		});
-		game.settings.register(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_GMONLY_WHISPER, {
+		SETTINGS.register(DFAdventureLogProcessor.PREF_GMONLY_WHISPER, {
 			name: 'DF_CHAT_LOG.Setting_GmOnlyWhisperName',
 			hint: 'DF_CHAT_LOG.Setting_GmOnlyWhisperHint',
 			scope: 'world',
@@ -150,7 +166,7 @@ export default class DFAdventureLogProcessor {
 			default: false,
 			config: true
 		});
-		game.settings.register(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_MESSAGES, {
+		SETTINGS.register(DFAdventureLogProcessor.PREF_MESSAGES, {
 			name: 'DF_CHAT_LOG.Setting_PrintMessagesName',
 			hint: 'DF_CHAT_LOG.Setting_PrintMessagesHint',
 			scope: 'world',
@@ -158,7 +174,7 @@ export default class DFAdventureLogProcessor {
 			default: true,
 			config: true
 		});
-		game.settings.register(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_SORTDESC, {
+		SETTINGS.register(DFAdventureLogProcessor.PREF_SORTDESC, {
 			name: 'DF_CHAT_LOG.Setting_SortDescendingName',
 			hint: 'DF_CHAT_LOG.Setting_SortDescendingHint',
 			scope: 'world',
@@ -183,16 +199,16 @@ export default class DFAdventureLogProcessor {
 		DFAdventureLogProcessor.gmlogCommand = null;
 	}
 	static registerCommand() {
-		if (!game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE))
+		if (!SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE))
 			return;
-		if (game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_GMONLY) && !game.user.isGM)
+		if (SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY) && !game.user.isGM)
 			return;
 		if (!!DFAdventureLogProcessor.logCommand)
 			return;
 
 		DFAdventureLogProcessor.logCommand = (game as GameExt).chatCommands.createCommandFromData({
 			commandKey: "/log",
-			invokeOnCommand: async (_cl: any, msg: string, _cd: any) => await DFAdventureLogProcessor._commandProcessor(msg, false),
+			invokeOnCommand: async (_cl: any, msg: string, _cd: any) => await DFAdventureLogProcessor.commandProcessor(msg, false),
 			shouldDisplayToChat: false,
 			iconClass: "fa-edit",
 			description: game.i18n.localize("DF_CHAT_LOG.CommandDescription")
@@ -204,7 +220,7 @@ export default class DFAdventureLogProcessor {
 		// Register the /gmlog command
 		DFAdventureLogProcessor.gmlogCommand = (game as GameExt).chatCommands.createCommandFromData({
 			commandKey: "/gmlog",
-			invokeOnCommand: async (_cl: any, msg: string, _cd: any) => await DFAdventureLogProcessor._commandProcessor(msg, true),
+			invokeOnCommand: async (_cl: any, msg: string, _cd: any) => await DFAdventureLogProcessor.commandProcessor(msg, true),
 			shouldDisplayToChat: false,
 			iconClass: "fa-edit",
 			description: game.i18n.localize("DF_CHAT_LOG.GMCommandDescription")
@@ -213,11 +229,11 @@ export default class DFAdventureLogProcessor {
 	}
 
 	private static logConfig: DFAdventureLogConfig = null;
-	private static async _commandProcessor(messageText: string, gmLog: boolean): Promise<void> {
+	static async commandProcessor(messageText: string, gmLog: boolean, preventPostToChat: boolean = false): Promise<void> {
 		messageText = messageText.trim();
 		const tokens = messageText.split(' ');
 
-		if (!game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_ENABLE)) {
+		if (!SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE)) {
 			(game as GameExt).chatCommands.deregisterCommand(DFAdventureLogProcessor.logCommand);
 			ui.notifications.warn(game.i18n.localize('DF_CHAT_LOG.Error_Disabled'));
 			return;
@@ -239,15 +255,8 @@ export default class DFAdventureLogProcessor {
 			return;
 		}
 
-		const speaker = ChatMessage.getSpeaker({ user: game.user } as any);
-		const messageData: {
-			flavor: string,
-			user: string,
-			speaker: ChatMessage.SpeakerData,
-			type: number,
-			content: string,
-			whisper?: string[]
-		} = {
+		const speaker = ChatMessage.getSpeaker({ user: game.user } as Partial<ChatMessage.SpeakerCreateData>);
+		const messageData: DeepPartial<ChatMessage.CreateData> = {
 			flavor: '',
 			user: game.user._id,
 			speaker: speaker,
@@ -323,7 +332,7 @@ export default class DFAdventureLogProcessor {
 		}
 
 		// fetch the log to submit to
-		const journalId = game.settings.get(CONFIG.MOD_NAME, gmLog ? DFAdventureLogConfig.PREF_JOURNAL_GM : DFAdventureLogConfig.PREF_JOURNAL) as string;
+		const journalId = SETTINGS.get(gmLog ? DFAdventureLogConfig.PREF_JOURNAL_GM : DFAdventureLogConfig.PREF_JOURNAL) as string;
 		if (!game.journal.has(journalId)) {
 			if (game.user.isGM)
 				ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error_NoJournalSetGM'), { permanent: true });
@@ -341,7 +350,7 @@ export default class DFAdventureLogProcessor {
 			messageHtml = $(messageText);
 			article = html.find('article.df-adventure-log');
 		}
-		const descending = game.settings.get(CONFIG.MOD_NAME, this.PREF_SORTDESC) as boolean;
+		const descending = SETTINGS.get(this.PREF_SORTDESC) as boolean;
 		if (descending) article.prepend(messageHtml); else article.append(messageHtml);
 		await journal.update({ content: $('<div></div>').append(html).html() });
 		const rollType = game.settings.get("core", "rollMode");
@@ -350,8 +359,8 @@ export default class DFAdventureLogProcessor {
 				// If the roll type is anything but Public
 				rollType !== 'roll'
 				// If logs are GM Only and the Whisper All settings is true
-				|| (game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_GMONLY) &&
-					game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_GMONLY_WHISPER))
+				|| (SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY) &&
+					SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY_WHISPER))
 			) {
 				// Make the message a whisper
 				messageData.whisper = [game.user.id];
@@ -362,14 +371,14 @@ export default class DFAdventureLogProcessor {
 			messageData.whisper = [game.user.id];
 		}
 		// Post message to chat if Messages are enabled
-		if (game.settings.get(CONFIG.MOD_NAME, DFAdventureLogProcessor.PREF_MESSAGES))
-			await ChatMessage.create(messageData as any, {});
+		if (!preventPostToChat && SETTINGS.get(DFAdventureLogProcessor.PREF_MESSAGES))
+			await ChatMessage.create(messageData, {});
 	}
 
 	static async resortLog() {
-		const descending = game.settings.get(CONFIG.MOD_NAME, this.PREF_SORTDESC) as boolean;
-		const journalAll = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL) as string;
-		const journalGM = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL_GM) as string;
+		const descending = SETTINGS.get(this.PREF_SORTDESC) as boolean;
+		const journalAll = SETTINGS.get(DFAdventureLogConfig.PREF_JOURNAL) as string;
+		const journalGM = SETTINGS.get(DFAdventureLogConfig.PREF_JOURNAL_GM) as string;
 
 		const journalSort = async (journal: JournalEntry) => {
 			var html = $(journal.data.content);
