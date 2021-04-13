@@ -1,5 +1,9 @@
 # DragonFlagon Hotkeys Library
 
+## Release 2.3.4 (2021-04-13)
+- Adjusted wording of Ctrl+W warning, per Varriount's suggestion.
+- Localisation: Spanish translation courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
+
 ## Release 2.3.3 (2021-04-03)
 - Removed some code that was accidentally left in after testing an issue for a user.
 

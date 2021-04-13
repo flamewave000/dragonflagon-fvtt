@@ -5,7 +5,7 @@
 	"DF_HOTKEYS.ModName": "Librería: DF Hotkeys",
 
 	"DF_HOTKEYS.Config_Title": "Ajustes de atajos del teclado",
-	"DF_HOTKEYS.Config_Warning": "Tenga cuidado con el <code>Ctrl+W</code> en navegadores basados en Chromium (Chrome, Edge, Brave). Esa combinación cerrará el navegador",
+	"DF_HOTKEYS.Config_Warning": "Tenga cuidado con el <code>Ctrl+W</code>. En muchos navegadores, esta combinación de teclas cerrará la pestaña, ventana o aplicación.",
 	"DF_HOTKEYS.Config_Table_Name": "Nombre del atajo",
 	"DF_HOTKEYS.Config_Table_Key": "Asignación de tecla",
 	"DF_HOTKEYS.Config_Table_Mods": "Modificadores",
