@@ -127,8 +127,11 @@ export class DFChatArchive {
 			if (!response.path)
 				throw new Error('Could not upload the archive to server side: ' + archive.id.toString());
 		}
-		if (this._updateListener != null)
-			this._updateListener();
+		const logs = this.getLogs();
+		const idx = logs.findIndex(x => x.id === archive.id);
+		if (idx < 0) return archive;
+		logs[idx] = archive;
+		await SETTINGS.set(DFChatArchive.PREF_LOGS, logs);
 		return archive;
 	}
 

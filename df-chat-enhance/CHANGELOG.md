@@ -1,8 +1,8 @@
 # DF Chat Enhancements
 
-## Release 3.1.0 (2021-04-13)
+## Release 3.0.2 (2021-04-13)
 - Fixed styling conflict with the D&D5E Dark Mode module.
-- 
+- Fixed Archive Name and Visibility not saving correctly.
 
 ## Release 3.0.1 (2021-03-26)
 - Hotfix: New data storage solution for Chat Archive had a couple hiccups. Should be fixed now. Thanks to [hmqgg](https://github.com/hmqgg) for making a swift fix for the issue.
