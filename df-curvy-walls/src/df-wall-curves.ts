@@ -8,7 +8,7 @@ Hooks.on("ready", function () {
 			ui.notifications.error(game.i18n.localize('df-curvy-walls.errorLibWrapperMissing'));
 		return;
 	}
-	canvas.walls.bezier = BezierControl.instance;
+	(<Canvas>canvas).walls.bezier = BezierControl.instance;
 	BezierControl.instance.patchWallsLayer();
 })
 
@@ -18,9 +18,9 @@ Hooks.on("getSceneControlButtons", (controls) => {
 	BezierControl.instance.injectControls(controls);
 });
 
-var toolbar = null;
+var toolbar: BezierToolBar = null;
 var prevMode = Mode.None;
-Hooks.on('renderSceneControls', async controls => {
+Hooks.on('renderSceneControls', async (controls: SceneControls) => {
 	if (!game.modules.get('lib-wrapper')?.active) return;
 	if (!game.user.isGM) return;
 	if (controls.activeControl === 'walls' && BezierControl.instance.mode != Mode.None) {
@@ -32,12 +32,10 @@ Hooks.on('renderSceneControls', async controls => {
 			const promise = toolbar.close({ force: true });
 			toolbar = null;
 			await promise;
-			(toolbar = new BezierToolBar()).render(true);
 			BezierControl.instance.clearTool();
-		} else {
-			(toolbar = new BezierToolBar()).render(true);
+		} else
 			BezierControl.instance.render();
-		}
+		(toolbar = new BezierToolBar()).render(true);
 		prevMode = BezierControl.instance.mode;
 	}
 	else {
