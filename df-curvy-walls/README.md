@@ -26,6 +26,10 @@ Generates a simple ellipse that can be squished and stretched. You can cut a "sl
 
 Generates walls in a rectangle. This also allows you to specify the number of segments for each side, including having a side with no walls!
 
+## Move or Place Most Recent Configuration
+
+If you have configured a tool to match that perfect circle for a tower but have a couple more identicle towers to do, you can simply `Ctrl + LeftClick` the canvas to place the tool using the most recent configuration.
+
 ## Uses the Current Wall Type Selection
 
 ![Wall Type Selection](../.assets/df-curvy-walls-types.webp)

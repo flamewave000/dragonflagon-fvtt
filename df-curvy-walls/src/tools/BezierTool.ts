@@ -9,7 +9,7 @@ export enum ToolMode {
 }
 
 export abstract class BezierTool {
-	public static readonly HANDLE_RADIUS: number = 6;
+	public static readonly HANDLE_RADIUS: number = 10;
 	public static readonly LINE_SIZE: number = 2;
 	// Define the text style
 	public static readonly TEXT_STYLE = new PIXI.TextStyle({
@@ -71,6 +71,8 @@ export abstract class BezierTool {
 		return (this.lastSegmentFetch = this.bezier.getLUT(count + 2).map((e: { x: number, y: number }) => new PIXI.Point(e.x, e.y)));
 	}
 
+	abstract placeTool(point: PIXI.Point, data: object): void;
+	abstract getData(): object;
 	abstract getTools(): Record<string, CurvyWallControl>
 
 	clearTool() {
@@ -91,7 +93,7 @@ export abstract class BezierTool {
 		const bounds = this.bounds.getRectangle(PIXI.Rectangle.EMPTY);
 		context.beginFill(0, 0)
 			.lineStyle(BezierTool.LINE_SIZE, 0xE88D2D, 1, 0.5)
-			.drawRoundedRect(bounds.left - 10, bounds.top - 10, bounds.width + 20, bounds.height + 20, 10)
+			.drawRoundedRect(bounds.left - 20, bounds.top - 20, bounds.width + 40, bounds.height + 40, 20)
 			.endFill()
 	}
 	protected drawHandle(context: PIXI.Graphics, fill: number, point: PIXI.Point): PIXI.Graphics {

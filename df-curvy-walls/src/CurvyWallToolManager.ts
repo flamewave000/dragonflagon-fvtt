@@ -25,8 +25,8 @@ export enum Mode {
 
 const MODE_NAMES: { [key: number]: string } = {};
 MODE_NAMES[Mode.None] = 'undefined';
-MODE_NAMES[Mode.Quad] = 'bezierquad';
 MODE_NAMES[Mode.Cube] = 'beziercube';
+MODE_NAMES[Mode.Quad] = 'bezierquad';
 MODE_NAMES[Mode.Circ] = 'beziercirc';
 MODE_NAMES[Mode.Rect] = 'bezierrect';
 class WallPool {
@@ -48,6 +48,12 @@ export class CurvyWallToolManager {
 	private _activeTool?: BezierTool = null;
 	private _modeListener: (mode: Mode, toolMode: ToolMode | null) => void = null;
 	private _ignoreNextToolModeChange = false;
+	private _previousToolData = new Map<Mode, object>([
+		[Mode.Cube, { l1: [-100, 0], l2: [100, 0], c1: [-100, -132], c2: [100, -132] }],
+		[Mode.Quad, { l1: [-100, 0], l2: [100, 0], c: [0, -132] }],
+		[Mode.Circ, { l1: [-100, -100], l2: [100, 100], a1: 0, a2: 0 }],
+		[Mode.Rect, { l1: [-100, -100], l2: [100, 100], t: 1, r: 1, b: 1, l: 1 }],
+	]);
 
 	get segments(): number { return this._activeTool.segments; }
 	set segments(value: number) {
@@ -65,7 +71,7 @@ export class CurvyWallToolManager {
 	get mode(): Mode { return this._mode; }
 	set mode(value: Mode) {
 		if (this._mode === value) return;
-		this._ignoreNextToolModeChange = true;
+		this._ignoreNextToolModeChange = this.activeTool?.mode !== ToolMode.NotPlaced;
 		this.clearTool();
 		this._mode = value;
 		switch (value) {
@@ -107,7 +113,10 @@ export class CurvyWallToolManager {
 	}
 
 	clearTool() {
-		if (!this._activeTool) return;
+		if (!this._activeTool) {
+			this._ignoreNextToolModeChange = false;
+			return;
+		}
 		this._activeTool.clearTool();
 		this.walls = [];
 		this.wallsLayer.preview.removeChildren();
@@ -117,8 +126,13 @@ export class CurvyWallToolManager {
 	static _onClickLeft(wrapped: Function, event: PIXI.InteractionEvent) {
 		const self = CurvyWallToolManager.instance;
 		if (self.mode == Mode.None || self.activeTool == null) return wrapped(event);
-		if (self.activeTool.checkPointForClick(event.data.origin))
+		if (self.activeTool.checkPointForClick(event.data.origin)) {
 			self.render();
+			return;
+		}
+		if (!event.data.originalEvent.ctrlKey) return;
+		self.activeTool.placeTool(event.data.origin, self._previousToolData.get(self._mode));
+		self.render();
 	}
 	static _onDragLeftStart(wrapped: Function, event: PIXI.InteractionEvent) {
 		const self = CurvyWallToolManager.instance;
@@ -147,6 +161,12 @@ export class CurvyWallToolManager {
 		else if (!self.currentHandler) return;
 		self.currentHandler.cancel();
 		self.currentHandler = null;
+		self.render();
+	}
+	static _onClickRight(wrapped: Function, event: PIXI.InteractionEvent) {
+		const self = CurvyWallToolManager.instance;
+		if (self.mode == Mode.None) return wrapped(event);
+		self.mode = Mode.None;
 		self.render();
 	}
 
@@ -207,6 +227,7 @@ export class CurvyWallToolManager {
 		this.graphicsContext.clear();
 		this.wallsLayer.preview.addChild(this.graphicsContext);
 		this.activeTool.drawHandles(this.graphicsContext);
+		this._previousToolData.set(this._mode, this.activeTool.getData());
 	}
 
 	patchWallsLayer() {
@@ -218,6 +239,7 @@ export class CurvyWallToolManager {
 		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftMove', CurvyWallToolManager._onDragLeftMove, 'MIXED');
 		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftDrop', CurvyWallToolManager._onDragLeftDrop, 'MIXED');
 		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftCancel', CurvyWallToolManager._onDragLeftCancel, 'MIXED');
+		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onClickRight', CurvyWallToolManager._onClickRight, 'MIXED');
 
 		if (!game.modules.get('lib-df-hotkeys')?.active) {
 			console.error('Missing lib-df-hotkeys module dependency');
@@ -228,7 +250,7 @@ export class CurvyWallToolManager {
 		hotkeys.registerGroup({
 			name: MOD_NAME,
 			label: 'DF Curvy Walls'
-		})
+		});
 		hotkeys.registerShortcut({
 			name: `${MOD_NAME}.apply`,
 			label: 'df-curvy-walls.apply',

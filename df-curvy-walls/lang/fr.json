@@ -1,7 +1,9 @@
 {
+	"df-curvy-walls.errorLibWrapperMissing": "'DF Curvy Walls' nécessite le module 'libWrapper'. Veuillez installer et activer 'libWrapper'.",
 	"df-curvy-walls.cubic": "Courbe de Bézier cubique",
 	"df-curvy-walls.quadratic": "Courbe de Bézier Quadratique",
 	"df-curvy-walls.circle": "Courbe Ellipse",
+	"df-curvy-walls.rectangle": "Rectangle",
 	"df-curvy-walls.increment": "Augmenter les segments",
 	"df-curvy-walls.decrement": "Diminuer les segments",
 	"df-curvy-walls.apply": "Appliquer des murs courbes au calque",
@@ -10,5 +12,7 @@
 	"df-curvy-walls.ellipse_close": "Fermer cercle lorsque découpé en tranches",
 	"df-curvy-walls.ellipse_finish_slice": "Ajouter un mur court au point de coupe",
 	"df-curvy-walls.ellipse_increment": "Augmenter la taille du pas d'angle",
-	"df-curvy-walls.ellipse_decrement": "Diminuer la taille du pas d'angle"
+	"df-curvy-walls.ellipse_decrement": "Diminuer la taille du pas d'angle",
+	"df-curvy-walls.SettingPreserve_Name": "Conserver l'état de l'outil",
+	"df-curvy-walls.SettingPreserve_Hint": "Lorsqu'il est activé et que vous vous éloignez du calque des murs, l'outil conservera son état lorsque vous reviendrez au calque des murs."
 }

@@ -12,5 +12,7 @@
 	"df-curvy-walls.ellipse_close": "Close circle when sliced",
 	"df-curvy-walls.ellipse_finish_slice": "Add short wall to slice point",
 	"df-curvy-walls.ellipse_increment": "Increase angle step size",
-	"df-curvy-walls.ellipse_decrement": "Decrease angle step size"
+	"df-curvy-walls.ellipse_decrement": "Decrease angle step size",
+	"df-curvy-walls.SettingPreserve_Name": "Preserve Tool State",
+	"df-curvy-walls.SettingPreserve_Hint": "When enabled and you switch away from the Walls Layer, the tool will preserve its state for when you return to the Walls Layer."
 }

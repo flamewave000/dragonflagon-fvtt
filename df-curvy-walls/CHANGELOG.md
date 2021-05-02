@@ -1,5 +1,13 @@
 # DF Curvy Walls
 
+## Release 3.0.0 (2021-05-02)
+- Moved controls to the right of the wall selectors. This prevents the buttons going offscreen for those with a smaller monitor size.
+- Adjusted the Enabled look of the toggleable controls to be more visually apparent that they are selected.
+- Added a way to place/move the most recent configuration for a given active tool to a specific point by `Ctrl + LeftClick` a location on the canvas.
+- Made the tool Control Points a little bit larger to be more easily clicked when zoomed out.
+- The current tool state and placement will be preserved when you switch away from the Walls Layer and then come back later. You will no longer lose the current tool placement and configuration.
+- Added a `Ctrl + RightClick` shortcut to dismiss the current tool activation. this makes it a little bit easier to quickly go back to regular walling after using a Curvy Wall tool.
+
 ## Release 2.1.1 (2021-03-23)
 - Updated Hotkeys shim and added hard dependency for the library.
 - Japanese Locale update courtesy of Touge, Brother Sharp.

@@ -12,5 +12,7 @@
 	"df-curvy-walls.ellipse_close": "開口部を閉じる",
 	"df-curvy-walls.ellipse_finish_slice": "スライス位置に短い壁を追加",
 	"df-curvy-walls.ellipse_increment": "角度スナップを増やす",
-	"df-curvy-walls.ellipse_decrement": "角度スナップを減らす"
+	"df-curvy-walls.ellipse_decrement": "角度スナップを減らす",
+	"df-curvy-walls.SettingPreserve_Name": "Preserve Tool State",
+	"df-curvy-walls.SettingPreserve_Hint": "When enabled and you switch away from the Walls Layer, the tool will preserve its state for when you return to the Walls Layer."
 }

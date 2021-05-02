@@ -10,5 +10,7 @@
 	"df-curvy-walls.ellipse_close": "Fechar o círculo quando cortado",
 	"df-curvy-walls.ellipse_finish_slice": "Adicionar um segmento adicional no ponto de corte",
 	"df-curvy-walls.ellipse_increment": "Aumentar tamanho do angulo de corte",
-	"df-curvy-walls.ellipse_decrement": "Diminuir tamanho do angulo de corte"
+	"df-curvy-walls.ellipse_decrement": "Diminuir tamanho do angulo de corte",
+	"df-curvy-walls.SettingPreserve_Name": "Preservar configuração da ferramenta",
+	"df-curvy-walls.SettingPreserve_Hint": "Quando ativado e você mudar para longe da camada de Paredes, a ferramenta irá preservar seu estado para quando você voltar para a camada Paredes."
 }

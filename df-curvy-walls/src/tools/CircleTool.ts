@@ -80,6 +80,21 @@ export default class CircleTool extends BezierTool {
 		}
 	};
 	getTools(): Record<string, CurvyWallControl> { return this._tools; }
+	placeTool(point: PIXI.Point, data: { l1: number[], l2: number[], a1: number, a2: number }) {
+		this.lineA.set(data.l1[0] + point.x, data.l1[1] + point.y);
+		this.lineB.set(data.l2[0] + point.x, data.l2[1] + point.y);
+		this.arcHandle.angle = data.a1;
+		this.sliceHandle.angle = data.a2;
+		this.setMode(ToolMode.Placed);
+	}
+	getData() {
+		const center = this.lineCenter;
+		return {
+			l1: [this.lineA.x - center.x, this.lineA.y - center.y],
+			l2: [this.lineB.x - center.x, this.lineB.y - center.y],
+			a1: this.arcHandle.angle, a2: this.sliceHandle.angle
+		};
+	}
 
 	getCenter(): PIXI.Point {
 		const bounds = this.bounds;

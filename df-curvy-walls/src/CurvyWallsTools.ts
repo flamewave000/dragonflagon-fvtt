@@ -1,5 +1,6 @@
 
 import { CurvyWallToolManager, Mode } from './CurvyWallToolManager.js';
+import SETTINGS from './lib/Settings.js';
 import { ToolMode } from './tools/BezierTool.js';
 
 export interface CurvyWallControl {
@@ -25,6 +26,8 @@ interface CurvyWallsToolsOptions {
 }
 
 export class CurvyWallsTools extends Application {
+	static readonly PREF_PRESERVE = 'preserve-tool';
+
 	static get defaultOptions(): Application.Options {
 		return <Application.Options>mergeObject<Partial<Application.Options>>(
 			super.defaultOptions,
@@ -34,6 +37,8 @@ export class CurvyWallsTools extends Application {
 			}
 		);
 	}
+
+	private _closing = false;
 
 	private _tools: Record<string, CurvyWallControl> = {
 		beziercube: {
@@ -88,7 +93,13 @@ export class CurvyWallsTools extends Application {
 
 	constructor(options?: Application.Options) {
 		super(options);
-		CurvyWallToolManager.instance.setModeListener(() => this.render(false));
+		CurvyWallToolManager.instance.setModeListener(() => {
+			if (this._closing) {
+				this._closing = false;
+				return;
+			}
+			this.render(false)
+		});
 	}
 
 	getData(options?: Application.RenderOptions): CurvyWallsToolsOptions {
@@ -147,7 +158,10 @@ export class CurvyWallsTools extends Application {
 	}
 
 	close(options?: Application.CloseOptions): Promise<unknown> {
-		CurvyWallToolManager.instance.mode = Mode.None;
+		if (!SETTINGS.get(CurvyWallsTools.PREF_PRESERVE)) {
+			this._closing = true;
+			CurvyWallToolManager.instance.mode = Mode.None;
+		}
 		return super.close(options)
 	}
 }

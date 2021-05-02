@@ -239,7 +239,25 @@ export default class RectangleTool extends BezierTool {
 	}
 
 	getTools(): Record<string, CurvyWallControl> { return {}; }
-	showTools() { }
-	hideTools() { }
+	placeTool(point: PIXI.Point, data: { l1: number[], l2: number[], t: number, r: number, b: number, l: number }) {
+		this.lineA.set(data.l1[0] + point.x, data.l1[1] + point.y);
+		this.lineB.set(data.l2[0] + point.x, data.l2[1] + point.y);
+		this.topCount = data.t;
+		this.rightCount = data.r;
+		this.bottomCount = data.b;
+		this.leftCount = data.l;
+		this.setMode(ToolMode.Placed);
+	}
+	getData() {
+		const center = this.lineCenter;
+		return {
+			l1: [this.lineA.x - center.x, this.lineA.y - center.y],
+			l2: [this.lineB.x - center.x, this.lineB.y - center.y],
+			t: this.topCount,
+			r: this.rightCount,
+			b: this.bottomCount,
+			l: this.leftCount
+		};
+	}
 	initialPoints(): number[] { return [0, 0, 0, 0, 0, 0]; }
 }

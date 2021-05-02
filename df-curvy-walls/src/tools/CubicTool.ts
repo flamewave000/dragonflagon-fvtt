@@ -92,4 +92,20 @@ export default class CubicTool extends BezierTool {
 			}
 		};
 	}
+	placeTool(point: PIXI.Point, data: { l1: number[], l2: number[], c1: number[], c2: number[] }) {
+		this.lineA.set(data.l1[0] + point.x, data.l1[1] + point.y);
+		this.lineB.set(data.l2[0] + point.x, data.l2[1] + point.y);
+		this.controlA.set(data.c1[0] + point.x, data.c1[1] + point.y);
+		this.controlB.set(data.c2[0] + point.x, data.c2[1] + point.y);
+		this.setMode(ToolMode.Placed);
+	}
+	getData() {
+		const center = this.lineCenter;
+		return {
+			l1: [this.lineA.x - center.x, this.lineA.y - center.y],
+			l2: [this.lineB.x - center.x, this.lineB.y - center.y],
+			c1: [this.controlA.x - center.x, this.controlA.y - center.y],
+			c2: [this.controlB.x - center.x, this.controlB.y - center.y]
+		};
+	}
 }
