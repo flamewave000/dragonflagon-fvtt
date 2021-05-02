@@ -1,7 +1,6 @@
-
 import { BezierTool, ToolMode } from './BezierTool.js';
-import { ToolUI } from '../BezierToolBar.js';
 import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler.js";
+import { CurvyWallControl } from '../CurvyWallsTools.js';
 
 const pointNearPoint = BezierTool.pointNearPoint;
 const PI2 = Math.PI * 2
@@ -42,68 +41,45 @@ export default class CircleTool extends BezierTool {
 			bounds.maxX, bounds.maxY]);
 	}
 
-	getTools(): ToolUI[] {
-		return [{
+	private _tools: Record<string, CurvyWallControl> = {
+		ellipseclose: {
 			icon: 'fas fa-adjust',
-			name: 'ellipseclose',
 			title: 'df-curvy-walls.ellipse_close',
-			class: 'toggle' + (CircleTool.closeLoopIfSliced ? ' active' : ''),
-			style: 'display:none',
-			onClick: (button) => {
-				var enabled = button.hasClass('active');
-				CircleTool.closeLoopIfSliced = !enabled;
-				if (enabled) button.removeClass('active');
-				else button.addClass('active');
+			toggleable: true,
+			isActive: () => CircleTool.closeLoopIfSliced,
+			onClick: enabled => {
+				CircleTool.closeLoopIfSliced = enabled;
 				Hooks.call('requestCurvyWallsRedraw');
 			}
-		}, {
+		},
+		ellipsefinish: {
 			icon: 'fas fa-compress-alt',
-			name: 'ellipsefinish',
 			title: 'df-curvy-walls.ellipse_finish_slice',
-			class: 'toggle' + (CircleTool.finishSliceIfShort ? ' active' : ''),
-			style: 'display:none',
-			onClick: (button) => {
-				var enabled = button.hasClass('active');
-				CircleTool.finishSliceIfShort = !enabled;
-				if (enabled) button.removeClass('active');
-				else button.addClass('active');
+			toggleable: true,
+			isActive: () => CircleTool.finishSliceIfShort,
+			onClick: enabled => {
+				CircleTool.finishSliceIfShort = enabled;
 				Hooks.call('requestCurvyWallsRedraw');
 			}
-		}, {
-			icon: '',
-			name: 'ellipseinc',
+		},
+		ellipseinc: {
+			icon: 'dfcw ellipseinc',
 			title: 'df-curvy-walls.ellipse_increment',
-			class: '',
-			style: 'display:none',
-			html: '<div class="ellipseinc"></div>',
 			onClick: () => {
 				CircleTool.snapSetIndex = Math.clamped(CircleTool.snapSetIndex + 1, 0, CircleTool.ANGLE_SNAP_STEPS.length - 1);
 				Hooks.call('requestCurvyWallsRedraw');
 			}
-		}, {
-			icon: '',
-			name: 'ellipsedec',
+		},
+		ellipsedec: {
+			icon: 'dfcw ellipsedec',
 			title: 'df-curvy-walls.ellipse_decrement',
-			style: 'display:none',
-			html: '<div class="ellipsedec"></div>',
 			onClick: () => {
 				CircleTool.snapSetIndex = Math.clamped(CircleTool.snapSetIndex - 1, 0, CircleTool.ANGLE_SNAP_STEPS.length - 1);
 				Hooks.call('requestCurvyWallsRedraw');
 			}
-		}];
-	}
-	showTools() {
-		$(`button[data-tool="ellipseclose"]`).show();
-		$(`button[data-tool="ellipsefinish"]`).show();
-		$(`button[data-tool="ellipseinc"]`).show();
-		$(`button[data-tool="ellipsedec"]`).show();
-	}
-	hideTools() {
-		$(`button[data-tool="ellipseclose"]`).hide();
-		$(`button[data-tool="ellipsefinish"]`).hide();
-		$(`button[data-tool="ellipseinc"]`).hide();
-		$(`button[data-tool="ellipsedec"]`).hide();
-	}
+		}
+	};
+	getTools(): Record<string, CurvyWallControl> { return this._tools; }
 
 	getCenter(): PIXI.Point {
 		const bounds = this.bounds;
@@ -138,7 +114,7 @@ export default class CircleTool extends BezierTool {
 		while (angle >= sliceAngle) {
 			points.push(this.createVector(this.arcHandle.rawAngle + angle, magnitude, origin));
 			angle -= deltaTheta;
-			if(angle < 1e-10 && angle > -1e-10)
+			if (angle < 1e-10 && angle > -1e-10)
 				angle = 0;
 		}
 		// If we stopped short of the slice handle, add a small step to go the rest of the way

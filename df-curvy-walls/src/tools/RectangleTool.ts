@@ -1,4 +1,4 @@
-import { ToolUI } from "../BezierToolBar.js";
+import { CurvyWallControl } from "../CurvyWallsTools.js";
 import { BezierTool, ToolMode } from "./BezierTool.js";
 import { InitializerInputHandler, InputHandler, PointArrayInputHandler, PointInputHandler } from "./ToolInputHandler.js";
 
@@ -238,7 +238,7 @@ export default class RectangleTool extends BezierTool {
 		return false;
 	}
 
-	getTools(): ToolUI[] { return []; }
+	getTools(): Record<string, CurvyWallControl> { return {}; }
 	showTools() { }
 	hideTools() { }
 	initialPoints(): number[] { return [0, 0, 0, 0, 0, 0]; }

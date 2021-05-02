@@ -1,6 +1,6 @@
 import { Bezier } from "../lib/bezier.js";
 import { InputHandler } from "./ToolInputHandler.js";
-import { ToolUI } from '../BezierToolBar.js';
+import { CurvyWallControl } from '../CurvyWallsTools.js';
 
 export enum ToolMode {
 	NotPlaced,
@@ -41,20 +41,18 @@ export abstract class BezierTool {
 			this.lineA.x + ((this.lineB.x - this.lineA.x) / 2),
 			this.lineA.y + ((this.lineB.y - this.lineA.y) / 2));
 	}
+
+	private _modeListener: (mode: ToolMode) => void = null;
 	get mode(): ToolMode { return this._mode; };
 	protected setMode(value: ToolMode) {
+		if (this._mode === value) return;
 		this._mode = value;
-		if (this._mode == ToolMode.Placed) {
-			$(`button[data-tool="bezierapply"]`).show();
-			$(`button[data-tool="beziercancel"]`).show();
-			this.showTools();
-		}
-		else {
-			$(`button[data-tool="bezierapply"]`).hide();
-			$(`button[data-tool="beziercancel"]`).hide();
-			this.hideTools();
-		}
+		if (this._modeListener !== null)
+			this._modeListener(value);
 	};
+	setModeListener(listener: (toolMode: ToolMode) => void) {
+		this._modeListener = listener;
+	}
 
 	constructor(segments: number = 10) {
 		this.bezier = new Bezier(this.initialPoints());
@@ -64,7 +62,7 @@ export abstract class BezierTool {
 	abstract drawHandles(context: PIXI.Graphics): void;
 	abstract checkPointForDrag(point: PIXI.Point): InputHandler | null;
 	checkPointForClick(point: PIXI.Point): boolean { return false; }
-	clearContext(context: PIXI.Graphics): void {}
+	clearContext(context: PIXI.Graphics): void { }
 
 	getSegments(count: number): PIXI.Point[] | PIXI.Point[][] {
 		if (this.mode == ToolMode.NotPlaced) return [];
@@ -73,9 +71,7 @@ export abstract class BezierTool {
 		return (this.lastSegmentFetch = this.bezier.getLUT(count + 2).map((e: { x: number, y: number }) => new PIXI.Point(e.x, e.y)));
 	}
 
-	abstract getTools(): ToolUI[]
-	abstract showTools(): void
-	abstract hideTools(): void
+	abstract getTools(): Record<string, CurvyWallControl>
 
 	clearTool() {
 		this.setMode(ToolMode.NotPlaced);

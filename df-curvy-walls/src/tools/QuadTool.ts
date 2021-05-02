@@ -1,7 +1,7 @@
 
 import { BezierTool, ToolMode } from './BezierTool.js';
-import { ToolUI } from '../BezierToolBar.js';
 import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler.js";
+import { CurvyWallControl } from '../CurvyWallsTools.js';
 
 const pointNearPoint = BezierTool.pointNearPoint;
 declare type Point = PIXI.Point;
@@ -70,7 +70,7 @@ export default class QuadTool extends BezierTool {
 		return null;
 	}
 
-	getTools(): ToolUI[] { return []; }
+	getTools(): Record<string, CurvyWallControl> { return {}; }
 	showTools() { }
 	hideTools() { }
 }

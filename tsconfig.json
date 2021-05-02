@@ -66,5 +66,5 @@
 		"skipLibCheck": true, /* Skip type checking of declaration files. */
 		"forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
 	},
-	"exclude": [ "**/bundle", "**/dist" ]
+	"exclude": [ "**/bundle", "**/dist", "foundry-reference.js", "foundry8-reference.js" ]
 }

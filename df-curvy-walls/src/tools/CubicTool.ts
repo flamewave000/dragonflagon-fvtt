@@ -1,5 +1,4 @@
-
-import { ToolUI } from '../BezierToolBar.js';
+import { CurvyWallControl } from '../CurvyWallsTools.js';
 import { BezierTool, ToolMode } from './BezierTool.js';
 import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler, MagnetPointInputHandler } from "./ToolInputHandler.js";
 
@@ -82,29 +81,15 @@ export default class CubicTool extends BezierTool {
 		return null;
 	}
 
-	getTools(): ToolUI[] {
-		return [
-			{
+	getTools(): Record<string, CurvyWallControl> {
+		return {
+			cubiclock: {
 				icon: 'fas fa-lock',
-				name: 'cubiclock',
 				title: 'df-curvy-walls.cubic_lock_handles',
-				class: 'toggle' + (CubicTool.lockHandles ? ' active' : ''),
-				style: 'display:none',
-				onClick: (button: JQuery<HTMLButtonElement>) => {
-					var enabled = button.hasClass('active');
-					CubicTool.lockHandles = !enabled;
-					if (enabled)
-						button.removeClass('active');
-					else
-						button.addClass('active');
-				}
+				toggleable: true,
+				isActive: () => CubicTool.lockHandles,
+				onClick: enabled => CubicTool.lockHandles = enabled
 			}
-		];
-	}
-	showTools() {
-		$(`button[data-tool="cubiclock"]`).show();
-	}
-	hideTools() {
-		$(`button[data-tool="cubiclock"]`).hide();
+		};
 	}
 }

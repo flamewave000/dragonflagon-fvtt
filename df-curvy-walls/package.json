@@ -4,7 +4,7 @@
 	"version": "2.1.1",
 	"title": "DF Curvy Walls",
 	"description": "Creates wall segments along a Bezier Cubic or Quadratic curve or circle",
-	"main": "src/df-wall-curves.js",
+	"main": "src/df-curvy-walls.ts",
 	"scripts": {
 		"build": "npx gulp --gulpfile=../gulpfile.js --cwd=./ --sm",
 		"watch": "npx gulp watch --gulpfile=../gulpfile.js --cwd=./ --sm",

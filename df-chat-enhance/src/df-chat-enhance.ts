@@ -5,11 +5,11 @@ import initDFChatPrivacy from "./privacy/df-chat-privacy.js";
 import SETTINGS from "./SETTINGS.js";
 SETTINGS.init('df-chat-enhance');
 
-declare global {
-	interface Application {
-		_recalculateDimensions(): void;
-	}
-}
+// declare global {
+// 	interface Application {
+// 		_recalculateDimensions(): void;
+// 	}
+// }
 
 (<any>Application.prototype)._recalculateDimensions = function () {
 	this.element[0].style.height = '';
