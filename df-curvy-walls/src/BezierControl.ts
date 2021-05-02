@@ -114,42 +114,6 @@ export class CurvyWallToolManager {
 		this.render();
 	}
 
-	static _onClickLeft(wrapped: Function, event: PIXI.InteractionEvent) {
-		const self = CurvyWallToolManager.instance;
-		if (self.mode == Mode.None || self.activeTool == null) return wrapped(event);
-		if (self.activeTool.checkPointForClick(event.data.origin))
-			self.render();
-	}
-	static _onDragLeftStart(wrapped: Function, event: PIXI.InteractionEvent) {
-		const self = CurvyWallToolManager.instance;
-		if (self.mode == Mode.None || self.activeTool == null) return wrapped(event);
-		self.currentHandler = self.activeTool.checkPointForDrag(event.data.origin);
-		if (self.currentHandler == null) return;
-		self.currentHandler.start(event.data.origin, event.data.destination, event);
-		self.render();
-	}
-	static _onDragLeftMove(wrapped: Function, event: PIXI.InteractionEvent) {
-		const self = CurvyWallToolManager.instance;
-		if (self.mode == Mode.None || !self.currentHandler) return wrapped(event);
-		self.currentHandler.move(event.data.origin, event.data.destination, event);
-		self.render();
-	}
-	static _onDragLeftDrop(wrapped: Function, event: PIXI.InteractionEvent) {
-		const self = CurvyWallToolManager.instance;
-		if (self.mode == Mode.None || !self.currentHandler) return wrapped(event);
-		self.currentHandler.stop(event.data.origin, event.data.destination, event);
-		self.currentHandler = null;
-		self.render();
-	}
-	static _onDragLeftCancel(wrapped: Function, event: PIXI.InteractionEvent) {
-		const self = CurvyWallToolManager.instance;
-		if (self.mode == Mode.None) return wrapped(event);
-		else if (!self.currentHandler) return;
-		self.currentHandler.cancel();
-		self.currentHandler = null;
-		self.render();
-	}
-
 	private graphicsContext = new PIXI.Graphics(null);
 	render() {
 		this.wallsLayer.preview.removeChildren()
@@ -207,56 +171,5 @@ export class CurvyWallToolManager {
 		this.graphicsContext.clear();
 		this.wallsLayer.preview.addChild(this.graphicsContext);
 		this.activeTool.drawHandles(this.graphicsContext);
-	}
-
-	patchWallsLayer() {
-		const layer = (<Canvas>canvas).getLayer("WallsLayer");
-		this.wallsLayer = layer as WallsLayer;
-		const MOD_NAME = 'df-curvy-walls';
-		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onClickLeft', CurvyWallToolManager._onClickLeft, 'MIXED');
-		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftStart', CurvyWallToolManager._onDragLeftStart, 'MIXED');
-		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftMove', CurvyWallToolManager._onDragLeftMove, 'MIXED');
-		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftDrop', CurvyWallToolManager._onDragLeftDrop, 'MIXED');
-		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftCancel', CurvyWallToolManager._onDragLeftCancel, 'MIXED');
-
-		if (!game.modules.get('lib-df-hotkeys')?.active) {
-			console.error('Missing lib-df-hotkeys module dependency');
-			if (game.user.isGM)
-				ui.notifications.notify("DF Curvy Walls recommends you install the 'Library: DF Hotkeys' module");
-		}
-
-		hotkeys.registerGroup({
-			name: MOD_NAME,
-			label: 'DF Curvy Walls'
-		})
-		hotkeys.registerShortcut({
-			name: `${MOD_NAME}.apply`,
-			label: 'df-curvy-walls.apply',
-			group: MOD_NAME,
-			default: { key: hotkeys.keys.Enter, alt: false, ctrl: false, shift: false },
-			onKeyDown: () => CurvyWallToolManager.instance.apply()
-		});
-		hotkeys.registerShortcut({
-			name: `${MOD_NAME}.cancel`,
-			label: 'df-curvy-walls.cancel',
-			group: MOD_NAME,
-			default: { key: hotkeys.keys.Delete, alt: false, ctrl: false, shift: false },
-			onKeyDown: () => CurvyWallToolManager.instance.clearTool()
-		});
-		hotkeys.registerShortcut({
-			name: `${MOD_NAME}.increment`,
-			label: 'df-curvy-walls.increment',
-			group: MOD_NAME,
-			default: { key: hotkeys.keys.Equal, alt: false, ctrl: false, shift: false },
-			onKeyDown: () => CurvyWallToolManager.instance.segments++
-		});
-		hotkeys.registerShortcut({
-			name: `${MOD_NAME}.decrement`,
-			label: 'df-curvy-walls.decrement',
-			group: MOD_NAME,
-			default: { key: hotkeys.keys.Minus, alt: false, ctrl: false, shift: false },
-			onKeyDown: () => CurvyWallToolManager.instance.segments--
-		});
-		Hooks.on('requestCurvyWallsRedraw', () => this.render());
 	}
 }

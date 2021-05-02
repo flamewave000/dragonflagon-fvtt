@@ -7,6 +7,8 @@
 - Made the tool Control Points a little bit larger to be more easily clicked when zoomed out.
 - The current tool state and placement will be preserved when you switch away from the Walls Layer and then come back later. You will no longer lose the current tool placement and configuration.
 - Added a `Ctrl + RightClick` shortcut to dismiss the current tool activation. this makes it a little bit easier to quickly go back to regular walling after using a Curvy Wall tool.
+- You can now hold the `Alt` key while placing and moving the Ellipse and Rectangle tools to force them into being a perfect Circle and perfect Square.
+- You can now hold the `Ctrl` key when first placing an Ellipse or Rectangle to have it interpret the start point as being the "center" of the ellipse or rectangle. Useful if you know where the center of a room is and just want to grow the wall tool out from there.
 
 ## Release 2.1.1 (2021-03-23)
 - Updated Hotkeys shim and added hard dependency for the library.

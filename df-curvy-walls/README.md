@@ -22,9 +22,17 @@ Supports both a Quadratic and Cubic curve to give differing forms of curve gener
 
 Generates a simple ellipse that can be squished and stretched. You can cut a "slice" out of the ellipse to create an opening, and you can specify the arc offset of the walls so the segments are position at the right point along the curve.
 
+You can place a perfect circle by holding the Alt key while placing or adjusting the ellipse tool.
+
+You can have the tool grow the circle out from a center point by holding the Ctrl key while placing the ellipse tool. Useful if you know where the center of a room is and just want to grow the wall tool out from there.
+
 ## Rectangle Tool
 
 Generates walls in a rectangle. This also allows you to specify the number of segments for each side, including having a side with no walls!
+
+You can place a perfect square by holding the Alt key while placing or adjusting the ellipse tool.
+
+You can have the tool grow the rectangle out from a center point by holding the Ctrl key while placing the ellipse tool. Useful if you know where the center of a room is and just want to grow the wall tool out from there.
 
 ## Move or Place Most Recent Configuration
 

@@ -165,7 +165,7 @@ export class CurvyWallToolManager {
 	}
 	static _onClickRight(wrapped: Function, event: PIXI.InteractionEvent) {
 		const self = CurvyWallToolManager.instance;
-		if (self.mode == Mode.None) return wrapped(event);
+		if (!event.data.originalEvent.ctrlKey || self.mode == Mode.None) return wrapped(event);
 		self.mode = Mode.None;
 		self.render();
 	}

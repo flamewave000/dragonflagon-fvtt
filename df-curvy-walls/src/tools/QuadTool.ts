@@ -9,7 +9,7 @@ declare type Point = PIXI.Point;
 class InitializerIH extends InitializerInputHandler {
 	private tool: QuadTool;
 	constructor(tool: QuadTool, success: () => void, fail: () => void) {
-		super(tool.lineA, tool.lineB, success, fail)
+		super(false, tool.lineA, tool.lineB, success, fail)
 		this.tool = tool;
 	}
 	move(origin: Point, destination: Point, event: PIXI.InteractionEvent): void {

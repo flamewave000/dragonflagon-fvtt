@@ -11,7 +11,7 @@ declare type Point = PIXI.Point;
 
 class InitializerIH extends InitializerInputHandler {
 	constructor(tool: CircleTool, success: () => void, fail: () => void) {
-		super(tool.lineA, tool.lineB, success, fail)
+		super(true, tool.lineA, tool.lineB, success, fail)
 	}
 }
 
@@ -180,9 +180,9 @@ export default class CircleTool extends BezierTool {
 			return new InitializerIH(this, () => this.setMode(ToolMode.Placed), () => this.setMode(ToolMode.NotPlaced));
 		}
 		if (pointNearPoint(point, this.lineA, BezierTool.HANDLE_RADIUS))
-			return new PointInputHandler(this.lineA);
+			return new PointInputHandler(this.lineA, null, this.lineB);
 		else if (pointNearPoint(point, this.lineB, BezierTool.HANDLE_RADIUS))
-			return new PointInputHandler(this.lineB);
+			return new PointInputHandler(this.lineB, null, this.lineA);
 		else if (pointNearPoint(point, this.arcHandle.getHandlePoint(this.getCenter()), BezierTool.HANDLE_RADIUS))
 			return new PointRotationHandler(this.arcHandle, this.getCenter());
 		else if (pointNearPoint(point, this.sliceHandle.getHandlePoint(this.getCenter()), BezierTool.HANDLE_RADIUS))
