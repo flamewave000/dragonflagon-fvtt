@@ -44,7 +44,6 @@ export class CurvyWallToolManager {
 	private _mode = Mode.None;
 	private wallsLayer: WallsLayer;
 	private walls: Wall[] = [];
-	private currentHandler?: InputHandler = null;
 	private _activeTool?: BezierTool = null;
 	private _modeListener: (mode: Mode, toolMode: ToolMode | null) => void = null;
 	private _ignoreNextToolModeChange = false;

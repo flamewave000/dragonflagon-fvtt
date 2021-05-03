@@ -8,15 +8,14 @@
 	</ol>
 	<ol class="control-tools">
 		{{#each general}}
-		<li class="control-tool {{class}}" title="{{localize title}}" data-tool="{{name}}"><i class="{{icon}}"></i></li>
+		<li class="control-tool {{class}} {{#if toggleable}}toggle {{#if isActive}}active{{/if}}{{/if}}"
+			title="{{localize title}}" data-tool="{{name}}"><i class="{{icon}}"></i></li>
 		{{/each}}
 	</ol>
 	<ol class="control-tools">
 		{{#each controls}}
 		<li class="control-tool {{class}} {{#if toggleable}}toggle {{#if isActive}}active{{/if}}{{/if}}"
-			title="{{localize title}}" data-tool="{{name}}">
-			<i class="{{icon}}"></i>
-		</li>
+			title="{{localize title}}" data-tool="{{name}}"><i class="{{icon}}"></i></li>
 		{{/each}}
 	</ol>
 </div>

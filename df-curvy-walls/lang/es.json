@@ -15,5 +15,12 @@
 	"df-curvy-walls.ellipse_close": "Cerrar círculo al recortar",
 	"df-curvy-walls.ellipse_finish_slice": "Completar con un segmento adicional para ajustar al ángulo de corte",
 	"df-curvy-walls.ellipse_increment": "Aumentar paso (número de divisiones del circulo; disminuirá el ángulo de corte)",
-	"df-curvy-walls.ellipse_decrement": "Disminuir paso (número de divisiones del círculo; aumentará el ángulo de corte)"
+	"df-curvy-walls.ellipse_decrement": "Disminuir paso (número de divisiones del círculo; aumentará el ángulo de corte)",
+	"df-curvy-walls.trace_curve_with_points": "Place points on the canvas to generate a curve",
+	"df-curvy-walls.SettingPreserve_Name": "Preserve Tool State",
+	"df-curvy-walls.SettingPreserve_Hint": "When enabled and you switch away from the Walls Layer, the tool will preserve its state for when you return to the Walls Layer.",
+	"df-curvy-walls.pointmapapply": "Generate tool placement from points",
+	"df-curvy-walls.pointmap_quad": "You need to place 3 points to generate a Bézier Quadratic Curve.<br>Ctrl + Click to delete a point. Click + Drag to Move a point.",
+	"df-curvy-walls.pointmap_circ": "You need to place 2 to 3 points to generate an Ellipse.<br>Ctrl + Click to delete a point. Click + Drag to Move a point.",
+	"df-curvy-walls.pointmap_rect": "You need to place 2 to 4 points to generate a Rectangle.<br>Ctrl + Click to delete a point. Click + Drag to Move a point."
 }

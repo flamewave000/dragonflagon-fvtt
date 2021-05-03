@@ -5,6 +5,7 @@ import RectangleTool from './tools/RectangleTool.js';
 import CubicTool from './tools/CubicTool.js';
 import QuadTool from './tools/QuadTool.js';
 import { InputHandler } from './tools/ToolInputHandler.js';
+import PointMapper from './tools/PointMapper.js';
 
 declare global {
 	namespace PIXI {
@@ -54,6 +55,8 @@ export class CurvyWallToolManager {
 		[Mode.Circ, { l1: [-100, -100], l2: [100, 100], a1: 0, a2: 0 }],
 		[Mode.Rect, { l1: [-100, -100], l2: [100, 100], t: 1, r: 1, b: 1, l: 1 }],
 	]);
+	private _pointMapper = new PointMapper();
+	private _notification: any;
 
 	get segments(): number { return this._activeTool.segments; }
 	set segments(value: number) {
@@ -62,6 +65,9 @@ export class CurvyWallToolManager {
 			this.render();
 	}
 	get activeTool(): BezierTool | null { return this._activeTool; }
+
+	private _inPointMapMode = false;
+	get currentlyMappingPoints(): boolean { return this._inPointMapMode; }
 
 	private constructor() { }
 	public static get instance(): CurvyWallToolManager {
@@ -73,7 +79,11 @@ export class CurvyWallToolManager {
 		if (this._mode === value) return;
 		this._ignoreNextToolModeChange = this.activeTool?.mode !== ToolMode.NotPlaced;
 		this.clearTool();
+		if (this._inPointMapMode)
+			this.togglePointMapping();
 		this._mode = value;
+		if (this._inPointMapMode)
+			this._pointMapper.points = [];
 		switch (value) {
 			case Mode.None:
 				this._activeTool = null;
@@ -123,10 +133,41 @@ export class CurvyWallToolManager {
 		this.render();
 	}
 
+	togglePointMapping() {
+		this._inPointMapMode = !this._inPointMapMode;
+		if (this._inPointMapMode) {
+			this._pointMapper.points = [];
+			ui.notifications.info(game.i18n.localize(this._pointMapper.getTooltipMessage()), { permanent: true });
+		} else {
+			ui.notifications.active.forEach(x => x.remove());
+			ui.notifications.active = [];
+		}
+		this.render();
+	}
+	get canApplyPointMapping(): boolean {
+		return this._pointMapper.hasEnoughData();
+	}
+	applyPointMapping() {
+		if (!this._inPointMapMode) return;
+		this._inPointMapMode = false;
+		this._pointMapper.bindData(this._activeTool);
+		(<any>this._activeTool).setMode(ToolMode.Placed);
+		this.render();
+	}
+
 	static _onClickLeft(wrapped: Function, event: PIXI.InteractionEvent) {
 		const self = CurvyWallToolManager.instance;
+		if (self._inPointMapMode) {
+			if (!self._pointMapper.checkPointForClick(event.data.origin, event))
+				return;
+			if (self._pointMapper.hasEnoughData())
+				self._modeListener(self.mode, ToolMode.NotPlaced);
+			self.render();
+			return;
+		}
+
 		if (self.mode == Mode.None || self.activeTool == null) return wrapped(event);
-		if (self.activeTool.checkPointForClick(event.data.origin)) {
+		if (self.activeTool.checkPointForClick(event.data.origin, event)) {
 			self.render();
 			return;
 		}
@@ -136,6 +177,13 @@ export class CurvyWallToolManager {
 	}
 	static _onDragLeftStart(wrapped: Function, event: PIXI.InteractionEvent) {
 		const self = CurvyWallToolManager.instance;
+		if (self._inPointMapMode) {
+			self.currentHandler = self._pointMapper.checkPointForDrag(event.data.origin);
+			if (self.currentHandler == null) return;
+			self.currentHandler.start(event.data.origin, event.data.destination, event);
+			self.render();
+			return;
+		}
 		if (self.mode == Mode.None || self.activeTool == null) return wrapped(event);
 		self.currentHandler = self.activeTool.checkPointForDrag(event.data.origin);
 		if (self.currentHandler == null) return;
@@ -173,6 +221,15 @@ export class CurvyWallToolManager {
 	private graphicsContext = new PIXI.Graphics(null);
 	render() {
 		this.wallsLayer.preview.removeChildren()
+		if (this.currentlyMappingPoints) {
+			this._pointMapper.clearContext(this.graphicsContext);
+			this.graphicsContext.clear();
+			this.graphicsContext.removeChildren();
+			this.wallsLayer.preview.addChild(this.graphicsContext);
+			this._pointMapper.drawHandles(this.graphicsContext);
+			return;
+		}
+
 		if (this.activeTool == null) return;
 		const pointData = this.activeTool?.getSegments(this.segments);
 		if (pointData.length == 0) return;

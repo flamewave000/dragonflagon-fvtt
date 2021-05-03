@@ -13,6 +13,11 @@
 	"df-curvy-walls.ellipse_finish_slice": "Ajouter un mur court au point de coupe",
 	"df-curvy-walls.ellipse_increment": "Augmenter la taille du pas d'angle",
 	"df-curvy-walls.ellipse_decrement": "Diminuer la taille du pas d'angle",
+	"df-curvy-walls.trace_curve_with_points": "Placez des points sur le canevas pour générer une courbe",
 	"df-curvy-walls.SettingPreserve_Name": "Conserver l'état de l'outil",
-	"df-curvy-walls.SettingPreserve_Hint": "Lorsqu'il est activé et que vous vous éloignez du calque des murs, l'outil conservera son état lorsque vous reviendrez au calque des murs."
+	"df-curvy-walls.SettingPreserve_Hint": "Lorsqu'il est activé et que vous vous éloignez du calque des murs, l'outil conservera son état lorsque vous reviendrez au calque des murs.",
+	"df-curvy-walls.pointmapapply": "Générer le placement d'outil à partir de points",
+	"df-curvy-walls.pointmap_quad": "Vous devez placer 3 points pour générer une courbe Quadratique de Bézier.<br>Ctrl + Clic pour supprimer un point. Cliquez + Faites glisser pour déplacer un point.",
+	"df-curvy-walls.pointmap_circ": "Vous devez placer 2 à 3 points pour générer un Ellipse.<br>Ctrl + Clic pour supprimer un point. Cliquez + Faites glisser pour déplacer un point.",
+	"df-curvy-walls.pointmap_rect": "Vous devez placer 2 à 4 points pour générer un Rectangle.<br>Ctrl + Clic pour supprimer un point. Cliquez + Faites glisser pour déplacer un point."
 }

@@ -1,6 +1,5 @@
-import { Bezier } from "../lib/bezier.js";
 import { InputHandler } from "./ToolInputHandler.js";
-import { CurvyWallControl } from '../CurvyWallsTools.js';
+import { CurvyWallControl } from '../CurvyWallsToolBar.js';
 
 export enum ToolMode {
 	NotPlaced,
@@ -27,7 +26,6 @@ export abstract class BezierTool {
 	});
 
 	private _mode: ToolMode = ToolMode.NotPlaced;
-	protected bezier: Bezier;
 	protected lastSegmentFetch: PIXI.Point[] | PIXI.Point[][] = [];
 	abstract get handles(): PIXI.Point[]
 	abstract get bounds(): PIXI.Bounds;
@@ -50,33 +48,25 @@ export abstract class BezierTool {
 		if (this._modeListener !== null)
 			this._modeListener(value);
 	};
-	setModeListener(listener: (toolMode: ToolMode) => void) {
-		this._modeListener = listener;
-	}
 
 	constructor(segments: number = 10) {
-		this.bezier = new Bezier(this.initialPoints());
 		this.segments = segments;
 	}
-	abstract initialPoints(): number[];
+
 	abstract drawHandles(context: PIXI.Graphics): void;
 	abstract checkPointForDrag(point: PIXI.Point): InputHandler | null;
-	checkPointForClick(point: PIXI.Point): boolean { return false; }
-	clearContext(context: PIXI.Graphics): void { }
-
-	getSegments(count: number): PIXI.Point[] | PIXI.Point[][] {
-		if (this.mode == ToolMode.NotPlaced) return [];
-		this.bezier.points = this.handles;
-		this.bezier.update();
-		return (this.lastSegmentFetch = this.bezier.getLUT(count + 2).map((e: { x: number, y: number }) => new PIXI.Point(e.x, e.y)));
-	}
-
+	abstract getSegments(count: number): PIXI.Point[] | PIXI.Point[][];
 	abstract placeTool(point: PIXI.Point, data: object): void;
 	abstract getData(): object;
 	abstract getTools(): Record<string, CurvyWallControl>
 
+	checkPointForClick(point: PIXI.Point, event: PIXI.InteractionEvent): boolean { return false; }
+	clearContext(context: PIXI.Graphics): void { }
 	clearTool() {
 		this.setMode(ToolMode.NotPlaced);
+	}
+	setModeListener(listener: (toolMode: ToolMode) => void) {
+		this._modeListener = listener;
 	}
 
 	protected static createText(text: string): PreciseText {

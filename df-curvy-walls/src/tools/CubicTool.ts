@@ -1,4 +1,5 @@
-import { CurvyWallControl } from '../CurvyWallsTools.js';
+import { CurvyWallControl } from '../CurvyWallsToolBar.js';
+import { Bezier } from '../lib/bezier.js';
 import { BezierTool, ToolMode } from './BezierTool.js';
 import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler, MagnetPointInputHandler } from "./ToolInputHandler.js";
 
@@ -26,6 +27,7 @@ class InitializerIH extends InitializerInputHandler {
 
 export default class CubicTool extends BezierTool {
 	static lockHandles = true;
+	private bezier: Bezier;
 	lineA = new PIXI.Point();
 	lineB = new PIXI.Point();
 	controlA = new PIXI.Point();
@@ -42,7 +44,16 @@ export default class CubicTool extends BezierTool {
 	}
 	get polygon(): PIXI.Polygon { return new PIXI.Polygon([this.lineA, this.lineB, this.controlA, this.controlB]); }
 
-	initialPoints(): number[] { return [0, 0, 0, 0, 0, 0, 0, 0]; }
+	constructor(segments: number = 10) {
+		super(segments);
+		this.bezier = new Bezier([0, 0, 0, 0, 0, 0, 0, 0]);
+	}
+	getSegments(count: number): PIXI.Point[] | PIXI.Point[][] {
+		if (this.mode == ToolMode.NotPlaced) return [];
+		this.bezier.points = this.handles;
+		this.bezier.update();
+		return (this.lastSegmentFetch = this.bezier.getLUT(count + 2).map((e: { x: number, y: number }) => new PIXI.Point(e.x, e.y)));
+	}
 	drawHandles(context: PIXI.Graphics): void {
 		if (this.mode == ToolMode.NotPlaced) return;
 		this.drawBoundingBox(context);

@@ -1,13 +1,13 @@
 
-import { CurvyWallsTools } from './CurvyWallsTools.js';
+import { CurvyWallsToolBar } from './CurvyWallsToolBar.js';
 import { CurvyWallToolManager, Mode } from './CurvyWallToolManager.js';
 import SETTINGS from './lib/Settings.js';
 
-const curvyWallApp = new CurvyWallsTools();
+const curvyWallApp = new CurvyWallsToolBar();
 SETTINGS.init('df-curvy-walls');
 
 Hooks.once('init', function() {
-	SETTINGS.register(CurvyWallsTools.PREF_PRESERVE, {
+	SETTINGS.register(CurvyWallsToolBar.PREF_PRESERVE, {
 		scope: 'world',
 		type: Boolean,
 		config: true,

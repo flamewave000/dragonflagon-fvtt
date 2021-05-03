@@ -1,7 +1,9 @@
 {
+	"df-curvy-walls.errorLibWrapperMissing": "'DF Curvy Walls' requires the 'libWrapper' module. Please install and activate 'libWrapper'.",
 	"df-curvy-walls.cubic": "Curva de Bézier Cúbica",
 	"df-curvy-walls.quadratic": "Curva de Bézier Quadrática",
 	"df-curvy-walls.circle": "Curva Elíptica",
+	"df-curvy-walls.rectangle": "Retângulo",
 	"df-curvy-walls.increment": "Acrescentar segmentos",
 	"df-curvy-walls.decrement": "Diminuir segmentos",
 	"df-curvy-walls.apply": "Aplicar a camada",
@@ -11,6 +13,11 @@
 	"df-curvy-walls.ellipse_finish_slice": "Adicionar um segmento adicional no ponto de corte",
 	"df-curvy-walls.ellipse_increment": "Aumentar tamanho do angulo de corte",
 	"df-curvy-walls.ellipse_decrement": "Diminuir tamanho do angulo de corte",
+	"df-curvy-walls.trace_curve_with_points": "Coloque pontos na tela para gerar uma curva",
 	"df-curvy-walls.SettingPreserve_Name": "Preservar configuração da ferramenta",
-	"df-curvy-walls.SettingPreserve_Hint": "Quando ativado e você mudar para longe da camada de Paredes, a ferramenta irá preservar seu estado para quando você voltar para a camada Paredes."
+	"df-curvy-walls.SettingPreserve_Hint": "Quando ativado e você mudar para longe da camada de Paredes, a ferramenta irá preservar seu estado para quando você voltar para a camada Paredes.",
+	"df-curvy-walls.pointmapapply": "Gerar posicionamento da ferramenta a partir de pontos",
+	"df-curvy-walls.pointmap_quad": "Você precisa colocar 3 pontos para gerar uma Curva Quadrática de Bézier.<br>Ctrl + Clique para excluir um ponto. Clique + Arraste para mover um ponto.",
+	"df-curvy-walls.pointmap_circ": "Você precisa colocar 2 a 3 pontos para gerar um Elipse.<br>Ctrl + Clique para excluir um ponto. Clique + Arraste para mover um ponto.",
+	"df-curvy-walls.pointmap_rect": "Você precisa colocar 2 a 4 pontos para gerar um Retângulo.<br>Ctrl + Clique para excluir um ponto. Clique + Arraste para mover um ponto."
 }

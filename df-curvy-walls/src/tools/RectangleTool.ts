@@ -1,4 +1,4 @@
-import { CurvyWallControl } from "../CurvyWallsTools.js";
+import { CurvyWallControl } from "../CurvyWallsToolBar.js";
 import { BezierTool, ToolMode } from "./BezierTool.js";
 import { InitializerInputHandler, InputHandler, PointArrayInputHandler, PointInputHandler } from "./ToolInputHandler.js";
 

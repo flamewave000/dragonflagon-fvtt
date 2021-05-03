@@ -1,7 +1,7 @@
 # DF Curvy Walls
 
-## Release 3.0.0 (2021-05-02)
-- Moved controls to the right of the wall selectors. This prevents the buttons going offscreen for those with a smaller monitor size.
+## Release 3.0.0 (2021-05-03)
+- Moved controls to the right of the wall selectors. This prevents the buttons going offscreen for those with a smaller monitor size. This also required me to overhaul the controls, and they are now more reliable and have a simpler implementation.
 - Adjusted the Enabled look of the toggleable controls to be more visually apparent that they are selected.
 - Added a way to place/move the most recent configuration for a given active tool to a specific point by `Ctrl + LeftClick` a location on the canvas.
 - Made the tool Control Points a little bit larger to be more easily clicked when zoomed out.
@@ -9,6 +9,7 @@
 - Added a `Ctrl + RightClick` shortcut to dismiss the current tool activation. this makes it a little bit easier to quickly go back to regular walling after using a Curvy Wall tool.
 - You can now hold the `Alt` key while placing and moving the Ellipse and Rectangle tools to force them into being a perfect Circle and perfect Square.
 - You can now hold the `Ctrl` key when first placing an Ellipse or Rectangle to have it interpret the start point as being the "center" of the ellipse or rectangle. Useful if you know where the center of a room is and just want to grow the wall tool out from there.
+- You can now plot points along a Quadratic curve, a Circle, and a Rectangle to generate the placement tool.
 
 ## Release 2.1.1 (2021-03-23)
 - Updated Hotkeys shim and added hard dependency for the library.

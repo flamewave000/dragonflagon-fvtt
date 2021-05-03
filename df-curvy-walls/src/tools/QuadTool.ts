@@ -1,7 +1,8 @@
 
 import { BezierTool, ToolMode } from './BezierTool.js';
 import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler.js";
-import { CurvyWallControl } from '../CurvyWallsTools.js';
+import { CurvyWallControl } from '../CurvyWallsToolBar.js';
+import { Bezier } from '../lib/bezier.js';
 
 const pointNearPoint = BezierTool.pointNearPoint;
 declare type Point = PIXI.Point;
@@ -14,16 +15,19 @@ class InitializerIH extends InitializerInputHandler {
 	}
 	move(origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
 		super.move(origin, destination, event);
-		var dx = this.tool.lineB.x - this.tool.lineA.x;
-		var dy = this.tool.lineB.y - this.tool.lineA.y;
-		const length = Math.sqrt((dx * dx) + (dy * dy));
-		dx *= 0.5;
-		dy *= 0.5;
-		this.tool.control.set(this.tool.lineA.x + dx + dy, this.tool.lineA.y + dy - dx);
+		const cX = (this.tool.lineB.x + this.tool.lineA.x) / 2;
+		const cY = (this.tool.lineB.y + this.tool.lineA.y) / 2;
+		var nY = -(this.tool.lineB.x - this.tool.lineA.x);
+		var nX = this.tool.lineB.y - this.tool.lineA.y;
+		// const length = Math.sqrt((nX * nX) + (nY * nY));
+		nX *= 0.25;
+		nY *= 0.25;
+		this.tool.control.set(cX + nX, cY + nY);
 	}
 }
 
 export default class QuadTool extends BezierTool {
+	private bezier: Bezier;
 	lineA = new PIXI.Point();
 	lineB = new PIXI.Point();
 	control = new PIXI.Point();
@@ -38,17 +42,28 @@ export default class QuadTool extends BezierTool {
 	}
 	get polygon(): PIXI.Polygon { return new PIXI.Polygon([this.lineA, this.lineB, this.control]); }
 
-	initialPoints(): number[] { return [0, 0, 0, 0, 0, 0]; }
+	constructor(segments: number = 10) {
+		super(segments);
+		// this.bezier = new Bezier([0, 0, 0, 0, 0, 0]);
+	}
+
+	getSegments(count: number): PIXI.Point[] | PIXI.Point[][] {
+		if (this.mode == ToolMode.NotPlaced) return [];
+		this.bezier = Bezier.quadraticFromPoints(this.lineA, this.control, this.lineB);
+		// this.bezier.points = this.handles;
+		// this.bezier.update();
+		return (this.lastSegmentFetch = this.bezier.getLUT(count + 2).map((e: { x: number, y: number }) => new PIXI.Point(e.x, e.y)));
+	}
 	drawHandles(context: PIXI.Graphics): void {
 		if (this.mode == ToolMode.NotPlaced) return;
 		this.drawBoundingBox(context);
-		context.beginFill(0xffaacc)
-			.lineStyle(BezierTool.LINE_SIZE, 0xffaacc, 1, 0.5)
-			.moveTo(this.lineA.x, this.lineA.y)
-			.lineTo(this.control.x, this.control.y)
-			.moveTo(this.lineB.x, this.lineB.y)
-			.lineTo(this.control.x, this.control.y)
-			.endFill();
+		// context.beginFill(0xffaacc)
+		// 	.lineStyle(BezierTool.LINE_SIZE, 0xffaacc, 1, 0.5)
+		// 	.moveTo(this.lineA.x, this.lineA.y)
+		// 	.lineTo(this.control.x, this.control.y)
+		// 	.moveTo(this.lineB.x, this.lineB.y)
+		// 	.lineTo(this.control.x, this.control.y)
+		// 	.endFill();
 		super.drawSegmentLabel(context);
 		this.drawHandle(context, 0xff4444, this.lineA);
 		this.drawHandle(context, 0xff4444, this.lineB);
