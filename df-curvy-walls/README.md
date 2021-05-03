@@ -14,6 +14,10 @@ Adds Bezier Curves and Ellipse tools to the walls layer. This gives you the abil
 
 ##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
 
+## Dismiss Current Tool Shortcut
+
+You can quickly remove and disable the current tool by `Ctrl + RightClick`ing anywhere on the screen. This is useful if you've just placed a curved wall and want to jump back into making regular walls again without having to go and click the tool's toggle button.
+
 ## Bezier Curves
 
 Supports both a Quadratic and Cubic curve to give differing forms of curve generation. The Quadratic curve may be of very niche use but gives a very fast way to create a simple curve. The Cubic curve is very powerful though, and provides a great to create "just the right" curve.

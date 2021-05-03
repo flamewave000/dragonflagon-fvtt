@@ -152,6 +152,8 @@ export class CurvyWallToolManager {
 		this._inPointMapMode = false;
 		this._pointMapper.bindData(this._activeTool);
 		(<any>this._activeTool).setMode(ToolMode.Placed);
+		ui.notifications.active.forEach(x => x.remove());
+		ui.notifications.active = [];
 		this.render();
 	}
 
@@ -282,6 +284,7 @@ export class CurvyWallToolManager {
 		this.activeTool.clearContext(this.graphicsContext);
 		this.graphicsContext.removeChildren().forEach(x => x.destroy());
 		this.graphicsContext.clear();
+		this.graphicsContext.visible = true;
 		this.wallsLayer.preview.addChild(this.graphicsContext);
 		this.activeTool.drawHandles(this.graphicsContext);
 		this._previousToolData.set(this._mode, this.activeTool.getData());
