@@ -41,12 +41,15 @@ There is always a potential conflict with any other module that modifies rolls. 
 **Tested Dice Modules (✅ Works, ❌ Conflicts, ⭕ Partial)**
 
 - ✅ Better Rolls
-- ✅ Midi Quality of Life Improvements
+- ❌ Midi Quality of Life Improvements (see notes below)
 - ✅ Dice So Nice!
 - ✅ Dice Tray
 - ✅ Let Me Roll That For You
 - ⭕ Quick Rolls DnD5e (see notes below)
 ---
+
+### Midi Quality of Life Improvements
+Some of the features that this modules provides makes several additional rolls in the background that cannot be filtered out. Unfortunately this module conflict cannot be resolved at this time.
 
 ### Quick Rolls (DnD5e)
 For DnD5e worlds, the prompt flavour text feature conflict with Quick Rolls' "re-roll" feature in the chat cards. To prevent this conflict, disable the "DnD5e: Add flavour text to prompts" feature in DF Manual Rolls' module settings.
