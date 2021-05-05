@@ -5,6 +5,8 @@
 	"DRAGON_FLAGON_QOL.AutoFocusHint": "When creating an Entity (Actors, Items, Tables, Scenes, etc.) this will auto-select the Name text box so you don't have to click it. Just open the dialog and start typing!",
 	"DRAGON_FLAGON_QOL.FolderTextColourName": "Enable Folder Text Colour",
 	"DRAGON_FLAGON_QOL.FolderTextColourHint": "Add ability to set a custom text colour for entity folders.",
+	"DRAGON_FLAGON_QOL.BetterToggleName": "Enable Better Scene Control Toggle Highlight",
+	"DRAGON_FLAGON_QOL.BetterToggleHint": "Changes the scene controls so that when the purple toggle buttons are turned on, it is more visible.",
 
 	"DRAGON_FLAGON_QOL.QuickRollMenuItem": "Roll on the table",
 	

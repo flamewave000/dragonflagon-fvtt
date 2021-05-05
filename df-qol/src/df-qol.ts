@@ -58,6 +58,25 @@ Hooks.once('init', function () {
 	});
 	apply(game.settings.get(MODULE_NAME, 'folder-colour'), 'renderFolderConfig', DF_FOLDER_TEXT_COLOUR);
 	apply(game.settings.get(MODULE_NAME, 'folder-colour'), 'renderSceneDirectory', DF_SCENE_DIRECTORY_RENDER);
+
+	game.settings.register(MODULE_NAME, 'better-toggle', {
+		name: 'DRAGON_FLAGON_QOL.BetterToggleName',
+		hint: 'DRAGON_FLAGON_QOL.BetterToggleHint',
+		scope: 'world',
+		type: Boolean,
+		default: true,
+		config: true,
+		onChange: newValue => {
+			const style = `<style id="dfqol-better-toggle">#controls .control-tool.toggle.active{background:rgba(60,0,120,0.8);color:#BBB;}#controls .control-tool.toggle.active:hover{color:#FFF;}</style>`;
+			const styleElement = $('#dfqol-better-toggle');
+			if (styleElement.length == 0 && newValue) {
+				$('body').append(style);
+			} else if (styleElement.length != 0 && !newValue) {
+				styleElement.remove();
+			}
+		}
+	});
+	game.settings.settings.get(`${MODULE_NAME}.better-toggle`).onChange(game.settings.get(MODULE_NAME, 'better-toggle'));
 });
 
 function DF_QUICK_ROLL(_html: any, entryOptions: any) {

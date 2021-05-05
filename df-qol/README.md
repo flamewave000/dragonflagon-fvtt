@@ -21,6 +21,13 @@ Folders for the various entities can have custom background colours, but sometim
 ![Folder Config](../.assets/df-qol-folder-config.png)
 
 
+## Better Toggle Styling
+
+The toggle buttons in the scene controls have the same look for both Hovering over with the mouse as when they are toggled on. This is frustrating as you cannot tell if the button is on or off while the mouse is hovering over it. Also, the difference between active and inactive is too subtle and is not easy to discern at a glance. This feature adds a distinct deeper purple colouring to the toggle when it is toggled on.
+
+![Folder Config](../.assets/df-qol-better-toggle.gif)
+
+
 
 ##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
 
