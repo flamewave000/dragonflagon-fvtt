@@ -1,5 +1,8 @@
 # DF Curvy Walls
 
+## Release 3.0.1 (2021-05-27)
+- Japanese Locale update courtesy of Touge, Brother Sharp.
+
 ## Release 3.0.0 (2021-05-04)
 - Moved controls to the right of the wall selectors. This prevents the buttons going offscreen for those with a smaller monitor size. This also required me to overhaul the controls, and they are now more reliable and have a simpler implementation.
 - Adjusted the Enabled look of the toggleable controls to be more visually apparent that they are selected.
