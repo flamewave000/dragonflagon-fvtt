@@ -1,6 +1,9 @@
 # DragonFlagon Quality of Life
 
-## Release 1.2.0 (2021-05-)
+## Release 1.2.1 (2021-05-17)
+- Fixed minor issue with the Vehicle Config when the vehicle has not been configured before.
+
+## Release 1.2.0 (2021-05-17)
 - Fixed folder text colouring on the Actors, Items, Journals, and RollTables tabs (was only working on the scenes directory).
 - Added new Vehicle weight unit customization. No longer limited to only Short Tons, but can now use Long Tons and regular Pounds.
 

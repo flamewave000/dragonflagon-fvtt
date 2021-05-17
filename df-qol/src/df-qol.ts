@@ -210,7 +210,7 @@ interface EntityConfigData<T> {
 function DF_VEHICLE_UNIT_CONFIG(app: EntitySheetConfig, html: JQuery<HTMLElement>, data: EntityConfigData<Actor.Data>) {
 	if (data.object.type !== "vehicle") return;
 	const submitButton = html.find('section > form > button');
-	var current = !!data.object.flags ? (<any>data.object.flags[SETTINGS.MOD_NAME]).unit : null;
+	var current = !!data.object.flags && !!(<any>data.object.flags[SETTINGS.MOD_NAME]) ? (<any>data.object.flags[SETTINGS.MOD_NAME]).unit : null;
 	if (!current) current = (<DND5E>CONFIG.DND5E).encumbrance.vehicleWeightMultiplier;
 
 	const unitSelector = $(`<div class="form-group">
