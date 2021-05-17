@@ -11,5 +11,15 @@
 	"DRAGON_FLAGON_QOL.QuickRollMenuItem": "Roll on the table",
 	
 	"DRAGON_FLAGON_QOL.ReloadGameTitle": "Reload game?",
-	"DRAGON_FLAGON_QOL.ReloadGameContent": "<p style=\"margin:1em 0\">Some changes made will only go into effect on a reload. Would you like to reload now?</p>"
+	"DRAGON_FLAGON_QOL.ReloadGameContent": "<p style=\"margin:1em 0\">Some changes made will only go into effect on a reload. Would you like to reload now?</p>",
+
+	"DRAGON_FLAGON_QOL.VehicleUnit_SettingName": "Enable Unit of weight for Vehicles",
+	"DRAGON_FLAGON_QOL.VehicleUnit_SettingHint": "Enables ability to change the base unit for weight used by vehicles",
+	"DRAGON_FLAGON_QOL.VehicleUnit_ConfigName": "Weight Unit",
+	"DRAGON_FLAGON_QOL.VehicleUnit_ConfigHint": "Unit of measurement to be used for weight calculation.",
+	"DRAGON_FLAGON_QOL.VehicleUnit_Units_LongTon": "Long Ton (2240 lb.)",
+	"DRAGON_FLAGON_QOL.VehicleUnit_Units_ShortTon": "Short Ton (2000 lb.)",
+	"DRAGON_FLAGON_QOL.VehicleUnit_Units_Pounds": "Pounds (1 lb.)",
+	"DRAGON_FLAGON_QOL.VehicleUnit_ConvertTitle": "Convert Cargo Capacity",
+	"DRAGON_FLAGON_QOL.VehicleUnit_ConvertContent": "Would you like to convert the current cargo capacity from '{{OLD}}' to '{{NEW}}'?"
 }

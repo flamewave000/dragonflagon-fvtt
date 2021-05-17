@@ -27,6 +27,16 @@ The toggle buttons in the scene controls have the same look for both Hovering ov
 
 ![Folder Config](../.assets/df-qol-better-toggle.gif)
 
+## Vehicle Cargo Capacity Unit
+
+In the core D&D5e vehicle sheet, the cargo capacity is rigidly defined as a 2000 lb. Short Ton. This feature does away with that and gives you an option in the Vehicle Actor's sheet config to change that unit of measurement to either Long Tons (2240 lbs.), Short Tons (2000 lbs.), or Regular Pounds. I've made this one because of myt own frustrations. Tons is perfectly fine for a ship or vessel, but in most games, players are just using simple carts, wagons, and carriages. Those don't carry more than 1-2 S.Tons, so why have such a huge unit of measure?
+
+This feature will also offer to conveniently convert the current cargo capacity to the new unit of measure. It also adds a simple label to the right of the Cargo Capacity to say which unit of measure is being used.
+
+![Configure Unit for Weight](../.assets/df-qol-vehicle-unit-config.png)
+![Convert to new Unit](../.assets/df-qol-vehicle-unit-convert.png)
+![Unit Labels on the Sheet](../.assets/df-qol-vehicle-unit-labels.png)
+
 
 
 ##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
