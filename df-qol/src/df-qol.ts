@@ -145,8 +145,7 @@ function DF_SCENE_DIRECTORY_RENDER(app: SceneDirectory, html: JQuery<HTMLElement
 		if (id === null || id === undefined) return;
 		const folder = game.folders.get(id);
 		if (folder === null || folder === undefined) return;
-		element.style.color = (<any>folder.data.flags).textColour;
-
+		$(element).find('header *').css('color', (<any>folder.data.flags).textColour);
 	});
 }
 

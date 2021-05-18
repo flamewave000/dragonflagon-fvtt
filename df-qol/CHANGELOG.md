@@ -1,5 +1,8 @@
 # DragonFlagon Quality of Life
 
+## Release 1.2.2 (2021-05-18)
+- Fixed issue with folder text colour applying to contents when folder is expanded.
+
 ## Release 1.2.1 (2021-05-17)
 - Fixed minor issue with the Vehicle Config when the vehicle has not been configured before.
 
