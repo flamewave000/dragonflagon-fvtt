@@ -145,6 +145,7 @@ export class CurvyWallsToolBar extends Application {
 					name: it,
 					title: this._tools[it].title,
 					icon: this._tools[it].icon,
+					toggleable: true,
 					isActive: this._tools[it].isActive()
 				}
 			}),
