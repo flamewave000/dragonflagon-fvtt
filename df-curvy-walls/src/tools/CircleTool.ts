@@ -159,7 +159,7 @@ export default class CircleTool extends BezierTool {
 			.lineTo(slice.x, slice.y)
 			.endFill();
 		this.drawSegmentLabel(context);
-		const snapAngle = toDegrees(CircleTool.ANGLE_SNAP_STEPS[CircleTool.snapSetIndex]).toFixed(2);
+		const snapAngle = Math.toDegrees(CircleTool.ANGLE_SNAP_STEPS[CircleTool.snapSetIndex]).toFixed(2);
 		const arcLabel = BezierTool.createText(`⇲${snapAngle}°   ◶${180 / parseFloat(snapAngle)}`);
 		arcLabel.position.copyFrom(this.lineCenter);
 		arcLabel.position.y += BezierTool.TEXT_STYLE.fontSize as number + 4;

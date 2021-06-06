@@ -1,5 +1,8 @@
 # DF Curvy Walls
 
+## Release 3.1.0 (2021-06-06)
+- Migrated to FoundryVTT 0.8.6
+
 ## Release 3.0.1 (2021-05-27)
 - Japanese Locale update courtesy of Touge, Brother Sharp.
 - Small optimization in the controls template.

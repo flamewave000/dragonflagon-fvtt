@@ -33,7 +33,7 @@ MODE_NAMES[Mode.Rect] = 'bezierrect';
 class WallPool {
 	static readonly walls: Wall[] = [];
 	static acquire(wallData: Wall.Data): Wall {
-		const result = this.walls.pop() ?? new Wall(wallData);
+		const result = this.walls.pop() ?? new Wall(new WallDocument(wallData, {parent: canvas.scene}));
 		result.data = wallData;
 		return result;
 	}
