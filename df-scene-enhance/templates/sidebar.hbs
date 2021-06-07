@@ -18,6 +18,8 @@
 			<i class="fas fa-cogs"></i>
 			{{#if coreUpdate}}
 			<i class="notification-pip fas fa-exclamation-circle" title="{{ coreUpdate }}"></i>
+			{{else if systemUpdate}}
+			<i class="notification-pip fas fa-exclamation-circle" title="{{ systemUpdate }}"></i>
 			{{/if}}
 		</a>
 		<a class="collapse" title="{{localize 'SIDEBAR.CollapseToggle'}}"><i class="fas fa-caret-right"></i></a>
