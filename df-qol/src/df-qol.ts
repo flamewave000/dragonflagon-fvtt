@@ -110,8 +110,9 @@ function DF_QUICK_ROLL(_html: any, entryOptions: any) {
 		condition: () => true,
 		callback: async (header: any) => {
 			const table = game.tables.get(header.data('entityId'));
-			const roll = table.roll();
-			await table.draw({ roll: roll } as any);
+			if (table.data.description === undefined)
+				table.data.description = '';
+			await table.draw();
 		}
 	});
 }
@@ -184,9 +185,6 @@ function VehicleComputeEncumbrance(this: ActorSheet, totalWeight: number, actorD
 	return { value: totalWeight.toNearest(0.01), max, pct };
 }
 function renderActorSheet5eVehicle(app: ActorSheet, html: JQuery<HTMLElement>, data: any) {
-	console.log(app);
-	console.log(html);
-	console.log(data);
 	var unit: any = app.object.getFlag(SETTINGS.MOD_NAME, 'unit') || (<DND5E>CONFIG.DND5E).encumbrance.vehicleWeightMultiplier;
 	switch (unit) {
 		case 2240: unit = ['L.Ton', 'DRAGON_FLAGON_QOL.VehicleUnit_Units_LongTon']; break;
