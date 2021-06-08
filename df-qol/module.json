@@ -6,6 +6,7 @@
 	"author": "flamewave000#6766",
 	"minimumCoreVersion": "0.8.6",
 	"compatibleCoreVersion": "0.8.6",
+	"dependencies": [ { "name": "lib-wrapper" } ],
 	"esmodules": "{{sources}}",
 	"languages": [
 		{ "lang": "en", "name": "English", "path": "lang/en.json" }
@@ -23,6 +24,8 @@
 		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-qol-better-toggle.gif" },
 		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-qol-auto-select.png" },
 		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-qol-folder-config.png" },
-		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-qol-roll-table.png" }
+		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-qol-roll-table.png" },
+		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-qol-day-night-progress.png" },
+		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-qol-day-night-duration.png" }
 	]
 }

@@ -1,4 +1,6 @@
 {
+	"DF-QOL.errorLibWrapperMissing": "'DF Quality of Life' requires the 'libWrapper' module. Please install and activate 'libWrapper'.",
+
 	"DRAGON_FLAGON_QOL.QuickRollTitle": "Enable Roll Table menu option to quick roll",
 	"DRAGON_FLAGON_QOL.QuickRollHint": "(Requires reload) Adds a menu option to Roll Tables in the Roll Table sidebar to roll on the table without having to open the table window.",
 	"DRAGON_FLAGON_QOL.AutoFocusTitle": "Enable Auto-Focusing text field in Entity dialogs",
@@ -21,5 +23,10 @@
 	"DRAGON_FLAGON_QOL.VehicleUnit_Units_ShortTon": "Short Ton (2000 lb.)",
 	"DRAGON_FLAGON_QOL.VehicleUnit_Units_Pounds": "Pounds (1 lb.)",
 	"DRAGON_FLAGON_QOL.VehicleUnit_ConvertTitle": "Convert Cargo Capacity",
-	"DRAGON_FLAGON_QOL.VehicleUnit_ConvertContent": "Would you like to convert the current cargo capacity from '{{OLD}}' to '{{NEW}}'?"
+	"DRAGON_FLAGON_QOL.VehicleUnit_ConvertContent": "Would you like to convert the current cargo capacity from '{{OLD}}' to '{{NEW}}'?",
+
+	"DRAGON_FLAGON_QOL.DayNightProgress_SettingName": "Display Day/Night Transition Progress",
+	"DRAGON_FLAGON_QOL.DayNightProgress_SettingHint": "When you run the animated Day/Night transition, enabling this will display the progress bar showing the progress from start to finish of the animation.",
+	"DRAGON_FLAGON_QOL.DayNightDuration_SettingName": "Day/Night Transition Duration (Seconds)",
+	"DRAGON_FLAGON_QOL.DayNightDuration_SettingHint": "The duration of time it takes for the Day/Night transition animation to complete. This is in Seconds (1-60 seconds)"
 }

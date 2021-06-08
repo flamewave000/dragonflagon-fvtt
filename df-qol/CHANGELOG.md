@@ -1,5 +1,11 @@
 # DragonFlagon Quality of Life
 
+## Release 1.3.0 (2021-06-07)
+- Migrated to FoundryVTT 0.8.6
+- Added Day/Night animated transition Progress Bar.
+- Added option for changing duration of Day/Night transition.
+- Added libWrapper dependency.
+
 ## Release 1.2.2 (2021-05-18)
 - Fixed issue with folder text colour applying to contents when folder is expanded.
 

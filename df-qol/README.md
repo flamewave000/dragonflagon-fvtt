@@ -37,7 +37,15 @@ This feature will also offer to conveniently convert the current cargo capacity 
 ![Convert to new Unit](../.assets/df-qol-vehicle-unit-convert.png)
 ![Unit Labels on the Sheet](../.assets/df-qol-vehicle-unit-labels.png)
 
+## Day/Night Transition Progress and Duration
 
+Will now display a progress bar when you perform the animated transition between Day and Night. This is only shown to the GM and is useful to know when the animation has finished.
+
+![Day/Night Progress Bar](../.assets/df-qol-day-night-progress.png)
+
+You can also now change the duration of the Day/Night transition. The FoundryVTT default is 10 seconds, but now you can adjust it between 1 and 60 seconds!
+
+![Day/Night Duration](../.assets/df-qol-day-night-duration.png)
 
 ##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
 
