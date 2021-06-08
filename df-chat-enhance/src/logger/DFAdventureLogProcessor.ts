@@ -258,7 +258,7 @@ export default class DFAdventureLogProcessor {
 		const speaker = ChatMessage.getSpeaker({ user: game.user } as Partial<ChatMessage.SpeakerCreateData>);
 		const messageData: DeepPartial<ChatMessage.CreateData> = {
 			flavor: '',
-			user: game.user._id,
+			user: game.user.id,
 			speaker: speaker,
 			type: CONST.CHAT_MESSAGE_TYPES.OOC,
 			content: '',
@@ -343,15 +343,15 @@ export default class DFAdventureLogProcessor {
 		const journal = game.journal.get(journalId);
 		var html = $(journal.data.content);
 		var messageHtml = $(messageText);
-		var article = html.find('article.df-adventure-log');
-		if (article.length == 0) {
+		var section = html.find('section.df-adventure-log');
+		if (section.length == 0) {
 			await DFAdventureLogConfig.initializeJournal(journalId, false, gmLog);
 			html = $(journal.data.content);
 			messageHtml = $(messageText);
-			article = html.find('article.df-adventure-log');
+			section = html.find('section.df-adventure-log');
 		}
 		const descending = SETTINGS.get(this.PREF_SORTDESC) as boolean;
-		if (descending) article.prepend(messageHtml); else article.append(messageHtml);
+		if (descending) section.prepend(messageHtml); else section.append(messageHtml);
 		await journal.update({ content: $('<div></div>').append(html).html() });
 		const rollType = game.settings.get("core", "rollMode");
 		if (game.user.isGM) {

@@ -92,7 +92,7 @@ export default class DFAdventureLogConfig extends FormApplication {
 			content: journal.data.content + `
 			<section>
 				<h2>${game.i18n.localize(isGMOnly ? 'DF_CHAT_LOG.GMLog_Header' : 'DF_CHAT_LOG.Log_Header')}</h2>
-				<article class="df-adventure-log"></article>
+				<section class="df-adventure-log"></section>
 				<hr />
 			</section>
 			`

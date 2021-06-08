@@ -5,6 +5,7 @@ import DFChatEditor from './DFChatEditor.js';
 declare global {
 	interface ChatMessage {
 		chatEditor: DFChatEditor
+		getHTML(): Promise<JQuery<HTMLElement>>
 	}
 }
 

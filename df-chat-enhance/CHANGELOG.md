@@ -1,5 +1,9 @@
 # DF Chat Enhancements
 
+## Release 3.1.0 (2021-06-07)
+- Migrated to FoundryVTT 0.8.6
+- Fixed issue with clicking visibility label of chat archive would toggle the first window if multiple archives are open.
+
 ## Release 3.0.2 (2021-04-13)
 - Fixed styling conflict with the D&D5E Dark Mode module.
 - Fixed Archive Name and Visibility not saving correctly.
