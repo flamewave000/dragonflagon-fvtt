@@ -1,7 +1,10 @@
 import DFLogger from './DFLogger.js';
+import SETTINGS from './Settings.js';
+
+SETTINGS.init('df-logger');
 
 Hooks.once('init', function () {
-	game.settings.register(DFLogger.MODULE, DFLogger.SETTING_GM_ONLY, {
+	SETTINGS.register(DFLogger.SETTING_GM_ONLY, {
 		name: "DRAGON_FLAGON.Settings_GmOnly_Title",
 		hint: "DRAGON_FLAGON.Settings_GmOnly_Hint",
 		scope: "world",
@@ -9,7 +12,7 @@ Hooks.once('init', function () {
 		type: Boolean,
 		default: false,
 	});
-	game.settings.register(DFLogger.MODULE, DFLogger.SETTING_SELF_DESTRUCT, {
+	SETTINGS.register(DFLogger.SETTING_SELF_DESTRUCT, {
 		name: "DRAGON_FLAGON.Settings_SelfDestruct_Title",
 		hint: "DRAGON_FLAGON.Settings_SelfDestruct_Hint",
 		scope: "world",
@@ -17,7 +20,7 @@ Hooks.once('init', function () {
 		type: Boolean,
 		default: true
 	});
-	game.settings.register(DFLogger.MODULE, DFLogger.SETTING_DELAY, {
+	SETTINGS.register(DFLogger.SETTING_DELAY, {
 		name: "DRAGON_FLAGON.Settings_Delay_Title",
 		hint: "DRAGON_FLAGON.Settings_Delay_Hint",
 		scope: "client",
@@ -30,7 +33,7 @@ Hooks.once('init', function () {
 			step: 1
 		}
 	});
-	game.settings.register(DFLogger.MODULE, DFLogger.SETTING_NOT_ME, {
+	SETTINGS.register(DFLogger.SETTING_NOT_ME, {
 		name: "DRAGON_FLAGON.Settings_NotMe_Title",
 		hint: "DRAGON_FLAGON.Settings_NotMe_Hint",
 		scope: "client",
@@ -40,7 +43,7 @@ Hooks.once('init', function () {
 	});
 
 	// register our socket events receiver
-	game.socket.on(`module.${DFLogger.MODULE}`, DFLogger.onEvent);
+	game.socket.on(`module.${SETTINGS.MOD_NAME}`, DFLogger.onEvent);
 	game.socket.on('userActivity', DFLogger.onUserActivity);
 });
 

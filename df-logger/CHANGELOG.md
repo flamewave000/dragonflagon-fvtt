@@ -1,5 +1,9 @@
 # DF User Logger
 
+## Release 1.5.0 (2021-06-13)
+- Migrated to FoundryVTT 0.8.6
+- Converted project over to TypeScript.
+
 ## Release 1.4.1/2 (2021-02-04)
 - Implemented new release system for all Dragon Flagon modules.
 
