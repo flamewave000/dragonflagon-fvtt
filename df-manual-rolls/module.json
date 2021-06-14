@@ -9,8 +9,7 @@
 	"esmodules": "{{sources}}",
 	"dependencies": [ { "name": "lib-wrapper" } ],
 	"languages": [
-		{ "lang": "en", "name": "English", "path": "lang/en.json" },
-		{ "lang": "fr", "name": "Français", "path": "lang/fr.json" }
+		{ "lang": "en", "name": "English", "path": "lang/en.json" }
 	],
 	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}",
 	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/{{name}}/LICENSE",

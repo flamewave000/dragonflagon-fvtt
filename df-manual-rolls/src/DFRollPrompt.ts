@@ -63,7 +63,7 @@ export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] 
 				// Otherwise the base was evenly divided and we can just add the base for the final roll
 				else results.push(base);
 				if (DFManualRolls.flagged)
-					x.term.options.flavor = (x.term.options.flavor || '') + '[MR]';
+					x.term.options.flavor = (x.term.options.flavor || '') + '[MRT]';
 			} else {
 				const flags = [];
 				for (let c = 0; c < x.term.number; c++) {

@@ -1,8 +1,10 @@
 {
+	"DF_MANUAL_ROLLS.Error_libWrapper_Missing":"DF Manual Rolls requires the 'libWrapper' module. Please install and activate it.",
+
 	"DF_MANUAL_ROLLS.Prompt": "Please enter a d{d} value (1 to {d})",
 	"DF_MANUAL_ROLLS.PromptInvalid": "Invalid input. Please enter a d{d} value (1 to {d})",
 	"DF_MANUAL_ROLLS.Settings_Force_Name": "Force manual rolls",
-	"DF_MANUAL_ROLLS.Settings_Force_Hint": "(requires reload) Force everyone to use manual rolls.",
+	"DF_MANUAL_ROLLS.Settings_Force_Hint": "Force everyone to use manual rolls.",
 	"DF_MANUAL_ROLLS.Settings_Flagged_Name": "Flag manual rolls",
 	"DF_MANUAL_ROLLS.Settings_Flagged_Hint": "Add a flag to chat rolls that use manual dice.",
 	"DF_MANUAL_ROLLS.Settings_Enabled_Name": "Use manual rolls",

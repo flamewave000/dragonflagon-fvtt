@@ -9,20 +9,26 @@ declare global {
 String.prototype.replaceAll = function (token: string, replacement: string) { return this.split(token).join(replacement); };
 
 export default class DFManualRolls {
-	static ENABLED = 'manual-rolls-enabled';
-	static FORCED = 'manual-rolls-forced';
-	static FLAGGED = 'manual-rolls-flagged';
-	static FLAVOUR_5E = 'manual-rolls-flavour5e';
+	static GM_STATE = 'gm';
+	static PC_STATE = 'pc';
+	static FLAGGED = 'flagged';
+	static TOGGLED = 'toggled';
 
-	static get enabled() { return SETTINGS.get(DFManualRolls.ENABLED); }
-	static get forced() { return SETTINGS.get(DFManualRolls.FORCED); }
+	// static get gmState() { return SETTINGS.get(DFManualRolls.GM_STATE); }
+	// static get pcState() { return SETTINGS.get(DFManualRolls.PC_STATE); }
 	static get flagged() { return SETTINGS.get(DFManualRolls.FLAGGED); }
+	static get toggled() { return SETTINGS.get(DFManualRolls.TOGGLED); }
+	static setToggled(value: boolean): Promise<boolean> { return SETTINGS.set(DFManualRolls.TOGGLED, value); }
+	static get shouldRollManually() {
+		const state = SETTINGS.get(game.user.isGM ? DFManualRolls.GM_STATE : DFManualRolls.PC_STATE);
+		return state === 'always' || (state === 'toggle' && this.toggled);
+	}
 
 	static patch() {
 		libWrapper.register(SETTINGS.MOD_NAME, 'Roll.prototype._evaluate',
 			async function (this: Roll, wrapper: Function, { minimize = false, maximize = false } = {}): Promise<Roll> {
-				// Ignore Min/Max requests
-				if (minimize || maximize) {
+				// Ignore Min/Max requests and if we are disabled
+				if (!DFManualRolls.shouldRollManually || minimize || maximize) {
 					return wrapper({ minimize, maximize });
 				}
 
@@ -49,10 +55,10 @@ export default class DFManualRolls {
 				/****** DF MANUAL ROLLS MODIFICATION ******/
 				const rollPrompt = new DFRollPrompt({}, !!this.options.flavor ? { title: this.options.flavor } : {});
 
-				this.terms.forEach(term => {
-					if (!(term instanceof DiceTerm)) return;
-					(<any>term).dfmr_prompt = rollPrompt;
-				});
+				for (let term of this.terms) {
+					if (!(term instanceof DiceTerm)) continue;
+					(<any>term).rollPrompt = rollPrompt;
+				}
 
 				// Step 3 - Evaluate remaining terms
 				const promises: Promise<RollTerm>[] = [];
@@ -72,15 +78,12 @@ export default class DFManualRolls {
 
 		libWrapper.register(SETTINGS.MOD_NAME, 'DiceTerm.prototype._evaluate',
 			async function (this: DiceTerm, wrapper: Function, { minimize = false, maximize = false } = {}): Promise<DiceTerm> {
-				// Ignore Min/Max requests
-				if (minimize || maximize)
+				const rollPrompt: DFRollPrompt = (<any>this).rollPrompt;
+				// Ignore Min/Max requests, if we are disabled, or if this dice term does not have a bound DFRollPrompt
+				if (!DFManualRolls.shouldRollManually || !rollPrompt || minimize || maximize)
 					return wrapper(minimize, maximize);
-				const prompt: DFRollPrompt = (<any>this).dfmr_prompt;
-				// If this dice term does not have a bound DFRollPrompt, ignore it
-				if (!prompt)
-					return wrapper(minimize, maximize);
-				const results = await prompt.requestResult(this);
-				results.forEach(x => this.results.push({ result: x, active: true }));
+				const results = await rollPrompt.requestResult(this);
+				for (let x of results) this.results.push({ result: x, active: true })
 				this._evaluateModifiers();
 				return this;
 			}, 'MIXED');

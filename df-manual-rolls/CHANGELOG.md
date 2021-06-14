@@ -1,5 +1,9 @@
 # DF Manual Rolls
 
+## Release 2.1.0 (2021-06-14)
+- Added `MRT` distinction for when a roll group is given a total instead of individual results.
+- Updated settings to provide more granular control of manual rolls for both GM and PC users.
+
 ## Release 2.0.0 (2021-06-13)
 - Completely rebuilt the manual roll system for FoundryVTT 0.8.6
 
