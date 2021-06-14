@@ -6,6 +6,7 @@
 - Added a toggleable option that adds a toggle button to the scene controls to toggle Manual Rolls on or off.
 - Fixed issue where closing a roll request was not resolving the request with RNG.
 - Patched FoundryVTT's Combat Initiative system to use the new Async Rolling.
+- Fixed issue where empty dialogs were shown for rolls that had no "dice" in them.
 
 ## Release 2.0.0 (2021-06-13)
 - Completely rebuilt the manual roll system for FoundryVTT 0.8.6

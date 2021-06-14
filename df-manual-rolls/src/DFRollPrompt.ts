@@ -65,7 +65,10 @@ export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] 
 		}
 		return super.close(options);
 	}
-
+	render(force?: boolean, options?: Application.RenderOptions) {
+		if (this._terms.length == 0) return;
+		return super.render(force, options);
+	}
 	async _render(force?: boolean, options?: Application.RenderOptions) {
 		await super._render(force, options);
 		if (DFRollPrompt.focusInput)
