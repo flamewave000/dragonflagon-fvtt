@@ -1,5 +1,8 @@
 # DF Manual Rolls
 
+## Release 2.0.0 (2021-06-13)
+- Completely rebuilt the manual roll system for FoundryVTT 0.8.6
+
 ## Release 1.2.1 (2021-03-06)
 - Conflict: Quick Rolls on DnD5e systems. Work around has been made available.
 - Work Around: Disable roll prompt flavour text (new setting added for this).

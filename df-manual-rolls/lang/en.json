@@ -7,12 +7,21 @@
 	"DF_MANUAL_ROLLS.Settings_Flagged_Hint": "Add a flag to chat rolls that use manual dice.",
 	"DF_MANUAL_ROLLS.Settings_Enabled_Name": "Use manual rolls",
 	"DF_MANUAL_ROLLS.Settings_Enabled_Hint": "Enter rolls manually instead of using Foundry's random roll calculator.",
-	"DF_MANUAL_ROLLS.Settings_Rollback_Name": "Roll with Foundry if cancelled",
-	"DF_MANUAL_ROLLS.Settings_Rollback_Hint": "When enabled, cancelling the prompt will instead perform a regular roll with Foundry.",
-	"DF_MANUAL_ROLLS.Settings_Flavour5e_Name": "DnD5e: Add flavour text to prompts",
-	"DF_MANUAL_ROLLS.Settings_Flavour5e_Hint": "(requires reload) Add the roll's flavour text to the prompt. This may conflict with other Roll overhaul modules like Quick Rolls.",
 	"DF_MANUAL_ROLLS.Reload_Title": "Reload page?",
 	"DF_MANUAL_ROLLS.Reload_Content": "You changed the forced manual rolls setting which needs the page to be reloaded.",
 	"DF_MANUAL_ROLLS.Flag": "(Manual Roll)",
-	"DF_MANUAL_ROLLS.FVTTAppError": "You cannot use DF Manual Rolls inside the FoundryVTT Desktop App. Please use a browser when playing to use this feature."
+
+	"DF_MANUAL_ROLLS.Prompt_DefaultTitle": "Roll Request",
+	"DF_MANUAL_ROLLS.Prompt_Header_RollTerm": "Roll Term ",
+	"DF_MANUAL_ROLLS.Prompt_Header_Rolls": "Individual Rolls ",
+	"DF_MANUAL_ROLLS.Prompt_Header_Total": "Roll Total",
+
+	"DF_MANUAL_ROLLS.Tooltip_RollTerm": "The Dice Term in the roll being requested.",
+	"DF_MANUAL_ROLLS.Tooltip_Rolls": "Roll result for each individual requested roll.",
+	"DF_MANUAL_ROLLS.Tooltip_Total": "Total value of combined dice to avoid entering the value for each die.",
+
+	"DF_MANUAL_ROLLS.Submit": "Submit",
+	"DF_MANUAL_ROLLS.Placeholder_Roll": ", blank for random",
+	"DF_MANUAL_ROLLS.Placeholder_Total_Pt1": "Total from ",
+	"DF_MANUAL_ROLLS.Placeholder_Total_Pt2": " to "
 }
