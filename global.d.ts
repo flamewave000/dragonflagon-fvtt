@@ -269,7 +269,7 @@ class NumericTerm extends RollTerm {
 }
 
 class Roll {
-	constructor(formula, data={}, options={});
+	constructor(formula, data = {}, options = {});
 	/**
 	 * The original provided data object which substitutes into attributes of the roll formula
 	 * @type {Object}
@@ -341,7 +341,7 @@ class Roll {
 	 * @param {boolean} [multiplyNumeric]  Apply multiplication factor to numeric scalar terms
 	 * @return {Roll}             The altered Roll expression
 	 */
-	alter(multiply, add, {multiplyNumeric=false}={});
+	alter(multiply, add, { multiplyNumeric = false } = {});
 	/**
 	 * Clone the Roll instance, returning a new Roll instance that has not yet been evaluated.
 	 * @return {Roll}
@@ -362,21 +362,21 @@ class Roll {
 	 * console.log(r.result); // 5 + 4 + 2
 	 * console.log(r.total);  // 11
 	 */
-	evaluate({minimize=false, maximize=false, async}={});
+	evaluate({ minimize = false, maximize = false, async } = {});
 	/**
 	 * Evaluate the roll asynchronously.
 	 * A temporary helper method used to migrate behavior from 0.7.x (sync by default) to 0.9.x (async by default).
 	 * @returns {Promise<Roll>}
 	 * @private
 	 */
-	async _evaluate({minimize=false, maximize=false}={});
+	async _evaluate({ minimize = false, maximize = false } = {});
 	/**
 	 * Evaluate the roll synchronously.
 	 * A temporary helper method used to migrate behavior from 0.7.x (sync by default) to 0.9.x (async by default).
 	 * @returns {Roll}
 	 * @private
 	 */
-	_evaluateSync({minimize=false, maximize=false}={});
+	_evaluateSync({ minimize = false, maximize = false } = {});
 	/**
 	 * Safely evaluate the final total result for the Roll using its component terms.
 	 * @returns {number}    The evaluated total
@@ -387,14 +387,14 @@ class Roll {
 	 * Alias for evaluate.
 	 * @see {Roll#evaluate}
 	 */
-	roll(options={});
+	roll(options = {});
 	/**
 	 * Create a new Roll object using the original provided formula and data.
 	 * Each roll is immutable, so this method returns a new Roll instance using the same data.
 	 * @param {object} [options={}]     Evaluation options passed to Roll#evaluate
 	 * @return {Roll}                   A new Roll object, rolled using the same formula and data
 	 */
-	reroll(options={});
+	reroll(options = {});
 	/**
 	 * A factory method which constructs a Roll instance using the default configured Roll class.
 	 * @param {string} formula        The formula used to create the Roll instance
@@ -402,7 +402,7 @@ class Roll {
 	 * @param {object} [options={}]   Additional options which modify or describe this Roll
 	 * @return {Roll}                 The constructed Roll instance
 	 */
-	static create(formula, data={}, options={});
+	static create(formula, data = {}, options = {});
 	/**
 	 * Transform an array of RollTerm objects into a cleaned string formula representation.
 	 * @param {RollTerm[]} terms      An array of terms to represent as a formula
@@ -428,7 +428,7 @@ class Roll {
 	 * @param {number} n          The number of simulations
 	 * @return {number[]}         The rolled totals
 	 */
-	static simulate(formula, n=10000);
+	static simulate(formula, n = 10000);
 	/**
 	 * Parse a formula by following an order of operations:
 	 *
@@ -454,7 +454,7 @@ class Roll {
 	 * @param {boolean} [warn]          Display a warning notification when encountering an un-matched key.
 	 * @static
 	 */
-	static replaceFormulaData(formula, data, {missing, warn=false}={});
+	static replaceFormulaData(formula, data, { missing, warn = false } = {});
 	/**
 	 * Validate that a provided roll formula can represent a valid
 	 * @param {string} formula    A candidate formula to validate
@@ -488,7 +488,7 @@ class Roll {
 	 * @returns {string[]}          An array of terms, split on dice pool terms
 	 * @private
 	 */
-	static _splitGroup(_formula, {openRegexp, closeRegexp, openSymbol, closeSymbol, onClose}={});
+	static _splitGroup(_formula, { openRegexp, closeRegexp, openSymbol, closeSymbol, onClose } = {});
 	/**
 	 * Split a formula by identifying arithmetic terms
 	 * @param {string} _formula                 The raw formula to split
@@ -521,7 +521,7 @@ class Roll {
 	 * @returns {RollTerm}          A classified RollTerm instance
 	 * @private
 	 */
-	static _classifyStringTerm(term, {intermediate=true, prior, next}={});
+	static _classifyStringTerm(term, { intermediate = true, prior, next } = {});
 	/**
 	 * Render the tooltip HTML for a Roll instance
 	 * @return {Promise<string>}      The rendered HTML tooltip as a string
@@ -532,7 +532,7 @@ class Roll {
 	 * @param {object} [chatOptions]      An object configuring the behavior of the resulting chat message.
 	 * @return {Promise<string>}          The rendered HTML template as a string
 	 */
-	async render(chatOptions={});
+	async render(chatOptions = {});
 	/**
 	 * Transform a Roll instance into a ChatMessage, displaying the roll result.
 	 * This function can either create the ChatMessage directly, or return the data object that will be used to create.
@@ -545,7 +545,7 @@ class Roll {
 	 * @return {Promise<ChatMessage>}       A promise which resolves to the created ChatMessage entity, if create is true
 	 *                                      or the Object of prepared chatData otherwise.
 	 */
-	async toMessage(messageData={}, {rollMode, create=true}={});
+	async toMessage(messageData = {}, { rollMode, create = true } = {});
 	/**
 	 * Expand an inline roll element to display it's contained dice result as a tooltip
 	 * @param {HTMLAnchorElement} a     The inline-roll button
@@ -558,3 +558,22 @@ class Roll {
 	 */
 	static collapseInlineResult(a);
 }
+declare namespace Combat {
+	interface Combatant {
+		_id: string;
+		id: string;
+		defeated?: boolean;
+		flags: Record<string, unknown>;
+		hidden?: boolean;
+		img: string;
+		initiative: number | null;
+		name: string;
+		owner: boolean;
+		permission: number;
+		players: User[];
+		resource?: number;
+		visible: boolean;
+	}
+}
+
+const foundry: any;

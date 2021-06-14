@@ -35,5 +35,7 @@
 	"DF_MANUAL_ROLLS.Submit": "Submit",
 	"DF_MANUAL_ROLLS.Placeholder_Roll": ", blank for random",
 	"DF_MANUAL_ROLLS.Placeholder_Total_Pt1": "Total from ",
-	"DF_MANUAL_ROLLS.Placeholder_Total_Pt2": " to "
+	"DF_MANUAL_ROLLS.Placeholder_Total_Pt2": " to ",
+
+	"DF_MANUAL_ROLLS.InitiativeRollFlavour": "Initiative Roll for \"{{name}}\""
 }
