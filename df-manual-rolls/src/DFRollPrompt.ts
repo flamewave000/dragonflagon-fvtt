@@ -16,9 +16,13 @@ interface RenderData {
 
 export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] }> {
 
+	static readonly PREF_FOCUS_INPUT = 'focus-input';
+
 	private _nextId = 0;
 	private _terms: RollPromptData[] = [];
 	private _rolled = false;
+
+	static get focusInput(): boolean { return SETTINGS.get(DFRollPrompt.PREF_FOCUS_INPUT); }
 
 	static get defaultOptions(): FormApplication.Options {
 		return <FormApplication.Options>mergeObject(
@@ -61,7 +65,13 @@ export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] 
 		}
 		return super.close(options);
 	}
-	protected _updateObject(event: Event, formData?: { [key: string]: string | null }): Promise<unknown> {
+
+	async _render(force?: boolean, options?: Application.RenderOptions) {
+		await super._render(force, options);
+		if (DFRollPrompt.focusInput)
+			this.element.find('input').trigger('focus');
+	}
+	protected _updateObject(_: Event, formData?: { [key: string]: string | null }): Promise<unknown> {
 		for (let x of this._terms) {
 			const results: number[] = [];
 			const total = formData[`${x.id}-total`];

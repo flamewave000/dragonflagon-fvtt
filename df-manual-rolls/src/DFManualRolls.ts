@@ -9,19 +9,19 @@ declare global {
 String.prototype.replaceAll = function (token: string, replacement: string) { return this.split(token).join(replacement); };
 
 export default class DFManualRolls {
-	static GM_STATE = 'gm';
-	static PC_STATE = 'pc';
-	static FLAGGED = 'flagged';
-	static TOGGLED = 'toggled';
+	static PREF_GM_STATE = 'gm';
+	static PREF_PC_STATE = 'pc';
+	static PREF_FLAGGED = 'flagged';
+	static PREF_TOGGLED = 'toggled';
 
-	static get flagged(): boolean { return SETTINGS.get(DFManualRolls.FLAGGED); }
-	static get toggled(): boolean { return SETTINGS.get(DFManualRolls.TOGGLED); }
-	static setToggled(value: boolean): Promise<boolean> { return SETTINGS.set(DFManualRolls.TOGGLED, value); }
+	static get flagged(): boolean { return SETTINGS.get(DFManualRolls.PREF_FLAGGED); }
+	static get toggled(): boolean { return SETTINGS.get(DFManualRolls.PREF_TOGGLED); }
+	static setToggled(value: boolean): Promise<boolean> { return SETTINGS.set(DFManualRolls.PREF_TOGGLED, value); }
 	static get toggleable() {
-		return SETTINGS.get(game.user.isGM ? DFManualRolls.GM_STATE : DFManualRolls.PC_STATE) === 'toggle';
+		return SETTINGS.get(game.user.isGM ? DFManualRolls.PREF_GM_STATE : DFManualRolls.PREF_PC_STATE) === 'toggle';
 	}
 	static get shouldRollManually() {
-		const state = SETTINGS.get(game.user.isGM ? DFManualRolls.GM_STATE : DFManualRolls.PC_STATE);
+		const state = SETTINGS.get(game.user.isGM ? DFManualRolls.PREF_GM_STATE : DFManualRolls.PREF_PC_STATE);
 		return state === 'always' || (state === 'toggle' && this.toggled);
 	}
 

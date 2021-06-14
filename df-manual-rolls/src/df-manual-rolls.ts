@@ -1,11 +1,12 @@
 import DFManualRolls from "./DFManualRolls.js";
+import DFRollPrompt from "./DFRollPrompt.js";
 import SETTINGS from "./lib/Settings.js";
 
 SETTINGS.init('df-manual-rolls');
 
 Hooks.on('init', function () {
 
-	SETTINGS.register(DFManualRolls.GM_STATE, {
+	SETTINGS.register(DFManualRolls.PREF_GM_STATE, {
 		config: true,
 		scope: 'world',
 		name: 'DF_MANUAL_ROLLS.Settings_GM_Name',
@@ -20,7 +21,7 @@ Hooks.on('init', function () {
 		onChange: () => { ui.controls.initialize() }
 	});
 
-	SETTINGS.register(DFManualRolls.PC_STATE, {
+	SETTINGS.register(DFManualRolls.PREF_PC_STATE, {
 		config: true,
 		scope: 'world',
 		name: 'DF_MANUAL_ROLLS.Settings_PC_Name',
@@ -35,7 +36,16 @@ Hooks.on('init', function () {
 		onChange: () => { ui.controls.initialize() }
 	});
 
-	SETTINGS.register(DFManualRolls.FLAGGED, {
+	SETTINGS.register(DFRollPrompt.PREF_FOCUS_INPUT, {
+		config: true,
+		scope: 'client',
+		name: 'DF_MANUAL_ROLLS.Settings_FocusInput_Name',
+		hint: 'DF_MANUAL_ROLLS.Settings_FocusInput_Hint',
+		type: Boolean,
+		default: true
+	});
+
+	SETTINGS.register(DFManualRolls.PREF_FLAGGED, {
 		name: "DF_MANUAL_ROLLS.Settings_Flagged_Name",
 		hint: "DF_MANUAL_ROLLS.Settings_Flagged_Hint",
 		scope: 'world',
@@ -44,7 +54,7 @@ Hooks.on('init', function () {
 		default: false
 	});
 
-	SETTINGS.register(DFManualRolls.TOGGLED, {
+	SETTINGS.register(DFManualRolls.PREF_TOGGLED, {
 		config: false,
 		scope: 'client',
 		type: Boolean,

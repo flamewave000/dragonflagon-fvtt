@@ -10,6 +10,8 @@
 	"DF_MANUAL_ROLLS.Settings_PC_Hint": "Manual Roll setting for all PC roles.",
 	"DF_MANUAL_ROLLS.Settings_Flagged_Name": "Flag manual rolls",
 	"DF_MANUAL_ROLLS.Settings_Flagged_Hint": "Add a flag to chat rolls that use manual dice.",
+	"DF_MANUAL_ROLLS.Settings_FocusInput_Name": "Auto-Focus First Input Field",
+	"DF_MANUAL_ROLLS.Settings_FocusInput_Hint": "If enabled, will set the focus to the first input field in the roll request window.",
 
 	"DF_MANUAL_ROLLS.Setting_Options_Disabled": "Disabled",
 	"DF_MANUAL_ROLLS.Setting_Options_Always": "Always use manual rolls",
