@@ -18,6 +18,7 @@ export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] 
 
 	private _nextId = 0;
 	private _terms: RollPromptData[] = [];
+	private _rolled = false;
 
 	static get defaultOptions(): FormApplication.Options {
 		return <FormApplication.Options>mergeObject(
@@ -25,7 +26,8 @@ export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] 
 			{
 				title: game.i18n.localize("DF_MANUAL_ROLLS.Prompt_DefaultTitle"),
 				template: `modules/${SETTINGS.MOD_NAME}/templates/roll-prompt.hbs`,
-				width: 400
+				width: 400,
+
 			});
 	}
 
@@ -45,9 +47,22 @@ export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] 
 		}
 		return { terms: data };
 	}
-
+	close(options?: FormApplication.CloseOptions): Promise<void> {
+		// If we have not actually rolled anything yet, we need to resolve these with RNG values
+		if (!this._rolled) {
+			this._rolled = true;
+			for (let x of this._terms) {
+				const results: number[] = [];
+				for (let c = 0; c < x.term.number; c++) {
+					results.push(Math.ceil(CONFIG.Dice.randomUniform() * x.term.faces));
+				}
+				x.res(results);
+			}
+		}
+		return super.close(options);
+	}
 	protected _updateObject(event: Event, formData?: { [key: string]: string | null }): Promise<unknown> {
-		this._terms.forEach(x => {
+		for (let x of this._terms) {
 			const results: number[] = [];
 			const total = formData[`${x.id}-total`];
 			// If a total input was defined and given, it overrides everything else.
@@ -84,7 +99,8 @@ export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] 
 				}
 			}
 			x.res(results);
-		});
+		}
+		this._rolled = true;
 		return undefined;
 	}
 

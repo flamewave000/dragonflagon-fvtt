@@ -16,7 +16,7 @@
 			<tr>
 				<td>{{faces}}</td>
 				<td><input name="{{id}}-{{idx}}" type="number" min="1" max="{{term.faces}}" tabindex="1{{id}}{{idx}}"
-						step="1" placeholder="1-{{term.faces}}{{localize "DF_MANUAL_ROLLS.Placeholder_Roll"}}"{{#if (eq id 0)}}{{#if (eq idx 0)}} autofocus{{/if}}{{/if}}></input></td>
+						step="1" placeholder="1-{{term.faces}}{{localize "DF_MANUAL_ROLLS.Placeholder_Roll"}}"></input></td>
 				<td>
 					{{#if hasTotal}}
 					<input name="{{id}}-total" type="number" min="{{term.number}}" max="{{mul term.number term.faces}}"

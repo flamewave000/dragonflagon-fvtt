@@ -14,11 +14,12 @@ export default class DFManualRolls {
 	static FLAGGED = 'flagged';
 	static TOGGLED = 'toggled';
 
-	// static get gmState() { return SETTINGS.get(DFManualRolls.GM_STATE); }
-	// static get pcState() { return SETTINGS.get(DFManualRolls.PC_STATE); }
-	static get flagged() { return SETTINGS.get(DFManualRolls.FLAGGED); }
-	static get toggled() { return SETTINGS.get(DFManualRolls.TOGGLED); }
+	static get flagged(): boolean { return SETTINGS.get(DFManualRolls.FLAGGED); }
+	static get toggled(): boolean { return SETTINGS.get(DFManualRolls.TOGGLED); }
 	static setToggled(value: boolean): Promise<boolean> { return SETTINGS.set(DFManualRolls.TOGGLED, value); }
+	static get toggleable() {
+		return SETTINGS.get(game.user.isGM ? DFManualRolls.GM_STATE : DFManualRolls.PC_STATE) === 'toggle';
+	}
 	static get shouldRollManually() {
 		const state = SETTINGS.get(game.user.isGM ? DFManualRolls.GM_STATE : DFManualRolls.PC_STATE);
 		return state === 'always' || (state === 'toggle' && this.toggled);

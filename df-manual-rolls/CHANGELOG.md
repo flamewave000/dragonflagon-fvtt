@@ -3,6 +3,8 @@
 ## Release 2.1.0 (2021-06-14)
 - Added `MRT` distinction for when a roll group is given a total instead of individual results.
 - Updated settings to provide more granular control of manual rolls for both GM and PC users.
+- Added a toggleable option that adds a toggle button to the scene controls to toggle Manual Rolls on or off.
+- Fixed issue where closing a roll request was not resolving the request with RNG.
 
 ## Release 2.0.0 (2021-06-13)
 - Completely rebuilt the manual roll system for FoundryVTT 0.8.6

@@ -8,29 +8,31 @@ Hooks.on('init', function () {
 	SETTINGS.register(DFManualRolls.GM_STATE, {
 		config: true,
 		scope: 'world',
-		name: 'For All GM',
-		hint: 'Setting for all GM roles.',
+		name: 'DF_MANUAL_ROLLS.Settings_GM_Name',
+		hint: 'DF_MANUAL_ROLLS.Settings_GM_Hint',
 		type: String,
 		default: 'disabled',
 		choices: {
-			disabled: 'Disabled',
-			always: 'Always use manual rolls',
-			toggle: 'Toggle manual rolls (see documentation)'
-		}
+			disabled: 'DF_MANUAL_ROLLS.Setting_Options_Disabled',
+			always: 'DF_MANUAL_ROLLS.Setting_Options_Always',
+			toggle: 'DF_MANUAL_ROLLS.Setting_Options_Toggle'
+		},
+		onChange: () => { ui.controls.initialize() }
 	});
 
 	SETTINGS.register(DFManualRolls.PC_STATE, {
 		config: true,
 		scope: 'world',
-		name: 'For All PC',
-		hint: 'Setting for all PC roles.',
+		name: 'DF_MANUAL_ROLLS.Settings_PC_Name',
+		hint: 'DF_MANUAL_ROLLS.Settings_PC_Hint',
 		type: String,
 		default: 'disabled',
 		choices: {
-			disabled: 'Disabled',
-			always: 'Always use manual rolls',
-			toggle: 'Toggle manual rolls (see documentation)'
-		}
+			disabled: 'DF_MANUAL_ROLLS.Setting_Options_Disabled',
+			always: 'DF_MANUAL_ROLLS.Setting_Options_Always',
+			toggle: 'DF_MANUAL_ROLLS.Setting_Options_Toggle'
+		},
+		onChange: () => { ui.controls.initialize() }
 	});
 
 	SETTINGS.register(DFManualRolls.FLAGGED, {
@@ -40,6 +42,30 @@ Hooks.on('init', function () {
 		config: true,
 		type: Boolean,
 		default: false
+	});
+
+	SETTINGS.register(DFManualRolls.TOGGLED, {
+		config: false,
+		scope: 'client',
+		type: Boolean,
+		default: false,
+		onChange: (value: Boolean) => {
+			const button = $('ol#controls>li#df-manual-roll-toggle');
+			if (value) button.addClass('active');
+			else button.removeClass('active');
+		}
+	})
+	Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
+		if (!DFManualRolls.toggleable) return;
+		controls.find(x => x.name === 'token').tools.push({
+			icon: 'fas fa-dice-d20',
+			name: 'manualRoll',
+			title: 'DF_MANUAL_ROLLS.SceneControlTitle',
+			visible: DFManualRolls.toggleable,
+			toggle: true,
+			active: DFManualRolls.toggled,
+			onClick: (toggled: boolean) => DFManualRolls.setToggled(toggled)
+		});
 	});
 });
 Hooks.on('ready', function () {
