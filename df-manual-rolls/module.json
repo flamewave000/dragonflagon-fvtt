@@ -5,7 +5,7 @@
 	"version": "{{version}}",
 	"author": "flamewave000#6766",
 	"minimumCoreVersion": "0.8.6",
-	"compatibleCoreVersion": "0.8.6",
+	"compatibleCoreVersion": "0.8.7",
 	"esmodules": "{{sources}}",
 	"dependencies": [ { "name": "lib-wrapper" } ],
 	"languages": [

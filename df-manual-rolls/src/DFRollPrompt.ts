@@ -80,16 +80,15 @@ export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] 
 			const total = formData[`${x.id}-total`];
 			// If a total input was defined and given, it overrides everything else.
 			if (total !== undefined && total !== null) {
-				const value = parseInt(total);
-				const base = Math.ceil(value / x.term.number);
+				var value = parseInt(total);
+				var base = 0;
 				// Append dice with the base average of the total.
 				for (let c = 0; c < x.term.number - 1; c++) {
+					base = Math.ceil(value / (x.term.number - results.length));
+					value -= base;
 					results.push(base);
 				}
-				// If the final roll is below the base average, calculate it and add it in
-				if (value % base !== 0) results.push(value % base);
-				// Otherwise the base was evenly divided and we can just add the base for the final roll
-				else results.push(base);
+				results.push(value);
 				if (DFManualRolls.flagged)
 					x.term.options.flavor = (x.term.options.flavor || '') + '[MRT]';
 			} else {

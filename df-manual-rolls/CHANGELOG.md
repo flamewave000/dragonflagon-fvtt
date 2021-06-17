@@ -1,5 +1,8 @@
 # DF Manual Rolls
 
+## Release 2.1.1 (2021-06-17)
+- Fixed Total Roll distribution algorithm. It was distributing the roll poorly for large dice counts and would end up with the wrong total.
+
 ## Release 2.1.0 (2021-06-14)
 - Added `MRT` distinction for when a roll group is given a total instead of individual results.
 - Updated settings to provide more granular control of manual rolls for both GM and PC users.
