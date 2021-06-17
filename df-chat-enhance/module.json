@@ -15,7 +15,8 @@
 	"languages": [
 		{ "lang": "en", "name": "English", "path": "lang/en.json" },
 		{ "lang": "pt-BR", "name": "Português (Brasil)", "path": "lang/pt-BR.json" },
-		{ "lang": "cn", "name": "中文", "path": "lang/cn.json" }
+		{ "lang": "cn", "name": "中文", "path": "lang/cn.json" },
+		{ "lang": "zh-tw", "name": "繁體中文", "path": "lang/zh-tw.json" }
 	],
 	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}",
 	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/{{name}}/LICENSE",
