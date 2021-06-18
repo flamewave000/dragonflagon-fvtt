@@ -1,5 +1,9 @@
 # DF Settings Clarity
 
+## Release 3.1.1 (2021-06-18)
+- Fixed height issues in 0.8.x where the save button was being pushed off the screen.
+- Corrected the styling to match TidyUI when it is enabled.
+
 ## Release 3.1.0 (2021-03-22)
 - Added a coloured indicator to the left of results that show how strong the match is compared to the others. Green is the best match, Red is the worst, colours inbetween green and red lay somewhere inbetween best and worst.
 - Adjusted search strictness. Now it goes from strict to lax as you add text. Fewer letters require a more perfect match, while a lot of text requires a much more relaxed match.

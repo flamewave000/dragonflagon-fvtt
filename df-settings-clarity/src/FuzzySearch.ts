@@ -1,5 +1,16 @@
 import { } from "./lib/fuzzysort.js";
 
+declare global {
+	interface Application {
+		_recalculateDimensions(): void;
+	}
+}
+
+(<any>Application.prototype)._recalculateDimensions = function () {
+	this.element[0].style.height = '';
+	this.setPosition({});
+}
+
 abstract class SettingsProcessor {
 	static readonly DELIM = ' `````` ';
 	abstract processSettings(html: JQuery<HTMLElement>): void;
@@ -68,7 +79,7 @@ class DefaultSettingsProcessor extends SettingsProcessor {
 	}
 	injectSearch(html: JQuery<HTMLElement>): JQuery<HTMLInputElement> {
 		const search = <JQuery<HTMLInputElement>>$(`
-<div id="dfsc_search">
+<div id="dfsc_search" class="searchBox">
 	<input type="text" placeholder="${game.i18n.localize('DF_SETTINGS_CLARITY.SearchPlaceholder')}">
 	<button class="dfsc_clear-search" style="display:none"><i class="fas fa-times"></i></button>
 </div>`);
@@ -88,7 +99,6 @@ class DefaultSettingsProcessor extends SettingsProcessor {
 			return;
 		}
 		const results = fuzzysort.go(pattern, this._settings, this._getOptions(pattern));
-		console.log(results.map(x => x.score));
 		for (let c = 0; c < this._settings.length; c++) {
 			const resultIdx = results.findIndex(x => x.obj === this._settings[c]);
 			var text: string;
@@ -152,11 +162,12 @@ class TidyUiSettingsProcessor extends SettingsProcessor {
 	}
 	injectSearch(html: JQuery<HTMLElement>): JQuery<HTMLInputElement> {
 		const search = <JQuery<HTMLInputElement>>$(`
-<div id="dfsc_search" class="tidy-ui">
+<div id="dfsc_search" class="searchBox tidy-ui">
 	<input type="text" placeholder="${game.i18n.localize('DF_SETTINGS_CLARITY.SearchPlaceholder')}">
 	<button class="dfsc_clear-search" style="display:none"><i class="fas fa-times"></i></button>
 </div>`);
 		html.find('#searchField').after(search);
+		html.find('#config-tabs .settings-list')[2].style.maxHeight = 'calc(100vh - 227px)';
 		return search;
 	}
 	performSearch(pattern: string) {
@@ -200,7 +211,7 @@ class TidyUiSettingsProcessor extends SettingsProcessor {
 export default class FuzzySearch {
 	private static _settingsProcessor: SettingsProcessor = null;
 	static init() {
-		Hooks.on('renderSettingsConfig', (_settingsConfig, html: JQuery<HTMLElement>, _data) => {
+		Hooks.on('renderSettingsConfig', (_settingsConfig: SettingsConfig, html: JQuery<HTMLElement>, _data) => {
 			// Process entire settings list
 			// First detect if Tidy UI is installed
 			if (game.modules.get('tidy-ui_game-settings')?.active)
@@ -226,6 +237,8 @@ export default class FuzzySearch {
 				$(this).hide();
 				FuzzySearch._settingsProcessor.performSearch('');
 			});
+
+			_settingsConfig._recalculateDimensions();
 		});
 	}
 }
