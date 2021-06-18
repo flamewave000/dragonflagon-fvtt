@@ -20,6 +20,18 @@ These indicators will be in the same order as the dice rolls.
 
 ![Core FoundryVTT Labels](../.assets/df-manual-rolls-labels.png)
 
+## Settings Options
+
+You can specify the manual rolling behaviour for GMs and for PCs separately. This is useful if you want to use manual rolling for yourself and not your PCs, or vice versa. The three options for each setting are as follows:
+
+- **Disabled** - Will not perform any Manual Rolls for the user.
+- **Always** - All rolls that are made will always prompt for manual input
+- **Toggleable** - Will add a new button to the Scene Controls that can be used to quickly toggle Manual Rolls on or off for yourself.
+
+|Module Settings|Toggle Button|
+|:-:|:-:|
+|![Module Settings](../.assets/df-manual-rolls-settings.png)|![Toggle Button in the Scene Controls](../.assets/df-manual-rolls-toggle.png)|
+
 ## Potential Conflicts
 
 There is always a potential conflict with any other module that modifies rolls. As of right now, the following popular modules have been tested and do not appear to have any issues. But if any do, please let me know via Discord or log an issue on GitHub.
