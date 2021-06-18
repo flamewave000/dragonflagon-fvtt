@@ -1,4 +1,5 @@
 {
+	"DF_SETTINGS_CLARITY.errorLibWrapperMissing": "'DF Settings Clarity' requires the 'libWrapper' module. Please install and activate 'libWrapper'.",
 	"DF_SETTINGS_CLARITY.Scope_world": "GM Only",
 	"DF_SETTINGS_CLARITY.Scope_client": "Per User",
 	"DF_SETTINGS_CLARITY.SearchPlaceholder": "Start typing to search for a setting",

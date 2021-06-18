@@ -1,8 +1,10 @@
 # DF Settings Clarity
 
-## Release 3.1.1 (2021-06-18)
+## Release 3.2.0 (2021-06-18)
 - Fixed height issues in 0.8.x where the save button was being pushed off the screen.
 - Corrected the styling to match TidyUI when it is enabled.
+- Added dependency for libWrapper to add better core foundry patching.
+- Settings labelling will now respect the configured Settings Permissions. So if you have an appropriate roll for changing world settings, you will now get labels.
 
 ## Release 3.1.0 (2021-03-22)
 - Added a coloured indicator to the left of results that show how strong the match is compared to the others. Green is the best match, Red is the worst, colours inbetween green and red lay somewhere inbetween best and worst.
