@@ -2,6 +2,26 @@
 
 Adds various Quality of Life improvements. These are all small, light-weight, adjustments that didn't fit in my other larger modules that help work out some of the kinks in Core FoundryVTT.
 
+Each feature is not only self-contained, but when disabled will completely and cleanly remove itself from Foundry. This is so that if any one feature happens to conflict with another module, disabling it guarantees the conflict will be resolved. There are currently no reported conflicts though, so have fun!
+
+##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
+
+## Auto-Target Tokens with Template
+
+If enabled will templates will automatically mark tokens that are inside the template area of effect as "Targetted". This is very useful for quickly placing spell templates and be able to apply the spells affect to the targeted tokens.
+
+![Auto-Target Tokens](../.assets/df-qol-auto-target.gif)
+
+## D&D 5e Style Templates
+
+The D&D 5e PHB states that an space touched by a spell's shape is affected, with the exception of Circular attacks (Sphere/Circle) in-which the square's center must be within the area of effect to targetted. Foundry by default instead uses requires the center of a square to be inside for ALL measure templates to be targetted.
+
+When enabled, the Core Foundry template measurements will be overridden to follow D&D 5e's style of template targetting.
+
+|Foundry Core|D&D 5e|
+|:-:|:-:|
+|![Foundry Core Templates](../.assets/df-qol-templates-core.png)|![D&D5e Style Templates](../.assets/df-qol-templates-dnd5e.png)|
+
 ## Quick Table Rolling
 
 This is a very feature that adds a "Roll on the table" option to the context menu of RollTable entities. This allows you to roll the table without opening the Roll Table sheet and clicking the Roll button there.
@@ -19,13 +39,6 @@ When creating an Entity (Actors, Items, Tables, Scenes, Folders, etc.) this will
 Folders for the various entities can have custom background colours, but sometimes that colour does not contrast well with the unchanging text colour. This feature allows you to customize the text colour as well.
 
 ![Folder Config](../.assets/df-qol-folder-config.png)
-
-
-## Better Toggle Styling
-
-The toggle buttons in the scene controls have the same look for both Hovering over with the mouse as when they are toggled on. This is frustrating as you cannot tell if the button is on or off while the mouse is hovering over it. Also, the difference between active and inactive is too subtle and is not easy to discern at a glance. This feature adds a distinct deeper purple colouring to the toggle when it is toggled on.
-
-![Folder Config](../.assets/df-qol-better-toggle.gif)
 
 ## Vehicle Cargo Capacity Unit
 
@@ -47,7 +60,12 @@ You can also now change the duration of the Day/Night transition. The FoundryVTT
 
 ![Day/Night Duration](../.assets/df-qol-day-night-duration.png)
 
-##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
+
+## Better Toggle Styling
+
+The toggle buttons in the scene controls have the same look for both Hovering over with the mouse as when they are toggled on. This is frustrating as you cannot tell if the button is on or off while the mouse is hovering over it. Also, the difference between active and inactive is too subtle and is not easy to discern at a glance. This feature adds a distinct deeper purple colouring to the toggle when it is toggled on.
+
+![Folder Config](../.assets/df-qol-better-toggle.gif)
 
 ## Changelog
 

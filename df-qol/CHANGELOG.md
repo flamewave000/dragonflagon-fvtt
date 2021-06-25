@@ -3,6 +3,7 @@
 ## Release 1.4.0 (2021-06-24)
 - Complete reorganization of the QoL code base. Cleaned it up and made it easier to maintain.
 - New Feature: When enabled, Templates will now Auto-Target tokens that are hit.
+- New Feature: Option added to follow the standard 5e rules for templates where **ANY** square touched by a template should be selected. The only exception being the Circle/Sphere template which must have the centre of the square inside to be counted.
 
 ## Release 1.3.0 (2021-06-07)
 - Migrated to FoundryVTT 0.8.6
