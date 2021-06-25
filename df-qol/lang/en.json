@@ -1,32 +1,48 @@
 {
 	"DF-QOL.errorLibWrapperMissing": "'DF Quality of Life' requires the 'libWrapper' module. Please install and activate 'libWrapper'.",
-
-	"DRAGON_FLAGON_QOL.QuickRollTitle": "Enable Roll Table menu option to quick roll",
-	"DRAGON_FLAGON_QOL.QuickRollHint": "(Requires reload) Adds a menu option to Roll Tables in the Roll Table sidebar to roll on the table without having to open the table window.",
-	"DRAGON_FLAGON_QOL.AutoFocusTitle": "Enable Auto-Focusing text field in Entity dialogs",
-	"DRAGON_FLAGON_QOL.AutoFocusHint": "When creating an Entity (Actors, Items, Tables, Scenes, etc.) this will auto-select the Name text box so you don't have to click it. Just open the dialog and start typing!",
-	"DRAGON_FLAGON_QOL.FolderTextColourName": "Enable Folder Text Colour",
-	"DRAGON_FLAGON_QOL.FolderTextColourHint": "Add ability to set a custom text colour for entity folders.",
-	"DRAGON_FLAGON_QOL.BetterToggleName": "Enable Better Scene Control Toggle Highlight",
-	"DRAGON_FLAGON_QOL.BetterToggleHint": "Changes the scene controls so that when the purple toggle buttons are turned on, it is more visible.",
-
-	"DRAGON_FLAGON_QOL.QuickRollMenuItem": "Roll on the table",
-	
-	"DRAGON_FLAGON_QOL.ReloadGameTitle": "Reload game?",
-	"DRAGON_FLAGON_QOL.ReloadGameContent": "<p style=\"margin:1em 0\">Some changes made will only go into effect on a reload. Would you like to reload now?</p>",
-
-	"DRAGON_FLAGON_QOL.VehicleUnit_SettingName": "Enable Unit of weight for Vehicles",
-	"DRAGON_FLAGON_QOL.VehicleUnit_SettingHint": "Enables ability to change the base unit for weight used by vehicles",
-	"DRAGON_FLAGON_QOL.VehicleUnit_ConfigName": "Weight Unit",
-	"DRAGON_FLAGON_QOL.VehicleUnit_ConfigHint": "Unit of measurement to be used for weight calculation.",
-	"DRAGON_FLAGON_QOL.VehicleUnit_Units_LongTon": "Long Ton (2240 lb.)",
-	"DRAGON_FLAGON_QOL.VehicleUnit_Units_ShortTon": "Short Ton (2000 lb.)",
-	"DRAGON_FLAGON_QOL.VehicleUnit_Units_Pounds": "Pounds (1 lb.)",
-	"DRAGON_FLAGON_QOL.VehicleUnit_ConvertTitle": "Convert Cargo Capacity",
-	"DRAGON_FLAGON_QOL.VehicleUnit_ConvertContent": "Would you like to convert the current cargo capacity from '{{OLD}}' to '{{NEW}}'?",
-
-	"DRAGON_FLAGON_QOL.DayNightProgress_SettingName": "Display Day/Night Transition Progress",
-	"DRAGON_FLAGON_QOL.DayNightProgress_SettingHint": "When you run the animated Day/Night transition, enabling this will display the progress bar showing the progress from start to finish of the animation.",
-	"DRAGON_FLAGON_QOL.DayNightDuration_SettingName": "Day/Night Transition Duration (Seconds)",
-	"DRAGON_FLAGON_QOL.DayNightDuration_SettingHint": "The duration of time it takes for the Day/Night transition animation to complete. This is in Seconds (1-60 seconds)"
+	"DRAGON_FLAGON_QOL": {
+		"QuickRoll": {
+			"Title": "Enable Roll Table menu option to quick roll",
+			"Hint": "(Requires reload) Adds a menu option to Roll Tables in the Roll Table sidebar to roll on the table without having to open the table window.",
+			"MenuItem": "Roll on the table"
+		},
+		"AutoFocus": {
+			"Title": "Enable Auto-Focusing text field in Entity dialogs",
+			"Hint": "When creating an Entity (Actors, Items, Tables, Scenes, etc.) this will auto-select the Name text box so you don't have to click it. Just open the dialog and start typing!"
+		},
+		"FolderTextColour": {
+			"Name": "Enable Folder Text Colour",
+			"Hint": "Add ability to set a custom text colour for entity folders."
+		},
+		"BetterToggle": {
+			"Name": "Enable Better Scene Control Toggle Highlight",
+			"Hint": "Changes the scene controls so that when the purple toggle buttons are turned on, it is more visible."
+		},
+		"ReloadGame": {
+			"Title": "Reload game?",
+			"Content": "<p style=\"margin:1em 0\">Some changes made will only go into effect on a reload. Would you like to reload now?</p>"
+		},
+		"VehicleUnit": {
+			"SettingName": "Enable Unit of weight for Vehicles",
+			"SettingHint": "Enables ability to change the base unit for weight used by vehicles",
+			"ConfigName": "Weight Unit",
+			"ConfigHint": "Unit of measurement to be used for weight calculation.",
+			"Units_LongTon": "Long Ton (2240 lb.)",
+			"Units_ShortTon": "Short Ton (2000 lb.)",
+			"Units_Pounds": "Pounds (1 lb.)",
+			"ConvertTitle": "Convert Cargo Capacity",
+			"ConvertContent": "Would you like to convert the current cargo capacity from '{{OLD}}' to '{{NEW}}'?"
+		},
+		"DayNight": {
+			"ProgressSettingName": "Display Day/Night Transition Progress",
+			"ProgressSettingHint": "When you run the animated Day/Night transition, enabling this will display the progress bar showing the progress from start to finish of the animation.",
+			"DurationSettingName": "Day/Night Transition Duration (Seconds)",
+			"DurationSettingHint": "The duration of time it takes for the Day/Night transition animation to complete. This is in Seconds (1-60 seconds)"
+		},
+		"TemplateTargeting": {
+			"SettingName": "Templates Auto-Target Tokens",
+			"SettingHint": "If enabled, will automatically target tokens that are hit by a Measure Template",
+			"ToggleTitle": "Auto-Target Tokens"
+		}
+	}
 }

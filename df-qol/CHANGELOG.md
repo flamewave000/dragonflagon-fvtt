@@ -1,5 +1,9 @@
 # DragonFlagon Quality of Life
 
+## Release 1.4.0 (2021-06-24)
+- Complete reorganization of the QoL code base. Cleaned it up and made it easier to maintain.
+- New Feature: When enabled, Templates will now Auto-Target tokens that are hit.
+
 ## Release 1.3.0 (2021-06-07)
 - Migrated to FoundryVTT 0.8.6
 - Added Day/Night animated transition Progress Bar.
