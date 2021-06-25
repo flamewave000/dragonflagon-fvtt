@@ -33,9 +33,18 @@ export default class TemplateTargeting {
 			onChange: (newValue: Boolean) => {
 				libWrapper.unregister(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.highlightGrid', false);
 				libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.highlightGrid', this.UPDATE_TARGETS, newValue ? 'OVERRIDE' : 'WRAPPER');
-				canvas.templates?.placeables.filter((t: MeasuredTemplate) => t.data.t === "cone")
-					.forEach((t: MeasuredTemplate) => t.draw())
+				canvas.templates?.placeables.forEach((t: MeasuredTemplate) => t.draw())
 			}
+		});
+		SETTINGS.register('template-targeting-patch5e-circle', {
+			name: 'DRAGON_FLAGON_QOL.TemplateTargeting.Patch5e_Circle_Name',
+			hint: 'DRAGON_FLAGON_QOL.TemplateTargeting.Patch5e_Circle_Hint',
+			config: true,
+			type: Boolean,
+			default: false,
+			scope: 'world',
+			onChange: () => canvas.templates?.placeables.filter((t: MeasuredTemplate) => t.data.t === "circle")
+				.forEach((t: MeasuredTemplate) => t.draw())
 		});
 		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.highlightGrid', this.UPDATE_TARGETS,
 			SETTINGS.get('template-targeting-patch5e') ? 'OVERRIDE' : 'WRAPPER');
@@ -117,6 +126,7 @@ export default class TemplateTargeting {
 			const hx = canvas.grid.w / 2;
 			const hy = canvas.grid.h / 2;
 			const isCenter = (this.data.x - tx === hx) && (this.data.y - ty === hy);
+
 			/***** START OF CODE EDIT *****/
 			// Extract and prepare data
 			let { direction, distance, angle, width } = this.data;
@@ -172,7 +182,6 @@ export default class TemplateTargeting {
 			for (let r = -nr; r < nr; r++) {
 				for (let c = -nc; c < nc; c++) {
 					let [gx, gy] = canvas.grid.grid.getPixelsFromGridPosition(row0 + r, col0 + c);
-					/***** START OF CODE EDIT *****/
 					const testX = gx + hx;
 					const testY = gy + hy;
 					const testRect = new NormalizedRectangle(gx, gy, canvas.grid.w, canvas.grid.h);
@@ -183,6 +192,21 @@ export default class TemplateTargeting {
 							const [rcx, rcy] = [testX - this.data.x, testY - this.data.y];
 							// If the distance between the centres is <= the circle's radius
 							contains = ((rcx * rcx) + (rcy * rcy)) <= (distance * distance);
+							if (contains || !SETTINGS.get('template-targeting-patch5e-circle')) break;
+
+							const sqrDistance = distance * distance;
+							var [vx, vy] = [0, 0];
+							var mag = 0;
+							var vecAngle = 0;
+							const testPoint = (x: number, y: number) => {
+								[vx, vy] = [x - this.data.x, y - this.data.y];
+								return (vx * vx + vy * vy) < sqrDistance;
+							};
+
+							contains = testPoint(testRect.left, testRect.top)
+								|| testPoint(testRect.right, testRect.top)
+								|| testPoint(testRect.left, testRect.bottom)
+								|| testPoint(testRect.right, testRect.bottom);
 							break;
 						}
 						case "rect": {
@@ -283,7 +307,6 @@ export default class TemplateTargeting {
 							break;
 						}
 					}
-					/****** END OF CODE EDIT ******/
 
 					if (!contains) continue;
 					grid.grid.highlightGridPosition(hl, { x: gx, y: gy, border, color: <any>color });
@@ -294,6 +317,7 @@ export default class TemplateTargeting {
 						if (!testRect.contains(token.x + hx, token.y + hy)) continue;
 						token.setTarget(true, { user: game.user, releaseOthers: false, groupSelection: true });
 					}
+					/****** END OF CODE EDIT ******/
 				}
 			}
 			/******************************************** END OF COPIED CODE ********************************************/

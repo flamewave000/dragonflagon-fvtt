@@ -16,7 +16,7 @@ If enabled will templates will automatically mark tokens that are inside the tem
 
 The D&D 5e PHB states that an space touched by a spell's shape is affected, with the exception of Circular attacks (Sphere/Circle) in-which the square's center must be within the area of effect to targetted. Foundry by default instead uses requires the center of a square to be inside for ALL measure templates to be targetted.
 
-When enabled, the Core Foundry template measurements will be overridden to follow D&D 5e's style of template targetting.
+When enabled, the Core Foundry template measurements will be overridden to follow D&D 5e's style of template targetting. There is also an option to revoke the Circle Template's rule exception and behave the same as the rest, hitting any square it touches.
 
 |Foundry Core|D&D 5e|
 |:-:|:-:|
