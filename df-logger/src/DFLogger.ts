@@ -1,3 +1,4 @@
+import { Message, MessageProcessor } from "./MessageProcessor.js";
 import SETTINGS from "./Settings.js";
 
 interface Payload {
@@ -13,17 +14,19 @@ export default class DFLogger {
 	static SETTING_NOT_ME = 'not-me';
 	static SETTING_SELF_DESTRUCT = 'self-destruct';
 	static SETTING_DELAY = 'delay';
-	static get Persist() { return !game.settings.get(SETTINGS.MOD_NAME, DFLogger.SETTING_SELF_DESTRUCT); }
-	static get LoginContent() { return game.i18n.localize('DRAGON_FLAGON.Content_Login' + (DFLogger.Persist ? '_Persist' : '')); }
-	static get LogoutContent() { return game.i18n.localize('DRAGON_FLAGON.Content_Logout' + (DFLogger.Persist ? '_Persist' : '')); }
+	static SETTING_SOUND = 'sound';
+	static get Persist() { return !SETTINGS.get(DFLogger.SETTING_SELF_DESTRUCT); }
+	static get LoginContent() { return game.i18n.localize('DF-LOGGER.Content.Login' + (DFLogger.Persist ? '_Persist' : '')); }
+	static get LogoutContent() { return game.i18n.localize('DF-LOGGER.Content.Logout' + (DFLogger.Persist ? '_Persist' : '')); }
 
-	static getMessageText(msgKey: string, msgCount: number): string {
-		return game.i18n.localize(msgKey + (Math.round(Math.random() * (msgCount * 100)) % msgCount));
+	static getMessageText(messages: Message[]): string {
+		messages = messages.filter(x => x.tog);
+		return messages[Math.round(Math.random() * (messages.length * 100)) % messages.length].msg;
 	}
 
 	static async displayMessage(user: User, alias: any, msg: string) {
 		let chatMsg = await ChatMessage.create({
-			sound: 'modules/df-logger/sounds/chime.mp3',
+			sound: SETTINGS.get(DFLogger.SETTING_SOUND),
 			content: msg.replace(/\{\{username\}\}/g, user.name),
 			speaker: {
 				scene: null,
@@ -53,7 +56,7 @@ export default class DFLogger {
 		DFLogger.onLogout({
 			type: DFLogger.EV_LOGOUT,
 			id: userId,
-			msg: DFLogger.getMessageText("DRAGON_FLAGON.LogoutMsg", 1)
+			msg: DFLogger.getMessageText(MessageProcessor.logoutMessages)
 		});
 	}
 
@@ -61,7 +64,7 @@ export default class DFLogger {
 		let payload: Payload = {
 			type: DFLogger.EV_LOGIN,
 			id: game.user.id,
-			msg: DFLogger.getMessageText("DRAGON_FLAGON.LoginMsg", 38)
+			msg: DFLogger.getMessageText(MessageProcessor.loginMessages)
 		}
 		game.socket.emit(`module.${SETTINGS.MOD_NAME}`, payload);
 		if (!game.settings.get(SETTINGS.MOD_NAME, DFLogger.SETTING_NOT_ME))

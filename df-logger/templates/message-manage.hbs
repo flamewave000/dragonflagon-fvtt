@@ -1,0 +1,40 @@
+<form class="tab-container">
+	<header>
+		<nav class="sheet-tags tabs">
+			<a class="item active" data-tab="login"><i class="fas fa-sign-in-alt"></i> {{localize 'DF-LOGGER.ManageMenu.TabLogin'}}</a>
+			<a class="item" data-tab="logout"><i class="fas fa-sign-out-alt"></i> {{localize 'DF-LOGGER.ManageMenu.TabLogout'}}</a>
+		</nav>
+		<hr>
+		<div class="message-headers">
+			<h4>{{localize 'DF-LOGGER.ManageMenu.Headers.Toggle'}}</h4>
+			<h4>{{localize 'DF-LOGGER.ManageMenu.Headers.Message'}}</h4>
+			<h4>{{localize 'DF-LOGGER.ManageMenu.Headers.Remove'}}</h4>
+		</div>
+	</header>
+	<main>
+		<div class="tab active" data-tab="login">
+			{{#each login}}
+			<div class="message-entry">
+				<input type="checkbox" title="{{localize 'DF-LOGGER.ManageMenu.Entry.ToggleTitle'}}" {{#if tog}}checked{{/if}}>
+				<input type="text" value="{{msg}}" placeholder="{{localize 'DF-LOGGER.ManageMenu.Entry.MessagePlaceholder'}}" {{#unless tog}}disabled{{/unless}}>
+				<button type="button" title="{{localize 'DF-LOGGER.ManageMenu.Entry.RemoveTitle'}}"><i class="fas fa-minus"></i></button>
+			</div>
+			{{/each}}
+		</div>
+		<div class="tab" data-tab="logout">
+			{{#each logout}}
+			<div class="message-entry">
+				<input type="checkbox" title="{{localize 'DF-LOGGER.ManageMenu.Entry.ToggleTitle'}}" {{#if tog}}checked{{/if}}>
+				<input type="text" value="{{msg}}" placeholder="{{localize 'DF-LOGGER.ManageMenu.Entry.MessagePlaceholder'}}" {{#unless tog}}disabled{{/unless}}>
+				<button type="button" title="{{localize 'DF-LOGGER.ManageMenu.Entry.RemoveTitle'}}"><i class="fas fa-minus"></i></button>
+			</div>
+			{{/each}}
+		</div>
+	</main>
+	<footer>
+		<hr>
+		<button type="button" name="add"><i class="fas fa-plus"></i> {{localize 'DF-LOGGER.ManageMenu.Buttons.Add'}}</button>
+		<button type="button" name="reset"><i class="fas fa-times"></i> {{localize 'DF-LOGGER.ManageMenu.Buttons.Reset'}}</button>
+		<button type="submit" name="save"><i class="far fa-save"></i> {{localize 'DF-LOGGER.ManageMenu.Buttons.Save'}}</button>
+	</footer>
+</form>

@@ -1,28 +1,46 @@
 import DFLogger from './DFLogger.js';
+import DFLoggerMenu from './DFLoggerMenu.js';
+import { MessageProcessor } from './MessageProcessor.js';
 import SETTINGS from './Settings.js';
 
 SETTINGS.init('df-logger');
 
 Hooks.once('init', function () {
+	game.settings.registerMenu(SETTINGS.MOD_NAME, 'message-manage', {
+		restricted: true,
+		type: DFLoggerMenu,
+		label: 'DF-LOGGER.Settings.ManageMessages',
+		icon: 'fas fa-comment-alt'
+	});
+	SETTINGS.register(DFLogger.SETTING_SOUND, {
+		name: 'DF-LOGGER.Settings.Sound_Name',
+		hint: 'DF-LOGGER.Settings.Sound_Hint',
+		scope: 'world',
+		config: true,
+		type: String,
+		default: 'modules/df-logger/sounds/chime.mp3',
+		filePicker: true
+	});
+
 	SETTINGS.register(DFLogger.SETTING_GM_ONLY, {
-		name: "DRAGON_FLAGON.Settings_GmOnly_Title",
-		hint: "DRAGON_FLAGON.Settings_GmOnly_Hint",
+		name: "DF-LOGGER.Settings.GmOnly_Name",
+		hint: "DF-LOGGER.Settings.GmOnly_Hint",
 		scope: "world",
 		config: true,
 		type: Boolean,
 		default: false,
 	});
 	SETTINGS.register(DFLogger.SETTING_SELF_DESTRUCT, {
-		name: "DRAGON_FLAGON.Settings_SelfDestruct_Title",
-		hint: "DRAGON_FLAGON.Settings_SelfDestruct_Hint",
+		name: "DF-LOGGER.Settings.SelfDestruct_Name",
+		hint: "DF-LOGGER.Settings.SelfDestruct_Hint",
 		scope: "world",
 		config: true,
 		type: Boolean,
 		default: true
 	});
 	SETTINGS.register(DFLogger.SETTING_DELAY, {
-		name: "DRAGON_FLAGON.Settings_Delay_Title",
-		hint: "DRAGON_FLAGON.Settings_Delay_Hint",
+		name: "DF-LOGGER.Settings.Delay_Name",
+		hint: "DF-LOGGER.Settings.Delay_Hint",
 		scope: "client",
 		config: true,
 		type: Number,
@@ -34,8 +52,8 @@ Hooks.once('init', function () {
 		}
 	});
 	SETTINGS.register(DFLogger.SETTING_NOT_ME, {
-		name: "DRAGON_FLAGON.Settings_NotMe_Title",
-		hint: "DRAGON_FLAGON.Settings_NotMe_Hint",
+		name: "DF-LOGGER.Settings.NotMe_Name",
+		hint: "DF-LOGGER.Settings.NotMe_Hint",
 		scope: "client",
 		config: true,
 		type: Boolean,
@@ -47,9 +65,12 @@ Hooks.once('init', function () {
 	game.socket.on('userActivity', DFLogger.onUserActivity);
 });
 
-Hooks.once('ready', function () {
+Hooks.once('ready', async function () {
+	await MessageProcessor.loadMessages();
+
 	// remove any log messages that didn't get cleaned before we left (if any)
 	DFLogger.cleanup();
+
 	// Emit our login event to the socket
 	DFLogger.performLogin();
 });
