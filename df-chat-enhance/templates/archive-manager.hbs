@@ -11,5 +11,7 @@
 		</li>
 		{{/each}}
 	</ol>
+	{{#if isGM}}
 	<button id="dfca-delete-all"><i class="fas fa-trash"></i> {{localize "DF_CHAT_ARCHIVE.ArchiveManager_DeleteAll"}}</button>
+	{{/if}}
 </section>
