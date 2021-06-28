@@ -4,7 +4,7 @@
 
 	"df-curvy-walls.errorLibWrapperMissing": "'DF Curvy Walls' requiere el módulo 'libWrapper'. Por favor, instale y active 'libWrapper'",
 	"df-curvy-walls.cubic": "Curva Cúbico-Bézier",
-	"df-curvy-walls.quadratic": "Curva Cuadrático-Bézier",
+	"df-curvy-walls.quadratic": "Curva cuadrática Bézier",
 	"df-curvy-walls.circle": "Curva elíptica",
 	"df-curvy-walls.rectangle": "Rectángulo",
 	"df-curvy-walls.increment": "Aumentar número de segmentos",
@@ -19,8 +19,12 @@
 	"df-curvy-walls.trace_curve_with_points": "Place points on the canvas to generate a curve",
 	"df-curvy-walls.SettingPreserve_Name": "Preserve Tool State",
 	"df-curvy-walls.SettingPreserve_Hint": "When enabled and you switch away from the Walls Layer, the tool will preserve its state for when you return to the Walls Layer.",
-	"df-curvy-walls.pointmapapply": "Generate tool placement from points",
-	"df-curvy-walls.pointmap_quad": "You need to place 3 points to generate a Bézier Quadratic Curve.<br>Ctrl + Click to delete a point. Click + Drag to Move a point.",
-	"df-curvy-walls.pointmap_circ": "You need to place 2 to 3 points to generate an Ellipse.<br>Ctrl + Click to delete a point. Click + Drag to Move a point.",
-	"df-curvy-walls.pointmap_rect": "You need to place 2 to 4 points to generate a Rectangle.<br>Ctrl + Click to delete a point. Click + Drag to Move a point."
+	"df-curvy-walls.SettingDropKey_Name":"Tecla de la herramienta de posicionado",
+	"df-curvy-walls.SettingDropKey_Hint":"La tecla que hay que mantener presionada al hacer clic en algún punto del tablero para posicionar la herramienta que se ha configurado",
+	"df-curvy-walls.SettingDropKey_OptionAlt": "Alt",
+	"df-curvy-walls.SettingDropKey_OptionCtrl": "Ctrl",
+	"df-curvy-walls.pointmapapply": "Generar herramienta de posicionado a partir de puntos",
+	"df-curvy-walls.pointmap_quad": "Debe colocar 3 puntos para generar una curva cuadrática Bézier.<br>Ctrl + clic para borrar un punto. Clic + arrastrar para mover un punto</br>",
+	"df-curvy-walls.pointmap_circ": "Debe colocar de 2 a 3 puntos para generar una elipse.<br>Ctrl + clic para borrar un punto. Clic + arrastrar para mover un punto</br>",
+	"df-curvy-walls.pointmap_rect": "Debe colocar de 2 a 4 puntos para generar un rectángulo.<br>Ctrl + clic para borrar un punto. Clic + arrastrar para mover un punto</br>"
 }
