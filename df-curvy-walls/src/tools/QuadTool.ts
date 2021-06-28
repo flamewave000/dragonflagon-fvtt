@@ -8,10 +8,9 @@ const pointNearPoint = BezierTool.pointNearPoint;
 declare type Point = PIXI.Point;
 
 class InitializerIH extends InitializerInputHandler {
-	private tool: QuadTool;
+	private get quadTool(): QuadTool { return this.tool as QuadTool; }
 	constructor(tool: QuadTool, success: () => void, fail: () => void) {
-		super(false, tool.lineA, tool.lineB, success, fail)
-		this.tool = tool;
+		super(tool, false, tool.lineA, tool.lineB, success, fail)
 	}
 	move(origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
 		super.move(origin, destination, event);
@@ -22,7 +21,7 @@ class InitializerIH extends InitializerInputHandler {
 		// const length = Math.sqrt((nX * nX) + (nY * nY));
 		nX *= 0.25;
 		nY *= 0.25;
-		this.tool.control.set(cX + nX, cY + nY);
+		this.quadTool.control.set(cX + nX, cY + nY);
 	}
 }
 
@@ -75,13 +74,13 @@ export default class QuadTool extends BezierTool {
 			return new InitializerIH(this, () => this.setMode(ToolMode.Placed), () => this.setMode(ToolMode.NotPlaced));
 		}
 		if (pointNearPoint(point, this.lineA, BezierTool.HANDLE_RADIUS))
-			return new PointInputHandler(this.lineA);
+			return new PointInputHandler(this, this.lineA);
 		else if (pointNearPoint(point, this.lineB, BezierTool.HANDLE_RADIUS))
-			return new PointInputHandler(this.lineB);
+			return new PointInputHandler(this, this.lineB);
 		else if (pointNearPoint(point, this.control, BezierTool.HANDLE_RADIUS))
-			return new PointInputHandler(this.control);
+			return new PointInputHandler(this, this.control);
 		else if (this.polygon.contains(point.x, point.y))
-			return new PointArrayInputHandler(point, this.handles);
+			return new PointArrayInputHandler(this, point, this.handles);
 		return null;
 	}
 

@@ -6,7 +6,7 @@ const pointNearPoint = BezierTool.pointNearPoint;
 
 class InitializerIH extends InitializerInputHandler {
 	constructor(tool: RectangleTool, success: () => void, fail: () => void) {
-		super(true, tool.lineA, tool.lineB, success, fail)
+		super(tool, true, tool.lineA, tool.lineB, success, fail)
 	}
 }
 
@@ -193,11 +193,11 @@ export default class RectangleTool extends BezierTool {
 			return new InitializerIH(this, () => this.setMode(ToolMode.Placed), () => this.setMode(ToolMode.NotPlaced));
 		}
 		if (pointNearPoint(point, this.lineA, BezierTool.HANDLE_RADIUS))
-			return new PointInputHandler(this.lineA, null, this.lineB);
+			return new PointInputHandler(this, this.lineA, null, this.lineB);
 		else if (pointNearPoint(point, this.lineB, BezierTool.HANDLE_RADIUS))
-			return new PointInputHandler(this.lineB, null, this.lineA);
+			return new PointInputHandler(this, this.lineB, null, this.lineA);
 		else if (this.rect.contains(point.x, point.y))
-			return new PointArrayInputHandler(point, this.handles);
+			return new PointArrayInputHandler(this, point, this.handles);
 		return null;
 	}
 

@@ -63,7 +63,7 @@ export default class PointMapper extends BezierTool {
 		this.points.forEach((x, idx) => this.drawHandle(context, fill[idx], x));
 	}
 	checkPointForClick(point: PIXI.Point, event: PIXI.InteractionEvent): boolean {
-		const utility = new PointInputHandler(point);
+		const utility = new PointInputHandler(this, point);
 		const snap = utility.shouldSnap(event);
 
 		if (event.data.originalEvent.ctrlKey) {
@@ -95,7 +95,7 @@ export default class PointMapper extends BezierTool {
 	checkPointForDrag(point: PIXI.Point): InputHandler | null {
 		const target = this.points.find(x => pointNearPoint(point, x, BezierTool.HANDLE_RADIUS));
 		if (!target) return null;
-		return new PointInputHandler(target);
+		return new PointInputHandler(this, target);
 	}
 
 	getTooltipMessage(): string {
