@@ -81,14 +81,7 @@ export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] 
 			// If a total input was defined and given, it overrides everything else.
 			if (total !== undefined && total !== null) {
 				var value = parseInt(total);
-				var base = 0;
-				// Append dice with the base average of the total.
-				for (let c = 0; c < x.term.number - 1; c++) {
-					base = Math.ceil(value / (x.term.number - results.length));
-					value -= base;
-					results.push(base);
-				}
-				results.push(value);
+				results.push(...DFRollPrompt.distributeRoll(value, x.term.number));
 				if (DFManualRolls.flagged)
 					x.term.options.flavor = (x.term.options.flavor || '') + '[MRT]';
 			} else {
@@ -118,5 +111,19 @@ export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] 
 
 	requestResult(term: DiceTerm): Promise<number[]> {
 		return new Promise((res, _) => this._terms.push({ id: this._nextId++, res, term }));
+	}
+
+	static distributeRoll(total: number, count: number): number[] {
+		const results: number[] = [];
+		// If a total input was defined and given, it overrides everything else.
+		var base = 0;
+		// Append dice with the base average of the total.
+		for (let c = 0; c < count - 1; c++) {
+			base = Math.ceil(total / (count - results.length));
+			total -= base;
+			results.push(base);
+		}
+		results.push(total);
+		return results;
 	}
 }

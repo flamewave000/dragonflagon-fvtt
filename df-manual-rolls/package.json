@@ -2,7 +2,7 @@
 	"private": true,
 	"name": "df-manual-rolls",
 	"title": "DF Manual Rolls",
-	"version": "2.1.1",
+	"version": "2.2.0",
 	"description": "Provides a way for a user to enter a custom value for rolls. This is to facilitate rolling real dice and then providing the values to Foundry to use.",
 	"main": "src/df-manual-rolls.ts",
 	"scripts": {

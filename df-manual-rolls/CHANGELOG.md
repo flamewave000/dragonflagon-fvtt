@@ -1,5 +1,8 @@
 # DF Manual Rolls
 
+## Release 2.2.0 (2021-06-28)
+- Added legacy support for non-async rolls. This presents the kind of prompt in the old version for 0.7.x. One improvement is the handling of grouped rolls. If there are no modifiers (ie. kh/kl), it prompt for the total for the roll instead of asking for each die roll. This is possible with Foundry 0.8.x's rolling system improvements.
+
 ## Release 2.1.1 (2021-06-17)
 - Fixed Total Roll distribution algorithm. It was distributing the roll poorly for large dice counts and would end up with the wrong total.
 
