@@ -65,11 +65,11 @@ function editChatMessage(this: ChatMessage) {
 		processAllMessages();
 		return;
 	}
-	if (!!this.chatEditor) {
-		this.chatEditor.bringToTop();
+	if (!!(<any>this).chatEditor) {
+		(<any>this).chatEditor.bringToTop();
 	} else {
-		this.chatEditor = new DFChatEditor(this);
-		this.chatEditor.render(true);
+		(<any>this).chatEditor = new DFChatEditor(this);
+		(<any>this).chatEditor.render(true);
 	}
 }
 

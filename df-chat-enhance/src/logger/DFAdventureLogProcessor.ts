@@ -98,8 +98,7 @@ export default class DFAdventureLogProcessor {
 				condition: () => {
 					const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
 					const isGM = game.user.isGM;
-					const gmOnly = SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY);
-					return enabled && (!gmOnly || isGM);
+					return enabled && isGM;
 				},
 				callback: (header) => {
 					const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
@@ -113,8 +112,7 @@ export default class DFAdventureLogProcessor {
 				condition: () => {
 					const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
 					const isGM = game.user.isGM;
-					const gmOnly = SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY);
-					return enabled && (!gmOnly || isGM);
+					return enabled && isGM;
 				},
 				callback: (header) => {
 					const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
