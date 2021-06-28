@@ -1,0 +1,16 @@
+
+{{#*inline "entityPartial"}}
+		<li class="control-tool {{class}} {{#if toggleable}}toggle {{#if isActive}}active{{/if}}{{/if}}"
+			title="{{localize title}}" data-tool="{{name}}"><i class="{{icon}}"></i></li>
+{{/inline}}
+
+<div id="df-curvy-walls-tools">
+	<ol class="control-tools">
+		{{#each tools}}
+		<li class="control-tool toggle {{#if isActive}}active{{/if}}" title="{{localize title}}" data-tool="{{name}}">
+			<i class="{{icon}}"></i></li>
+		{{/each}}
+	</ol>
+	<ol class="control-tools">{{#each general}}{{> entityPartial}}{{/each}}</ol>
+	<ol class="control-tools">{{#each controls}}{{> entityPartial}}{{/each}}</ol>
+</div>

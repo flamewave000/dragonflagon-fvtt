@@ -1,6 +1,25 @@
 declare class SceneExt extends Scene {
 	get width(): number
 	get height(): number
+	get dimensions(): { width: number, height: number };
+}
+declare global {
+	interface RenderData {
+		cssClass: string;
+		data: Scene.Data;
+		document: SceneExt;
+		editable: boolean;
+		gridTypes: { [index: number]: string };
+		hasGlobalThreshold: boolean;
+		journals: { id: string, name: string }[];
+		limited: boolean;
+		options: SceneConfig.Options;
+		owner: boolean;
+		playlists: Playlist[];
+		sounds: AmbientSound[];
+		title: string;
+		weatherTypes: { [name: string]: string };
+	}
 }
 
 // Reduce a fraction by finding the Greatest Common Divisor and dividing by it.
@@ -111,22 +130,22 @@ export default class DFSceneRatio {
 		// this._updateScale();
 	}
 
-	async render(_app: any, html: JQuery<HTMLElement>, data: {entity: SceneExt}) {
-		this.initialWidth = data.entity.width;
-		this.initialHeight = data.entity.height;
-		const [numerator, denominator] = reduce(data.entity.width, data.entity.height);
+	async render(_app: any, html: JQuery<HTMLElement>, data: RenderData) {
+		this.initialWidth = data.document.width;
+		this.initialHeight = data.document.height;
+		const [numerator, denominator] = reduce(data.document.dimensions.width, data.document.dimensions.height);
 		const ratioData = {
 			numerator: numerator,
 			denominator: denominator
 		};
 		const ratioHtml = $(await renderTemplate(`modules/${DFSceneRatio.MODULE}/templates/scene-ratio.hbs`, ratioData));
-		const dimHtml = html.find('#df-thumb-group').next();
+		const dimHtml = html.find('input[name="padding"]').parent().parent().prev();
 		this.widthField = dimHtml.find('input[name="width"]') as JQuery<HTMLInputElement>;
 		this.heightField = dimHtml.find('input[name="height"]') as JQuery<HTMLInputElement>;
 		ratioHtml.insertAfter(dimHtml);
 		this._extractFields(ratioHtml);
 		this._attachListeners();
-		await this._updateOriginalImageDimensions(data.entity.img);
+		await this._updateOriginalImageDimensions(data.document.img);
 	}
 	_extractFields(html: JQuery<HTMLElement>) {
 		this.lockRatio = html.find('input[name="lockRatio"]') as JQuery<HTMLInputElement>;

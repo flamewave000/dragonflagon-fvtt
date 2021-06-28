@@ -49,7 +49,7 @@ export class DFChatArchive {
 			scope: 'world',
 			config: false,
 			type: String,
-			default: `worlds/${game.world.name}/chat-archive`,
+			default: `worlds/${game.world.id}/chat-archive`,
 			onChange: () => {
 				this.createArchiveFolderIfMissing(this.DATA_FOLDER, SETTINGS.get(this.PREF_FOLDER));
 				if (this._updateListener != null)
@@ -62,7 +62,7 @@ export class DFChatArchive {
 	private static createArchiveFolderIfMissing(origin: string, folder: string) {
 		FilePicker.browse(origin, folder)
 			.then(loc => {
-				if (loc.target == 'worlds/' + game.world.name)
+				if (loc.target == 'worlds/' + game.world.id)
 					FilePicker.createDirectory(origin, folder, {});
 			})
 			.catch(_ => { throw new Error('Could not access the archive folder: ' + folder) });
@@ -127,8 +127,11 @@ export class DFChatArchive {
 			if (!response.path)
 				throw new Error('Could not upload the archive to server side: ' + archive.id.toString());
 		}
-		if (this._updateListener != null)
-			this._updateListener();
+		const logs = this.getLogs();
+		const idx = logs.findIndex(x => x.id === archive.id);
+		if (idx < 0) return archive;
+		logs[idx] = archive;
+		await SETTINGS.set(DFChatArchive.PREF_LOGS, logs);
 		return archive;
 	}
 

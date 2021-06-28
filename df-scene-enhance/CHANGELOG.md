@@ -1,5 +1,9 @@
 # DF Scene Enhancement Changes
 
+## Release 3.4.0 (2021-06-06)
+- Migrated to FoundryVTT 0.8.6
+- Added libWrapper integration and dependency.
+
 ## Release 3.3.3 (2021-03-30)
 - Fixed a permissions issue with Journal entity links.
 

@@ -1,5 +1,13 @@
+import { BezierTool } from "./BezierTool.js";
+
 declare type Point = PIXI.Point;
 export abstract class InputHandler {
+	private _tool: BezierTool;
+	get tool(): BezierTool { return this._tool; }
+	constructor(tool: BezierTool) {
+		this._tool = tool;
+	}
+
 	abstract start(origin: Point, destination: Point, event: PIXI.InteractionEvent): void;
 	abstract move(origin: Point, destination: Point, event: PIXI.InteractionEvent): void;
 	abstract stop(origin: Point, destination: Point, event: PIXI.InteractionEvent): void;
@@ -19,17 +27,40 @@ export abstract class InputHandler {
 		// Determine the starting coordinates
 		return new PIXI.Point(...(<any>this.walls)._getWallEndpointCoordinates(origin, { snap }));
 	}
+
+	static squarePoint(origin: Point, destination: Point): PIXI.Point {
+		/*	╔═══╦═══╗
+			║ 4 ║ 1 ║
+			╠═══╬═══╣
+			║ 3 ║ 2 ║
+			╚═══╩═══╝	*/
+		const min = Math.max(Math.abs(destination.x - origin.x), Math.abs(destination.y - origin.y));
+		if (destination.x > origin.x) {
+			// Quadrant 1
+			if (destination.y < origin.y)
+				return new PIXI.Point(origin.x + min, origin.y - min);
+			// Quadrant 2
+			else return new PIXI.Point(origin.x + min, origin.y + min);
+		}
+		// Quadrant 3
+		else if (destination.y > origin.y)
+			return new PIXI.Point(origin.x - min, origin.y + min);
+		// Quadrant 4
+		else return new PIXI.Point(origin.x - min, origin.y - min);
+	}
 }
 
 export abstract class InitializerInputHandler extends InputHandler {
 	lineA: Point;
 	lineB: Point;
-	private success: () => void;
-	private fail: () => void;
-	constructor(lineA: Point, lineB: Point, success: () => void, fail: () => void) {
-		super();
+	protected squaring: boolean;
+	protected success: () => void;
+	protected fail: () => void;
+	constructor(tool: BezierTool, squaring: boolean, lineA: Point, lineB: Point, success: () => void, fail: () => void) {
+		super(tool);
 		this.lineA = lineA;
 		this.lineB = lineB;
+		this.squaring = squaring;
 		this.success = success;
 		this.fail = fail;
 	}
@@ -38,11 +69,19 @@ export abstract class InitializerInputHandler extends InputHandler {
 		this.lineA.copyFrom(this.getWallEndPoint(origin, snap) as PIXI.Point);
 		this.lineB.copyFrom(this.getWallEndPoint(destination, snap) as PIXI.Point);
 	}
-	move(_origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
-		this.lineB.copyFrom(this.getWallEndPoint(destination, this.shouldSnap(event)) as PIXI.Point);
+	move(origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
+		const snap = this.shouldSnap(event);
+		const destPoint = this.squaring && event.data.originalEvent.altKey ? InputHandler.squarePoint(origin, destination) : destination;
+		const origPoint = !this.tool.startedWithCtrlHeld && event.data.originalEvent.ctrlKey ? new PIXI.Point(origin.x - (destPoint.x - origin.x), origin.y - (destPoint.y - origin.y)) : origin;
+		this.lineA.copyFrom(this.getWallEndPoint(origPoint, snap) as PIXI.Point);
+		this.lineB.copyFrom(this.getWallEndPoint(destPoint, snap) as PIXI.Point);
 	}
-	stop(_origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
-		this.lineB.copyFrom(this.getWallEndPoint(destination, this.shouldSnap(event)) as PIXI.Point);
+	stop(origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
+		const snap = this.shouldSnap(event);
+		if (this.squaring && event.data.originalEvent.altKey)
+			this.lineB.copyFrom(this.getWallEndPoint(InputHandler.squarePoint(origin, destination), snap) as PIXI.Point);
+		else
+			this.lineB.copyFrom(this.getWallEndPoint(destination, snap) as PIXI.Point);
 		this.success();
 	}
 	cancel() {
@@ -51,28 +90,36 @@ export abstract class InitializerInputHandler extends InputHandler {
 }
 
 export class PointInputHandler extends InputHandler {
-	private originalPoint = new PIXI.Point(0, 0);
+	private _origin: Point;
+	private _originalPoint = new PIXI.Point(0, 0);
 	point: Point;
 	completion?: (sender: PointInputHandler) => void = null;
-	constructor(point: Point, completion: (sender: PointInputHandler) => void = null) {
-		super();
-		this.originalPoint.copyFrom(point);
-		this.point = point;
+	constructor(tool: BezierTool, destination: Point, completion: (sender: PointInputHandler) => void = null, origin?: Point) {
+		super(tool);
+		this._originalPoint.copyFrom(destination);
+		this._origin = origin;
+		this.point = destination;
 		this.completion = completion;
 	}
 	start(_origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
 		this.move(null, destination, event);
 	}
 	move(_origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
-		this.point.copyFrom(this.getWallEndPoint(destination, this.shouldSnap(event)) as PIXI.Point);
+		if (!!this._origin && event.data.originalEvent.altKey)
+			this.point.copyFrom(this.getWallEndPoint(InputHandler.squarePoint(this._origin, destination), this.shouldSnap(event)) as PIXI.Point);
+		else
+			this.point.copyFrom(this.getWallEndPoint(destination, this.shouldSnap(event)) as PIXI.Point);
 	}
 	stop(_origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
-		this.point.copyFrom(this.getWallEndPoint(destination, this.shouldSnap(event)) as PIXI.Point);
+		if (!!this._origin && event.data.originalEvent.altKey)
+			this.point.copyFrom(this.getWallEndPoint(InputHandler.squarePoint(this._origin, destination), this.shouldSnap(event)) as PIXI.Point);
+		else
+			this.point.copyFrom(this.getWallEndPoint(destination, this.shouldSnap(event)) as PIXI.Point);
 		if (this.completion != null)
 			this.completion(this);
 	}
 	cancel() {
-		this.point.copyFrom(this.originalPoint);
+		this.point.copyFrom(this._originalPoint);
 		if (this.completion != null)
 			this.completion(this);
 	}
@@ -83,8 +130,8 @@ export class PointArrayInputHandler extends InputHandler {
 	points: PIXI.Point[];
 	private _start: Point;
 	completion: (sender: PointArrayInputHandler) => void;
-	constructor(start: Point, points: Point[], completion: (sender: PointArrayInputHandler) => void = null) {
-		super();
+	constructor(tool: BezierTool, start: Point, points: Point[], completion: (sender: PointArrayInputHandler) => void = null) {
+		super(tool);
 		points.forEach(e => this.originalPoints.push(e.clone()));
 		this.points = points;
 		this._start = start;
@@ -124,8 +171,8 @@ export class MagnetPointInputHandler extends InputHandler {
 	protected offsetX: number;
 	protected offsetY: number;
 	completion?: (sender: MagnetPointInputHandler) => void = null;
-	constructor(masterPoint: Point, slavePoint: Point, completion: (sender: MagnetPointInputHandler) => void = null) {
-		super();
+	constructor(tool: BezierTool, masterPoint: Point, slavePoint: Point, completion: (sender: MagnetPointInputHandler) => void = null) {
+		super(tool);
 		this.originalPoint.copyFrom(masterPoint);
 		this.masterPoint = masterPoint;
 		this.slavePoint = slavePoint;

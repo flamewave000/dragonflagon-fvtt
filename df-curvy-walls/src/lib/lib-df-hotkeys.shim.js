@@ -186,11 +186,21 @@ class SETTINGS {
 	static typeOf() { return Object; }
 }
 
+var __awaiter$1 = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+	function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+	return new (P || (P = Promise))(function (resolve, reject) {
+		function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+		function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+		function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+		step((generator = generator.apply(thisArg, _arguments || [])).next());
+	});
+};
 /** This is just a helper for printing the list of errors with a call stack */
 function printErrors(errors) {
 	console.error(errors.join(',\n') + '\n' + (new Error().stack));
 }
-class Hotkeys {
+class _Hotkeys {
+	static get isShim() { return false; }
 	static _metaKey(event) {
 		return (event.altKey ? 0x1 : 0) | (event.ctrlKey ? 0x2 : 0) | (event.shiftKey ? 0x4 : 0);
 	}
@@ -265,8 +275,8 @@ class Hotkeys {
 	static _init() {
 		window.addEventListener("keydown", this._handleKeyDown.bind(this));
 		window.addEventListener("keyup", this._handleKeyUp.bind(this));
-		this._settings.set(Hotkeys.GENERAL, {
-			name: Hotkeys.GENERAL,
+		this._settings.set(_Hotkeys.GENERAL, {
+			name: _Hotkeys.GENERAL,
 			label: 'DF_HOTKEYS.GeneralGroup_Label',
 			description: '',
 			items: []
@@ -277,6 +287,24 @@ class Hotkeys {
 			return map.get(key);
 		map.set(key, defValue());
 		return map.get(key);
+	}
+	/**
+	* Displays the HotkeyConfig settings but filters the options available to the ones defined by filter.
+	* @param title The title for the menu window.
+	* @param filters The filters to apply to the HotkeyConfig dialog.
+	*/
+	static showConfig(title, filters) {
+		return __awaiter$1(this, void 0, void 0, function* () {
+			throw new Error("The Shim does not contain the HotkeysConfig application. Please only use this function when DF Hotkeys is activated.");
+		});
+	}
+	/**
+	* Returns a specialized constructor for the HotkeyConfig settings with filtering.
+	* @param title The title for the menu window.
+	* @param filters The filters to apply to the HotkeyConfig dialog.
+	*/
+	static createConfig(title, filters) {
+		throw new Error("The Shim does not contain the HotkeysConfig application. Please only use this function when DF Hotkeys is activated.");
 	}
 	/**
 	* Registers a new hotkey configuration.
@@ -339,7 +367,7 @@ class Hotkeys {
 		this._settingsNames.add(config.name);
 		// If there is no group defined, add it to the general group
 		if (!config.group)
-			config.group = Hotkeys.GENERAL;
+			config.group = _Hotkeys.GENERAL;
 		// Otherwise, if a custom group is added, verify that it exists
 		else if (!this._settings.has(config.group)) {
 			if (throwOnFail)
@@ -424,12 +452,12 @@ class Hotkeys {
 		return true;
 	}
 }
-Hotkeys.GENERAL = 'general';
-Hotkeys._handlers = new Map();
-Hotkeys._handled = new Set();
-Hotkeys._settings = new Map();
-Hotkeys._settingsNames = new Set();
-Hotkeys.keys = new Keys();
+_Hotkeys.GENERAL = 'general';
+_Hotkeys._handlers = new Map();
+_Hotkeys._handled = new Set();
+_Hotkeys._settings = new Map();
+_Hotkeys._settingsNames = new Set();
+_Hotkeys.keys = new Keys();
 
 let hotkeys = undefined;
 Hooks.once('init', function () {
@@ -445,7 +473,12 @@ Hooks.once('init', function () {
 	// There is no global definition of the Hotkeys Library
 	// Generate the Shim and initialize it
 	SETTINGS.init('lib-df-hotkeys');
-	hotkeys = Hotkeys;
+	Object.defineProperty(_Hotkeys, 'isShim', {
+		value: true,
+		writable: false,
+		configurable: false
+	});
+	hotkeys = _Hotkeys;
 	// @ts-expect-error
 	hotkeys._init();
 });

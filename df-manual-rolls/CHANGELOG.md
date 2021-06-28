@@ -1,5 +1,19 @@
 # DF Manual Rolls
 
+## Release 2.1.1 (2021-06-17)
+- Fixed Total Roll distribution algorithm. It was distributing the roll poorly for large dice counts and would end up with the wrong total.
+
+## Release 2.1.0 (2021-06-14)
+- Added `MRT` distinction for when a roll group is given a total instead of individual results.
+- Updated settings to provide more granular control of manual rolls for both GM and PC users.
+- Added a toggleable option that adds a toggle button to the scene controls to toggle Manual Rolls on or off.
+- Fixed issue where closing a roll request was not resolving the request with RNG.
+- Patched FoundryVTT's Combat Initiative system to use the new Async Rolling.
+- Fixed issue where empty dialogs were shown for rolls that had no "dice" in them.
+
+## Release 2.0.0 (2021-06-13)
+- Completely rebuilt the manual roll system for FoundryVTT 0.8.6
+
 ## Release 1.2.1 (2021-03-06)
 - Conflict: Quick Rolls on DnD5e systems. Work around has been made available.
 - Work Around: Disable roll prompt flavour text (new setting added for this).

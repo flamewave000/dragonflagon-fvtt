@@ -5,12 +5,13 @@
 	"version": "{{version}}",
 	"author": "flamewave000#6766",
 	"minimumCoreVersion": "0.7.9",
-	"compatibleCoreVersion": "0.7.9",
+	"compatibleCoreVersion": "0.8.6",
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [
 		{ "lang": "en", "name": "English", "path": "lang/en.json" },
-		{ "lang": "ja", "name": "日本語", "path": "lang/ja.json" }
+		{ "lang": "ja", "name": "日本語", "path": "lang/ja.json" },
+		{ "lang": "es", "name": "Español", "path": "lang/es.json" }
 	],
 	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}",
 	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/LICENSE",

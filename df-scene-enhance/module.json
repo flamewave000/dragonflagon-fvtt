@@ -4,8 +4,9 @@
 	"description": "{{description}}",
 	"version": "{{version}}",
 	"author": "flamewave000#6766",
-	"minimumCoreVersion": "0.7.4",
-	"compatibleCoreVersion": "0.7.9",
+	"minimumCoreVersion": "0.8.6",
+	"compatibleCoreVersion": "0.8.6",
+	"dependencies": [ { "name": "lib-wrapper" } ],
 	"esmodules": "{{sources}}",
 	"languages": [
 		{ "lang": "en", "path": "lang/en.json", "name": "English" },

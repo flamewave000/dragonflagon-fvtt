@@ -1,5 +1,13 @@
 # DF User Logger
 
+## Release 1.6.0 (2021-06-27)
+- Added option for changing the sound played when a Login/Logout event occurs.
+- Added a new menu for completely customizing all the messages that are used for Login/Logout events.
+
+## Release 1.5.0 (2021-06-13)
+- Migrated to FoundryVTT 0.8.6
+- Converted project over to TypeScript.
+
 ## Release 1.4.1/2 (2021-02-04)
 - Implemented new release system for all Dragon Flagon modules.
 

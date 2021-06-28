@@ -1,7 +1,6 @@
-
 import { BezierTool, ToolMode } from './BezierTool.js';
-import { ToolUI } from '../BezierToolBar.js';
 import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler.js";
+import { CurvyWallControl } from '../CurvyWallsToolBar.js';
 
 const pointNearPoint = BezierTool.pointNearPoint;
 const PI2 = Math.PI * 2
@@ -12,7 +11,7 @@ declare type Point = PIXI.Point;
 
 class InitializerIH extends InitializerInputHandler {
 	constructor(tool: CircleTool, success: () => void, fail: () => void) {
-		super(tool.lineA, tool.lineB, success, fail)
+		super(tool, true, tool.lineA, tool.lineB, success, fail)
 	}
 }
 
@@ -42,67 +41,59 @@ export default class CircleTool extends BezierTool {
 			bounds.maxX, bounds.maxY]);
 	}
 
-	getTools(): ToolUI[] {
-		return [{
+	private _tools: Record<string, CurvyWallControl> = {
+		ellipseclose: {
 			icon: 'fas fa-adjust',
-			name: 'ellipseclose',
 			title: 'df-curvy-walls.ellipse_close',
-			class: 'toggle' + (CircleTool.closeLoopIfSliced ? ' active' : ''),
-			style: 'display:none',
-			onClick: (button) => {
-				var enabled = button.hasClass('active');
-				CircleTool.closeLoopIfSliced = !enabled;
-				if (enabled) button.removeClass('active');
-				else button.addClass('active');
+			toggleable: true,
+			isActive: () => CircleTool.closeLoopIfSliced,
+			onClick: enabled => {
+				CircleTool.closeLoopIfSliced = enabled;
 				Hooks.call('requestCurvyWallsRedraw');
 			}
-		}, {
+		},
+		ellipsefinish: {
 			icon: 'fas fa-compress-alt',
-			name: 'ellipsefinish',
 			title: 'df-curvy-walls.ellipse_finish_slice',
-			class: 'toggle' + (CircleTool.finishSliceIfShort ? ' active' : ''),
-			style: 'display:none',
-			onClick: (button) => {
-				var enabled = button.hasClass('active');
-				CircleTool.finishSliceIfShort = !enabled;
-				if (enabled) button.removeClass('active');
-				else button.addClass('active');
+			toggleable: true,
+			isActive: () => CircleTool.finishSliceIfShort,
+			onClick: enabled => {
+				CircleTool.finishSliceIfShort = enabled;
 				Hooks.call('requestCurvyWallsRedraw');
 			}
-		}, {
-			icon: '',
-			name: 'ellipseinc',
+		},
+		ellipseinc: {
+			icon: 'dfcw ellipseinc',
 			title: 'df-curvy-walls.ellipse_increment',
-			class: '',
-			style: 'display:none',
-			html: '<div class="ellipseinc"></div>',
 			onClick: () => {
 				CircleTool.snapSetIndex = Math.clamped(CircleTool.snapSetIndex + 1, 0, CircleTool.ANGLE_SNAP_STEPS.length - 1);
 				Hooks.call('requestCurvyWallsRedraw');
 			}
-		}, {
-			icon: '',
-			name: 'ellipsedec',
+		},
+		ellipsedec: {
+			icon: 'dfcw ellipsedec',
 			title: 'df-curvy-walls.ellipse_decrement',
-			style: 'display:none',
-			html: '<div class="ellipsedec"></div>',
 			onClick: () => {
 				CircleTool.snapSetIndex = Math.clamped(CircleTool.snapSetIndex - 1, 0, CircleTool.ANGLE_SNAP_STEPS.length - 1);
 				Hooks.call('requestCurvyWallsRedraw');
 			}
-		}];
+		}
+	};
+	getTools(): Record<string, CurvyWallControl> { return this._tools; }
+	placeTool(point: PIXI.Point, data: { l1: number[], l2: number[], a1: number, a2: number }) {
+		this.lineA.set(data.l1[0] + point.x, data.l1[1] + point.y);
+		this.lineB.set(data.l2[0] + point.x, data.l2[1] + point.y);
+		this.arcHandle.angle = data.a1;
+		this.sliceHandle.angle = data.a2;
+		this.setMode(ToolMode.Placed);
 	}
-	showTools() {
-		$(`button[data-tool="ellipseclose"]`).show();
-		$(`button[data-tool="ellipsefinish"]`).show();
-		$(`button[data-tool="ellipseinc"]`).show();
-		$(`button[data-tool="ellipsedec"]`).show();
-	}
-	hideTools() {
-		$(`button[data-tool="ellipseclose"]`).hide();
-		$(`button[data-tool="ellipsefinish"]`).hide();
-		$(`button[data-tool="ellipseinc"]`).hide();
-		$(`button[data-tool="ellipsedec"]`).hide();
+	getData() {
+		const center = this.lineCenter;
+		return {
+			l1: [this.lineA.x - center.x, this.lineA.y - center.y],
+			l2: [this.lineB.x - center.x, this.lineB.y - center.y],
+			a1: this.arcHandle.angle, a2: this.sliceHandle.angle
+		};
 	}
 
 	getCenter(): PIXI.Point {
@@ -138,7 +129,7 @@ export default class CircleTool extends BezierTool {
 		while (angle >= sliceAngle) {
 			points.push(this.createVector(this.arcHandle.rawAngle + angle, magnitude, origin));
 			angle -= deltaTheta;
-			if(angle < 1e-10 && angle > -1e-10)
+			if (angle < 1e-10 && angle > -1e-10)
 				angle = 0;
 		}
 		// If we stopped short of the slice handle, add a small step to go the rest of the way
@@ -168,7 +159,7 @@ export default class CircleTool extends BezierTool {
 			.lineTo(slice.x, slice.y)
 			.endFill();
 		this.drawSegmentLabel(context);
-		const snapAngle = toDegrees(CircleTool.ANGLE_SNAP_STEPS[CircleTool.snapSetIndex]).toFixed(2);
+		const snapAngle = Math.toDegrees(CircleTool.ANGLE_SNAP_STEPS[CircleTool.snapSetIndex]).toFixed(2);
 		const arcLabel = BezierTool.createText(`⇲${snapAngle}°   ◶${180 / parseFloat(snapAngle)}`);
 		arcLabel.position.copyFrom(this.lineCenter);
 		arcLabel.position.y += BezierTool.TEXT_STYLE.fontSize as number + 4;
@@ -189,15 +180,15 @@ export default class CircleTool extends BezierTool {
 			return new InitializerIH(this, () => this.setMode(ToolMode.Placed), () => this.setMode(ToolMode.NotPlaced));
 		}
 		if (pointNearPoint(point, this.lineA, BezierTool.HANDLE_RADIUS))
-			return new PointInputHandler(this.lineA);
+			return new PointInputHandler(this, this.lineA, null, this.lineB);
 		else if (pointNearPoint(point, this.lineB, BezierTool.HANDLE_RADIUS))
-			return new PointInputHandler(this.lineB);
+			return new PointInputHandler(this, this.lineB, null, this.lineA);
 		else if (pointNearPoint(point, this.arcHandle.getHandlePoint(this.getCenter()), BezierTool.HANDLE_RADIUS))
-			return new PointRotationHandler(this.arcHandle, this.getCenter());
+			return new PointRotationHandler(this, this.arcHandle, this.getCenter());
 		else if (pointNearPoint(point, this.sliceHandle.getHandlePoint(this.getCenter()), BezierTool.HANDLE_RADIUS))
-			return new PointRotationHandler(this.sliceHandle, this.getCenter());
+			return new PointRotationHandler(this, this.sliceHandle, this.getCenter());
 		else if (this.polygon.contains(point.x, point.y))
-			return new PointArrayInputHandler(point, this.handles);
+			return new PointArrayInputHandler(this, point, this.handles);
 		return null;
 	}
 }
@@ -230,8 +221,8 @@ class PointRotationHandler extends InputHandler {
 	private original: number;
 	private arcHandle: RotatorHandle;
 	private center: PIXI.Point;
-	constructor(arcHandle: RotatorHandle, center: PIXI.Point) {
-		super();
+	constructor(tool: BezierTool, arcHandle: RotatorHandle, center: PIXI.Point) {
+		super(tool);
 		this.arcHandle = arcHandle;
 		this.original = this.arcHandle.angle;
 		this.center = center;

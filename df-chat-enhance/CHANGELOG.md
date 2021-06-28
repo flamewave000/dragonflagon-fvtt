@@ -1,5 +1,18 @@
 # DF Chat Enhancements
 
+## Release 3.1.1 (2021-06-27)
+- Removed GM Log options from PCs' context menus.
+- Removed "Delete All Archives" button from displaying on the Archive Manager for PCs.
+- Taiwanese Localization: courtesy of [zeteticl](https://github.com/zeteticl).
+
+## Release 3.1.0 (2021-06-07)
+- Migrated to FoundryVTT 0.8.6
+- Fixed issue with clicking visibility label of chat archive would toggle the first window if multiple archives are open.
+
+## Release 3.0.2 (2021-04-13)
+- Fixed styling conflict with the D&D5E Dark Mode module.
+- Fixed Archive Name and Visibility not saving correctly.
+
 ## Release 3.0.1 (2021-03-26)
 - Hotfix: New data storage solution for Chat Archive had a couple hiccups. Should be fixed now. Thanks to [hmqgg](https://github.com/hmqgg) for making a swift fix for the issue.
 

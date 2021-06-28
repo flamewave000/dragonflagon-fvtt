@@ -128,7 +128,7 @@ export default class DFChatArchiveViewer extends Application {
 				for (let value of currentChats as ChatMessage.Data[]) {
 					const chatMessage = value instanceof ChatMessage ? value : new ChatMessage(value);
 					try {
-						const html = $(await chatMessage.render());
+						const html = await chatMessage.getHTML();
 						// if we only have 1 message, don't allow it to be deleted. They might as well just delete the archive
 						if (currentChats.length == 1)
 							html.find('a.message-delete').hide();

@@ -4,8 +4,8 @@
 	"description": "{{description}}",
 	"version": "{{version}}",
 	"author": "flamewave000#6766",
-	"minimumCoreVersion": "0.7.9",
-	"compatibleCoreVersion": "0.7.9",
+	"minimumCoreVersion": "0.8.6",
+	"compatibleCoreVersion": "0.8.8",
 	"dependencies": [
 		{ "name": "lib-wrapper" },
 		{
@@ -29,6 +29,7 @@
 	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/README.md",
 	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/CHANGELOG.md",
 	"manifestPlusVersion": "1.0.0",
+	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues/new/choose",
 	"authors": [ { "name": "flamewave000", "discord": "flamewave000#6766", "url": "https://github.com/flamewave000" } ],
 	"media": [
 		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-cover.png" },
@@ -36,6 +37,9 @@
 		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-cubic.gif" },
 		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-quadratic.gif" },
 		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-ellipse.gif" },
-		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-rectangle.gif" }
+		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-rectangle.gif" },
+		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-tracing.gif" },
+		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-clone-tool.gif" },
+		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-curvy-walls-circ-rect-special-placement.gif" }
 	]
 }

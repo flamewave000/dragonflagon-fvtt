@@ -7,7 +7,7 @@
 	</h2>
 	{{#if isGM}}
 	<div style="display:flex;flex:0 0 auto;color:#FFF;flex-flow:row wrap">
-	<input id="visible" type="checkbox"{{#if visible}} checked{{/if}}/><label for="visible" style="margin:auto 0">{{localize 'DF_CHAT_ARCHIVE.ArchiveViewer_Visible'}}</label>
+	<input id="visible-{{logId}}" type="checkbox"{{#if visible}} checked{{/if}}/><label for="visible-{{logId}}" style="margin:auto 0">{{localize 'DF_CHAT_ARCHIVE.ArchiveViewer_Visible'}}</label>
 	</div>
 	{{/if}}
 	<ol id="df-chat-log">

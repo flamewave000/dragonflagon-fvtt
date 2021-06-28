@@ -1,4 +1,4 @@
-import { ToolUI } from "../BezierToolBar.js";
+import { CurvyWallControl } from "../CurvyWallsToolBar.js";
 import { BezierTool, ToolMode } from "./BezierTool.js";
 import { InitializerInputHandler, InputHandler, PointArrayInputHandler, PointInputHandler } from "./ToolInputHandler.js";
 
@@ -6,7 +6,7 @@ const pointNearPoint = BezierTool.pointNearPoint;
 
 class InitializerIH extends InitializerInputHandler {
 	constructor(tool: RectangleTool, success: () => void, fail: () => void) {
-		super(tool.lineA, tool.lineB, success, fail)
+		super(tool, true, tool.lineA, tool.lineB, success, fail)
 	}
 }
 
@@ -193,11 +193,11 @@ export default class RectangleTool extends BezierTool {
 			return new InitializerIH(this, () => this.setMode(ToolMode.Placed), () => this.setMode(ToolMode.NotPlaced));
 		}
 		if (pointNearPoint(point, this.lineA, BezierTool.HANDLE_RADIUS))
-			return new PointInputHandler(this.lineA);
+			return new PointInputHandler(this, this.lineA, null, this.lineB);
 		else if (pointNearPoint(point, this.lineB, BezierTool.HANDLE_RADIUS))
-			return new PointInputHandler(this.lineB);
+			return new PointInputHandler(this, this.lineB, null, this.lineA);
 		else if (this.rect.contains(point.x, point.y))
-			return new PointArrayInputHandler(point, this.handles);
+			return new PointArrayInputHandler(this, point, this.handles);
 		return null;
 	}
 
@@ -238,8 +238,26 @@ export default class RectangleTool extends BezierTool {
 		return false;
 	}
 
-	getTools(): ToolUI[] { return []; }
-	showTools() { }
-	hideTools() { }
+	getTools(): Record<string, CurvyWallControl> { return {}; }
+	placeTool(point: PIXI.Point, data: { l1: number[], l2: number[], t: number, r: number, b: number, l: number }) {
+		this.lineA.set(data.l1[0] + point.x, data.l1[1] + point.y);
+		this.lineB.set(data.l2[0] + point.x, data.l2[1] + point.y);
+		this.topCount = data.t;
+		this.rightCount = data.r;
+		this.bottomCount = data.b;
+		this.leftCount = data.l;
+		this.setMode(ToolMode.Placed);
+	}
+	getData() {
+		const center = this.lineCenter;
+		return {
+			l1: [this.lineA.x - center.x, this.lineA.y - center.y],
+			l2: [this.lineB.x - center.x, this.lineB.y - center.y],
+			t: this.topCount,
+			r: this.rightCount,
+			b: this.bottomCount,
+			l: this.leftCount
+		};
+	}
 	initialPoints(): number[] { return [0, 0, 0, 0, 0, 0]; }
 }
