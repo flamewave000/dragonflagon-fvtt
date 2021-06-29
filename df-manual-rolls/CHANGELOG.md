@@ -1,5 +1,8 @@
 # DF Manual Rolls
 
+## Release 2.2.1 (2021-06-29)
+- Fixed console error for non-roll chat messages. Was not properly ignoring messages that were not rolls.
+
 ## Release 2.2.0 (2021-06-28)
 - Added legacy support for non-async rolls. This presents the kind of prompt in the old version for 0.7.x. One improvement is the handling of grouped rolls. If there are no modifiers (ie. kh/kl), it prompt for the total for the roll instead of asking for each die roll. This is possible with Foundry 0.8.x's rolling system improvements.
 
