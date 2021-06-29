@@ -1,6 +1,6 @@
 
 // https://foundryvtt.com/api/abstract.Document.html
-declare class DocumentX<T> {
+class DocumentX<T> {
 	static collectionName: string
 	static database: DatabaseBackend
 	static documentName: string
@@ -588,7 +588,7 @@ declare namespace Combat {
 const foundry: any;
 
 class ChatMessage extends DocumentX<ChatMessage> {
-	constructor(data, context);
+	constructor(data?: ChatMessage.Data, context?: any);
 	/**
 	 * Return the recommended String alias for this message.
 	 * The alias could be a Token name in the case of in-character messages or dice rolls.
@@ -691,7 +691,7 @@ class ChatMessage extends DocumentX<ChatMessage> {
 	 * Render the HTML for the ChatMessage which should be added to the log
 	 * @return {Promise<jQuery>}
 	 */
-	async getHTML();
+	getHTML(): Promise<JQuery>;
 	/** @override */
 	async _preCreate(data, options, user);
 	/** @override */
@@ -706,15 +706,15 @@ class ChatMessage extends DocumentX<ChatMessage> {
 	 */
 	export();
 }
-// declare namespace ChatMessage {
-// 	declare interface Data extends Entity.Data {
-// 		content: string;
-// 		roll?: string;
-// 		speaker: SpeakerData;
-// 		timestamp: number;
-// 		type: number;
-// 		user: string;
-// 		whisper: string[];
-// 		flavor?: string;
-// 	}
-// }
+declare namespace ChatMessage {
+	declare interface Data extends Entity.Data {
+		content: string;
+		roll?: string;
+		speaker: SpeakerData;
+		timestamp: number;
+		type: number;
+		user: string;
+		whisper: string[];
+		flavor?: string;
+	}
+}

@@ -1,5 +1,8 @@
 # DF Chat Enhancements
 
+## Release 3.2.1 (2021-06-29)
+- Chat Edit: Added option to ignore messages containing HTML from being editable. This will be on by default, but can be turned off to allow editing those messages.
+
 ## Release 3.1.1 (2021-06-27)
 - Removed GM Log options from PCs' context menus.
 - Removed "Delete All Archives" button from displaying on the Archive Manager for PCs.

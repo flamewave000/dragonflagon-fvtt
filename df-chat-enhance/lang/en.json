@@ -107,6 +107,8 @@
 	"DF_CHAT_EDIT.Settings_AllowEditHint": "Allow players to edit the messages they send",
 	"DF_CHAT_EDIT.Settings_GMEditAllName": "Chat Edit: GM can edit all",
 	"DF_CHAT_EDIT.Settings_GMEditAllHint": "Allow GMs to edit anyone's message instead of just their own",
+	"DF_CHAT_EDIT.Settings_IgnoreHtmlName": "Chat Edit: Ignore Messages Containing HTML",
+	"DF_CHAT_EDIT.Settings_IgnoreHtmlHint": "Do not allow messages containing HTML to be edited.",
 	"DF_CHAT_EDIT.EditedFlag": "(edited)",
 	"DF_CHAT_EDIT.Error_NoPermission": "The Gamemaster has disabled editing"
 }
