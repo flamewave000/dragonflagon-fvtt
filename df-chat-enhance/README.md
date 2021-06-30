@@ -19,6 +19,7 @@ Multiple improvements to the chat system feature set. Brings a new Chat Archive 
 		- [Archive Merging](#Archive-Merging)
 - [Edit Sent Messages](#Edit-Sent-Messages)
 	- [Edit Last Message Keyboard Shortcut](#Edit-Last-Message-Keyboard-Shortcut)
+- [Chat Message Merging](#Chat-Message-Merging)
 
 ##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
 
@@ -153,3 +154,37 @@ A keyboard shortcut has now been added to allow you to quickly edit your most re
 
 ![](../.assets/df-chat-enhance-edit-message.png)
 
+## Chat Message Merging
+
+You will now be able to have messages merged in the chat. There are various settings for customizing the look and feel of the chat merges.
+
+|Chat Merging GM|Chat Merging PC|
+|:-:|:-:|
+|![Chat Merging GM](../.assets/df-chat-enhance-chat-merge-gm.png)|![Chat Merging PC](../.assets/df-chat-enhance-chat-merge-pc.png)|
+
+
+### Message Headers
+
+By default, the message headers of merged messages are hidden (except for the top message). These headers contain the delete button for GMs, the timestamp for the message, and (if you have it enabled) the edit button for the message. By default, the headers will not be shown in order to keep things more compact. But there is an option to show the headers in the module settings. When headers are hidden, GMs will still be able to see the Delete button for messages, it will just be shifted down and the message content given a small padding on the right.
+
+### Message Divider
+
+There is an option for merged messages to display a thin divider between them. This adopts the border colour of the messages.
+
+|With Divider|Without Divider|
+|:-:|:-:|
+|![With Divider](../.assets/df-chat-enhance-chat-merge-divider-on.png)|![Without Divider](../.assets/df-chat-enhance-chat-merge-divider-off.png)|
+
+### Hover Shadow
+
+Merged Messages are set to display a faint shadow when you hover over them. I recommend you keep this on if you have the [Message Divider](#Message-Divider) feature disabled.
+
+![Hover Shadow](../.assets/df-chat-enhance-chat-merge-hover.png)
+
+### Roll Merging
+
+Rolls can be merged in an independent way. You have three choices, No Merging, Merge with other Rolls, and Merge With Any. Below demonstrates the visual differences between the three options:
+
+|No Merging|Merge with other Rolls|Merge With Any|
+|:-:|:-:|:-:|
+|![No Merging](../.assets/df-chat-enhance-chat-merge-roll-none.png)|![Merge with other Rolls](../.assets/df-chat-enhance-chat-merge-roll-rolls.png)|![Merge With Any](../.assets/df-chat-enhance-chat-merge-roll-all.png)|

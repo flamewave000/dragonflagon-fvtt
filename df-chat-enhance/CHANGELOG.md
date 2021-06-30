@@ -1,7 +1,8 @@
 # DF Chat Enhancements
 
-## Release 3.2.1 (2021-06-29)
+## Release 3.2.0 (2021-06-29)
 - Chat Edit: Added option to ignore messages containing HTML from being editable. This will be on by default, but can be turned off to allow editing those messages.
+- Chat Edit: Added whole new Chat Merging feature. This will merge chats in the chat log that were sent by the same person within a short period of time.
 
 ## Release 3.1.1 (2021-06-27)
 - Removed GM Log options from PCs' context menus.

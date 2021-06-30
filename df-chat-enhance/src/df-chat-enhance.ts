@@ -2,6 +2,7 @@ import * as DFChatArchive from "./archive/df-chat-archive.js";
 import DFChatEdit from "./edit/df-chat-edit.js";
 import initDFChatEdit from "./edit/df-chat-edit.js";
 import * as DFAdventureLog from "./logger/df-adventure-log.js";
+import ChatMerge from "./merge/chat-merge.js";
 import initDFChatPrivacy from "./privacy/df-chat-privacy.js";
 import SETTINGS from "./SETTINGS.js";
 SETTINGS.init('df-chat-enhance');
@@ -27,6 +28,7 @@ Hooks.once('init', function () {
 	DFChatArchive.init();
 	initDFChatPrivacy();
 	DFAdventureLog.init();
+	ChatMerge.init();
 });
 
 Hooks.once('ready', function () {
@@ -38,4 +40,5 @@ Hooks.once('ready', function () {
 	}
 	DFAdventureLog.ready();
 	DFChatEdit.initDFChatEdit();
+	ChatMerge.ready();
 });

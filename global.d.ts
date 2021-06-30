@@ -1,13 +1,13 @@
 
 // https://foundryvtt.com/api/abstract.Document.html
-class DocumentX<T> {
+class DocumentX<T, D> {
 	static collectionName: string
 	static database: DatabaseBackend
 	static documentName: string
 	static implementation: function
 	static metadata: object
 	collectionName: string
-	data: DocumentData
+	data: D
 	documentName: string
 	id: string | null
 	isEmbedded: boolean
@@ -587,7 +587,7 @@ declare namespace Combat {
 
 const foundry: any;
 
-class ChatMessage extends DocumentX<ChatMessage> {
+class ChatMessage extends DocumentX<ChatMessage, ChatMessage.Data> {
 	constructor(data?: ChatMessage.Data, context?: any);
 	/**
 	 * Return the recommended String alias for this message.
