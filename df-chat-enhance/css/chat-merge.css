@@ -41,15 +41,21 @@
 	display: var(--dfce-cm-header, inherit);
 }
 
-.dfce-cm-middle>header>span>.message-timestamp,
-.dfce-cm-bottom>header>span>.message-timestamp {
+.dfce-cm-middle .message-timestamp,
+.dfce-cm-bottom .message-timestamp {
 	display: var(--dfce-cm-header, inherit);
 }
 
-.dfce-cm-middle>header>span>.message-delete,
-.dfce-cm-bottom>header>span>.message-delete {
+.dfce-cm-middle .message-header,
+.dfce-cm-bottom .message-header,
+.dfce-cm-middle .message-metadata,
+.dfce-cm-bottom .message-metadata {
 	height: var(--dfce-cm-header-delete, inherit);
-	float: right;
+}
+
+.dfce-cm-middle .message-delete,
+.dfce-cm-bottom .message-delete {
+	position: relative;
 }
 
 .dfce-cm-middle>.message-content,

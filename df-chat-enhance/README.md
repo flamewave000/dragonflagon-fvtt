@@ -19,9 +19,14 @@ Multiple improvements to the chat system feature set. Brings a new Chat Archive 
 		- [Archive Merging](#Archive-Merging)
 - [Edit Sent Messages](#Edit-Sent-Messages)
 	- [Edit Last Message Keyboard Shortcut](#Edit-Last-Message-Keyboard-Shortcut)
+- [Better Chat Log Scrolling](#Better-Chat-Log-Scrolling)
 - [Chat Message Merging](#Chat-Message-Merging)
+	- [Message Headers](#Message-Headers)
+	- [Message Divider](#Message-Divider)
+	- [Hover Shadow](#Hover-Shadow)
+	- [Roll Merging](#Roll-Merging)
 
-##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
+**[![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!**
 
 ## Adventure Log
 
@@ -154,6 +159,16 @@ A keyboard shortcut has now been added to allow you to quickly edit your most re
 
 ![](../.assets/df-chat-enhance-edit-message.png)
 
+## Better Chat Log Scrolling
+
+Currently in Foundry if you scroll up through the chat log, it will automatically jump back down as soon as someone posts a message or makes a roll. This can be frustrating if you're trying to find something mid-game.
+
+This feature prevents that auto-scroll and instead will give you a "Scroll To Bottom" button that you can click to quickly get back down. Also, if new messages are posted to the chat, the button will pulse and say "New Message!" on it.
+
+|Scroll To Bottom Button|Scroll To Bottom with New Message|
+|:-:|:-:|
+|![Scroll To Bottom Button](../.assets/df-chat-enhance-scroll-manage.png)|![Scroll To Bottom with New Message](../.assets/df-chat-enhance-scroll-manage-new.png)|
+
 ## Chat Message Merging
 
 You will now be able to have messages merged in the chat. There are various settings for customizing the look and feel of the chat merges.
@@ -161,7 +176,6 @@ You will now be able to have messages merged in the chat. There are various sett
 |Chat Merging GM|Chat Merging PC|
 |:-:|:-:|
 |![Chat Merging GM](../.assets/df-chat-enhance-chat-merge-gm.png)|![Chat Merging PC](../.assets/df-chat-enhance-chat-merge-pc.png)|
-
 
 ### Message Headers
 

@@ -96,8 +96,8 @@ export default class ChatMerge {
 			onChange: () => this._processAllMessage()
 		});
 
-		Hooks.on("renderChatMessage", this._renderChatMessage);
 		libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype.deleteMessage', this._deleteMessage.bind(this), 'WRAPPER');
+		Hooks.on("renderChatMessage", this._renderChatMessage);
 	}
 	static ready() {
 		const style = (<HTMLElement>document.querySelector(':root')).style;
