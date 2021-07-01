@@ -15,8 +15,8 @@ export default class ScrollManage {
 		Hooks.on('renderChatLog', this._renderChatLog.bind(this));
 
 		SETTINGS.register(this.PREF_ENABLED, {
-			name: 'Enable Chat Scroll Improvements',
-			hint: 'Will display a Scroll To Bottom button, and if you are scrolling up through the log, it will prevent the chat log from scrolling down when a new message is posted. Instead it will highlight the Scroll To Bottom button when a new message is posted.',
+			name: 'DF_CHAT_SCROLL.EnableName',
+			hint: 'DF_CHAT_SCROLL.EnableHint',
 			scope: 'world',
 			config: true,
 			type: Boolean,
@@ -31,8 +31,8 @@ export default class ScrollManage {
 			}
 		});
 		SETTINGS.register(this.PREF_SCROLL_IF_YOU, {
-			name: 'Scroll To Bottom When You Send Message',
-			hint: 'If you have scrolled up through the chat log, this will automatically scroll you back to the bottom when you send a message.',
+			name: 'DF_CHAT_SCROLL.ScrollIfYouName',
+			hint: 'DF_CHAT_SCROLL.ScrollIfYouHint',
 			scope: 'world',
 			config: true,
 			type: Boolean,
@@ -47,7 +47,7 @@ export default class ScrollManage {
 
 	private static _renderChatLog(app: ChatLog, html: JQuery<HTMLElement>, data: object) {
 		this._scrollToBottomButton = $(`<div id="scrollToBottom" style="display:none">
-	<span>New Message!</span> Scroll to Bottom
+	<span>${game.i18n.localize('DF_CHAT_SCROLL.NewMessage')}</span> ${game.i18n.localize('DF_CHAT_SCROLL.ScrollButton')}
 </div>`);
 		this._scrollToBottomButton.on('click', () => {
 			const el = app.element;

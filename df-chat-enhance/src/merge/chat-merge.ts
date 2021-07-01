@@ -19,8 +19,8 @@ export default class ChatMerge {
 
 	static init() {
 		SETTINGS.register(this.PREF_ENABLED, {
-			name: 'Chat Merge: Enable Chat Message Merging',
-			hint: 'Will merge messages that were posted close to eachother in time from the same user together.',
+			name: 'DF_CHAT_MERGE.EnableName',
+			hint: 'DF_CHAT_MERGE.EnableHint',
 			config: true,
 			scope: 'client',
 			default: true,
@@ -28,8 +28,8 @@ export default class ChatMerge {
 			onChange: () => this._processAllMessage()
 		});
 		SETTINGS.register(this.PREF_SHOW_HEADER, {
-			name: 'Chat Merge: Show Message Headers',
-			hint: 'If enabled, will display the message header for each merged message.',
+			name: 'DF_CHAT_MERGE.ShowHeaderName',
+			hint: 'DF_CHAT_MERGE.ShowHeaderHint',
 			config: true,
 			scope: 'client',
 			default: false,
@@ -44,22 +44,22 @@ export default class ChatMerge {
 			}
 		});
 		SETTINGS.register(this.PREF_ALLOW_ROLLS, {
-			name: 'Chat Merge: How to Handle Rolls when Merging',
-			hint: 'How Roll Messages should be handled.',
+			name: 'DF_CHAT_MERGE.AllowRollsName',
+			hint: 'DF_CHAT_MERGE.AllowRollsHint',
 			config: true,
 			scope: 'client',
 			default: 'rolls',
 			type: String,
 			choices: {
-				none: 'Do not merge',
-				rolls: 'Merge with other rolls',
-				all: 'Merge with any messages'
+				none: game.i18n.localize('DF_CHAT_MERGE.AllowRollsOptions.none'),
+				rolls: game.i18n.localize('DF_CHAT_MERGE.AllowRollsOptions.rolls'),
+				all: game.i18n.localize('DF_CHAT_MERGE.AllowRollsOptions.all')
 			},
 			onChange: () => this._processAllMessage()
 		});
 		SETTINGS.register(this.PREF_SEPARATE, {
-			name: 'Chat Merge: Show Merged Message Divider',
-			hint: 'Show a thin divider between merged messages.',
+			name: 'DF_CHAT_MERGE.SeparateName',
+			hint: 'DF_CHAT_MERGE.SeparateHint',
 			config: true,
 			scope: 'client',
 			default: false,
@@ -70,8 +70,8 @@ export default class ChatMerge {
 			}
 		});
 		SETTINGS.register(this.PREF_HOVER, {
-			name: 'Chat Merge: Show Hover Shadow',
-			hint: 'Show a border shadow when the mouse is hovering over a merged chat message.',
+			name: 'DF_CHAT_MERGE.HoverName',
+			hint: 'DF_CHAT_MERGE.HoverHint',
 			config: true,
 			scope: 'client',
 			default: true,
@@ -82,8 +82,8 @@ export default class ChatMerge {
 			}
 		});
 		SETTINGS.register(this.PREF_EPOCH, {
-			name: 'Chat Merge: Maximum Period of Time',
-			hint: 'The Maximum period of time between messages that will allow them to be merged together.',
+			name: 'DF_CHAT_MERGE.EpochName',
+			hint: 'DF_CHAT_MERGE.EpochHint',
 			config: true,
 			scope: 'client',
 			default: 10,
