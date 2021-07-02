@@ -72,9 +72,9 @@ export default class DFSceneNav {
 				});
 			}
 		}, 'MIXED');
-		libWrapper.register(SETTINGS.MOD_NAME, 'SceneDirectory.prototype._render', async function(this: SceneDirectory, wrapper: Function, ...args: any[]) {
+		libWrapper.register(SETTINGS.MOD_NAME, 'SceneDirectory.prototype._render', async function(this: SceneDirectory, ...args: any[]) {
 			if (!game.user.isGM && !SETTINGS.get(DFSceneNav.ON_CLICK_PLAYER)) return;
-			return Application.prototype._render.bind(this)(...args);
+			return (<any>SidebarDirectory.prototype)._render.bind(this)(...args);
 		}, 'OVERRIDE');
 		Sidebar.prototype.getData = function (options) {
 			return {

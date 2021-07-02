@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"name": "df-scene-enhance",
-	"version": "3.4.0",
+	"version": "3.4.1",
 	"title": "DF Scene Enhancement",
 	"description": "A few enhancements to scene management for players and GMs.",
 	"main": "src/df-scene-enhance.ts",
