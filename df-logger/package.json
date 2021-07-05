@@ -2,7 +2,7 @@
 	"private": true,
 	"name": "df-logger",
 	"title": "DF User Logger",
-	"version": "1.6.0",
+	"version": "1.6.1",
 	"description": "Prints a simple message whenever a user logs-in/out of FoundryVTT",
 	"main": "src/df-logger.ts",
 	"scripts": {
@@ -16,7 +16,8 @@
 		"prod": "npx gulp zip --gulpfile=../gulpfile.js --cwd=./ --min",
 		"launch": "sudo ../launch-foundry `which node` /var/www/foundryvtt /var/www/foundrydata",
 		"launch7": "sudo ../launch-foundry `which node` /var/www/foundryvtt7 /var/www/foundrydata7",
-		"tag": "git tag -d ${npm_package_name}_${npm_package_version} 2>/dev/null ; git tag ${npm_package_name}_${npm_package_version} && git push -f origin ${npm_package_name}_${npm_package_version}"
+		"tag": "git tag -d ${npm_package_name}_${npm_package_version} 2>/dev/null ; git tag ${npm_package_name}_${npm_package_version} && git push -f origin ${npm_package_name}_${npm_package_version}",
+		"release": "npm run tag && npm run prod"
 	},
 	"repository": {
 		"type": "git",

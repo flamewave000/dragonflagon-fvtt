@@ -1,7 +1,7 @@
 // Global Variables
-const vtt = "Foundry VTT";
-let game = globalThis.game = {};
-let socket = globalThis.socket = null;
+globalThis.vtt = "Foundry VTT";
+globalThis.game = {};
+globalThis.socket = null;
 
 /**
  * The global constants object
@@ -989,7 +989,7 @@ class KeyboardManager {
 }
 
 /**
- * An abstract interface for managing defined game settings or settings menus for different packages.
+ * A class responsible for managing defined game settings or settings menus.
  * Each setting is a string key/value pair belonging to a certain package and a certain store scope.
  *
  * When Foundry Virtual Tabletop is initialized, a singleton instance of this class is constructed within the global
@@ -1707,6 +1707,7 @@ const MIN_WINDOW_HEIGHT = 50;
  * @param {number} [options.height]               The default pixel height for the rendered HTML
  * @param {number} [options.top]                  The default offset-top position for the rendered HTML
  * @param {number} [options.left]                 The default offset-left position for the rendered HTML
+ * @param {number} [options.scale]                A transformation scale for the rendered HTML
  * @param {boolean} [options.popOut]              Whether to display the application as a pop-out container
  * @param {boolean} [options.minimizable]         Whether the rendered application can be minimized (popOut only)
  * @param {boolean} [options.resizable]           Whether the rendered application can be drag-resized (popOut only)
@@ -2105,11 +2106,11 @@ class Application {
 
 	/**
 	 * Return the inheritance chain for this Application class up to (and including) it's base Application class.
-	 * @return {Application[]}
+	 * @return {Function[]}
 	 * @private
 	 */
 	static _getInheritanceChain() {
-		const parents = getParentClasses(this);
+		const parents = foundry.utils.getParentClasses(this);
 		const base = this.defaultOptions.baseApplication;
 		const chain = [this];
 		for ( let cls of parents ) {
@@ -2218,8 +2219,8 @@ class Application {
 
 	/**
 	 * Customize how inner HTML is replaced when the application is refreshed
-	 * @param {HTMLElement|jQuery} element  The original HTML element
-	 * @param {HTMLElement|jQuery} html     New updated HTML
+	 * @param {jQuery} element      The original HTML processed as a jQuery object
+	 * @param {jQuery} html         New updated HTML as a jQuery object
 	 * @private
 	 */
 	_replaceHTML(element, html) {
@@ -2315,9 +2316,9 @@ class Application {
 
 	/**
 	 * Handle changes to the active tab in a configured Tabs controller
-	 * @param {MouseEvent} event    A left click event
-	 * @param {Tabs} tabs           The Tabs controller
-	 * @param {string} active       The new active tab name
+	 * @param {MouseEvent|null} event   A left click event
+	 * @param {Tabs} tabs               The Tabs controller
+	 * @param {string} active           The new active tab name
 	 * @private
 	 */
 	_onChangeTab(event, tabs, active) {
@@ -2737,7 +2738,8 @@ class FormApplication extends Application {
 	/** @inheritdoc */
 	async _renderInner(...args) {
 		const html = await super._renderInner(...args);
-		this.form = html[0] instanceof HTMLFormElement ? html[0] : html.find("form")[0];
+		this.form = html.filter((i, el) => el instanceof HTMLFormElement)[0];
+		if ( !this.form ) this.form = html.find("form")[0];
 		return html;
 	}
 
@@ -3140,7 +3142,7 @@ class DocumentSheet extends FormApplication {
 
 	/** @override */
 	get id() {
-		const name = this.options.id ?? `${this.document.documentName.toLowerCase()}-sheet`;
+		const name = this.options.id || `${this.document.documentName.toLowerCase()}-sheet`;
 		return `${name}-${this.document.id}`
 	}
 
@@ -3687,8 +3689,9 @@ class HandlebarsHelpers {
 
 		// Enrich the content
 		const owner = Boolean(options.hash['owner']);
+		const entities = options.hash['entities'] !== false;
 		const rollData = options.hash["rollData"];
-		const content = TextEditor.enrichHTML(options.hash['content'] || "", {secrets: owner, entities: true, rollData});
+		const content = TextEditor.enrichHTML(options.hash['content'] || "", {secrets: owner, entities, rollData});
 
 		// Construct the HTML
 		let editor = $(`<div class="editor"><div class="editor-content" data-edit="${target}">${content}</div></div>`);
@@ -3703,7 +3706,7 @@ class HandlebarsHelpers {
 	/* -------------------------------------------- */
 
 	/**
-	 * Render a file-picker button linked to an <input> field
+	 * Render a file-picker button linked to an &lt;input> field
 	 * @param {object} options              Helper options
 	 * @param {string} [options.type]       The type of FilePicker instance to display
 	 * @param {boolean} [options.target]    The field name in the target data
@@ -3818,7 +3821,7 @@ class HandlebarsHelpers {
 	/* -------------------------------------------- */
 
 	/**
-	* A helper to assign an <option> within a <select> block as selected based on its value
+	* A helper to assign an &lt;option> within a &lt;select> block as selected based on its value
 	* Escape the string as handlebars would, then escape any regexp characters in it
 	* @return {Handlebars.SafeString}
 	*/
@@ -4184,7 +4187,7 @@ class Game {
 	async initialize() {
 		console.log(`${vtt} | Initializing Foundry Virtual Tabletop Game`);
 		this.ready = false;
-		Hooks.callAll('init');
+		Hooks.callAll("init");
 
 		// Register game settings
 		this.registerSettings();
@@ -4301,7 +4304,7 @@ class Game {
 
 		// Call all game ready hooks
 		this.ready = true;
-		Hooks.callAll('ready');
+		Hooks.callAll("ready");
 	}
 
 	/* -------------------------------------------- */
@@ -5140,7 +5143,7 @@ class Game {
 }
 
 /**
- * This class provides an interface and API for conducting dice rolls.
+ * An interface and API for constructing and evaluating dice rolls.
  * The basic structure for a dice roll is a string formula and an object of data against which to parse it.
  *
  * @param {string} formula    The string formula to parse
@@ -5653,7 +5656,7 @@ class Roll {
 		let dataRgx = new RegExp(/@([a-z.0-9_\-]+)/gi);
 		return formula.replace(dataRgx, (match, term) => {
 			let value = foundry.utils.getProperty(data, term);
-			if ( value === undefined ) {
+			if ( value == null ) {
 				if ( warn && ui.notifications ) ui.notifications.warn(game.i18n.format("DICE.WarnMissingData", {match}));
 				return (missing !== undefined) ? String(missing) : match;
 			}
@@ -6106,7 +6109,7 @@ class Roll {
 	static fromData(data) {
 
 		// Create the Roll instance
-		const roll = new this(data.formula, {}, data.options);
+		const roll = new this(data.formula, data.data, data.options);
 
 		// Expand terms
 		roll.terms = data.terms.map(t => {
@@ -6946,7 +6949,7 @@ class DiceTerm extends RollTerm {
 	 * A helper comparison function.
 	 * Returns a boolean depending on whether the result compares favorably against the target.
 	 * @param {number} result         The result being compared
-	 * @param {string} comparison     The comparison operator in [=,<,<=,>,>=]
+	 * @param {string} comparison     The comparison operator in [=,&lt;,&lt;=,>,>=]
 	 * @param {number} target         The target value
 	 * @return {boolean}              Is the comparison true?
 	 */
@@ -7160,7 +7163,7 @@ class DiceTerm extends RollTerm {
  * @extends {RollTerm}
  */
 class MathTerm extends RollTerm {
-	constructor({fn, terms, options}={}) {
+	constructor({fn, terms=[], options}={}) {
 		super({options});
 
 		/**
@@ -7192,7 +7195,7 @@ class MathTerm extends RollTerm {
 	isIntermediate = true;
 
 	/** @inheritdoc */
-	static SERIALIZE_ATTRIBUTES = ["fn", "term"];
+	static SERIALIZE_ATTRIBUTES = ["fn", "terms"];
 
 	/* -------------------------------------------- */
 	/*  Math Term Attributes                        */
@@ -7247,7 +7250,7 @@ class MathTerm extends RollTerm {
 	}
 }
 /**
- * A type of RollTerm used to capture static numbers.
+ * A type of RollTerm used to represent static numbers.
  * @extends {RollTerm}
  */
 class NumericTerm extends RollTerm {
@@ -7453,6 +7456,8 @@ class ParentheticalTerm extends RollTerm {
 }
 
 /**
+ * A type of RollTerm which encloses a pool of multiple inner Rolls which are evaluated jointly.
+ *
  * A dice pool represents a set of Roll expressions which are collectively modified to compute an effective total
  * across all Rolls in the pool. The final total for the pool is defined as the sum over kept rolls, relative to any
  * success count or margin.
@@ -7538,7 +7543,7 @@ class PoolTerm extends RollTerm {
 	 * @return {DiceTerm[]}
 	 */
 	get dice() {
-		return this.rolls.reduce((dice, r) => dice.concat(r.dice), []);
+		return this.rolls.flatMap(r => r.dice);
 	}
 
 	/* -------------------------------------------- */
@@ -7646,6 +7651,15 @@ class PoolTerm extends RollTerm {
 	static _fromData(data) {
 		data.rolls = (data.rolls || []).map(r => Roll.fromData(r));
 		return super._fromData(data);
+	}
+
+	/* -------------------------------------------- */
+
+	/** @inheritdoc */
+	toJSON() {
+		const data = super.toJSON();
+		data.rolls = data.rolls.map(r => r.toJSON());
+		return data;
 	}
 
 	/* -------------------------------------------- */
@@ -7759,7 +7773,7 @@ class PoolTerm extends RollTerm {
  */
 const DicePool = PoolTerm;
 /**
- * A type of RollTerm used to capture residual strings which have not yet been matched
+ * A type of RollTerm used to represent strings which have not yet been matched.
  * @extends {RollTerm}
  */
 class StringTerm extends RollTerm {
@@ -7788,7 +7802,7 @@ class StringTerm extends RollTerm {
 }
 
 /**
- * Define a two-sided coin term that can be used as part of a Roll formula
+ * A type of DiceTerm used to represent flipping a two-sided coin.
  * @implements {DiceTerm}
  */
 class Coin extends DiceTerm {
@@ -7868,7 +7882,7 @@ class Coin extends DiceTerm {
 }
 
 /**
- * Define a fair n-sided die term that can be used as part of a Roll formula
+ * A type of DiceTerm used to represent rolling a fair n-sided die.
  * @implements {DiceTerm}
  *
  * @example
@@ -8284,7 +8298,7 @@ class Die extends DiceTerm {
 }
 
 /**
- * Define a three-sided Fate/Fudge dice term that can be used as part of a Roll formula
+ * A type of DiceTerm used to represent a three-sided Fate/Fudge die.
  * Mathematically behaves like 1d3-2
  * @extends {DiceTerm}
  */
@@ -9079,8 +9093,8 @@ class ClientDatabaseBackend extends foundry.abstract.DatabaseBackend {
 }
 
 /**
- * The client-side document mixin which is used to extend the common BaseDocument.
- * This mixin provides the client-side interface for database operations and common document behaviors.
+ * A mixin which extends each Document definition with specialized client-side behaviors.
+ * This mixin defines the client-side interface for database operations and common document behaviors.
  * @mixin
  * @augments abstract.Document
  */
@@ -9112,7 +9126,12 @@ const ClientDocumentMixin = Base => class extends Base {
 	 */
 	_initialize() {
 		super._initialize();
-		this.prepareData();
+		try {
+			this.prepareData();
+		} catch(err) {
+			err.message = `Failed initial data preparation for ${this.documentName} [${this.id}]: ${err.message}`;
+			console.error(err);
+		}
 	}
 
 	/* -------------------------------------------- */
@@ -9470,7 +9489,9 @@ const ClientDocumentMixin = Base => class extends Base {
 	 * @memberof ClientDocumentMixin#
 	 */
 	_onUpdateEmbeddedDocuments(embeddedName, documents, result, options, userId) {
-		this.render(false, {renderContext: `update${embeddedName}`});
+		if ( options.render !== false ) {
+			this.render(false, {renderContext: `update${embeddedName}`});
+		}
 	}
 
 	/* -------------------------------------------- */
@@ -9641,7 +9662,7 @@ const ClientDocumentMixin = Base => class extends Base {
 	 * @memberof ClientDocumentMixin#
 	 */
 	async importFromJSON(json) {
-		const data = this.collection.fromCompendium(JSON.parse(json));
+		const data = JSON.parse(json);
 		this.data.update(data, {recursive: false});
 		return this.update(this.toJSON(), {diff: false, recursive: false});
 	}
@@ -9814,7 +9835,7 @@ const ClientDocumentMixin = Base => class extends Base {
 	}
 };
 /**
- * A Collection of Document objects within the Foundry Virtual Tabletop framework.
+ * An abstract subclass of the Collection container which defines a collection of Document instances.
  * @extends {Collection}
  * @interface
  *
@@ -10003,10 +10024,11 @@ class DocumentCollection extends foundry.utils.Collection {
 }
 
 /**
- * A singleton Collection of world-level Document objects within the Foundry Virtual Tabletop.
+ * A collection of world-level Document objects with a singleton instance per primary Document type.
  * Each primary Document type has an associated subclass of WorldCollection which contains them.
  * @extends {DocumentCollection}
  * @abstract
+ * @see {Game#collections}
  *
  * @param {object[]} data      An array of data objects from which to create Document instances
  */
@@ -10208,7 +10230,7 @@ class WorldCollection extends DocumentCollection {
 }
 
 /**
- * The Collection of Actor documents which exist within the active World.
+ * The singleton collection of Actor documents which exist within the active World.
  * This Collection is accessible within the Game object as game.actors.
  * @extends {WorldCollection}
  *
@@ -10299,7 +10321,7 @@ class Actors extends WorldCollection {
 }
 
 /**
- * The Collection of Combat documents which exist within the active World.
+ * The singleton collection of Combat documents which exist within the active World.
  * This Collection is accessible within the Game object as game.combats.
  * @extends {WorldCollection}
  *
@@ -10376,10 +10398,11 @@ class CombatEncounters extends WorldCollection {
 }
 
 /**
- * A singleton Collection of Compendium-level Document objects within the Foundry Virtual Tabletop.
+ * A collection of Document objects contained within a specific compendium pack.
  * Each Compendium pack has its own associated instance of the CompendiumCollection class which contains its contents.
  * @extends {DocumentCollection}
  * @abstract
+ * @see {Game#packs}
  *
  * @param {object} metadata   The compendium metadata, an object provided by game.data
  */
@@ -10406,10 +10429,19 @@ class CompendiumCollection extends DocumentCollection {
 		 */
 		this._flush = foundry.utils.debounce(this.clear.bind(this), this.constructor.CACHE_LIFETIME_SECONDS * 1000);
 
-		// Asynchronously retrieve the index
-		this.getIndex().then(index => {
-			console.log(`${vtt} | Constructed index of Compendium pack ${this.collection} containing ${index.size} entries`);
-		})
+		/**
+		 * Has this Compendium pack been fully indexed?
+		 * @type {boolean}
+		 */
+		this.indexed = false;
+
+		// Initialize a provided Compendium index
+		if ( metadata.index ) {
+			for ( let i of metadata.index ) {
+				this.index.set(i._id, i);
+			}
+			delete metadata.index;
+		}
 
 		// Define the Compendium directory application
 		this.apps.push(new Compendium(this));
@@ -10429,6 +10461,20 @@ class CompendiumCollection extends DocumentCollection {
 	 * @type {string}
 	 */
 	static CONFIG_SETTING = "compendiumConfiguration";
+
+	/**
+	 * The default index fields which should be retrieved for each Compendium document type
+	 * @type {Object<string, string[]>}
+	 */
+	static INDEX_FIELDS = {
+		Actor: ["name", "img", "type"],
+		Item: ["name", "img", "type"],
+		Scene: ["name", "thumb"],
+		JournalEntry: ["name", "img"],
+		Macro: ["name", "img"],
+		RollTable: ["name", "img"],
+		Playlist: ["name"]
+	}
 
 	/* -------------------------------------------- */
 
@@ -10509,24 +10555,28 @@ class CompendiumCollection extends DocumentCollection {
 
 	/**
 	 * Load the Compendium index and cache it as the keys and values of the Collection.
+	 * @param {object} [options]    Options which customize how the index is created
+	 * @param {string[]} [options.fields]  An array of fields to return as part of the index
 	 * @returns {Promise<Collection>}
 	 */
-	async getIndex() {
+	async getIndex({fields}={}) {
 		const cls = this.documentClass;
+		const indexFields = fields || this.constructor.INDEX_FIELDS[cls.documentName];
 		const index = await cls.database.get(cls, {
 			query: {},
-			options: {index: true},
+			options: { index: true, indexFields },
 			pack: this.collection,
 		}, game.user);
 
 		// Assign the index to the collection
 		for ( let i of index ) {
-			if ( i.thumb ) {
-				i.img = i.thumb;
-				delete i.thumb;
-			}
-			this.index.set(i._id, i);
+			const x = this.index.get(i._id);
+			this.index.set(i._id, x ? foundry.utils.mergeObject(x, i) : i);
 		}
+
+		// Record that the pack has been indexed
+		console.log(`${vtt} | Constructed index of ${this.collection} Compendium containing ${this.index.size} entries`);
+		this.indexed = true;
 		return this.index;
 	}
 
@@ -10820,7 +10870,7 @@ class CompendiumCollection extends DocumentCollection {
 	/* -------------------------------------------- */
 
 	/**
-	 * @deprecated since 0.9.0
+	 * @deprecated since 0.8.0
 	 * @ignore
 	 */
 	get entity() {
@@ -10829,7 +10879,7 @@ class CompendiumCollection extends DocumentCollection {
 	}
 
 	/**
-	 * @deprecated since 0.9.0
+	 * @deprecated since 0.8.0
 	 * @ignore
 	 */
 	async getContent() {
@@ -10838,7 +10888,7 @@ class CompendiumCollection extends DocumentCollection {
 	}
 
 	/**
-	 * @deprecated since 0.9.0
+	 * @deprecated since 0.8.0
 	 * @ignore
 	 */
 	async getEntry(id) {
@@ -10848,7 +10898,7 @@ class CompendiumCollection extends DocumentCollection {
 	}
 
 	/**
-	 * @deprecated since 0.9.0
+	 * @deprecated since 0.8.0
 	 * @ignore
 	 */
 	async getEntity(id) {
@@ -10857,7 +10907,7 @@ class CompendiumCollection extends DocumentCollection {
 	}
 
 	/**
-	 * @deprecated since 0.9.0
+	 * @deprecated since 0.8.0
 	 * @ignore
 	 */
 	async importEntity(document) {
@@ -10866,7 +10916,7 @@ class CompendiumCollection extends DocumentCollection {
 	}
 
 	/**
-	 * @deprecated since 0.9.0
+	 * @deprecated since 0.8.0
 	 * @ignore
 	 */
 	async createEntity(data, options={}) {
@@ -10876,7 +10926,7 @@ class CompendiumCollection extends DocumentCollection {
 	}
 
 	/**
-	 * @deprecated since 0.9.0
+	 * @deprecated since 0.8.0
 	 * @ignore
 	 */
 	async updateEntity(data, options={}) {
@@ -10887,7 +10937,7 @@ class CompendiumCollection extends DocumentCollection {
 	}
 
 	/**
-	 * @deprecated since 0.9.0
+	 * @deprecated since 0.8.0
 	 * @ignore
 	 */
 	async deleteEntity(id, options={}) {
@@ -10899,10 +10949,9 @@ class CompendiumCollection extends DocumentCollection {
 }
 
 /**
- * The Collection of FogExploration documents which exist within the active World.
+ * The singleton collection of FogExploration documents which exist within the active World.
  * This Collection is accessible within the Game object as game.fog.
  * @extends {WorldCollection}
- *
  * @see {@link FogExploration} The FogExploration document
  */
 class FogExplorations extends WorldCollection {
@@ -10910,7 +10959,7 @@ class FogExplorations extends WorldCollection {
 }
 
 /**
- * The Collection of Folder documents which exist within the active World.
+ * The singleton collection of Folder documents which exist within the active World.
  * This Collection is accessible within the Game object as game.folders.
  * @extends {WorldCollection}
  *
@@ -10960,7 +11009,7 @@ class Folders extends WorldCollection {
 }
 
 /**
- * The Collection of Item documents which exist within the active World.
+ * The singleton collection of Item documents which exist within the active World.
  * This Collection is accessible within the Game object as game.items.
  * @extends {WorldCollection}
  *
@@ -10977,7 +11026,7 @@ class Items extends WorldCollection {
 	/* -------------------------------------------- */
 
 	/**
-	 * Register an Actor sheet class as a candidate which can be used to display Actors of a given type
+	 * Register an Item sheet class as a candidate which can be used to display Items of a given type
 	 * See EntitySheetConfig.registerSheet for details
 	 */
 	static registerSheet(...args) {
@@ -10987,7 +11036,7 @@ class Items extends WorldCollection {
 	/* -------------------------------------------- */
 
 	/**
-	 * Unregister an Actor sheet class, removing it from the list of avaliable sheet Applications to use
+	 * Unregister an Item sheet class, removing it from the list of available sheet Applications to use
 	 * See EntitySheetConfig.unregisterSheet for details
 	 */
 	static unregisterSheet(...args) {
@@ -11012,7 +11061,7 @@ class Items extends WorldCollection {
 }
 
 /**
- * The Collection of JournalEntry documents which exist within the active World.
+ * The singleton collection of JournalEntry documents which exist within the active World.
  * This Collection is accessible within the Game object as game.journal.
  * @extends {WorldCollection}
  *
@@ -11060,7 +11109,7 @@ class Journal extends WorldCollection {
 }
 
 /**
- * The Collection of Macro documents which exist within the active World.
+ * The singleton collection of Macro documents which exist within the active World.
  * This Collection is accessible within the Game object as game.macros.
  * @extends {WorldCollection}
  *
@@ -11101,7 +11150,7 @@ class Macros extends WorldCollection {
 }
 
 /**
- * The Collection of ChatMessage documents which exist within the active World.
+ * The singleton collection of ChatMessage documents which exist within the active World.
  * This Collection is accessible within the Game object as game.messages.
  * @extends {WorldCollection}
  *
@@ -11168,7 +11217,7 @@ class Messages extends WorldCollection {
 }
 
 /**
- * The Collection of Playlist documents which exist within the active World.
+ * The singleton collection of Playlist documents which exist within the active World.
  * This Collection is accessible within the Game object as game.playlists.
  * @extends {WorldCollection}
  *
@@ -11239,7 +11288,7 @@ class Playlists extends WorldCollection {
 }
 
 /**
- * The Collection of Scene documents which exist within the active World.
+ * The singleton collection of Scene documents which exist within the active World.
  * This Collection is accessible within the Game object as game.scenes.
  * @extends {WorldCollection}
  *
@@ -11406,7 +11455,7 @@ class WorldSettings extends WorldCollection {
 }
 
 /**
- * The Collection of RollTable documents which exist within the active World.
+ * The singleton collection of RollTable documents which exist within the active World.
  * This Collection is accessible within the Game object as game.tables.
  * @extends {WorldCollection}
  *
@@ -11449,7 +11498,7 @@ class RollTables extends WorldCollection {
 }
 
 /**
- * The Collection of User documents which exist within the active World.
+ * The singleton collection of User documents which exist within the active World.
  * This Collection is accessible within the Game object as game.users.
  * @extends {WorldCollection}
  *
@@ -11570,7 +11619,7 @@ class Users extends WorldCollection {
 }
 
 /**
- * The ActiveEffect embedded document within an Actor or Item document which extends the BaseRollTable abstraction.
+ * The client-side ActiveEffect document which extends the common BaseActiveEffect model.
  * Each ActiveEffect belongs to the effects collection of its parent Document.
  * Each ActiveEffect contains a ActiveEffectData object which provides its source data.
  *
@@ -11926,7 +11975,7 @@ class ActiveEffect extends ClientDocumentMixin(foundry.documents.BaseActiveEffec
 }
 
 /**
- * The client-side Actor document which extends the common BaseActor abstraction.
+ * The client-side Actor document which extends the common BaseActor model.
  * Each Actor document contains ActorData which defines its data schema.
  *
  * @extends abstract.Document
@@ -11935,9 +11984,10 @@ class ActiveEffect extends ClientDocumentMixin(foundry.documents.BaseActiveEffec
  *
  * @see {@link data.ActorData}              The Actor data schema
  * @see {@link documents.Actors}            The world-level collection of Actor documents
- * @see {@link applications.ActorConfig}    The Actor configuration application
+ * @see {@link applications.ActorSheet}     The Actor configuration application
  *
  * @param {data.ActorData} [data={}]        Initial data provided to construct the Actor document
+ * @param {object} [context={}]             The document context, see {@link foundry.abstract.Document}
  *
  * @example <caption>Create a new Actor</caption>
  * let actor = await Actor.create({
@@ -12141,7 +12191,8 @@ class Actor extends ClientDocumentMixin(foundry.documents.BaseActor) {
 	 * @return {Promise<data.TokenData>}    The created TokenData instance
 	 */
 	async getTokenData(data={}) {
-		const tokenData = this.data.token.toJSON();
+		const tokenData = this.data.token.toObject();
+		tokenData.actorId = this.id;
 
 		if ( tokenData.randomImg && !data.img ) {
 			let images = await this.getTokenImages();
@@ -12255,9 +12306,6 @@ class Actor extends ClientDocumentMixin(foundry.documents.BaseActor) {
 			}
 		}
 
-		// Record existing combatants for this actor
-		let combatants = rerollInitiative ? combat.combatants.filter(c => c.actor.id === this.id) : [];
-
 		// Create new combatants
 		if ( createCombatants ) {
 			const tokens = this.getActiveTokens();
@@ -12268,12 +12316,18 @@ class Actor extends ClientDocumentMixin(foundry.documents.BaseActor) {
 					toCreate.push({tokenId: t.id, hidden: t.data.hidden});
 				}
 			} else toCreate.push({actorId: this.id, hidden: false})
-			const created = await combat.createEmbeddedDocuments("Combatant", toCreate);
-			combatants = combatants.concat(created);
+			await combat.createEmbeddedDocuments("Combatant", toCreate);
 		}
 
 		// Roll initiative for combatants
-		await combat.rollInitiative(combatants.map(c => c.id), initiativeOptions);
+		const combatants = combat.combatants.reduce((arr, c) => {
+			if ( c.actor.id !== this.id ) return arr;
+			if ( !rerollInitiative && c.initiative !== null ) return arr;
+			arr.push(c.id);
+			return arr;
+		}, []);
+
+		await combat.rollInitiative(combatants, initiativeOptions);
 		return combat;
 	}
 
@@ -12447,7 +12501,7 @@ class Actor extends ClientDocumentMixin(foundry.documents.BaseActor) {
 }
 
 /**
- * The client-side AmbientLight embedded document which extends the common BaseAmbientLight abstraction.
+ * The client-side AmbientLight document which extends the common BaseAmbientLight model.
  * Each AmbientLight document contains AmbientLightData which defines its data schema.
  *
  * @extends abstract.Document
@@ -12477,7 +12531,7 @@ class AmbientLightDocument extends CanvasDocumentMixin(foundry.documents.BaseAmb
 }
 
 /**
- * The client-side AmbientSound embedded document which extends the common BaseAmbientSound abstraction.
+ * The client-side AmbientSound document which extends the common BaseAmbientSound model.
  * Each AmbientSound document contains AmbientSoundData which defines its data schema.
  *
  * @extends abstract.Document
@@ -12507,7 +12561,7 @@ class AmbientSoundDocument extends CanvasDocumentMixin(foundry.documents.BaseAmb
 }
 
 /**
- * The client-side ChatMessage document which extends the common BaseChatMessage abstraction.
+ * The client-side ChatMessage document which extends the common BaseChatMessage model.
  * Each ChatMessage document contains ChatMessageData which defines its data schema.
  *
  * @extends abstract.Document
@@ -12515,8 +12569,7 @@ class AmbientSoundDocument extends CanvasDocumentMixin(foundry.documents.BaseAmb
  * @extends abstract.BaseChatMessage
  * @extends ClientDocumentMixin
  *
- * @see {@link data.ChatMessageData}              The ChatMessage data sche
- * ma
+ * @see {@link data.ChatMessageData}              The ChatMessage data schema
  * @see {@link documents.Messages}                The world-level collection of ChatMessage documents
  *
  * @param {data.ChatMessageData} [data={}]        Initial data provided to construct the ChatMessage document
@@ -12640,7 +12693,7 @@ class ChatMessage extends ClientDocumentMixin(foundry.documents.BaseChatMessage)
 		super.prepareData();
 		const actor = this.constructor.getSpeakerActor(this.data.speaker) || this.user?.character;
 		const rollData = actor ? actor.getRollData() : {};
-		this.data.content = TextEditor.enrichHTML(this.data.content, {rollData});
+		this.data.update({"content": TextEditor.enrichHTML(this.data.content, {rollData})});
 	}
 
 	/* -------------------------------------------- */
@@ -12703,7 +12756,7 @@ class ChatMessage extends ClientDocumentMixin(foundry.documents.BaseChatMessage)
 			if ( !tokens.length ) return this._getSpeakerFromActor({scene, actor, alias});
 			const controlled = tokens.filter(t => t._controlled);
 			token = controlled.length ? controlled.shift() : tokens.shift();
-			return this._getSpeakerFromToken({token, alias});
+			return this._getSpeakerFromToken({token: token.document, alias});
 		}
 
 		// CASE 3 - Not the viewed Scene
@@ -12716,13 +12769,13 @@ class ChatMessage extends ClientDocumentMixin(foundry.documents.BaseChatMessage)
 		// CASE 4 - Infer from controlled tokens
 		if ( canvas.ready ) {
 			let controlled = canvas.tokens.controlled;
-			if (controlled.length) return this._getSpeakerFromToken({token: controlled.shift(), alias});
+			if (controlled.length) return this._getSpeakerFromToken({token: controlled.shift().document, alias});
 		}
 
 		// CASE 5 - Infer from impersonated Actor
 		const char = game.user.character;
 		if ( char ) {
-			const tokens = char.getActiveTokens();
+			const tokens = char.getActiveTokens(false, true);
 			if ( tokens.length ) return this._getSpeakerFromToken({token: tokens.shift(), alias});
 			return this._getSpeakerFromActor({actor: char, alias});
 		}
@@ -12734,22 +12787,36 @@ class ChatMessage extends ClientDocumentMixin(foundry.documents.BaseChatMessage)
 	/* -------------------------------------------- */
 
 	/**
-	 * A helper to prepare the speaker object based on a target Token
+	 * A helper to prepare the speaker object based on a target TokenDocument
+	 *
+	 * @param {TokenDocument} [token]     The TokenDocument of the speaker
+	 * @param {string} [alias]            The name of the speaker to display
+	 * @returns {Object}                  The identified speaker data
 	 * @private
 	 */
 	static _getSpeakerFromToken({token, alias}) {
+		if ( token instanceof Token ) {
+			token = token.document;
+			console.warn("You are passing a Token instance to _getSpeakerFromToken which now expects a TokenDocument instance instead");
+		}
+
 		return {
-			scene: token.scene?.id || null,
+			scene: token.parent?.id || null,
 			token: token.id,
 			actor: token.actor?.id || null,
 			alias: alias || token.name
-		}
+		};
 	}
 
 	/* -------------------------------------------- */
 
 	/**
 	 * A helper to prepare the speaker object based on a target Actor
+	 *
+	 * @param {Scene} [scene]             The Scene is which the speaker resides
+	 * @param {Actor} [actor]             The Actor that is speaking
+	 * @param {string} [alias]            The name of the speaker to display
+	 * @returns {Object}                  The identified speaker data
 	 * @private
 	 */
 	static _getSpeakerFromActor({scene, actor, alias}) {
@@ -12764,6 +12831,11 @@ class ChatMessage extends ClientDocumentMixin(foundry.documents.BaseChatMessage)
 
 	/**
 	 * A helper to prepare the speaker object based on a target User
+	 *
+	 * @param {Scene} [scene]             The Scene in which the speaker resides
+	 * @param {User} [user]               The User who is speaking
+	 * @param {string} [alias]            The name of the speaker to display
+	 * @returns {Object}                  The identified speaker data
 	 * @private
 	 */
 	static _getSpeakerFromUser({scene, user, alias}) {
@@ -12851,7 +12923,6 @@ class ChatMessage extends ClientDocumentMixin(foundry.documents.BaseChatMessage)
 		// Determine some metadata
 		const data = this.toObject(false);
 		const isWhisper = this.data.whisper.length;
-		const isVisible = this.isContentVisible;
 
 		// Construct message data
 		const messageData = {
@@ -12872,14 +12943,21 @@ class ChatMessage extends ClientDocumentMixin(foundry.documents.BaseChatMessage)
 			}).filterJoin(", ")
 		};
 
-		// Enrich some data for dice rolls
+		// Enrich the message data for ROLL type messages
 		if ( this.isRoll ) {
-			let hasContent = data.content && (Number(data.content) !== this.roll.total);
-			if ( !hasContent ) data.content = await this.roll.render({isPrivate: !isVisible});
-			if ( !isVisible ) {
+
+			// Always show a "rolled privately" message if the Roll content is not visible to the current user
+			if ( !this.isContentVisible ) {
 				data.flavor = game.i18n.format("CHAT.PrivateRollContent", {user: this.user.name});
+				data.content =  await this.roll.render({isPrivate: true});
 				messageData.isWhisper = false;
 				messageData.alias = this.user.name;
+			}
+
+			// Determine whether a visible roll message has custom HTML content, otherwise render the Roll to HTML
+			else {
+				const hasContent = data.content && (Number(data.content) !== this.roll.total);
+				if ( !hasContent ) data.content = await this.roll.render({isPrivate: false});
 			}
 		}
 
@@ -12991,7 +13069,7 @@ class ChatMessage extends ClientDocumentMixin(foundry.documents.BaseChatMessage)
 }
 
 /**
- * The client-side Combat document which extends the common BaseCombat abstraction.
+ * The Combat model definition which defines common behavior of an Combat document between both client and server.
  * Each Combat document contains CombatData which defines its data schema.
  *
  * @extends abstract.Document
@@ -13079,11 +13157,12 @@ class Combat extends ClientDocumentMixin(foundry.documents.BaseCombat) {
 	/* -------------------------------------------- */
 
 	/**
-	 * A reference to the Scene document within which this Combat encounter occurs
+	 * A reference to the Scene document within which this Combat encounter occurs.
+	 * If a specific Scene is not set in the Combat Data, the currently viewed scene is assumed instead.
 	 * @type {Scene}
 	 */
 	get scene() {
-		return game.scenes.get(this.data.scene);
+		return game.scenes.get(this.data.scene) || game.scenes.current || undefined;
 	}
 
 	/* -------------------------------------------- */
@@ -13176,7 +13255,7 @@ class Combat extends ClientDocumentMixin(foundry.documents.BaseCombat) {
 		let turn = 0;
 		if ( this.settings.skipDefeated ) {
 			turn = this.turns.findIndex(t => {
-				return !(t.defeated ||
+				return !(t.data.defeated ||
 				t.actor?.effects.find(e => e.getFlag("core", "statusId") === CONFIG.Combat.defeatedStatusId ));
 			});
 			if (turn === -1) {
@@ -13204,7 +13283,7 @@ class Combat extends ClientDocumentMixin(foundry.documents.BaseCombat) {
 		if ( skip ) {
 			for ( let [i, t] of this.turns.entries() ) {
 				if ( i <= turn ) continue;
-				if ( t.defeated ) continue;
+				if ( t.data.defeated ) continue;
 				if ( t.actor?.effects.find(e => e.getFlag("core", "statusId") === CONFIG.Combat.defeatedStatusId ) ) continue;
 				next = i;
 				break;
@@ -13513,7 +13592,7 @@ class Combat extends ClientDocumentMixin(foundry.documents.BaseCombat) {
 		// Update the turn order and adjust the combat to keep the combatant the same (unless they were deleted)
 		const current = this.combatant;
 		const nextSurvivor = this.turns.find((i, t) => {
-			return !result.includes(t.id) && (i >= this.turn) && !t.defeated;
+			return !result.includes(t.id) && (i >= this.turn) && !t.data.defeated;
 		});
 		this.setupTurns();
 
@@ -13585,7 +13664,7 @@ class Combat extends ClientDocumentMixin(foundry.documents.BaseCombat) {
 }
 
 /**
- * The Combatant embedded document within a Combat document which extends the BaseRollTable abstraction.
+ * The client-side Combatant document which extends the common BaseCombatant model.
  * Each Combatant belongs to the effects collection of its parent Document.
  * Each Combatant contains a CombatantData object which provides its source data.
  *
@@ -13633,7 +13712,7 @@ class Combatant extends ClientDocumentMixin(foundry.documents.BaseCombatant) {
 	 * @type {string}
 	 */
 	get img() {
-		return this.data.img || this.token?.img || this.actor?.img || CONST.DEFAULT_TOKEN;
+		return this.data.img || this.token?.data.img || this.actor?.img || CONST.DEFAULT_TOKEN;
 	}
 
 	/* -------------------------------------------- */
@@ -13715,11 +13794,15 @@ class Combatant extends ClientDocumentMixin(foundry.documents.BaseCombatant) {
 	 * @type {Token|null}
 	 */
 	get token() {
-		if ( this._token === undefined ) {
-			const scene = game.scenes.get(this.parent.data.scene);
-			const token = scene?.tokens.get(this.data.tokenId);
-			this._token = token || null;
-		}
+		if ( this._token !== undefined ) return this._token;
+		const token = this.parent.scene.tokens.get(this.data.tokenId);
+
+		// Explicitly defined Scene
+		if ( this.parent.data.scene ) this._token = token || null;
+
+		// Inferred Scene
+		// TODO: This is a temporary workaround until we persist sceneId as part of the Combatant data model
+		else this._token = token || undefined;
 		return this._token;
 	}
 
@@ -13745,7 +13828,7 @@ class Combatant extends ClientDocumentMixin(foundry.documents.BaseCombatant) {
 	/** @inheritdoc */
 	testUserPermission(user, permission, {exact=false}={}) {
 		// Combatants should be controlled by anyone who can update the Actor they represent
-		return this.actor.testUserPermission(user, "update");
+		return this.actor?.testUserPermission(user, "update") || false;
 	}
 
 	/* -------------------------------------------- */
@@ -13807,7 +13890,7 @@ class Combatant extends ClientDocumentMixin(foundry.documents.BaseCombatant) {
 }
 
 /**
- * The client-side Drawing embedded document which extends the common BaseDrawing abstraction.
+ * The client-side Drawing document which extends the common BaseDrawing model.
  * Each Drawing document contains DrawingData which defines its data schema.
  *
  * @extends abstract.Document
@@ -13834,20 +13917,10 @@ class DrawingDocument extends CanvasDocumentMixin(foundry.documents.BaseDrawing)
 	get author() {
 		return game.users.get(this.data.author);
 	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * A flag for whether the current User has full ownership over the Drawing document.
-	 * @type {boolean}
-	 */
-	get isOwner() {
-		return game.user.isGM || (this.data.author === game.user.id);
-	}
 }
 
 /**
- * The client-side FogExploration document which extends the common BaseFogExploration abstraction.
+ * The client-side FogExploration document which extends the common BaseFogExploration model.
  * Each FogExploration document contains FogExplorationData which defines its data schema.
  *
  * @extends abstract.Document
@@ -13876,7 +13949,7 @@ class FogExploration extends ClientDocumentMixin(foundry.documents.BaseFogExplor
 	 */
 	explore(source, force=false) {
 		const r = canvas.lighting.globalLight ? canvas.dimensions.maxR : source.radius;
-		if ( r <= 0 ) return false;
+		if ( r < 0 ) return false;
 		const coords = canvas.grid.getCenter(source.x, source.y).map(Math.round).join("_");
 		const position = this.data.positions[coords];
 
@@ -13962,7 +14035,7 @@ class FogExploration extends ClientDocumentMixin(foundry.documents.BaseFogExplor
 }
 
 /**
- * The client-side Folder document which extends the common BaseFolder abstraction.
+ * The client-side Folder document which extends the common BaseFolder model.
  * Each Folder document contains FolderData which defines its data schema.
  *
  * @extends abstract.Document
@@ -14098,6 +14171,10 @@ class Folder extends ClientDocumentMixin(foundry.documents.BaseFolder) {
 			const data = d.toCompendium(pack);
 			let existing = updateByName ? index.find(i => i.name === d.name) : index.find(i => i._id === d.id);
 			if (existing) {
+				if ( this.type === "Scene" ) {
+					const thumb = await d.createThumbnail({img: data.img});
+					data.thumb = thumb.thumb;
+				}
 				data._id = existing._id;
 				updates.push(data);
 			}
@@ -14110,7 +14187,7 @@ class Folder extends ClientDocumentMixin(foundry.documents.BaseFolder) {
 		if ( creations.length ) await cls.createDocuments(creations, {pack: pack.collection, render: false});
 		if ( updates.length ) {
 			await pack.getDocuments();
-			await cls.updateDocuments(updates, {pack: pack.collection, render: false});
+			await cls.updateDocuments(updates, {pack: pack.collection, diff: false, recursive: false, render: false});
 		}
 		ui.notifications.info(`Finished exporting ${this.type}s to Compendium ${pack.collection}.`);
 		pack.render(false);
@@ -14231,10 +14308,9 @@ class Folder extends ClientDocumentMixin(foundry.documents.BaseFolder) {
 }
 
 /**
- * The client-side Item document which extends the common BaseItem abstraction.
+ * The client-side Item document which extends the common BaseItem model.
  * Each Item document contains ItemData which defines its data schema.
  *
- * @extends abstract.Document
  * @extends abstract.Document
  * @extends abstract.BaseItem
  * @extends ClientDocumentMixin
@@ -14243,7 +14319,8 @@ class Folder extends ClientDocumentMixin(foundry.documents.BaseFolder) {
  * @see {@link documents.Items}            The world-level collection of Item documents
  * @see {@link applications.ItemSheet}     The Item configuration application
  *
- * @param {data.ItemData} [data={}]       Initial data provided to construct the Item document
+ * @param {data.ItemData} data              Initial data provided to construct the Item document
+ * @param {object} [context={}]             The document context, see {@link foundry.abstract.Document}
  */
 class Item extends ClientDocumentMixin(foundry.documents.BaseItem) {
 
@@ -14386,7 +14463,7 @@ class Item extends ClientDocumentMixin(foundry.documents.BaseItem) {
 }
 
 /**
- * The client-side JournalEntry document which extends the common BaseJournalEntry abstraction.
+ * The client-side JournalEntry document which extends the common BaseJournalEntry model.
  * Each JournalEntry document contains JournalEntryData which defines its data schema.
  *
  * @extends abstract.Document
@@ -14502,7 +14579,7 @@ class JournalEntry extends ClientDocumentMixin(foundry.documents.BaseJournalEntr
 }
 
 /**
- * The client-side Macro document which extends the common BaseMacro abstraction.
+ * The client-side Macro document which extends the common BaseMacro model.
  * Each Macro document contains MacroData which defines its data schema.
  *
  * @extends abstract.Document
@@ -14596,7 +14673,7 @@ class Macro extends ClientDocumentMixin(foundry.documents.BaseMacro) {
 }
 
 /**
- * The client-side MeasuredTemplate embedded document which extends the common BaseMeasuredTemplate abstraction.
+ * The client-side MeasuredTemplate document which extends the common BaseMeasuredTemplate model.
  * Each MeasuredTemplate document contains MeasuredTemplateData which defines its data schema.
  *
  * @extends abstract.Document
@@ -14623,20 +14700,10 @@ class MeasuredTemplateDocument extends CanvasDocumentMixin(foundry.documents.Bas
 	get author() {
 		return game.users.get(this.data.user);
 	}
-
-	/* -------------------------------------------- */
-
-	/**
-	 * A flag for whether the current User has full ownership over the MeasuredTemplate document.
-	 * @type {boolean}
-	 */
-	get isOwner() {
-		return game.user.isGM || (this.data.author === game.user.id);
-	}
 }
 
 /**
- * The client-side Note embedded document which extends the common BaseNote abstraction.
+ * The client-side Note document which extends the common BaseNote model.
  * Each Note document contains NoteData which defines its data schema.
  *
  * @extends abstract.Document
@@ -14676,7 +14743,7 @@ class NoteDocument extends CanvasDocumentMixin(foundry.documents.BaseNote) {
 }
 
 /**
- * The PlaylistSound embedded document within a Playlist document which extends the BasePlaylist abstraction.
+ * The client-side PlaylistSound document which extends the common BasePlaylistSound model.
  * Each PlaylistSound belongs to the results collection of a Playlist entity.
  * Each PlaylistSound contains a PlaylistSoundData object which provides its source data.
  *
@@ -14757,9 +14824,19 @@ class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSo
 
 	/**
 	 * The effective volume at which this PlaylistSound should be playing, including the global playlist volume modifier
+	 * @type {number}
 	 */
 	get volume() {
 		return this.data.volume * game.settings.get("core", "globalPlaylistVolume");
+	}
+
+	/**
+	 * Determine the fade duration for this PlaylistSound based on its own configuration and that of its parent.
+	 * @type {number}
+	 */
+	get fadeDuration() {
+		const halfDuration = Math.ceil(this.sound.duration / 2) * 1000;
+		return Math.clamped(this.data.fade ?? this.parent.data.fade ?? 0, 0, halfDuration);
 	}
 
 	/* -------------------------------------------- */
@@ -14771,11 +14848,13 @@ class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSo
 	 */
 	sync() {
 		if ( !this.sound ) return;
+		const fade = this.fadeDuration;
 
 		// Conclude current playback
 		if ( !this.playing ) {
-			const fade = this.data.fade ?? this.parent.data.fade ?? 0;
-			if ( fade && !this.data.pausedTime ) return this.sound.fade(0, {duration: fade}).then(() => this.sound.stop());
+			if ( fade && !this.data.pausedTime && this.sound.playing ) {
+				return this.sound.fade(0, {duration: fade}).then(() => this.sound.stop());
+			}
 			else return this.sound.stop();
 		}
 
@@ -14783,7 +14862,7 @@ class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSo
 		const playback = {
 			loop: this.data.repeat,
 			volume: this.volume,
-			fade: 1000
+			fade: fade
 		};
 		if ( this.data.pausedTime && this.playing && !this.sound.playing ) playback.offset = this.data.pausedTime;
 
@@ -14835,11 +14914,11 @@ class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSo
 	async _onStart() {
 		if ( !this.playing ) return this.sound.stop();
 
-		// Maybe fade in and out
-		const fade = this.data.fade ?? this.parent.data.fade ?? 0;
+		// Apply fade timings
+		const fade = this.fadeDuration;
 		if ( fade ) {
 			this._fadeIn(this.sound);
-			this.sound.schedule(this._fadeOut.bind(this), this.sound.duration - (fade / 1000));
+			if ( !this.data.repeat ) this.sound.schedule(this._fadeOut.bind(this), this.sound.duration - (fade / 1000));
 		}
 
 		// Playlist-level orchestration actions
@@ -14862,11 +14941,9 @@ class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSo
 	 */
 	_fadeIn(sound) {
 		if ( !sound.node ) return;
-		const fade = Math.clamped(this.data.fade ?? this.parent.data.fade ?? 0, 0, (sound.duration - 1) * 1000);
+		const fade = this.fadeDuration;
 		if ( !fade || sound.pausedTime ) return;
-		sound.fade(this.volume, {duration: fade, from: 0}).then(() => {
-			return sound.schedule(this._fadeIn.bind(this), 0); // Recursively schedule next
-		});
+		sound.fade(this.volume, {duration: fade, from: 0});
 	}
 
 	/* -------------------------------------------- */
@@ -14877,15 +14954,14 @@ class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSo
 	 */
 	_fadeOut(sound) {
 		if ( !sound.node ) return;
-		const fade = Math.clamped(this.data.fade ?? this.parent.data.fade ?? 0, 0, (sound.duration - 1) * 1000);
+		const fade = this.fadeDuration;
 		if ( !fade ) return;
-		sound.fade(0, {duration: fade}).then(() => {
-			return sound.schedule(this._fadeOut.bind(this), sound.duration - (fade / 1000)) // Recursively schedule next
-		});
+		sound.fade(0, {duration: fade});
 	}
 }
+
 /**
- * The client-side Playlist document which extends the common BasePlaylist abstraction.
+ * The client-side Playlist document which extends the common BasePlaylist model.
  * Each Playlist document contains PlaylistData which defines its data schema.
  *
  * @extends abstract.Document
@@ -15265,7 +15341,7 @@ class Playlist extends ClientDocumentMixin(foundry.documents.BasePlaylist) {
 }
 
 /**
- * The client-side Scene document which extends the common BaseScene abstraction.
+ * The client-side Scene document which extends the common BaseScene model.
  * Each Scene document contains SceneData which defines its data schema.
  *
  * @extends abstract.Document
@@ -15631,7 +15707,7 @@ class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
 	async createThumbnail({img, width=300, height=100}={}) {
 		const newImage = img !== undefined;
 		img = img ?? this.data.img;
-		const tiles = this.tiles.filter(t => t.data.img).sort((a, b) => a.data.z - b.data.z);
+		const tiles = this.tiles.filter(t => t.data.img && !t.data.hidden).sort((a, b) => a.data.z - b.data.z);
 
 		// Load required textures to create the thumbnail
 		const toLoad = tiles.map(t => t.data.img);
@@ -15640,20 +15716,20 @@ class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
 		await TextureLoader.loader.load(toLoad);
 
 		// First load the background texture to get dimensions
-		const dims = this.toJSON();
-		const tex = img ? getTexture(img) : null;
+		const dims = this.toObject();
+		const backgroundTexture = img ? getTexture(img) : null;
 		if ( newImage ) {
-			dims.width = tex.width;
-			dims.height = tex.height;
+			dims.width = backgroundTexture.width;
+			dims.height = backgroundTexture.height;
 		}
 		const d = Canvas.getDimensions(dims);
 
 		// Create a container and add a transparent graphic to enforce the size
-		const c = new PIXI.Container();
-		const r = new PIXI.Rectangle(0, 0, d.sceneWidth, d.sceneHeight);
-		const g = c.addChild(new PIXI.Graphics())
-		g.beginFill(0xFFFFFF, 1.0).drawShape(r).endFill();
-		c.mask = g;
+		const baseContainer = new PIXI.Container();
+		const sceneRectangle = new PIXI.Rectangle(0, 0, d.sceneWidth, d.sceneHeight);
+		const baseGraphics = baseContainer.addChild(new PIXI.Graphics())
+		baseGraphics.beginFill(0xFFFFFF, 1.0).drawShape(sceneRectangle).endFill();
+		baseContainer.mask = baseGraphics;
 
 		// Tile drawing function
 		const drawTile = async (container, tile) => {
@@ -15665,37 +15741,47 @@ class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
 		}
 
 		// Background container
-		if ( tex ) {
-			const bg = c.addChild(new PIXI.Container());
-			bg.addChild(new PIXI.Sprite(tex));
+		if ( backgroundTexture ) {
+			const bg = baseContainer.addChild(new PIXI.Container());
+			bg.addChild(new PIXI.Sprite(backgroundTexture));
 			bg.width = d.sceneWidth
 			bg.height = d.sceneHeight
-			for ( let t of tiles ) {
-				if ( t.data.overhead || t.data.hidden ) continue;
-				await drawTile(bg, t);
+		}
+
+		// Background Tiles
+		const backgroundTiles = tiles.filter(t => !t.data.overhead);
+		if ( backgroundTiles.length ) {
+			const backgroundTileContainer = baseContainer.addChild(new PIXI.Container());
+			for ( let t of backgroundTiles ) {
+				await drawTile(backgroundTileContainer, t);
 			}
 		}
 
 		// Foreground container
 		if ( this.data.foreground ) {
 			const fgTex = getTexture(this.data.foreground);
-			const fg = c.addChild(new PIXI.Container());
+			const fg = baseContainer.addChild(new PIXI.Container());
 			fg.addChild(new PIXI.Sprite(fgTex));
 			fg.width = d.sceneWidth
 			fg.height = d.sceneHeight
-			for ( let t of tiles ) {
-				if ( !t.data.overhead || t.data.hidden ) continue;
-				await drawTile(fg, t);
+		}
+
+		// Foreground Tiles
+		const foregroundTiles = tiles.filter(t => t.data.overhead);
+		if ( foregroundTiles.length ) {
+			const foregroundTileContainer = baseContainer.addChild(new PIXI.Container());
+			for ( let t of foregroundTiles ) {
+				await drawTile(foregroundTileContainer, t);
 			}
 		}
 
 		// Render the container to a thumbnail
-		return ImageHelper.createThumbnail(c, {width, height});
+		return ImageHelper.createThumbnail(baseContainer, {width, height});
 	}
 }
 
 /**
- * The client-side Setting document which extends the common BaseSetting abstraction.
+ * The client-side Setting document which extends the common BaseSetting model.
  * Each Setting document contains SettingData which defines its data schema.
  *
  * @extends abstract.Document
@@ -15748,7 +15834,7 @@ class Setting extends ClientDocumentMixin(foundry.documents.BaseSetting) {
 }
 
 /**
- * The TableResult embedded document within a RollTable document which extends the BaseRollTable abstraction.
+ * The client-side TableResult document which extends the common BaseTableResult model.
  * Each TableResult belongs to the results collection of a RollTable entity.
  * Each TableResult contains a TableResultData object which provides its source data.
  *
@@ -15795,7 +15881,7 @@ class TableResult extends ClientDocumentMixin(foundry.documents.BaseTableResult)
  */
 
 /**
- * The client-side RollTable document which extends the common BaseRollTable abstraction.
+ * The client-side RollTable document which extends the common BaseRollTable model.
  * Each RollTable document contains RollTableData which defines its data schema.
  *
  * @extends abstract.Document
@@ -16156,7 +16242,7 @@ class RollTable extends ClientDocumentMixin(foundry.documents.BaseRollTable) {
 }
 
 /**
- * The client-side Tile embedded document which extends the common BaseTile abstraction.
+ * The client-side Tile document which extends the common BaseTile model.
  * Each Tile document contains TileData which defines its data schema.
  *
  * @extends abstract.Document
@@ -16195,7 +16281,7 @@ class TileDocument extends CanvasDocumentMixin(foundry.documents.BaseTile) {
 
 
 /**
- * The client-side Token embedded document which extends the common BaseToken abstraction.
+ * The client-side Token document which extends the common BaseToken model.
  * Each Token document contains TokenData which defines its data schema.
  *
  * @extends abstract.Document
@@ -16326,11 +16412,11 @@ class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
 		const model = game.system.model.Actor[this.actor.type];
 
 		// Single values
-		if ( Number.isFinite(data) ) {
+		if ( Number.isNumeric(data) ) {
 			return {
 				type: "value",
 				attribute: attr,
-				value: data,
+				value: Number(data),
 				editable: foundry.utils.hasProperty(model, attr)
 			}
 		}
@@ -16392,7 +16478,7 @@ class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
 	 * @returns {Promise<Document[]>} The created Embedded Document instances
 	 */
 	async createActorEmbeddedDocuments(embeddedName, data, options) {
-		const cls = Actor.metadata.embedded[embeddedName];
+		const cls = getDocumentClass(embeddedName);
 		const collection = this.actor.getEmbeddedCollection(embeddedName);
 		const ids = [];
 		const toCreate = data.map(d => {
@@ -16422,7 +16508,7 @@ class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
 	 * @returns {Promise<Document[]>} The updated Embedded Document instances
 	 */
 	async updateActorEmbeddedDocuments(embeddedName, updates, options) {
-		const cls = Actor.metadata.embedded[embeddedName];
+		const cls = getDocumentClass(embeddedName);
 		const collection = this.actor.getEmbeddedCollection(embeddedName);
 		const ids = [];
 		for ( let u of updates ) {
@@ -16451,7 +16537,7 @@ class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
 	 * @returns {Promise<Document[]>} The updated Embedded Document instances
 	 */
 	async deleteActorEmbeddedDocuments(embeddedName, ids, options) {
-		const cls = Actor.metadata.embedded[embeddedName];
+		const cls = getDocumentClass(embeddedName);
 		const collection = this.actor.getEmbeddedCollection(embeddedName);
 		const deleted = [];
 		const data = collection.toJSON();
@@ -16750,7 +16836,7 @@ class PrototypeTokenDocument extends TokenDocument {
 }
 
 /**
- * The client-side User document which extends the common BaseUser abstraction.
+ * The client-side User document which extends the common BaseUser model.
  * Each User document contains UserData which defines its data schema.
  *
  * @extends abstract.Document
@@ -16784,7 +16870,7 @@ class User extends ClientDocumentMixin(foundry.documents.BaseUser) {
 		 * Track the ID of the Scene that is currently being viewed by the User
 		 * @type {string|null}
 		 */
-		this.viewedScene = data.viewedScene || null;
+		this.viewedScene = null;
 	}
 
 	/* ---------------------------------------- */
@@ -16997,9 +17083,10 @@ class User extends ClientDocumentMixin(foundry.documents.BaseUser) {
 		// Redraw Hotbar
 		if ( isSelf && changed.includes("hotbar") ) ui.hotbar?.render();
 
-		// Reconnect to A/V if certain user features changed
-		const webrtcChanges = ["avatar", "character", "permissions", "role"];
-		if (webrtcChanges.some(k => changed.includes(k))) game.webrtc?.connect();
+		// Reconnect to Audio/Video conferencing, or re-render camera views
+		const webRTCReconnect = ["permissions", "role"].some(k => k in data);
+		if ( webRTCReconnect ) game.webrtc?.connect();
+		else if ( ["name", "avatar", "character"].some(k => k in data) ) game.webrtc?.render();
 
 		// Update Canvas
 		if ( canvas.ready ) {
@@ -17052,7 +17139,7 @@ class User extends ClientDocumentMixin(foundry.documents.BaseUser) {
 }
 
 /**
- * The client-side Wall embedded document which extends the common BaseWall abstraction.
+ * The client-side Wall document which extends the common BaseWall model.
  * Each Wall document contains WallData which defines its data schema.
  *
  * @extends abstract.Document
@@ -17345,6 +17432,9 @@ class Canvas {
 		for ( let l of this.layers.reverse() ) {
 			await l.tearDown();
 		}
+
+		// Discard shared filters
+		this.blurFilters = [];
 	}
 
 	/* -------------------------------------------- */
@@ -17358,6 +17448,7 @@ class Canvas {
 		scene = scene ?? game.scenes.current ?? null;
 		const wasReady = this.ready;
 		this.ready = false;
+		this.stage.visible = false;
 
 		// Tear down any existing scene
 		if ( wasReady ) await this.tearDown();
@@ -17390,7 +17481,6 @@ class Canvas {
 		Hooks.callAll('canvasInit', this);
 
 		// Configure primary canvas stage
-		this.stage.visible = false;
 		this.stage.position.set(window.innerWidth/2, window.innerHeight/2);
 		this.stage.hitArea = new PIXI.Rectangle(0, 0, this.dimensions.width, this.dimensions.height);
 		this.stage.interactive = true;
@@ -17422,7 +17512,7 @@ class Canvas {
 		this.stage.mask = this.msk;
 
 		// Initialize starting conditions
-		this.stage.visible = this.ready = true;
+		this.ready = true;
 		await this._initialize();
 		this._addListeners();
 
@@ -17432,6 +17522,7 @@ class Canvas {
 
 		// Perform a final resize to ensure the rendered dimensions are correct
 		this._onResize();
+		this.stage.visible = true;
 		return this;
 	}
 
@@ -18242,7 +18333,14 @@ class Canvas {
 }
 
 /**
- * An abstract pattern for primary layers of the game canvas to implement
+ * @typedef {Object} CanvasLayerOptions   Options which configure the behavior of a Canvas Layer.
+ * @property {string} name                The layer name by which the instance is referenced within the Canvas
+ * @property {number} zIndex              The zIndex sorting of this layer relative to other layers
+ * @property {boolean} sortActiveTop      Should this layer be sorted to the top when it is active?
+ */
+
+/**
+ * An abstract pattern for primary layers of the game canvas to implement.
  * @type {PIXI.Container}
  * @abstract
  * @interface
@@ -18250,6 +18348,14 @@ class Canvas {
 class CanvasLayer extends PIXI.Container {
 	constructor() {
 		super();
+
+		/**
+		 * Options for this layer instance.
+		 * @type {CanvasLayerOptions}
+		 */
+		this.options = this.constructor.layerOptions;
+
+		// Default interactivity
 		this.interactive = false;
 		this.interactiveChildren = false;
 	}
@@ -18266,10 +18372,7 @@ class CanvasLayer extends PIXI.Container {
 
 	/**
 	 * Customize behaviors of this CanvasLayer by modifying some behaviors at a class level.
-	 * @type {Object}
-	 * @property {string} name              The layer name by which the instance is referenced within the Canvas
-	 * @property {number} zIndex            The zIndex sorting of this layer relative to other layers
-	 * @property {boolean} sortActiveTop    Should this layer be sorted to the top when it is active?
+	 * @type {CanvasLayerOptions}
 	 */
 	static get layerOptions() {
 		return {
@@ -19201,7 +19304,8 @@ class PlaceableObject extends PIXI.Container {
  */
 
 /**
- * The base PlaceablesLayer subclass of CanvasLayer
+ * A subclass of Canvas Layer which is specifically designed to contain multiple PlaceableObject instances,
+ * each corresponding to an embedded Document.
  * @extends {CanvasLayer}
  * @abstract
  * @interface
@@ -19244,12 +19348,6 @@ class PlaceablesLayer extends CanvasLayer {
 		 * @type {PlaceableObject[]}
 		 */
 		this._copy = [];
-
-		/**
-		 * PlaceableObject layer options
-		 * @type {Object}
-		 */
-		this.options = this.constructor.layerOptions;
 
 		/**
 		 * A Quadtree which partitions and organizes Walls into quadrants for efficient target identification.
@@ -21108,7 +21206,7 @@ class TextEditor {
 	/* -------------------------------------------- */
 
 	/**
-	 * Replace a hyperlink-like string with an actual HTML <a> tag
+	 * Replace a hyperlink-like string with an actual HTML &lt;a> tag
 	 * @param {string} match          The full matched string
 	 * @return {HTMLAnchorElement}    An HTML element for the entity link
 	 * @private
@@ -21126,13 +21224,13 @@ class TextEditor {
 	/* -------------------------------------------- */
 
 	/**
-	 * Replace an inline roll formula with a rollable <a> element or an eagerly evaluated roll result
+	 * Replace an inline roll formula with a rollable &lt;a> element or an eagerly evaluated roll result
 	 * @param {string} match      The matched string
 	 * @param {string} command    An optional command
 	 * @param {string} formula    The matched formula
 	 * @param {string} closing    The closing brackets for the inline roll
 	 * @param {string} [label]    An optional label which configures the button text
-	 * @return {string}           The replaced match
+	 * @return {HTMLAnchorElement|null}           The replaced match
 	 */
 	static _createInlineRoll(match, command, formula, closing, label, ...args) {
 		const isDeferred = !!command;
@@ -21156,6 +21254,7 @@ class TextEditor {
 				parsedCommand = ChatLog.parse(chatCommand);
 			}
 			catch(err) { return null; }
+			if ( parsedCommand[0] === "invalid" ) return null;
 			formula = parsedCommand[1][2].trim();
 			const flavor = parsedCommand[1][3];
 
@@ -21676,6 +21775,7 @@ class FilePicker extends Application {
 	 * @return {boolean}
 	 */
 	get canUpload() {
+		if ( this.type === "folder" ) return false;
 		if ( this.options.allowUpload === false ) return false;
 		if ( !["data", "s3"].includes(this.activeSource) ) return false;
 		return game.isAdmin || (game.user && game.user.can("FILES_UPLOAD"));
@@ -22182,7 +22282,7 @@ class FilePicker extends Application {
 				if ( match ) matched = true;
 				li.style.display = !match ? "none" : "";
 			}
-			ol.style.display = matched ? "grid" : "none";
+			ol.style.display = matched ? "" : "none";
 		}
 		this.setPosition({height: "auto"});
 	}
@@ -22245,14 +22345,14 @@ class FilePicker extends Application {
 
 	/**
 	 * Bind the file picker to a new target field.
-	 * Assumes the user will provide a <button> HTMLElement which has the data-target and data-type attributes
+	 * Assumes the user will provide a HTMLButtonElement which has the data-target and data-type attributes
 	 * The data-target attribute should provide the name of the input field which should receive the selected file
 	 * The data-type attribute is a string in ["image", "audio"] which sets the file extensions which will be accepted
 	 *
-	 * @param {HTMLElement} button     The button element
+	 * @param {HTMLButtonElement} button     The button element
 	 */
 	static fromButton(button) {
-		if ( !(button instanceof HTMLElement ) ) throw "You must pass an HTML button";
+		if ( !(button instanceof HTMLButtonElement ) ) throw "You must pass an HTML button";
 		let type = button.getAttribute("data-type");
 		const form = button["form"];
 		const field = form[button.dataset.target] || null;
@@ -22394,12 +22494,12 @@ class SearchFilter {
  *
  * @extends {FormData}
  *
- * @param {HTMLFormElement} form        The form being processed
- * @param {object[]} [editors]          An array of TinyMCE editor instances which are present in this form
- * @param {{string, string}} [dtypes]   A mapping of data types for form fields
+ * @param {HTMLFormElement} form               The form being processed
+ * @param {Object<string, object>} [editors]   A record of TinyMCE editor metadata objects, indexed by their update key
+ * @param {{string, string}} [dtypes]          A mapping of data types for form fields
  */
 class FormDataExtended extends FormData {
-	constructor(form, {editors=[], dtypes={}}={}) {
+	constructor(form, {editors={}, dtypes={}}={}) {
 		super();
 
 		/**
@@ -22410,7 +22510,7 @@ class FormDataExtended extends FormData {
 
 		/**
 		 * A record of TinyMCE editors which are linked to this form
-		 * @type {object[]}
+		 * @type {Object<string, object>}
 		 */
 		this.editors = editors;
 
@@ -22683,7 +22783,7 @@ class Notifications extends Application {
 		// Construct a new notification
 		const cls = ["notification", next.type, next.permanent ? "permanent": null].filterJoin(" ");
 		const li = $(`<li class="${cls}">${next.message}<i class="close fas fa-times-circle"></i></li>`);
-``
+
 		// Add click listener to dismiss
 		li.click(ev => { if ( Date.now() - now > 250 ) _remove(li) });
 		this.element.prepend(li);
@@ -22711,8 +22811,8 @@ class Notifications extends Application {
  * @example
  * <!-- Example HTML -->
  * <nav class="tabs" data-group="primary-tabs">
- *   <a class="item" data-tab="tab1">Tab 1</li>
- *   <a class="item" data-tab="tab2">Tab 2</li>
+ *   <a class="item" data-tab="tab1" data-group="primary-tabs">Tab 1</li>
+ *   <a class="item" data-tab="tab2" data-group="primary-tabs">Tab 2</li>
  * </nav>
  *
  * <section class="content">
@@ -22843,6 +22943,7 @@ class Tabs {
 }
 
 const TabsV2 = Tabs;
+
 /**
  * Render the Sidebar container, and after rendering insert Sidebar tabs.
  * @extends {Application}
@@ -23270,7 +23371,8 @@ class SidebarDirectory extends SidebarTab {
 			height: "auto",
 			scrollY: ["ol.directory-list"],
 			dragDrop: [{ dragSelector: ".directory-item",  dropSelector: ".directory-list"}],
-			filters: [{inputSelector: 'input[name="search"]', contentSelector: ".directory-list"}]
+			filters: [{inputSelector: 'input[name="search"]', contentSelector: ".directory-list"}],
+			contextMenuSelector: ".entity"
 		});
 	}
 
@@ -23801,7 +23903,7 @@ class SidebarDirectory extends SidebarTab {
 
 		// Create ContextMenus
 		if (folderOptions) new ContextMenu(html, ".folder .folder-header", folderOptions);
-		if (entryOptions) new ContextMenu(html, ".entity", entryOptions);
+		if (entryOptions) new ContextMenu(html, this.options.contextMenuSelector, entryOptions);
 	}
 
 	/* -------------------------------------------- */
@@ -24014,13 +24116,9 @@ class SidebarDirectory extends SidebarTab {
 }
 
 /**
- * The Actor configuration sheet.
+ * The Application responsible for displaying and editing a single Actor document.
  * This Application is responsible for rendering an actor's attributes and allowing the actor to be edited.
- * System modifications may elect to override this class to better suit their own game system by re-defining the value
- * CONFIG.Actor.sheetClass.
-
  * @extends {DocumentSheet}
- *
  * @param {Actor} actor                   The Actor instance being displayed within the sheet.
  * @param {ApplicationOptions} options    Additional application configuration options.
  */
@@ -24322,7 +24420,7 @@ class ActorSheet extends DocumentSheet {
 	async _onDropItem(event, data) {
 		if ( !this.actor.isOwner ) return false;
 		const item = await Item.implementation.fromDropData(data);
-		const itemData = item.toJSON();
+		const itemData = item.toObject();
 
 		// Handle item sorting within the same Actor
 		const actor = this.actor;
@@ -24340,15 +24438,15 @@ class ActorSheet extends DocumentSheet {
 	 * Currently supports dropping a Folder of Items to create all items as owned items.
 	 * @param {DragEvent} event     The concluding DragEvent which contains drop data
 	 * @param {Object} data         The data transfer extracted from the event
-	 * @return {Promise<Object>}    A data object which describes the result of the drop
+	 * @return {Promise<Item[]>}
 	 * @private
 	 */
 	async _onDropFolder(event, data) {
-		if ( !this.actor.isOwner ) return false;
-		if ( data.entity !== "Item" ) return;
+		if ( !this.actor.isOwner ) return [];
+		if ( data.documentName !== "Item" ) return [];
 		const folder = game.folders.get(data.id);
-		if ( !folder ) return;
-		return this._onDropItemCreate(folder.entities.map(e => e.data));
+		if ( !folder ) return [];
+		return this._onDropItemCreate(folder.entities.map(e => e.toObject()));
 	}
 
 	/* -------------------------------------------- */
@@ -24356,12 +24454,13 @@ class ActorSheet extends DocumentSheet {
 	/**
 	 * Handle the final creation of dropped Item data on the Actor.
 	 * This method is factored out to allow downstream classes the opportunity to override item creation behavior.
-	 * @param {object} itemData     The item data requested for creation
-	 * @return {Promise<Actor>}
+	 * @param {object[]|object} itemData     The item data requested for creation
+	 * @return {Promise<Item[]>}
 	 * @private
 	 */
 	async _onDropItemCreate(itemData) {
-		return this.actor.createEmbeddedDocuments("Item", [itemData]);
+		itemData = itemData instanceof Array ? itemData : [itemData];
+		return this.actor.createEmbeddedDocuments("Item", itemData);
 	}
 
 	/* -------------------------------------------- */
@@ -24400,8 +24499,9 @@ class ActorSheet extends DocumentSheet {
 		return this.actor.updateEmbeddedDocuments("Item", updateData);
 	}
 }
+
 /**
- * Configure the Combat tracker to display additional information as appropriate
+ * The Application responsible for configuring the CombatTracker and its contents.
  * @extends {FormApplication}
  */
 class CombatTrackerConfig extends FormApplication {
@@ -24439,8 +24539,8 @@ class CombatTrackerConfig extends FormApplication {
 }
 
 /**
- * Configure or create a single Combatant within a Combat entity.
- * @extends {FormApplication}
+ * The Application responsible for configuring a single Combatant document within a parent Combat.
+ * @extends {DocumentSheet}
  */
 class CombatantConfig extends DocumentSheet {
 	static get defaultOptions() {
@@ -24473,7 +24573,7 @@ class CombatantConfig extends DocumentSheet {
 }
 
 /**
- * A form designed for creating and editing an Active Effect on an Actor or Item entity.
+ * The Application responsible for configuring a single ActiveEffect document within a parent Actor or Item.
  * @extends {DocumentSheet}
  *
  * @param {ActiveEffect} object     The target active effect being configured
@@ -24507,8 +24607,8 @@ class ActiveEffectConfig extends DocumentSheet {
 		return {
 			effect: effect, // Backwards compatibility
 			data: foundry.utils.deepClone(this.object.data),
-			isActorEffect: this.object.parent.entity === "Actor",
-			isItemEffect: this.object.parent.entity === "Item",
+			isActorEffect: this.object.parent.documentName === "Actor",
+			isItemEffect: this.object.parent.documentName === "Item",
 			submitText: "EFFECT.Submit",
 			modes: Object.entries(CONST.ACTIVE_EFFECT_MODES).reduce((obj, e) => {
 				obj[e[1]] = game.i18n.localize("EFFECT.MODE_"+e[0]);
@@ -24571,8 +24671,8 @@ class ActiveEffectConfig extends DocumentSheet {
 }
 
 /**
- * Edit a folder, configuring its name and appearance
- * @extends {FormApplication}
+ * The Application responsible for configuring a single Folder document.
+ * @extends {DocumentSheet}
  */
 class FolderConfig extends DocumentSheet {
 
@@ -24986,10 +25086,7 @@ class ImagePopout extends FormApplication {
 	 * @returns {boolean}
 	 */
 	isTitleVisible() {
-		if ( this._related && this._related["hasPerm"] ) {
-			return this._related.testUserPermission(game.user, "LIMITED");
-		}
-		return true;
+		return this._related?.testUserPermission(game.user, "LIMITED") ?? true;
 	}
 
 	/* -------------------------------------------- */
@@ -25009,6 +25106,7 @@ class ImagePopout extends FormApplication {
 
 	/** @override */
 	async _render(...args) {
+		await this.getRelatedObject();
 		this.position = await this.constructor.getPosition(this.object);
 		return super._render(...args);
 	}
@@ -25119,8 +25217,7 @@ class ImagePopout extends FormApplication {
 }
 
 /**
- * The default Item configuration sheet.
- * This Application is responsible for rendering an item's attributes and allowing the item to be edited.
+ * The Application responsible for displaying and editing a single Item document.
  * @extends {DocumentSheet}
  *
  * @param {Item} item                     The Item instance being displayed within the sheet.
@@ -25254,16 +25351,29 @@ class ItemSheet extends DocumentSheet {
 }
 
 /**
- * The JournalEntry Configuration Sheet
- * @implements {DocumentSheet}
- *
- * @param {JournalEntry} entity     The JournalEntry instance which is being edited
+ * The Application responsible for displaying and editing a single JournalEntry document.
+ * @extends {DocumentSheet}
+ * @param {JournalEntry} object     The JournalEntry instance which is being edited
  * @param {object} [options]        Application options
  */
 class JournalSheet extends DocumentSheet {
 	constructor(object, options={}) {
 		super(object, options);
+
+		/**
+		 * The current display mode of the journal. Either 'text' or 'image'.
+		 * @type {string|null}
+		 * @private
+		 */
 		this._sheetMode = this.options.sheetMode || this._inferDefaultMode();
+
+		/**
+		 * The size of the application when it was in text mode, so we can go back
+		 * to it when we switch modes.
+		 * @type {object|null}
+		 * @private
+		 */
+		this._textPos = null;
 	}
 
 	/* -------------------------------------------- */
@@ -25327,6 +25437,8 @@ class JournalSheet extends DocumentSheet {
 		if ( (mode !== this._sheetMode) && this.rendered ) {
 			await this.close({submit: false});
 			options.sheetMode = this._sheetMode = mode;
+			if ( mode === "image" ) this._textPos = deepClone(this.position);
+			else if ( this._textPos ) mergeObject(options, this._textPos);
 			return this.render(true, options);
 		}
 
@@ -25540,15 +25652,15 @@ class MacroConfig extends DocumentSheet {
 }
 
 /**
- * A configuration Form Application for modifying the properties of a MeasuredTemplate object.
+ * The Application responsible for configuring a single MeasuredTemplate document within a parent Scene.
  * @extends {FormApplication}
  * @see {@link MeasuredTemplate}
  */
-class MeasuredTemplateConfig extends FormApplication {
+class MeasuredTemplateConfig extends DocumentSheet {
 
-	/** @override */
+	/** @inheritdoc */
 	static get defaultOptions() {
-		return mergeObject(super.defaultOptions, {
+		return foundry.utils.mergeObject(super.defaultOptions, {
 			id: "template-config",
 			classes: ["sheet", "template-sheet"],
 			title: "Measurement Template Configuration",
@@ -25559,15 +25671,13 @@ class MeasuredTemplateConfig extends FormApplication {
 
 	/* -------------------------------------------- */
 
-	/** @override */
+	/** @inheritdoc */
 	getData() {
-		return {
-			object: duplicate(this.object.data),
-			options: this.options,
+		return foundry.utils.mergeObject(super.getData(), {
 			templateTypes: CONFIG.MeasuredTemplate.types,
 			gridUnits: canvas.scene.data.gridUnits,
 			submitText: this.options.preview ? "Create" : "Update"
-		}
+		});
 	}
 
 	/* -------------------------------------------- */
@@ -25685,7 +25795,7 @@ class PermissionControl extends DocumentSheet {
 }
 
 /**
- * Playlist Configuration Sheet
+ * The Application responsible for configuring a single Playlist document.
  * @extends {DocumentSheet}
  */
 class PlaylistConfig extends DocumentSheet {
@@ -25752,7 +25862,7 @@ class PlaylistConfig extends DocumentSheet {
 }
 
 /**
- * Playlist Sound Configuration Sheet
+ * The Application responsible for configuring a single PlaylistSound document within a parent Playlist.
  * @extends {DocumentSheet}
  *
  * @param {PlaylistSound} sound   The PlaylistSound document being configured
@@ -25827,7 +25937,7 @@ class PlaylistSoundConfig extends DocumentSheet {
 }
 
 /**
- * The RollTable configuration sheet
+ * The Application responsible for displaying and editing a single RollTable document.
  * @extends {DocumentSheet}
  * @param {RollTable} table               The RollTable document being configured
  * @param {ApplicationOptions} options    Additional application configuration options
@@ -26189,7 +26299,7 @@ class RollTableConfig extends DocumentSheet {
 		}
 
 		// Update the object
-		return this.document.update(expanded, {recursive: false});
+		return this.document.update(expanded, {diff: false, recursive: false});
 	}
 
 	/* -------------------------------------------- */
@@ -26260,7 +26370,7 @@ class RollTableConfig extends DocumentSheet {
 
 	/**
 	 * Display a flashing animation on the selected result to emphasize the draw
-	 * @param {HTMLElement} item      The HTML <li> item of the winning result
+	 * @param {HTMLElement} item      The HTML &lt;li> item of the winning result
 	 * @return {Promise}              A Promise that resolves once the animation is complete
 	 * @protected
 	 */
@@ -26281,7 +26391,7 @@ class RollTableConfig extends DocumentSheet {
 }
 
 /**
- * A Scene configuration sheet
+ * The Application responsible for configuring a single Scene document.
  * @extends {DocumentSheet}
  * @see {@link Scene} The Scene Document which is being configured
  */
@@ -26743,8 +26853,7 @@ class EntitySheetConfig extends FormApplication {
 }
 
 /**
- * The User Configuration application provides a form used to allow the current client to edit preferences and
- * configurations about a User entity (typically their own).
+ * The Application responsible for configuring a single User document.
  * @extends {FormApplication}
  * 
  * @param {User} user     The User entity being configured.
@@ -28323,13 +28432,13 @@ class MainMenu extends Application {
 			players: {
 				label: "MENU.Players",
 				icon: '<i class="fas fa-users"></i>',
-				enabled: game.user.isGM,
+				enabled: game.user.isGM && !game.data.options.demo,
 				onClick: () => window.location.href = "./players"
 			},
 			world: {
 				label: "MENU.Setup",
 				icon: '<i class="fas fa-globe"></i>',
-				enabled: game.user.hasRole("GAMEMASTER"),
+				enabled: game.user.hasRole("GAMEMASTER")  && !game.data.options.demo,
 				onClick: () => game.shutDown()
 			}
 		}
@@ -28365,7 +28474,7 @@ class MainMenu extends Application {
 	}
 }
 /**
- * Top menu scene navigation
+ * The UI element which displays the Scene documents which are currently enabled for quick navigation.
  * @extends {Application}
  */
 class SceneNavigation extends Application {
@@ -28691,7 +28800,7 @@ class Pause extends Application {
 
 
 /**
- * The active Player List application
+ * The UI element which displays the list of Users who are currently playing within the active World.
  * @extends {Application}
  */
 class PlayerList extends Application {
@@ -28915,9 +29024,9 @@ class AVConfig extends FormApplication {
 
 		// If the currently chosen device is unavailable, display a separate option for 'unavailable device (use default)'
 		const { videoSrc, audioSrc, audioSink } = settings.client;
-		const videoSrcUnavailable = videoSrc && (videoSrc !== "default") && !Object.keys(videoSources).includes(videoSrc);
-		const audioSrcUnavailable = audioSrc && (audioSrc !== "default") && !Object.keys(audioSources).includes(audioSrc);
-		const audioSinkUnavailable = audioSink && (audioSink !== "default") && !Object.keys(audioSinks).includes(audioSink);
+		const videoSrcUnavailable = this._isSourceUnavailable(videoSources, videoSrc);
+		const audioSrcUnavailable = this._isSourceUnavailable(audioSources, audioSrc);
+		const audioSinkUnavailable = this._isSourceUnavailable(audioSinks, audioSink);
 		const isSSL = window.location.protocol === "https:";
 
 		// Audio/Video modes
@@ -28949,7 +29058,9 @@ class AVConfig extends FormApplication {
 			audioSinks: isObjectEmpty(audioSinks) ? false : audioSinks,
 			videoSrcUnavailable,
 			audioSrcUnavailable,
-			audioSinkUnavailable
+			audioSinkUnavailable,
+			audioDisabled: audioSrc === 'disabled',
+			videoDisabled: videoSrc === 'disabled'
 		};
 	}
 
@@ -28990,6 +29101,20 @@ class AVConfig extends FormApplication {
 			section.css("opacity", enabled ? 1.0 : 0.5);
 			section.find("input").prop("disabled", !enabled);
 		}
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Determine whether a given video or audio source, or audio sink has become
+	 * unavailable since the last time it was set.
+	 * @param {object} sources The available devices
+	 * @param {string} source  The selected device
+	 * @private
+	 */
+	_isSourceUnavailable(sources, source) {
+		const specialValues = ["default", "disabled"];
+		return source && (!specialValues.includes(source)) && !Object.keys(sources).includes(source);
 	}
 
 	/* -------------------------------------------- */
@@ -29072,6 +29197,7 @@ class AVConfig extends FormApplication {
 		game.settings.set("core", "rtcClientSettings", client);
 	}
 }
+
 /**
  * Abstraction of the Application interface to be used with the Draggable class as a substitute for the app
  * This class will represent one popout feed window and handle its positioning and draggability
@@ -29084,8 +29210,14 @@ class CameraPopoutAppWrapper {
 		this.view = view;
 		this.element = element;
 		this.userId = userId;
+
+		// "Fake" some application attributes
+		this.popOut = true;
+		this.options = {};
+
+		// Get the saved position
 		let setting = game.webrtc.settings.getUser(userId);
-		this.setPosition({ left: setting.x, top: setting.y, width: setting.width });
+		this.setPosition(setting);
 		new Draggable(this, element.find(".camera-view"), element.find(".video-container")[0], true);
 	}
 
@@ -29095,7 +29227,7 @@ class CameraPopoutAppWrapper {
 	 * Get the current position of this popout window
 	 */
 	get position() {
-		return mergeObject(this.element.position(), {
+		return foundry.utils.mergeObject(this.element.position(), {
 			width: this.element.outerWidth(),
 			height: this.element.outerHeight(),
 			scale: 1
@@ -29105,29 +29237,14 @@ class CameraPopoutAppWrapper {
 	/* -------------------------------------------- */
 
 	/** @override */
-	setPosition({ left, top, width, height, scale } = {}) {
-		const updates = {};
-
-		// Constrain aspect ratio + 30px for nameplate
-		if (width || height) {
-			if (width) height = Math.floor(width * 3 / 4 + 30);
-			else if (height) width = Math.floor((height - 30) * 4 / 3);
-			this.element.outerWidth(width);
-			this.element.outerHeight(height);
-			updates.width = width;
-		}
-
-		// Position
-		this.element.css({ left, top });
-		if (left) updates.x = left;
-		if ( top ) updates.y = top;
-
-		// Save settings
-		if ( !isObjectEmpty(updates) ) {
+	setPosition(options={}) {
+		const position = Application.prototype.setPosition.call(this, options);
+		if ( !foundry.utils.isObjectEmpty(position) ) {
 			const current = game.webrtc.settings.client.users[this.userId] || {};
-			const update = mergeObject(current, updates);
+			const update = foundry.utils.mergeObject(current, position);
 			game.webrtc.settings.set("client", `users.${this.userId}`, update);
 		}
+		return position;
 	}
 
 	/* -------------------------------------------- */
@@ -29155,16 +29272,10 @@ class CameraPopoutAppWrapper {
  * @param {WebRTC} webrtc     The WebRTC Implementation to display
  */
 class CameraViews extends Application {
-	constructor(webrtc, options) {
-		super(options);
-		game.users.apps.push(this);
-	}
-
-	/* -------------------------------------------- */
 
 	/** @override */
 	static get defaultOptions() {
-		return mergeObject(super.defaultOptions, {
+		return foundry.utils.mergeObject(super.defaultOptions, {
 			id: "camera-views",
 			template: "templates/hud/camera-views.html",
 			popOut: false
@@ -29640,7 +29751,7 @@ class CameraViews extends Application {
 }
 
 /**
- * Configuration sheet for the Drawing object
+ * The Application responsible for configuring a single Drawing document within a parent Scene.
  * @extends {FormApplication}
  *
  * @param {Drawing} drawing         The Drawing object being configured
@@ -29807,7 +29918,7 @@ class DrawingHUD extends BasePlaceableHUD {
 }
 
 /**
- * Light Source Configuration Sheet
+ * The Application responsible for configuring a single AmbientLight document within a parent Scene.
  * @extends {DocumentSheet}
  * @param {AmbientLight} light            The AmbientLight object for which settings are being configured
  * @param {ApplicationOptions} options    Additional application configuration options
@@ -29895,7 +30006,7 @@ class LightConfig extends DocumentSheet {
 }
 
 /**
- * A configuration sheet for creating or editing a Note document.
+ * The Application responsible for configuring a single Note document within a parent Scene.
  * @extends {DocumentSheet}
  * @param {NoteDocument} note   The Note object for which settings are being configured
  * @param {object} options      Additional Application configuration options
@@ -29950,7 +30061,7 @@ class NoteConfig extends DocumentSheet {
 }
 
 /**
- * Ambient Sound Config Sheet
+ * The Application responsible for configuring a single AmbientSound document within a parent Scene.
  * @extends {DocumentSheet}
  *
  * @param {AmbientSound} sound       The sound object being configured
@@ -29981,7 +30092,7 @@ class AmbientSoundConfig extends DocumentSheet {
 	/** @inheritdoc */
 	getData(options) {
 		const data = super.getData(options);
-		data.submitText = game.i18n.localize(this.object.id ? "SOUND.Create" : "SOUND.Update");
+		data.submitText = game.i18n.localize(this.object.id ? "SOUND.Update" : "SOUND.Create");
 		return data;
 	}
 
@@ -30003,7 +30114,7 @@ class AmbientSoundConfig extends DocumentSheet {
 }
 
 /**
- * Tile Config Sheet
+ * The Application responsible for configuring a single Tile document within a parent Scene.
  * @extends {DocumentSheet}
  *
  * @param {Tile} tile                The Tile object being configured
@@ -30190,7 +30301,7 @@ class TileHUD extends BasePlaceableHUD {
 }
 
 /**
- * A Token Configuration Application
+ * The Application responsible for configuring a single Token document within a parent Scene.
  * @extends {FormApplication}
  */
 class TokenConfig extends FormApplication {
@@ -30712,7 +30823,8 @@ class TokenHUD extends BasePlaceableHUD {
 			this.object.document.update({[input.name]: isDelta ? current + value : value});
 		}
 
-		// Clear the HUD
+		// Un-focus the input field and clear the HUD
+		input.blur();
 		this.clear();
 	}
 
@@ -30798,7 +30910,7 @@ class TokenHUD extends BasePlaceableHUD {
 }
 
 /**
- * Wall Configuration Sheet
+ * The Application responsible for configuring a single Wall document within a parent Scene.
  * @extends {FormApplication}
  * @param {Wall} object                     The Wall object for which settings are being configured
  * @param {ApplicationOptions} options      Additional options which configure the rendering of the configuration sheet.
@@ -30812,21 +30924,36 @@ class WallConfig extends FormApplication {
 		options.title = "Wall Configuration";
 		options.template = "templates/scene/wall-config.html";
 		options.width = 400;
-		options.editTargets = [];
 		return options;
 	}
 
+	/**
+	 * An array of Wall ids that should all be edited when changes to this config form are submitted
+	 * @type {string[]}
+	 */
+	editTargets = [];
+
 	/* -------------------------------------------- */
 
-	/** @inheritdoc */
+	/** @override */
 	get title() {
-		let title = this.options.editTargets.length ? "WALLS.TitleMany" : "WALLS.Title";
+		let title = this.editTargets.length ? "WALLS.TitleMany" : "WALLS.Title";
 		return game.i18n.localize(title);
 	}
 
 	/* -------------------------------------------- */
 
 	/** @inheritdoc */
+	render(force, options) {
+		if ( options.walls instanceof Array ) {
+			this.editTargets = options.walls.map(w => w.id);
+		}
+		return super.render(force, options);
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
 	getData(options) {
 		return {
 			object: this.object.toJSON(),
@@ -30862,14 +30989,13 @@ class WallConfig extends FormApplication {
 
 	/* -------------------------------------------- */
 
-	/** @inheritdoc */
+	/** @override */
 	async _updateObject(event, formData) {
 
 		// Update multiple walls
-		const wallIds = this.options.editTargets;
-		if ( wallIds.length ) {
+		if ( this.editTargets.length ) {
 			const updateData = canvas.scene.walls.reduce((arr, w) => {
-				if ( wallIds.includes(w.id) ) {
+				if ( this.editTargets.includes(w.id) ) {
 					arr.push(foundry.utils.mergeObject(w.toJSON(), formData));
 				}
 				return arr;
@@ -30937,7 +31063,7 @@ class ChatPopout extends Application {
 }
 
 /**
- * A game settings configuration application
+ * The Application responsible for displaying and editing a single Setting document.
  * This form renders the settings defined via the game.settings.register API which have config = true
  *
  * @extends {FormApplication}
@@ -31010,6 +31136,7 @@ class SettingsConfig extends FormApplication {
 			s.isCheckbox = setting.type === Boolean;
 			s.isSelect = s.choices !== undefined;
 			s.isRange = (setting.type === Number) && s.range;
+			s.filePickerType = s.filePicker === true ? "folder" : s.filePicker;
 
 			// Classify setting
 			const name = s.module;
@@ -31150,6 +31277,7 @@ class Compendium extends Application {
 
 	/** @inheritdoc */
 	async getData(options) {
+		if ( !this.collection.indexed ) await this.collection.getIndex();
 		return {
 			collection: this.collection,
 			cssClass: this.collection.documentName.toLowerCase(),
@@ -31162,6 +31290,7 @@ class Compendium extends Application {
 	/** @inheritdoc */
 	async close(options) {
 		const li = document.querySelector(`.compendium-pack[data-pack="${this.collection.collection}"]`);
+		if ( !li ) return super.close(options);
 		li.dataset.open = 0;
 		const icon = li.querySelector("i.folder");
 		icon.classList.replace("fa-folder-open", "fa-folder");
@@ -31295,6 +31424,7 @@ class Compendium extends Application {
 		]);
 	}
 }
+
 /**
  * Keyboard Controls Reference Sheet
  * @type {Application}
@@ -31421,10 +31551,12 @@ class ModuleManagement extends FormApplication {
 			mod.hasPacks = mod.packs.length > 0;
 			mod.hasScripts = mod.scripts.length > 0;
 			mod.hasStyles = mod.styles.length > 0;
-			mod.systemOnly = mod.systems && (mod.systems.indexOf(game.system.id) !== -1);
+			mod.systemOnly = mod.system.indexOf(game.system.id) !== -1;
 			mod.systemTag = game.system.id;
 			mod.dependencies = mod.dependencies ? mod.dependencies.map(d => d.name) : null;
 			foundry.packages.tagPackageAvailability(mod);
+
+			if ( mod.system.length && !mod.systemOnly ) return arr;
 			return arr.concat([mod]);
 		}, []).sort((a, b) => a.title.localeCompare(b.title));
 
@@ -31702,9 +31834,13 @@ class PermissionConfig extends FormApplication {
 	 */
 	async _onResetDefaults(event) {
 		event.preventDefault();
-		const defaults = this._getPermissions({});
+		// Collect default permissions.
+		const defaults = Object.entries(CONST.USER_PERMISSIONS).reduce((obj, [id, perm]) => {
+			obj[id] = Array.fromRange(CONST.USER_ROLES.GAMEMASTER + 1).slice(perm.defaultRole);
+			return obj;
+		}, {});
 		await game.settings.set("core", "permissions", defaults);
-		ui.notifications.info(`Reset User role permission configuration to default values.`);
+		ui.notifications.info("SETTINGS.PermissionReset", {localize: true});
 		return this.render();
 	}
 
@@ -31732,7 +31868,7 @@ class PermissionConfig extends FormApplication {
 			}, []);
 		}
 		await game.settings.set("core", "permissions", permissions);
-		ui.notifications.info(`Updated User role permission configuration.`);
+		ui.notifications.info("SETTINGS.PermissionUpdate", {localize: true});
 	}
 }
 
@@ -31833,14 +31969,25 @@ class WorldConfig extends FormApplication {
 			if ( ui.setup ) ui.setup.render();
 		}
 		else {
-			mergeObject(game.world.data, response.data);
+			game.world.data.update(response.data);
 		}
 		return this.close();
+	}
+
+	/* -------------------------------------------- */
+	/*  TinyMCE Editor                              */
+	/* -------------------------------------------- */
+
+	/** @override **/
+	activateEditor (name, options={}, initialContent="") {
+		const toolbar = CONFIG.TinyMCE.toolbar.split(" ").filter(t => t !== "save").join(" ");
+		mergeObject(options, { toolbar });
+		super.activateEditor(name, options, initialContent);
 	}
 }
 
 /**
- * A directory listing of Actor Documents in the Sidebar.
+ * The sidebar directory which organizes and displays world-level Actor documents.
  * @extends {SidebarDirectory}
  */
 class ActorDirectory extends SidebarDirectory {
@@ -31949,7 +32096,7 @@ class ActorDirectory extends SidebarDirectory {
 }
 
 /**
- * The Chat Log application displayed in the Sidebar
+ * The sidebar directory which organizes and displays world-level ChatMessage documents.
  * @extends {SidebarTab}
  * @see {Sidebar}
  */
@@ -31998,6 +32145,13 @@ class ChatLog extends SidebarTab {
 		 * @private
 		 */
 		this._lastWhisper = null;
+
+		/**
+		 * A reference to the chat text entry bound key method
+		 * @type {Function|null}
+		 * @private
+		 */
+		this._onChatKeyDownBinding = null;
 
 		// Update timestamps every 15 seconds
 		setInterval(this.updateTimestamps.bind(this), 1000 * 15);
@@ -32281,7 +32435,8 @@ class ChatLog extends SidebarTab {
 		html.find("#chat-log").scroll(this._onScrollLog.bind(this));
 
 		// Chat message entry
-		html.find("#chat-message").keydown(this._onChatKeyDown.bind(this));
+		this._onChatKeyDownBinding = this._onChatKeyDown.bind(this);
+		html.find("#chat-message").keydown(this._onChatKeyDownBinding);
 
 		// Expand dice roll tooltips
 		html.on("click", ".dice-roll", this._onDiceRollClick.bind(this));
@@ -32714,7 +32869,7 @@ class ChatLog extends SidebarTab {
 }
 
 /**
- * The combat and turn order tracker tab
+ * The sidebar directory which organizes and displays world-level Combat documents.
  * @extends {SidebarTab}
  */
 class CombatTracker extends SidebarTab {
@@ -33082,19 +33237,23 @@ class CombatTracker extends SidebarTab {
 		const li = event.currentTarget;
 		const combatant = this.viewed.combatants.get(li.dataset.combatantId);
 		const token = combatant.token;
-		if ( !token?.actor?.testUserPermission(game.user, "OBSERVED") ) return;
+		if ( (token === null) || !combatant.actor?.testUserPermission(game.user, "OBSERVED") ) return;
 		const now = Date.now();
 
 		// Handle double-left click to open sheet
 		const dt = now - this._clickTime;
 		this._clickTime = now;
-		if ( dt <= 250 ) {
-			if ( token.actor ) token.actor.sheet.render(true);
+		if ( dt <= 250 ) return token?.actor?.sheet.render(true);
+
+		// If the Token does not exist in this scene
+		// TODO: This is a temporary workaround until we persist sceneId as part of the Combatant data model
+		if ( token === undefined ) {
+			return ui.notifications.warn(game.i18n.format("COMBAT.CombatantNotInScene", {name: combatant.name}));
 		}
 
-		// Control and pan on single-left
-		else {
-			token.object.control({releaseOthers: true});
+		// Control and pan to Token object
+		if ( token.object ) {
+			token.object?.control({releaseOthers: true});
 			return canvas.animatePan({x: token.data.x, y: token.data.y});
 		}
 	}
@@ -33182,7 +33341,7 @@ class CombatTracker extends SidebarTab {
 			},
 			{
 				name: "COMBAT.CombatantRemove",
-				icon: '<i class="fas fa-skull"></i>',
+				icon: '<i class="fas fa-trash"></i>',
 				callback: li => {
 					const combatant = this.viewed.combatants.get(li.data("combatant-id"));
 					if ( combatant ) return combatant.delete();
@@ -33455,7 +33614,7 @@ class CompendiumDirectory extends SidebarTab {
 }
 
 /**
- * A directory listing of Item Documents in the Sidebar.
+ * The sidebar directory which organizes and displays world-level Item documents.
  * @extends {SidebarDirectory}
  */
 class ItemDirectory extends SidebarDirectory {
@@ -33498,7 +33657,7 @@ class ItemDirectory extends SidebarDirectory {
 
 
 /**
- * A directory listing of JournalEntry Documents in the Sidebar.
+ * The sidebar directory which organizes and displays world-level JournalEntry documents.
  * @extends {SidebarDirectory}
  */
 class JournalDirectory extends SidebarDirectory {
@@ -33547,7 +33706,7 @@ class JournalDirectory extends SidebarDirectory {
 
 
 /**
- * A directory list of Macro Documents. Unlike other directories, this app is only rendered in pop-out mode.
+ * The directory, not displayed in the sidebar, which organizes and displays world-level Macro documents.
  * @extends {SidebarDirectory}
  *
  * @see {@link Macros}        The WorldCollection of Macro Entities
@@ -33577,7 +33736,7 @@ class MacroDirectory extends SidebarDirectory {
 }
 
 /**
- * A directory listing of audio Playlist Documents in the Sidebar.
+ * The sidebar directory which organizes and displays world-level Playlist documents.
  * @extends {SidebarDirectory}
  */
 class PlaylistDirectory extends SidebarDirectory {
@@ -33623,6 +33782,7 @@ class PlaylistDirectory extends SidebarDirectory {
 		const options = super.defaultOptions;
 		options.dragDrop[0].dragSelector = ".playlist-name";
 		options.renderUpdateKeys = ["name", "playing", "mode", "sounds", "sort", "sorting", "folder"];
+		options.contextMenuSelector = ".entity .playlist-header";
 		return options;
 	}
 
@@ -33766,7 +33926,7 @@ class PlaylistDirectory extends SidebarDirectory {
 	 * @private
 	 */
 	_getPauseIcon(sound) {
-		return (sound.playing && !sound.sound.loaded) ? "fas fa-spinner fa-spin" : "fas fa-pause";
+		return (sound.playing && !sound.sound?.loaded) ? "fas fa-spinner fa-spin" : "fas fa-pause";
 	}
 
 	/* -------------------------------------------- */
@@ -34266,8 +34426,9 @@ class PlaylistDirectory extends SidebarDirectory {
 		];
 	}
 }
+
 /**
- * A directory list of RollTable Documents in the Sidebar.
+ * The sidebar directory which organizes and displays world-level RollTable documents.
  * @extends {SidebarDirectory}
  */
 class RollTableDirectory extends SidebarDirectory {
@@ -34277,7 +34438,7 @@ class RollTableDirectory extends SidebarDirectory {
 }
 
 /**
- * A directory listing of active game scenes
+ * The sidebar directory which organizes and displays world-level Scene documents.
  * @extends {SidebarDirectory}
  */
 class SceneDirectory extends SidebarDirectory {
@@ -34359,7 +34520,7 @@ class SceneDirectory extends SidebarDirectory {
 				icon: '<i class="fas fa-image"></i>',
 				condition: li => {
 					const scene = game.scenes.get(li[0].dataset.entityId);
-					return !!scene.data.img || scene.data.tiles.length;
+					return scene.data.img || scene.data.tiles.size;
 				},
 				callback: li => {
 					const scene = game.scenes.get(li[0].dataset.entityId);
@@ -34379,7 +34540,7 @@ class SceneDirectory extends SidebarDirectory {
 }
 
 /**
- * A SidebarTab for providing help messages and settings configurations.
+ * The sidebar tab which displays various game settings, help messages, and configuration options.
  * The Settings sidebar is the furthest-to-right using a triple-cogs icon.
  * @extends {SidebarTab}
  */
@@ -34400,12 +34561,14 @@ class Settings extends SidebarTab {
 	getData(options) {
 		if (game.data.coreUpdate) game.data.coreUpdate.type = game.i18n.localize("Software");
 		if (game.data.systemUpdate) game.data.systemUpdate.type = game.i18n.localize("System");
+		const isDemo = game.data.options.demo === true;
 		return {
 			user: game.user,
 			system: game.system,
 			coreVersion: game.data.version,
-			canConfigure: game.user.can("SETTINGS_MODIFY"),
-			canSetup: game.user.hasRole("GAMEMASTER"),
+			isDemo: isDemo,
+			canConfigure: game.user.can("SETTINGS_MODIFY") && !isDemo,
+			canSetup: game.user.hasRole("GAMEMASTER") && !isDemo,
 			coreUpdate: game.user.isGM && game.data.coreUpdate ? game.i18n.format("SETUP.UpdateAvailable", game.data.coreUpdate) : false,
 			systemUpdate: game.user.isGM && game.data.systemUpdate ? game.i18n.format("SETUP.UpdateAvailable",
 					{ type: game.data.systemUpdate.type, channel: game.data.system.data.title, version: game.data.systemUpdate.version}) : false,
@@ -34631,7 +34794,8 @@ class CanvasAnimation {
 		})
 		.finally(() => {
 			this.ticker.remove(animate, context);
-			if (name) delete this.animations[name];
+			const isCompleted = name && (this.animations[name]?.fn === animate);
+			if ( isCompleted ) delete this.animations[name];
 		});
 	}
 
@@ -36981,9 +37145,7 @@ class PointSource {
 
 		// Determine whether the source has coloration
 		const cs = this.coloration.shader;
-		if ( this.alpha === 0 ) this._hasColor = false;
-		else if ( cCls !== StandardColorationShader ) this._hasColor = true;
-		else this._hasColor = !!this.color;
+		this._hasColor = !!(cCls && this.color && this.alpha);
 
 		// Change to a different shader class
 		if ( cs?.constructor !== cCls ) {
@@ -37488,7 +37650,7 @@ class DrawingsLayer extends PlaceablesLayer {
 			// Create a completed drawing
 			if ( minDistance || completePolygon ) {
 				event.data.createState = 0;
-				const data = preview.data;
+				const data = preview.data.toObject(false);
 
 				// Set default text values
 				if (data.type === CONST.DRAWING_TYPES.TEXT) {
@@ -37775,6 +37937,7 @@ class LightingLayer extends PlaceablesLayer {
 
 		// Configure the layer
 		this.globalLight = canvas.scene.data.globalLight;
+		this.darknessLevel = canvas.scene.data.darkness;
 
 		// Create containers
 		this.lighting = this.addChildAt(new PIXI.Container(), 0);
@@ -38469,7 +38632,7 @@ class ForegroundLayer extends MapLayer {
 	 * @type {boolean}
 	 */
 	get displayRoofs() {
-		const restrictVision = canvas.sight.sources.size ||  !game.user.isGM;
+		const restrictVision = canvas.sight.sources.size || !game.user.isGM;
 		const mapLayerActive = canvas.foreground._active || canvas.background._active;
 		return mapLayerActive || restrictVision;
 	}
@@ -38594,6 +38757,7 @@ class ForegroundLayer extends MapLayer {
 			tile.updateOcclusion(tokens);
 			if ( tile.isRoof && (tile.occluded || !this.displayRoofs) ) {
 				const s = tile.getRoofSprite();
+				if ( !s ) continue;
 				s.tint = 0x0000FF;
 				this.occlusionMask.roofs.addChild(s);
 			}
@@ -38796,12 +38960,6 @@ class SightLayer extends CanvasLayer {
 		this._initialized = false;
 
 		/**
-		 * The downscaling resolution used for the saved fog texture
-		 * @type {number}
-		 */
-		this._fogResolution = 1;
-
-		/**
 		 * A pool of fog of war exploration containers that can be recycled
 		 * @type {PIXI.Container[]}
 		 */
@@ -38827,6 +38985,13 @@ class SightLayer extends CanvasLayer {
 		 */
 		this.debounceSaveFog = foundry.utils.debounce(this.saveFog.bind(this), 1000);
 	}
+
+	/**
+	 * The configured resolution used for the saved fog-of-war texture
+	 * @type {{resolution: number, width: number, height: number}}
+	 * @private
+	 */
+	_fogResolution;
 
 	/**
 	 * Define the threshold value for the number of distinct Wall endpoints.
@@ -38947,13 +39112,13 @@ class SightLayer extends CanvasLayer {
 		this.removeChildren();
 
 		// Internal stored variables
-		this._fogResolution = this._configureFogResolution();
 		const d = canvas.dimensions;
+		this._fogResolution = this._configureFogResolution();
 
 		// Unexplored area is obscured by darkness. We need a larger rectangle so that the blur filter doesn't clip
 		this.unexplored = this.addChild(new PIXI.Graphics());
-		const r = d.rect.clone().pad(CONFIG.Canvas.blurStrength+2);
-		this.unexplored.beginFill(0xFFFFFF, 1.0).drawShape(r).endFill();
+		const rect = d.rect.clone().pad(CONFIG.Canvas.blurStrength+2);
+		this.unexplored.beginFill(0xFFFFFF, 1.0).drawShape(rect).endFill();
 
 		// Exploration container
 		this.explored = this.addChild(new PIXI.Container());
@@ -38967,8 +39132,8 @@ class SightLayer extends CanvasLayer {
 		this.revealed = this.explored.addChild(new PIXI.Container());
 		this.saved = this.revealed.addChild(new PIXI.Sprite());
 		this.saved.position.set(d.paddingX, d.paddingY);
-		this.saved.width = d.sceneWidth;
-		this.saved.height = d.sceneHeight;
+		this.saved.width = this._fogResolution.width;
+		this.saved.height = this._fogResolution.height;
 
 		// Pending exploration containers
 		this.pending = this.revealed.addChild(new PIXI.Container());
@@ -39054,6 +39219,7 @@ class SightLayer extends CanvasLayer {
 
 		// Configuration variables
 		const d = canvas.dimensions;
+		const unrestrictedVisibility = canvas.lighting.globalLight;
 		const exc = CONFIG.Canvas.exploredColor;
 
 		// Recycle the current vision, either adding it to pending fog or returning it to the pool
@@ -39069,23 +39235,31 @@ class SightLayer extends CanvasLayer {
 
 		// Draw standard vision sources
 		let inBuffer = canvas.scene.data.padding === 0;
+
+		// Unrestricted visibility, everything in LOS is visible
+		if ( unrestrictedVisibility ) vision.fov.beginFill(0xFFFFFF, 1.0).drawShape(d.rect).endFill();
+
+		// Otherwise provided minimum visibility for each vision source
+		else {
+			for ( let source of this.sources ) {
+				vision.fov.beginFill(exc, 1.0).drawCircle(source.x, source.y, d.size / 2);
+			}
+		}
+
+		// Draw sight-based visibility for each vision source
 		for ( let source of this.sources ) {
 			source.active = true;
 			if ( !inBuffer && !d.sceneRect.contains(source.x, source.y) ) inBuffer = true;
 
-			// Global illumination, everything in LOS is visible
-			if ( canvas.lighting.globalLight ) {
-				vision.fov.beginFill(0xFFFFFF, 1.0).drawShape(d.rect).endFill();
+			// Restricted sight-based visibility for this source
+			if ( !unrestrictedVisibility && (source.radius > 0) ) {
+				if (source.radius > 0) vision.fov.beginFill(0xFFFFFF, 1.0).drawPolygon(source.fov).endFill();
 			}
 
-			// Sight-based visibility
-			else {
-				vision.fov.beginFill(exc, 1.0).drawCircle(source.x, source.y, d.size / 2);
-				if ( source.radius > 0 ) vision.fov.beginFill(0xFFFFFF, 1.0).drawPolygon(source.fov).endFill();
-			}
-
-			// Mask with LOS polygon
+			// LOS masking polygon for this source
 			vision.los.beginFill(0xFFFFFF, 1.0).drawPolygon(source.los).endFill();
+
+			// Potentially update fog exploration
 			if (!noUpdateFog) this.updateFog(source, forceUpdateFog);
 		}
 
@@ -39205,7 +39379,6 @@ class SightLayer extends CanvasLayer {
 	 */
 	commitFog() {
 		if ( CONFIG.debug.fog ) console.debug("SightLayer | Committing fog exploration to render texture.");
-		const r = this.revealed;
 		this._fogUpdates = 0;
 
 		// Protect against an invalid render texture
@@ -39215,15 +39388,11 @@ class SightLayer extends CanvasLayer {
 
 		// Create a staging texture and render the entire fog container to it
 		const d = canvas.dimensions;
-		const tex = PIXI.RenderTexture.create({
-			width: d.sceneWidth,
-			height: d.sceneHeight,
-			resolution: this._fogResolution
-		});
+		const tex = PIXI.RenderTexture.create(this._fogResolution);
 		const transform = new PIXI.Matrix(1, 0, 0, 1, -d.paddingX, -d.paddingY);
 
 		// Render the texture (temporarily disabling the masking rectangle)
-		canvas.app.renderer.render(r, tex, undefined, transform);
+		canvas.app.renderer.render(this.revealed, tex, undefined, transform);
 
 		// Swap the staging texture to the rendered Sprite
 		this.saved.texture.destroy(true);
@@ -39253,8 +39422,9 @@ class SightLayer extends CanvasLayer {
 		if ( !this.tokenVision || !this.fogExploration ) return;
 
 		// Load existing FOW exploration data or create a new placeholder
-		this.exploration = await FogExploration.get();
-		if ( !this.exploration ) this.exploration = new FogExploration();
+		const fogExplorationCls = getDocumentClass("FogExploration");
+		this.exploration = await fogExplorationCls.get();
+		if ( !this.exploration ) this.exploration = new fogExplorationCls();
 
 		// Extract the fog data image
 		let render = tex => this.saved.texture = tex;
@@ -39283,7 +39453,7 @@ class SightLayer extends CanvasLayer {
 	 */
 	async resetFog() {
 		if ( CONFIG.debug.fog ) console.debug("SightLayer | Resetting fog of war exploration for Scene.");
-		game.socket.emit("resetFog", canvas.scene.id, FogExploration._onResetFog);
+		game.socket.emit("resetFog", canvas.scene.id, getDocumentClass("FogExploration")._onResetFog);
 	}
 
 	/* -------------------------------------------- */
@@ -39338,16 +39508,24 @@ class SightLayer extends CanvasLayer {
 	/* -------------------------------------------- */
 
 	/**
-	 * Choose an adaptive fog rendering resolution which downscales the saved fog textures for larger dimension Scenes
-	 * @return {number}
+	 * Choose an adaptive fog rendering resolution which downscales the saved fog textures for larger dimension Scenes.
+	 * It is important that the width and height of the fog texture is evenly divisible by the downscaling resolution.
+	 * @return {{resolution: number, width: number, height: number}}
 	 * @private
 	 */
 	_configureFogResolution() {
 		const d = canvas.dimensions;
 		const pixels = d.sceneWidth * d.sceneHeight;
-		if (pixels > (16000**2)) return 0.25;
-		else if (pixels > (8000**2)) return 0.5;
-		else return 1.0;
+
+		// Determine the downscaling factor
+		let factor = 1.0;
+		if (pixels > (16000**2)) factor = 4;
+		else if (pixels > (8000**2)) factor = 2;
+
+		// Determine the fog texture dimensions that is evenly divisible by the scaled resolution
+		const width = d.sceneWidth.toNearest(factor, "ceil");
+		const height = d.sceneHeight.toNearest(factor, "ceil");
+		return {resolution: 1/factor, width, height}
 	}
 
 	/* -------------------------------------------- */
@@ -40089,7 +40267,10 @@ class TokenLayer extends PlaceablesLayer {
 		if ( !actor.isOwner ) {
 			return ui.notifications.warn(`You do not have permission to create a new Token for the ${actor.name} Actor.`);
 		}
-		if ( actor.compendium ) actor = await Actor.implementation.create(actor.toJSON());
+		if ( actor.compendium ) {
+			const actorData = game.actors.fromCompendium(actor);
+			actor = await Actor.implementation.create(actorData);
+		}
 
 		// Prepare the Token data
 		const td = await actor.getTokenData({x: data.x, y: data.y, hidden: event.altKey});
@@ -41250,7 +41431,8 @@ class Drawing extends PlaceableObject {
 		// Outer Stroke
 		if ( this.data.strokeWidth || isTextPreview ) {
 			let sc = foundry.utils.colorStringToHex(this.data.strokeColor || "#FFFFFF");
-			this.shape.lineStyle(this.data.strokeWidth ?? 8, sc, this.data.strokeAlpha ?? 1);
+			const sw = isTextPreview ? 8 : this.data.strokeWidth ?? 8;
+			this.shape.lineStyle(sw, sc, this.data.strokeAlpha ?? 1);
 		}
 
 		// Fill Color or Texture
@@ -41296,7 +41478,7 @@ class Drawing extends PlaceableObject {
 
 		// Update text position and visibility
 		if ( this.text ) {
-			this.text.alpha = this.data.textAlpha || 1.0;
+			this.text.alpha = this.data.textAlpha ?? 1.0;
 			this.text.pivot.set(this.text.width / 2, this.text.height / 2);
 			this.text.position.set(
 				(this.text.width / 2) + ((this.data.width - this.text.width) / 2),
@@ -43456,16 +43638,17 @@ class Tile extends PlaceableObject {
 
 			// Tile appearance
 			this.tile.alpha = this.data.hidden ? Math.min(0.5, this.data.alpha) : this.data.alpha;
+			if ( this.occlusionFilter ) this.occlusionFilter.uniforms.alpha = this.data.alpha;
 			this.tile.tint = this.data.tint ? foundry.utils.colorStringToHex(this.data.tint) : 0xFFFFFF;
 		}
 
 		// Temporary tile background
-		if ( this.bg ) this.bg.clear().beginFill(0xFFFFFF, 0.5).drawRect(0, 0, this.data.width, this.data.height).endFill();
+		if ( this.bg ) this.bg.clear().beginFill(0xFFFFFF, 0.5).drawRect(0, 0, aw, ah).endFill();
 
 		// Define bounds and update the border frame
-		let bounds = ( this.data.width === this.data.height ) ?
-			new NormalizedRectangle(0, 0, this.data.width, this.data.height) : // Square tiles
-			NormalizedRectangle.fromRotation(0, 0, this.data.width, this.data.height, r); // Non-square tiles
+		let bounds = ( aw === ah ) ?
+			new NormalizedRectangle(0, 0, aw, ah) : // Square tiles
+			NormalizedRectangle.fromRotation(0, 0, aw, ah, r); // Non-square tiles
 		this.hitArea = this._controlled ? bounds.clone().pad(20) : bounds;
 		this._refreshBorder(bounds);
 		this._refreshHandle(bounds);
@@ -43569,7 +43752,17 @@ class Tile extends PlaceableObject {
 		const h = token.h;
 		let testPoints = [[w/2,h/2]];
 		if ( corners ) {
-			const cornerPoints = [[0,0], [w/2,0], [w,0], [w,h/2], [w,h], [w/2,h], [0,h], [0,h/2]];
+			const pad = 2;
+			const cornerPoints = [
+				[pad,pad],
+				[w/2,pad],
+				[w-pad,pad],
+				[w-pad,h/2],
+				[w-pad,h-pad],
+				[w/2,h-pad],
+				[pad,h-pad],
+				[pad,h/2]
+			];
 			testPoints = testPoints.concat(cornerPoints);
 		}
 		for ( let p of testPoints ) {
@@ -43587,7 +43780,7 @@ class Tile extends PlaceableObject {
 	 * @returns {boolean}
 	 */
 	containsPixel(x, y) {
-		const m = this._alphaMap;
+		if ( !this._alphaMap.pixels ) return false;
 
 		// Normalize to Tile coordinates
 		x -= this.data.x;
@@ -43603,8 +43796,8 @@ class Tile extends PlaceableObject {
 		}
 
 		// First test against the bounding box
-		if ( (x < m.minX) || (x > m.maxX) ) return false;
-		if ( (y < m.minY) || (y > m.maxY) ) return false;
+		if ( (x < this._alphaMap.minX) || (x > this._alphaMap.maxX) ) return false;
+		if ( (y < this._alphaMap.minY) || (y > this._alphaMap.maxY) ) return false;
 
 		// Next test a specific pixel
 		const px = (Math.round(y) * Math.round(Math.abs(this.data.width))) + Math.round(x);
@@ -43633,13 +43826,21 @@ class Tile extends PlaceableObject {
 
 	/**
 	 * Swap a Tile from the background to the foreground - or vice versa
+	 * TODO: Refactor to private _onSwapLayer
 	 */
 	swapLayer() {
-		this.parent.removeChild(this);
-		const parent = this.data.overhead ? canvas.foreground.objects : canvas.background.objects;
-		parent.addChild(this);
+		// Remove from last layer
+		const lastLayer = this.data.overhead ? canvas.background : canvas.foreground;
+		delete lastLayer._controlled[this.id];
+		lastLayer.objects.removeChild(this);
+
+		// Add to new layer
+		const newLayer = this.data.overhead ? canvas.foreground : canvas.background;
+		newLayer.objects.addChild(this);
+		if ( this._controlled ) newLayer._controlled[this.id] = this;
+
+		// Schedule a refresh
 		canvas.perception.schedule({foreground: {refresh: true}});
-		this.release();
 	}
 
 	/* -------------------------------------------- */
@@ -44000,6 +44201,7 @@ class Tile extends PlaceableObject {
 		return tile;
 	}
 }
+
 /**
  * A Token is an implementation of PlaceableObject which represents an Actor within a viewed Scene on the game canvas.
  * @extends  {PlaceableObject}
@@ -44207,8 +44409,9 @@ class Token extends PlaceableObject {
 	get isVisible() {
 		const gm = game.user.isGM;
 		if ( this.data.hidden ) return gm;
-		if (!canvas.sight.tokenVision) return true;
+		if ( !canvas.sight.tokenVision ) return true;
 		if ( this._controlled ) return true;
+		if ( canvas.sight.sources.has(this.sourceId) ) return true;
 		const tolerance = Math.min(this.w, this.h) / 4;
 		return canvas.sight.testVisibility(this.center, {tolerance, object: this});
 	}
@@ -44898,15 +45101,13 @@ class Token extends PlaceableObject {
 	 * @private
 	 */
 	_animatePerceptionFrame({source=false, sound=false, fog=false}={}) {
-		if ( source ) {
-			this.updateSource({defer: true});
-			canvas.perception.schedule({
-				lighting: {refresh: source},
-				sight: {refresh: source, forceUpdateFog: fog},
-				sounds: { refresh: sound },
-				foreground: { refresh: true }
-			});
-		}
+		if ( source ) this.updateSource({defer: true});
+		canvas.perception.schedule({
+			lighting: {refresh: source},
+			sight: {refresh: source, forceUpdateFog: fog},
+			sounds: { refresh: sound },
+			foreground: { refresh: true }
+		});
 	}
 
 	/* -------------------------------------------- */
@@ -45599,6 +45800,7 @@ class Token extends PlaceableObject {
  * @ignore
  */
 let _token = null;
+
 /**
  * A Wall is an implementation of PlaceableObject which represents a physical or visual barrier within the Scene.
  * Walls are used to restrict Token movement or visibility as well as to define the areas of effect for ambient lights
@@ -46026,7 +46228,7 @@ class Wall extends PlaceableObject {
 
 		// // If the type of door or door state has changed also modify the door icon
 		const rebuildEndpoints = ["move", "sense", "c"].some(k => k in data);
-		const doorChange = this.data.door && (("door" in data) || ("ds" in data));
+		const doorChange = ("door" in data) || ("ds" in data);
 		if ( rebuildEndpoints || doorChange ) this._onModifyWall(doorChange);
 	}
 
@@ -46047,6 +46249,7 @@ class Wall extends PlaceableObject {
 		}
 
 		// Refresh the display
+		this.doorControl = null;
 		this._onModifyWall(false);
 	}
 
@@ -46061,9 +46264,16 @@ class Wall extends PlaceableObject {
 
 		// Update WallsLayer data
 		canvas.addPendingOperation("WallsLayer.initialize", this.layer.initialize, this.layer);
+		let perceptionUpdate = mergeObject(PerceptionManager.DEFAULTS, {
+			lighting: {initialize: true, refresh: true},
+			sight: {initialize: true, refresh: true},
+			sounds: {initialize: true, refresh: true},
+			foreground: {refresh: true}
+		}, {inplace: false});
 
 		// Re-draw door icons
 		if ( doorChange ) {
+			perceptionUpdate.sight.forceUpdateFog = true;
 			const dt = this.data.door;
 			const hasCtrl = (dt === CONST.WALL_DOOR_TYPES.DOOR) || ((dt === CONST.WALL_DOOR_TYPES.SECRET) && game.user.isGM);
 			if ( hasCtrl ) {
@@ -46076,8 +46286,11 @@ class Wall extends PlaceableObject {
 			}
 		}
 
+		// Re-position existing door icon
+		else if ( this.doorControl ) this.doorControl.reposition();
+
 		// Re-initialize perception
-		canvas.addPendingOperation("PerceptionManager#initialize", () => canvas.perception.initialize(), canvas.perception);
+		canvas.perception.schedule(perceptionUpdate);
 	}
 
 	/* -------------------------------------------- */
@@ -46140,9 +46353,7 @@ class Wall extends PlaceableObject {
 	/** @inheritdoc */
 	_onClickLeft2(event) {
 		const sheet = this.sheet;
-		const controlled = this.layer.controlled;
-		if ( controlled.length > 1 ) sheet.options.editTargets = controlled.map(w => w.id);
-		sheet.render(true);
+		sheet.render(true, {walls: this.layer.controlled});
 	}
 
 	/* -------------------------------------------- */
@@ -46340,12 +46551,18 @@ class InverseOcclusionMaskFilter extends AbstractBaseMaskFilter {
 	uniform sampler2D uSampler;
 	uniform sampler2D uMaskSampler;
 	uniform float alphaOcclusion;
+	uniform float alpha;
 	void main() {
 		vec4 tex = texture2D(uMaskSampler, vMaskTextureCoord);
 		float mask = 1.0 - tex.${channel} + alphaOcclusion * tex.${channel};
-		gl_FragColor = texture2D(uSampler, vTextureCoord) * mask;
+		float calpha = 1.0 - (1.0 - tex.${channel}) + alpha * (1.0 - tex.${channel});
+		gl_FragColor = texture2D(uSampler, vTextureCoord) * mask * calpha;
 	}`;
 	};
+	static create(defaultUniforms = {}, channel = "r") {
+			defaultUniforms.alpha = 1.0;
+			return super.create(defaultUniforms, channel);
+	}
 }
 
 /**
@@ -46637,15 +46854,14 @@ class TorchColorationShader extends StandardColorationShader {
 			
 			// maxing from coloration and the inner dancing flame
 			gl_FragColor = vec4( max(color * torchfade(dist, 1.8), 
-										           color * torchfade(distr, 1.2) * 1.5)
-										       * alpha, 1.0);
+									             color * torchfade(distr, 1.2) * 1.5)
+									         * alpha, 1.0);
 	}
 	`;
 
 	/** @inheritdoc */
 	static defaultUniforms = Object.assign({}, super.defaultUniforms, {
-		ratio: 0,
-		color: PIXI.utils.hex2rgb(0xb86200)
+		ratio: 0
 	});
 }
 
@@ -46703,8 +46919,7 @@ class PulseColorationShader extends StandardColorationShader {
 
 	/** @inheritdoc */
 	static defaultUniforms = Object.assign({}, super.defaultUniforms, {
-		pulse: 0,
-		color: PIXI.utils.hex2rgb(0xEEEEEE)
+		pulse: 0
 	});
 }
 
@@ -46778,8 +46993,8 @@ class EnergyFieldColorationShader extends StandardColorationShader {
 		
 			// creating the voronoi 3D sphere, applying motion
 			vec3 c = voronoi3d(vec3(uv.x - uvx + uvyt, 
-										          mix(uv.x, uv.y, 0.5) + uvxt - uvyt + uvx,
-										          uv.y + uvxt - uvx));
+									            mix(uv.x, uv.y, 0.5) + uvxt - uvyt + uvx,
+									            uv.y + uvxt - uvx));
 		
 			// applying color and contrast, to create sharp black areas. 
 			vec3 fcolor = c.x * c.x * c.x * color * color * 5.0;
@@ -46895,11 +47110,6 @@ class WaveColorationShader extends StandardColorationShader {
 			float dist = distance(vUvs, vec2(0.5)) * 2.0;
 			gl_FragColor = vec4(color * fade(dist) * wave(dist) * alpha, 1.0) ;
 	}`;
-
-	/** @inheritdoc */
-	static defaultUniforms = Object.assign({}, super.defaultUniforms, {
-		color: PIXI.utils.hex2rgb(0x666666)
-	});
 }
 
 /* -------------------------------------------- */
@@ -47072,11 +47282,6 @@ class SunburstColorationShader extends StandardColorationShader {
 		float dist = length(uvs);
 		gl_FragColor = vec4(sunBurst(uvs, dist) * fade(dist) * alpha, 1.0);
 	}`;
-
-	/** @inheritdoc */
-	static defaultUniforms = Object.assign({}, super.defaultUniforms, {
-		color: PIXI.utils.hex2rgb(0xFFDD00)
-	});
 }
 
 /* -------------------------------------------- */
@@ -47312,19 +47517,14 @@ class GhostLightColorationShader extends StandardColorationShader {
 			uv += pivot;
 
 			vec3 fcolor = distortion1 * distortion1 * 
-										distortion2 * distortion2 * 
-										color * pow(1.0 - dist, dist);
+									  distortion2 * distortion2 * 
+									  color * pow(1.0 - dist, dist);
 									 
 			gl_FragColor = vec4(fcolor * alpha * mix(
 				uv.x + distortion1 * 4.5 * (intensity * 0.2),
 				uv.y + distortion2 * 4.5 * (intensity * 0.2), tcos
 			), 1.0);
 	}`;
-
-	/** @inheritdoc */
-	static defaultUniforms = Object.assign({}, super.defaultUniforms, {
-		color: PIXI.utils.hex2rgb(0xBDFFE9)
-	});
 }
 
 /* -------------------------------------------- */
@@ -47702,9 +47902,6 @@ class DoorControl extends PIXI.Container {
 
 		// Hide secret doors from players
 		if ( (w.data.door === CONST.WALL_DOOR_TYPES.SECRET) && !game.user.isGM ) return false;
-
-		// Hide interior doors that aren't in LOS
-		if ( !canvas.sight.sources.size && (w.roof?.occluded === false) ) return false;
 
 		// Display door icons based on LOS polygon
 		const [x, y] = w.midpoint;
@@ -48094,7 +48291,7 @@ class Ruler extends PIXI.Container {
 		 * The ruler color - by default the color of the active user
 		 * @type {number|null}
 		 */
-		this.color = color || colorStringToHex(this.user.data.color) || 0x42F4E2;
+		this.color = color || foundry.utils.colorStringToHex(this.user.data.color) || 0x42F4E2;
 
 		/**
 		 * This Array tracks individual waypoints along the ruler's measured path.
@@ -48260,25 +48457,25 @@ class Ruler extends PIXI.Container {
 			let {x, y} = ray.project(t);
 
 			// Get grid position
-			let [x0, y0] = (i === 0) ? [null, null] : prior;
-			let [x1, y1] = canvas.grid.grid.getGridPositionFromPixels(x, y);
-			if ( x0 === x1 && y0 === y1 ) continue;
+			let [r0, c0] = (i === 0) ? [null, null] : prior;
+			let [r1, c1] = canvas.grid.grid.getGridPositionFromPixels(x, y);
+			if ( r0 === r1 && c0 === c1 ) continue;
 
 			// Highlight the grid position
-			let [xg, yg] = canvas.grid.grid.getPixelsFromGridPosition(x1, y1);
-			canvas.grid.highlightPosition(this.name, {x: xg, y: yg, color: this.color});
+			let [x1, y1] = canvas.grid.grid.getPixelsFromGridPosition(r1, c1);
+			canvas.grid.highlightPosition(this.name, {x: x1, y: y1, color: this.color});
 
 			// Skip the first one
-			prior = [x1, y1];
+			prior = [r1, c1];
 			if ( i === 0 ) continue;
 
 			// If the positions are not neighbors, also highlight their halfway point
-			if ( !canvas.grid.isNeighbor(x0, y0, x1, y1) ) {
+			if ( !canvas.grid.isNeighbor(r0, c0, r1, c1) ) {
 				let th = tMax[i - 1] + (0.5 / nMax);
 				let {x, y} = ray.project(th);
-				let [x1h, y1h] = canvas.grid.grid.getGridPositionFromPixels(x, y);
-				let [xgh, ygh] = canvas.grid.grid.getPixelsFromGridPosition(x1h, y1h);
-				canvas.grid.highlightPosition(this.name, {x: xgh, y: ygh, color: this.color});
+				let [rh, ch] = canvas.grid.grid.getGridPositionFromPixels(x, y);
+				let [xh, yh] = canvas.grid.grid.getPixelsFromGridPosition(rh, ch);
+				canvas.grid.highlightPosition(this.name, {x: xh, y: yh, color: this.color});
 			}
 		}
 	}
@@ -48310,27 +48507,35 @@ class Ruler extends PIXI.Container {
 
 		// Get the movement rays and check collision along each Ray
 		// These rays are center-to-center for the purposes of collision checking
-		const rays = this._getRaysFromWaypoints(this.waypoints, this.destination);
+		let rays = this._getRaysFromWaypoints(this.waypoints, this.destination);
 		let hasCollision = rays.some(r => canvas.walls.checkCollision(r));
 		if ( hasCollision ) {
 			ui.notifications.error("ERROR.TokenCollide", {localize: true});
 			return false;
 		}
 
-		// Execute the movement path.
-		// Transform each center-to-center ray into a top-left to top-left ray using the prior token offsets.
+		// Execute the movement path defined by each ray.
 		this._state = Ruler.STATES.MOVING;
+		let priorDest = undefined;
 		for ( let r of rays ) {
+
+			// Break the movement if the game is paused
 			if ( !wasPaused && game.paused ) break;
+
+			// Break the movement if Token is no longer located at the prior destination (some other change override this)
+			if ( priorDest && ((token.data.x !== priorDest.x) || (token.data.y !== priorDest.y)) ) break;
+
+			// Adjust the ray based on token size
 			const dest = canvas.grid.getTopLeft(r.B.x, r.B.y);
 			const path = new Ray({x: token.x, y: token.y}, {x: dest[0] + dx, y: dest[1] + dy});
 
-			// Commit the movement
+			// Commit the movement and update the final resolved destination coordinates
 			await token.document.update(path.B);
-
-			// Update the path which may have changed during the update, and animate it
 			path.B.x = token.data.x;
 			path.B.y = token.data.y;
+
+			// Update the path which may have changed during the update, and animate it
+			priorDest = path.B;
 			await token.animateMovement(path);
 		}
 
@@ -48979,8 +49184,8 @@ class BaseGrid extends PIXI.Container {
 	 * @return {number[]}    An Array [x, y] of the top-left coordinate of the square which contains (x, y)
 	 */
 	getTopLeft(x, y) {
-		let [x0, y0] = this.getGridPositionFromPixels(x,y);
-		return this.getPixelsFromGridPosition(x0, y0);
+		let [row, col] = this.getGridPositionFromPixels(x,y);
+		return this.getPixelsFromGridPosition(row, col);
 	}
 
 	/* -------------------------------------------- */
@@ -49598,6 +49803,7 @@ class GridLayer extends CanvasLayer {
 	/** @inheritdoc */
 	static get layerOptions() {
 		return foundry.utils.mergeObject(super.layerOptions, {
+			name: "grid",
 			zIndex: 30
 		});
 	}
@@ -49969,15 +50175,59 @@ class SquareGrid extends BaseGrid {
 }
 
 /**
- * An implementation interface for an Audio/Video client which is extended to provide broadcasting functionality.
+ * An interface for an Audio/Video client which is extended to provide broadcasting functionality.
  * @interface
  * @param {AVMaster} master           The master orchestration instance
  * @param {AVSettings} settings       The audio/video settings being used
  */
 class AVClient {
 	constructor(master, settings) {
+
+		/**
+		 * The master orchestration instance
+		 * @type {AVMaster}
+		 */
 		this.master = master;
+
+		/**
+		 * The active audio/video settings being used
+		 * @type {AVSettings}
+		 */
 		this.settings = settings;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Is audio broadcasting push-to-talk enabled?
+	 * @returns {boolean}
+	 */
+	get isVoicePTT() {
+		return this.settings.client.voice.mode === "ptt";
+	}
+
+	/**
+	 * Is audio broadcasting always enabled?
+	 * @returns {boolean}
+	 */
+	get isVoiceAlways() {
+		return this.settings.client.voice.mode === "always";
+	}
+
+	/**
+	 * Is audio broadcasting voice-activation enabled?
+	 * @returns {boolean}
+	 */
+	get isVoiceActivated() {
+		return this.settings.client.voice.mode === "activity";
+	}
+
+	/**
+	 * Is the current user muted?
+	 * @returns {boolean}
+	 */
+	get isMuted() {
+		return this.settings.client.users[game.user.id]?.muted;
 	}
 
 	/* -------------------------------------------- */
@@ -50023,10 +50273,10 @@ class AVClient {
 	/**
 	 * Provide an Object of available audio sources which can be used by this implementation.
 	 * Each object key should be a device id and the key should be a human-readable label.
-	 * @return {Promise<{string: string}>}
+	 * @returns {Promise<{object}>}
 	 */
 	async getAudioSinks() {
-		throw Error("The getAudioSinks() method must be defined by an AVClient subclass.");
+		return this._getSourcesOfType("audiooutput");
 	}
 
 	/* -------------------------------------------- */
@@ -50034,10 +50284,10 @@ class AVClient {
 	/**
 	 * Provide an Object of available audio sources which can be used by this implementation.
 	 * Each object key should be a device id and the key should be a human-readable label.
-	 * @return {Promise<{string: string}>}
+	 * @returns {Promise<{object}>}
 	 */
 	async getAudioSources() {
-		throw Error("The getAudioSources() method must be defined by an AVClient subclass.");
+		return this._getSourcesOfType("audioinput");
 	}
 
 	/* -------------------------------------------- */
@@ -50045,10 +50295,28 @@ class AVClient {
 	/**
 	 * Provide an Object of available video sources which can be used by this implementation.
 	 * Each object key should be a device id and the key should be a human-readable label.
-	 * @return {Promise<{string: string}>}
+	 * @returns {Promise<{object}>}
 	 */
 	async getVideoSources() {
-		throw Error("The getVideoSources() method must be defined by an AVClient subclass.");
+		return this._getSourcesOfType("videoinput");
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Obtain a mapping of available device sources for a given type.
+	 * @param {string} kind       The type of device source being requested
+	 * @returns {Promise<{object}>}
+	 * @private
+	 */
+	async _getSourcesOfType(kind) {
+		const devices = await navigator.mediaDevices.enumerateDevices();
+		return devices.reduce((obj, device) => {
+			if ( device.kind === kind ) {
+				obj[device.deviceId] = device.label || game.i18n.localize("WEBRTC.UnknownDevice");
+			}
+			return obj
+		}, {});
 	}
 
 	/* -------------------------------------------- */
@@ -50210,19 +50478,19 @@ class AVMaster {
 	 */
 	async connect() {
 
-		// Initialize Client state
-		await this.client.initialize();
-
 		// Disconnect from any existing session
 		await this.disconnect();
 
 		// Activate the connection
 		if ( this.mode === AVSettings.AV_MODES.DISABLED ) return false;
 
+		// Initialize Client state
+		await this.client.initialize();
+
 		// Connect to the client
 		const connected = await this.client.connect();
 		if ( !connected ) return false;
-		console.log(`Connected to the ${this.client.constructor.name} Audio/Video client.`);
+		console.log(`${vtt} | Connected to the ${this.client.constructor.name} Audio/Video client.`);
 
 		// Initialize local broadcasting
 		this._initialize();
@@ -50239,7 +50507,7 @@ class AVMaster {
 		if ( !this._connected ) return false;
 		this._connected = this._reconnecting = false;
 		await this.client.disconnect();
-		console.log(`Disconnected from the ${this.client.constructor.name} Audio/Video client.`);
+		console.log(`${vtt} | Disconnected from the ${this.client.constructor.name} Audio/Video client.`);
 		return true;
 	}
 
@@ -50360,7 +50628,7 @@ class AVMaster {
 	broadcast(intent) {
 		this.broadcasting = intent && this.canUserShareAudio(game.user.id);
 		this.client.toggleBroadcast(this.broadcasting);
-		ui.webrtc.setUserIsSpeaking(game.user.id, this.broadcasting);
+		return ui.webrtc.setUserIsSpeaking(game.user.id, this.broadcasting);
 	}
 
 	/* -------------------------------------------- */
@@ -50437,6 +50705,7 @@ class AVMaster {
 			this._speakingData[userId] = { speaking: false, volumeHistories: [] };
 		}
 		const speakingData = this._speakingData[userId];
+		const wasSpeaking = speakingData.speaking;
 
 		// Add the current volume to the history of the user and keep the list below the history length config.
 		if (speakingData.volumeHistories.push(dbLevel) > CONFIG.WebRTC.speakingHistoryLength) {
@@ -50453,18 +50722,15 @@ class AVMaster {
 			return totals;
 		}, [0, 0, 0]);
 
-		// Determine whether a change in the speaking state has occurred
-		const wasSpeaking = speakingData.speaking;
-		const isSpeaking = wasSpeaking ? (count > 0) : (count >= CONFIG.WebRTC.speakingThresholdEvents);
+		// The user is classified as currently speaking if they exceed a certain threshold of speaking events
+		let isSpeaking = (count > (wasSpeaking ? 0 : CONFIG.WebRTC.speakingThresholdEvents)) && !this.client.isMuted;
 		speakingData.speaking = isSpeaking;
-		if ( isSpeaking === wasSpeaking ) return;
 
-		// Enable or disable voice activity based broadcasting
+		// Take further action when a change in the speaking state has occurred
+		if ( isSpeaking === wasSpeaking ) return;
 		const isSelf = userId === game.user.id;
-		if ( isSelf ) {
-			if ( voice.mode === "activity" ) return this.broadcast(isSpeaking);
-		}
-		else ui.webrtc.setUserIsSpeaking(userId, isSpeaking);
+		if ( isSelf && this.client.isVoiceActivated ) return this.broadcast(isSpeaking); // Declare broadcast intent
+		else return ui.webrtc.setUserIsSpeaking(userId, this.broadcasting && isSpeaking); // Display as currently speaking
 	}
 
 	/* -------------------------------------------- */
@@ -50783,6 +51049,13 @@ class AVSettings {
 
 /**
  * An AVClient implementation that uses WebRTC and the EasyRTC library.
+ * This client is deprecated and will be removed entirely in 0.9.x.
+ *
+ * If you wish to continue using it, you will need to manually enable it by:
+ * 1. Include the easyrtc.js library which is no longer served
+ * 2. Set CONFIG.WebRTC.clientClass = EasyRTCClient
+ *
+ * @deprecated since 0.8.7
  * @extends {AVClient}
  * @param {AVMaster} master           The master orchestration instance
  * @param {AVSettings} settings       The audio/video settings being used
@@ -50811,18 +51084,23 @@ class EasyRTCClient extends AVClient {
 		 * @private
 		 */
 		this._callRejections = [];
-
-		// Set some one-time configuration data
-		easyrtc.setUsername(game.user.id);
-		easyrtc.setAutoInitUserMedia(false);
-		easyrtc.setVideoDims(320, 240, undefined);
-		easyrtc.enableDebug(CONFIG.debug.av);
 	}
 
 	/* -------------------------------------------- */
 
 	/** @override */
 	async initialize() {
+		if ( !globalThis.easyrtc ) {
+			throw new Error(`The EasyRTC client library is not present!`);
+		}
+
+		// Set some one-time configuration data
+		easyrtc.setUsername(game.user.id);
+		easyrtc.setAutoInitUserMedia(false);
+		easyrtc.setVideoDims(320, 240, undefined);
+		easyrtc.enableDebug(CONFIG.debug.av);
+
+		// Configure connection
 		easyrtc.setRoomOccupantListener(this._onRoomOccupantsChange.bind(this));
 		easyrtc.setOnError(this._onError.bind(this));
 		easyrtc.setAcceptChecker(this._answerIncomingCall.bind(this));
@@ -51591,6 +51869,442 @@ class EasyRTCClient extends AVClient {
 		return this.getMediaStreamForUser(userId)
 	}
 }
+/**
+ * An implementation of the AVClient which uses the simple-peer library and the Foundry socket server for signaling.
+ * Credit to bekit#4213 for identifying simple-peer as a viable technology and providing a POC implementation.
+ * @extends {AVClient}
+ */
+class SimplePeerAVClient extends AVClient {
+
+	/**
+	 * The local Stream which captures input video and audio
+	 * @type {MediaStream}
+	 */
+	localStream = null;
+
+	/**
+	 * A mapping of connected peers
+	 * @type {Map}
+	 */
+	peers = new Map();
+
+	/**
+	 * A mapping of connected remote streams
+	 * @type {Map}
+	 */
+	remoteStreams = new Map();
+
+	/**
+	 * Has the client been successfully initialized?
+	 * @type {boolean}
+	 * @private
+	 */
+	_initialized = false;
+
+	/**
+	 * Is outbound broadcast of local audio enabled?
+	 * @type {boolean}
+	 */
+	audioBroadcastEnabled = false;
+
+	/* -------------------------------------------- */
+	/*  Required AVClient Methods                   */
+	/* -------------------------------------------- */
+
+	/** @override */
+	async connect() {
+		const promises = [];
+		for ( let user of game.users ) {
+			if ( user.isSelf || !user.active ) continue;
+			promises.push(this.initializePeerStream(user.id));
+		}
+		await Promise.all(promises);
+		return true;
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
+	async disconnect() {
+		await this.disconnectAll();
+		return true;
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
+	async initialize() {
+		if ( this._initialized ) return;
+		console.debug(`Initializing SimplePeer client connection`);
+
+		// Initialize the local stream
+		this.localStream = await this.initializeLocalStream();
+
+		// Set up socket listeners
+		this.activateSocketListeners();
+
+		// Register callback to close peer connections when the window is closed
+		window.addEventListener("beforeunload", ev => this.disconnectAll());
+
+		// Flag the client as initialized
+		this._initialized = true;
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
+	getConnectedUsers() {
+		const users = Array.from(this.peers.keys());
+		if ( this.localStream ) users.push(game.user.id);
+		return users;
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
+	getMediaStreamForUser(userId) {
+		return userId === game.user.id ? this.localStream : this.remoteStreams.get(userId);
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
+	isAudioEnabled() {
+		return this.audioBroadcastEnabled;
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
+	isVideoEnabled() {
+		const stream = this.localStream;
+		return stream && stream.getVideoTracks().some(t => t.enabled);
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
+	toggleAudio(enabled) {
+		const stream = this.localStream;
+		if ( !stream ) return;
+
+		// If "always on" broadcasting is not enabled, don't proceed
+		if ( !this.audioBroadcastEnabled || this.isVoicePTT ) return;
+
+		// Enable active broadcasting
+		return this.toggleBroadcast(enabled);
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
+	toggleBroadcast(enabled) {
+		const stream = this.localStream;
+		if ( !stream ) return;
+		console.debug(`[SimplePeer] Toggling broadcast of outbound audio: ${enabled}`);
+		this.audioBroadcastEnabled = enabled;
+		for ( let t of stream.getAudioTracks() ) {
+			t.enabled = enabled;
+		}
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
+	toggleVideo(enabled) {
+		const stream = this.localStream;
+		if ( !stream ) return;
+		console.debug(`[SimplePeer] Toggling broadcast of outbound video: ${enabled}`);
+		for (const track of stream.getVideoTracks()) {
+			track.enabled = enabled;
+		}
+	}
+
+	/* -------------------------------------------- */
+
+	/** @override */
+	async setUserVideo(userId, videoElement) {
+		const stream = this.getMediaStreamForUser(userId);
+
+		// Set the stream as the video element source
+		if ("srcObject" in videoElement) videoElement.srcObject = stream;
+		else videoElement.src = window.URL.createObjectURL(stream); // for older browsers
+
+		// Forward volume to the configured audio sink
+		if ( videoElement.sinkId === undefined ) {
+			return console.warn(`[SimplePeer] Your web browser does not support output audio sink selection`);
+		}
+		const requestedSink = this.settings.get("client", "audioSink");
+		await videoElement.setSinkId(requestedSink).catch(err => {
+			console.warn(`[SimplePeer] An error occurred when requesting the output audio device: ${requestedSink}`);
+		})
+	}
+
+	/* -------------------------------------------- */
+	/*  Local Stream Management                     */
+	/* -------------------------------------------- */
+
+	/**
+	 * Initialize a local media stream for the current user
+	 * @returns {Promise<MediaStream>}
+	 */
+	async initializeLocalStream() {
+		console.debug(`[SimplePeer] Initializing local media stream for current User`);
+
+		// If there is already an existing local media stream, terminate it
+		if ( this.localStream ) this.localStream.getTracks().forEach(t => t.stop());
+
+		// Determine whether the user can send audio
+		const audioSrc = this.settings.get("client", "audioSrc");
+		const canBroadcastAudio = this.master.canUserBroadcastAudio(game.user.id);
+		const audioParams = (audioSrc && (audioSrc !== "disabled") && canBroadcastAudio) ? {
+			deviceId: { ideal: audioSrc }
+		} : false;
+
+		// Configure whether the user can send video
+		const videoSrc = this.settings.get("client", "videoSrc");
+		const canBroadcastVideo = this.master.canUserBroadcastVideo(game.user.id);
+		const videoParams = (videoSrc && (videoSrc !== "disabled") && canBroadcastVideo) ? {
+			deviceId: { ideal: videoSrc },
+			width: { ideal: 320 },
+			height: { ideal: 240 }
+		} : false;
+
+		// FIXME: Firefox does not allow you to request a specific device, you can only use whatever the browser allows
+		// https://bugzilla.mozilla.org/show_bug.cgi?id=1443294#c7
+		if ( navigator.userAgent.match(/Firefox/) ) {
+			delete videoParams["deviceId"];
+		}
+
+		if ( !videoParams && !audioParams ) return null;
+
+		// Attempt to acquire the local stream
+		return navigator.mediaDevices.getUserMedia({video: videoParams, audio: audioParams}).catch(err => {
+			const error = new Error(`[SimplePeer] Unable to acquire user media stream: ${err.message}`);
+			error.stack = err.stack;
+			console.error(error);
+			return null;
+		});
+	}
+
+	/* -------------------------------------------- */
+	/*  Peer Stream Management                      */
+	/* -------------------------------------------- */
+
+	/**
+	 * Listen for Audio/Video updates on the av socket to broker connections between peers
+	 */
+	activateSocketListeners() {
+		game.socket.on("av", (request, userId) => {
+			 if ( request.userId !== game.user.id ) return; // The request is not for us, this shouldn't happen
+			switch ( request.action ) {
+				case "peer-signal":
+					return this.receiveSignal(userId, request.data);
+				case "peer-close":
+					return this.disconnectPeer(userId);
+			}
+		});
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Initialize a stream connection with a new peer
+	 * @param {string} userId           The Foundry user ID for which the peer stream should be established
+	 * @returns {Promise<SimplePeer>}   A Promise which resolves once the peer stream is initialized
+	 */
+	async initializePeerStream(userId) {
+		const peer = this.peers.get(userId);
+		if ( peer ) return peer;
+		return this.connectPeer(userId, true);
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Receive a request to establish a peer signal with some other User id
+	 * @param {string} userId           The Foundry user ID who is requesting to establish a connection
+	 * @param {object} data             The connection details provided by SimplePeer
+	 */
+	receiveSignal(userId, data) {
+		console.debug(`[SimplePeer] Receiving signal from User [${userId}] to establish initial connection`);
+		let peer = this.peers.get(userId);
+		if ( !peer ) peer = this.connectPeer(userId, false);
+		peer.signal(data);
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Connect to a peer directly, either as the initiator or as the receiver
+	 * @param {string} userId           The Foundry user ID with whom we are connecting
+	 * @param {boolean} isInitiator     Is the current user initiating the connection, or responding to it?
+	 * @returns {SimplePeer}            The constructed and configured SimplePeer instance
+	 */
+	connectPeer(userId, isInitiator=false) {
+
+		// Create the SimplePeer instance for this connection
+		const peer = this._createPeerConnection(userId, isInitiator);
+		this.peers.set(userId, peer);
+
+		// Signal to request that a remote user establish a connection with us
+		peer.on("signal", data => {
+			console.debug(`[SimplePeer] Sending signal to User [${userId}] to establish initial connection`);
+			game.socket.emit("av", {
+				action: "peer-signal",
+				userId: userId,
+				data: data
+			}, {recipients: [userId]});
+		});
+
+		// Receive a stream provided by a peer
+		peer.on("stream", stream => {
+			console.debug(`[SimplePeer] Received media stream from User [${userId}]`);
+			this.remoteStreams.set(userId, stream);
+			this.master.activateVoiceDetection(userId, stream);
+			this.master.render();
+		});
+
+		// Close a connection with a current peer
+		peer.on("close", () => {
+			console.debug(`[SimplePeer] Closed connection with remote User [${userId}]`);
+			return this.disconnectPeer(userId);
+		});
+
+		// Handle errors
+		peer.on("error", err => {
+			if (err.code !== "ERR_DATA_CHANNEL") {
+				const error = new Error(`[SimplePeer] An unexpected error occurred with User [${userId}]: ${err.message}`);
+				error.stack = err.stack;
+				console.error(error);
+			}
+			if ( peer.connected ) return this.disconnectPeer(userId);
+		});
+		return peer;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Create the SimplePeer instance for the desired peer connection.
+	 * Modules may implement more advanced connection strategies by overriding this method.
+	 * @param {string} userId           The Foundry user ID with whom we are connecting
+	 * @param {boolean} isInitiator     Is the current user initiating the connection, or responding to it?
+	 * @private
+	 */
+	_createPeerConnection(userId, isInitiator) {
+		const options = {
+			initiator: isInitiator,
+			stream: this.localStream
+		};
+
+		this._setupCustomTURN(options);
+		return new SimplePeer(options);
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Setup the custom TURN relay to be used in subsequent calls if there is one configured.
+	 * TURN credentials are mandatory in WebRTC.
+	 * @param {object} options The SimplePeer configuration object.
+	 * @private
+	 */
+	_setupCustomTURN(options) {
+		const { url, type, username, password } = this.settings.world.turn;
+		if ( (type !== "custom") || !url || !username || !password ) return;
+		const iceServer = { username, urls: url, credential: password };
+		options.config = { iceServers: [iceServer] };
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Disconnect from a peer by stopping current stream tracks and destroying the SimplePeer instance
+	 * @param {string} userId           The Foundry user ID from whom we are disconnecting
+	 * @returns {Promise<void>}         A Promise which resolves once the disconnection is complete
+	 */
+	async disconnectPeer(userId) {
+
+		// Stop audio and video tracks from the remote stream
+		const remoteStream = this.remoteStreams.get(userId);
+		if ( remoteStream ) {
+			this.remoteStreams.delete(userId);
+			this.master.deactivateVoiceDetection(userId);
+			for ( let track of remoteStream.getTracks() ) {
+				await track.stop();
+			}
+		}
+
+		// Remove the peer
+		const peer = this.peers.get(userId);
+		if ( peer ) {
+			this.peers.delete(userId);
+			await peer.destroy();
+		}
+
+		// Re-render the UI on disconnection
+		this.master.render();
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Disconnect from all current peer streams
+	 * @returns {Promise<Array>}       A Promise which resolves once all peers have been disconnected
+	 */
+	async disconnectAll() {
+		const promises = [];
+		for ( let userId of this.peers.keys() ) {
+			promises.push(this.disconnectPeer(userId));
+		}
+		return Promise.all(promises);
+	}
+
+	/* -------------------------------------------- */
+	/*  Settings and Configuration                  */
+	/* -------------------------------------------- */
+
+	/** @override */
+	async onSettingsChanged(changed) {
+		const keys = new Set(Object.keys(foundry.utils.flattenObject(changed)));
+
+		// Change audio or video sources
+		const sourceChange = ["client.videoSrc", "client.audioSrc"].some(k => keys.has(k));
+		if ( sourceChange ) await this.updateLocalStream();
+
+		// Change voice broadcasting mode
+		const modeChange = ["client.voice.mode", `client.users.${game.user.id}.muted`].some(k => keys.has(k));
+		if ( modeChange ) {
+			const isAlways = this.settings.client.voice.mode === "always";
+			this.toggleAudio(isAlways && this.master.canUserShareAudio(game.user.id));
+			this.master.broadcast(isAlways);
+		}
+
+		// Re-render the AV camera view
+		const renderChange = ["client.audioSink", "client.muteAll"].some(k => keys.has(k));
+		if ( sourceChange  || renderChange ) this.master.render();
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Replace the local stream for each connected peer with a re-generated MediaStream
+	 * @returns {Promise<Array>}
+	 */
+	async updateLocalStream() {
+		const oldStream = this.localStream;
+		const newStream = this.localStream = await this.initializeLocalStream();
+		for ( let peer of this.peers.values() ) {
+			if ( oldStream ) peer.removeStream(oldStream);
+			if ( newStream ) peer.addStream(newStream);
+		}
+		// FIXME: This is a cheat, should be handled elsewhere
+		this.master._initializeUserVoiceDetection(this.settings.client.voice.mode);
+	}
+}
+
+
 /**
  * Runtime configuration settings for Foundry VTT which exposes a large number of variables which determine how
  * aspects of the software behaves.
@@ -52368,7 +53082,7 @@ const CONFIG = window.CONFIG = {
 	 * @type {Object}
 	 */
 	WebRTC: {
-		clientClass: EasyRTCClient,
+		clientClass: SimplePeerAVClient,
 		detectPeerVolumeInterval: 50,
 		detectSelfVolumeInterval: 20,
 		emitVolumeInterval: 25,
@@ -52457,13 +53171,13 @@ window.addEventListener("DOMContentLoaded", async function() {
 	// Establish a session
 	const cookies = Game.getCookies();
 	const sessionId = cookies.session ?? null;
-	if ( !sessionId ) return window.location.href = getRoute("join");
+	if ( !sessionId ) return window.location.href = foundry.utils.getRoute("join");
 	console.log(`${vtt} | Reestablishing existing session ${sessionId}`);
 
 	// Create the master Game controller
-	if ( CONST.SETUP_VIEWS.includes(view) ) game = globalThis.game = await Setup.create(view, sessionId);
-	else if ( CONST.GAME_VIEWS.includes(view) ) game = globalThis.game = await Game.create(view, sessionId);
-	game.initialize();
+	if ( CONST.SETUP_VIEWS.includes(view) ) globalThis.game = await Setup.create(view, sessionId);
+	else if ( CONST.GAME_VIEWS.includes(view) ) globalThis.game = await Game.create(view, sessionId);
+	return globalThis.game.initialize();
 }, {once: true, passive: true});
 
 /**
@@ -53044,6 +53758,22 @@ class AudioContainer {
 	playing = false;
 
 	/**
+	 * Should the audio source loop?
+	 * @type {boolean}
+	 * @private
+	 */
+	_loop = false;
+
+	get loop() {
+		return this._loop;
+	}
+	set loop(looping) {
+		this._loop = looping;
+		if ( !this.sourceNode ) return;
+		if ( this.isBuffer ) this.sourceNode.loop = looping;
+	}
+
+	/**
 	 * The maximum duration, in seconds, for which an AudioBuffer will be used.
 	 * Otherwise a streaming media element will be used.
 	 * @type {number}
@@ -53208,12 +53938,12 @@ class AudioContainer {
 	play(offset=0, onended) {
 		this._configureNode();
 		if ( this.isBuffer ) {
-			this.sourceNode.onended = onended;
+			this.sourceNode.onended = () => this._onEnd(onended);
 			this.sourceNode.start(0, offset);
 		}
 		else {
 			this.element.currentTime = offset;
-			this.element.onended = onended;
+			this.element.onended = () => this._onEnd(onended);
 			this.element.play();
 		}
 		this.playing = true;
@@ -53246,7 +53976,23 @@ class AudioContainer {
 			this.element.pause();
 		}
 	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Perform cleanup actions when the sound has finished playing. For
+	 * MediaElementAudioSourceNodes, this also means optionally restarting if
+	 * the sound is supposed to loop.
+	 * @param {Function} onended A callback provided by the owner of the container that gets fired when the sound ends.
+	 * @private
+	 */
+	_onEnd(onended) {
+		if ( !this.isBuffer && this._loop ) return this.play(0, onended);
+		this.playing = false;
+		onended();
+	}
 }
+
 /**
  * The Sound class is used to control the playback of audio sources using the Web Audio API.
  */
@@ -53393,11 +54139,10 @@ class Sound {
 	 * @type {boolean}
 	 */
 	get loop() {
-		return this.node?.loop || false;
+		return this.container.loop;
 	}
 	set loop(looping) {
-		if ( !this.node ) return;
-		this.node.loop = looping;
+		this.container.loop = looping;
 	}
 
 	/**

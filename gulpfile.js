@@ -23,6 +23,7 @@ const SOURCE = 'src/';
 const LANG = 'lang/';
 const TEMPLATES = 'templates/';
 const SOUNDS = 'sounds/';
+const ASSETS = 'assets/';
 const CSS = 'css/';
 
 var PACKAGE = JSON.parse(fs.readFileSync('./package.json'));
@@ -160,6 +161,7 @@ function outputTemplates(output = null) { return desc('output Templates', () => 
 function outputStylesCSS(output = null) { return desc('output Styles CSS', () => gulp.src(CSS + GLOB).pipe(cleanCss()).pipe(gulp.dest((output || DIST) + CSS))); }
 function outputMetaFiles(output = null) { return desc('output Meta Files', () => gulp.src(['../LICENSE', 'README.md', 'CHANGELOG.md']).pipe(gulp.dest((output || DIST)))); }
 function outputSoundFiles(output = null) { return desc('output Sound Files', () => gulp.src(SOUNDS + GLOB).pipe(gulp.dest((output || DIST) + SOUNDS))); }
+function outputAssetFiles(output = null) { return desc('output Asset Files', () => gulp.src(ASSETS + GLOB).pipe(gulp.dest((output || DIST) + ASSETS))); }
 
 /**
  * Copy files to module named directory and then compress that folder into a zip
@@ -201,6 +203,7 @@ exports.default = gulp.series(
 		, outputStylesCSS()
 		, outputMetaFiles()
 		, outputSoundFiles()
+		, outputAssetFiles()
 	)
 	, pnotify('Build Complete')
 );
@@ -217,6 +220,7 @@ exports.dev = gulp.series(
 		, outputStylesCSS(DEV_DIST())
 		, outputMetaFiles(DEV_DIST())
 		, outputSoundFiles(DEV_DIST())
+		, outputAssetFiles(DEV_DIST())
 	)
 	, copyDevDistToLocalDist
 	, pnotify('Dev Build Complete')
@@ -256,6 +260,7 @@ exports.zip = gulp.series(
 		, outputStylesCSS()
 		, outputMetaFiles()
 		, outputSoundFiles()
+		, outputAssetFiles()
 	)
 	, compressDistribution()
 	, pdel([DIST])
@@ -271,6 +276,7 @@ exports.watch = function () {
 	gulp.watch(LANG + GLOB, gulp.series(pdel(DIST + LANG), outputLanguages()));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(DIST + TEMPLATES), outputTemplates()));
 	gulp.watch(SOUNDS + GLOB, gulp.series(pdel(DIST + SOUNDS), outputSoundFiles()));
+	gulp.watch(ASSETS + GLOB, gulp.series(pdel(DIST + ASSETS), outputAssetFiles()));
 	gulp.watch(CSS + GLOB, gulp.series(pdel(DIST + CSS), outputStylesCSS()));
 	gulp.watch(['../LICENSE', 'README.md', 'CHANGELOG.md'], outputMetaFiles());
 }
@@ -286,6 +292,7 @@ exports.devWatch = function () {
 	gulp.watch(LANG + GLOB, gulp.series(pdel(devDist + LANG + GLOB, { force: true }), outputLanguages(devDist), plog('langs done.')));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(devDist + TEMPLATES + GLOB, { force: true }), outputTemplates(devDist), plog('templates done.')));
 	gulp.watch(SOUNDS + GLOB, gulp.series(pdel(devDist + SOUNDS + GLOB, { force: true }), outputSoundFiles(devDist), plog('sounds done.')));
+	gulp.watch(ASSETS + GLOB, gulp.series(pdel(devDist + ASSETS + GLOB, { force: true }), outputAssetFiles(devDist), plog('assets done.')));
 	gulp.watch(CSS + GLOB, gulp.series(pdel(devDist + CSS + GLOB, { force: true }), outputStylesCSS(devDist), plog('css done.')));
 	gulp.watch(['../LICENSE', 'README.md', 'CHANGELOG.md'], gulp.series(outputMetaFiles(devDist), plog('metas done.')));
 }

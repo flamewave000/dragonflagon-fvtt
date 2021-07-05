@@ -52,7 +52,7 @@ export default class DFChatEditor extends FormApplication {
 	}
 	/** @override */
 	close(options?: FormApplication.CloseOptions) {
-		delete this.chatMessage.chatEditor;
+		delete (<any>this.chatMessage).chatEditor;
 		return super.close(options);
 	}
 }

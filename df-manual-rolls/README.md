@@ -32,6 +32,10 @@ You can specify the manual rolling behaviour for GMs and for PCs separately. Thi
 |:-:|:-:|
 |![Module Settings](../.assets/df-manual-rolls-settings.png)|![Toggle Button in the Scene Controls](../.assets/df-manual-rolls-toggle.png)|
 
+## Legacy Rolling Support
+
+There are many systems and modules that have not migrated to FoundryVTT 0.8.x's new Async Roll System. As such, these rolls will not present the nice Manual Roll dialog for you to enter manual roll results. Instead, you can enable the Legacy Rolling Support in settings to present the old style prompts for getting manual roll input.
+
 ## Potential Conflicts
 
 There is always a potential conflict with any other module that modifies rolls. As of right now, the following popular modules have been tested and do not appear to have any issues. But if any do, please let me know via Discord or log an issue on GitHub.

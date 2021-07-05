@@ -27,6 +27,8 @@
 	"DF_MANUAL_ROLLS.Prompt_Header_RollTerm": "Roll Term ",
 	"DF_MANUAL_ROLLS.Prompt_Header_Rolls": "Individual Rolls ",
 	"DF_MANUAL_ROLLS.Prompt_Header_Total": "Roll Total",
+	"DF_MANUAL_ROLLS.Prompt_Legacy": "Please enter a {0}d{1} roll from {0} to {2}",
+	"DF_MANUAL_ROLLS.Prompt_Legacy_Invalid":"(invalid input, please try again)",
 
 	"DF_MANUAL_ROLLS.Tooltip_RollTerm": "The Dice Term in the roll being requested.",
 	"DF_MANUAL_ROLLS.Tooltip_Rolls": "Roll result for each individual requested roll.",

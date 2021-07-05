@@ -1,0 +1,75 @@
+:root {
+	--dfce-cm-separation: ;
+	--dfce-cm-hover-shadow: ;
+	--dfce-cm-header: ;
+	--dfce-cm-header-delete: ;
+	--dfce-cm-header-delete-pad: ;
+}
+
+.dfce-cm-top {
+	background-color: blue;
+	border-bottom: none;
+	border-radius: 5px 5px 0 0;
+	margin-bottom: 0;
+	padding-bottom: 2.5px;
+}
+
+.dfce-cm-middle {
+	border-top: var(--dfce-cm-separation, thin) solid;
+	border-bottom: none;
+	border-radius: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-top: 2.5px;
+	padding-bottom: 2.5px;
+}
+
+.dfce-cm-bottom {
+	border-top: var(--dfce-cm-separation, thin) solid;
+	border-radius: 0 0 5px 5px;
+	margin-top: 0;
+	padding-top: 2.5px;
+}
+
+.dfce-cm-middle>header>h4,
+.dfce-cm-bottom>header>h4 {
+	display: none;
+}
+
+.dfce-cm-middle>header>h4,
+.dfce-cm-bottom>header>h4 {
+	display: var(--dfce-cm-header, inherit);
+}
+
+.dfce-cm-middle .message-timestamp,
+.dfce-cm-bottom .message-timestamp {
+	display: var(--dfce-cm-header, inherit);
+}
+
+.dfce-cm-middle .message-header,
+.dfce-cm-bottom .message-header,
+.dfce-cm-middle .message-metadata,
+.dfce-cm-bottom .message-metadata {
+	height: var(--dfce-cm-header-delete, inherit);
+}
+
+.dfce-cm-middle .message-delete,
+.dfce-cm-bottom .message-delete {
+	position: relative;
+}
+
+.dfce-cm-middle>.message-content,
+.dfce-cm-bottom>.message-content {
+	padding-right: var(--dfce-cm-header-delete-pad, inherit);
+}
+
+.dfce-cm-middle>header>span.flavor-text,
+.dfce-cm-bottom>header>span.flavor-text {
+	padding-right: var(--dfce-cm-header-delete-pad, inherit);
+}
+
+.dfce-cm-top:hover,
+.dfce-cm-middle:hover,
+.dfce-cm-bottom:hover {
+	box-shadow: inset 0 0 var(--dfce-cm-hover-shadow, 5px) var(--dfce-mc-border-color, #6f6c66);
+}
