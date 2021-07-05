@@ -128,11 +128,12 @@ export default class DFChatArchiveViewer extends Application {
 				for (let value of currentChats as ChatMessage.Data[]) {
 					const chatMessage = value instanceof ChatMessage ? value : new ChatMessage(value);
 					try {
+						// @ts-ignore
 						const html = await chatMessage.getHTML();
 						// if we only have 1 message, don't allow it to be deleted. They might as well just delete the archive
 						if (currentChats.length == 1)
 							html.find('a.message-delete').hide();
-						html.find('a.message-delete').on('click', (event) => {
+						html.find('a.message-delete').on('click', (event: JQuery.ClickEvent) => {
 							const messageHtml = $(event.target.parentElement?.parentElement?.parentElement?.parentElement);
 							const buttonIcon = $(event.target);
 							if (messageHtml.hasClass('dfal-deleted')) {
@@ -161,7 +162,7 @@ export default class DFChatArchiveViewer extends Application {
 				deleteButton.hide();
 				deleteButton.on('click', async () => {
 					console.log(deletionList);
-					if(deletionList.length === currentChats.length) {
+					if (deletionList.length === currentChats.length) {
 						ui.notifications.warn(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_Error_Delete_All'));
 						return;
 					}
@@ -171,11 +172,11 @@ export default class DFChatArchiveViewer extends Application {
 						defaultYes: false,
 						no: () => { },
 						yes: async () => {
-							for(let id of deletionList) {
+							for (let id of deletionList) {
 								const message = html.find(`li[data-message-id="${id}"]`);
 								message.hide(500, () => message.remove());
 							}
-							currentChats = currentChats.filter(x => !deletionList.includes(x._id));
+							currentChats = currentChats.filter((x: any) => !deletionList.includes(x._id));
 							await DFChatArchive.updateChatArchive(this.archive, currentChats);
 						}
 					});

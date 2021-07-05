@@ -3,14 +3,10 @@
 	"DF_CHAT_ENHANCE.ReloadGameTitle": "DF Chat Enhance",
 	"DF_CHAT_ENHANCE.ReloadGameContent": "<p style=\"margin:1em 0\">Changes will only go into effect on reload. Would you like to reload now?</p>",
 
-
-
 	"DF_CHAT_ARCHIVE.ChatEnhanceSettingGroup": "Chat Enhancement",
 	"DF_CHAT_ARCHIVE.ExportButtonTitle": "Archive chat log",
 	"DF_CHAT_ARCHIVE.OpenChatArchive": "Manage Chat Archive",
-
 	"DF_CHAT_ARCHIVE.Settings_HideExport": "Chat Archive: Hide the Export Chat Log button",
-	
 	"DF_CHAT_ARCHIVE.ArchiveNew_Title": "DF Create Chat Archive",
 	"DF_CHAT_ARCHIVE.ArchiveNew_Name": "Archive Name:",
 	"DF_CHAT_ARCHIVE.ArchiveNew_NameHint": "Unamed Archive",
@@ -24,7 +20,6 @@
 	"DF_CHAT_ARCHIVE.ArchiveNew_ErrorNameMissing": "Must provide a name for the new archive!",
 	"DF_CHAT_ARCHIVE.ArchiveNew_ErrorDatesMissing": "Must provide both 'From' and 'To' dates if archiving by date range!",
 	"DF_CHAT_ARCHIVE.ArchiveNew_NoticeSuccess": "The new archive \"{0}\" has been created",
-
 	"DF_CHAT_ARCHIVE.ArchiveManager_Title": "DF Chat Archive Manager",
 	"DF_CHAT_ARCHIVE.ArchiveManager_NotItems": "You do not have any chat archives",
 	"DF_CHAT_ARCHIVE.ArchiveManager_DeleteAll": "Delete All Archives",
@@ -36,7 +31,6 @@
 	"DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveTitle": "Delete Chat Archive?",
 	"DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveContent": "<p style=\"margin:1em 0\">Are you sure you want to delete '{name}'?</p>",
 	"DF_CHAT_ARCHIVE.ArchiveManager_VisibleToPlayers": "Visible to players",
-
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Title": "DF Chat Archive",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Title": "Edit Archive Name",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Save": "Save name",
@@ -53,20 +47,16 @@
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Cancel": "Cancel",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Merge": "Merge",
 	"DF_CHAT_ARCHIVE.ArchiveViewer_Merge_OnlyOneArchive": "There are no other archives available for merging",
-	"DF_CHAT_ARCHIVE.ArchiveViewer_Error_Delete_All":"Cannot delete all of the chats in an Archive. If you wish to delete an archive, please do so from the Archive Manager.",
+	"DF_CHAT_ARCHIVE.ArchiveViewer_Error_Delete_All": "Cannot delete all of the chats in an Archive. If you wish to delete an archive, please do so from the Archive Manager.",
 
-
-	
 	"DF_CHAT_PRIVACY.Settings_EnableTitle": "Roll Buttons: Replace roll type selector with buttons",
 	"DF_CHAT_PRIVACY.Settings_EnableHint": "(Requires Reload) Replace the drop-down menu selector for roll types with a set of four buttons.",
 	"DF_CHAT_PRIVACY.Settings_ReplaceButtonsTitle": "Roll Buttons: Use button style on all chat buttons",
 	"DF_CHAT_PRIVACY.Settings_ReplaceButtonsHint": "(Requires Reload) Restyle the other chat buttons to look the same as the new Roll Type buttons.",
 
-
-
-	"DF_CHAT_LOG.CommandDescription":"Submit an event to the Adventure Log",
-	"DF_CHAT_LOG.GMCommandDescription":"Submit an event to the GM Adventure Log",
-	"DF_CHAT_LOG.HelpDialog_Title":"Adventure Journal Command Help",
+	"DF_CHAT_LOG.CommandDescription": "Submit an event to the Adventure Log",
+	"DF_CHAT_LOG.GMCommandDescription": "Submit an event to the GM Adventure Log",
+	"DF_CHAT_LOG.HelpDialog_Title": "Adventure Journal Command Help",
 	"DF_CHAT_LOG.Setting_EnableTitle": "Adventure Log: Enable",
 	"DF_CHAT_LOG.Setting_EnableHint": "Enables the Adventure Log feature for logging events to a journal directly from the chat sidebar",
 	"DF_CHAT_LOG.Setting_GmOnlyTitle": "Adventure Log: Set Adventure Log GM Only",
@@ -107,6 +97,36 @@
 	"DF_CHAT_EDIT.Settings_AllowEditHint": "Allow players to edit the messages they send",
 	"DF_CHAT_EDIT.Settings_GMEditAllName": "Chat Edit: GM can edit all",
 	"DF_CHAT_EDIT.Settings_GMEditAllHint": "Allow GMs to edit anyone's message instead of just their own",
+	"DF_CHAT_EDIT.Settings_IgnoreHtmlName": "Chat Edit: Ignore Messages Containing HTML",
+	"DF_CHAT_EDIT.Settings_IgnoreHtmlHint": "Do not allow messages containing HTML to be edited.",
 	"DF_CHAT_EDIT.EditedFlag": "(edited)",
-	"DF_CHAT_EDIT.Error_NoPermission": "The Gamemaster has disabled editing"
+	"DF_CHAT_EDIT.Error_NoPermission": "The Gamemaster has disabled editing",
+
+	"DF_CHAT_MERGE": {
+		"EnableName": "Chat Merge: Enable Chat Message Merging",
+		"EnableHint": "Will merge messages that were posted close to eachother in time from the same user together.",
+		"ShowHeaderName": "Chat Merge: Show Message Headers",
+		"ShowHeaderHint": "If enabled, will display the message header for each merged message.",
+		"AllowRollsName": "Chat Merge: How to Handle Rolls when Merging",
+		"AllowRollsHint": "How Roll Messages should be handled.",
+		"SeparateName": "Chat Merge: Show Merged Message Divider",
+		"SeparateHint": "Show a thin divider between merged messages.",
+		"HoverName": "Chat Merge: Show Hover Shadow",
+		"HoverHint": "Show a border shadow when the mouse is hovering over a merged chat message.",
+		"EpochName": "Chat Merge: Maximum Period of Time",
+		"EpochHint": "The Maximum period of time between messages that will allow them to be merged together.",
+		"AllowRollsOptions": {
+			"none": "Do not merge",
+			"rolls": "Merge with other rolls",
+			"all": "Merge with any messages"
+		}
+	},
+	"DF_CHAT_SCROLL": {
+		"EnableName": "Enable Chat Scroll Improvements",
+		"EnableHint": "Will display a Scroll To Bottom button, and if you are scrolling up through the log, it will prevent the chat log from scrolling down when a new message is posted. Instead it will highlight the Scroll To Bottom button when a new message is posted.",
+		"ScrollIfYouName": "Scroll To Bottom When You Send Message",
+		"ScrollIfYouHint": "If you have scrolled up through the chat log, this will automatically scroll you back to the bottom when you send a message.",
+		"ScrollButton": "Scroll to Bottom",
+		"NewMessage": "New Message!"
+	}
 }

@@ -1,4 +1,5 @@
 import DFManualRolls from "./DFManualRolls.js";
+import DFManualRollsLegacy from "./DFManualRollsLegacy.js";
 import DFRollPrompt from "./DFRollPrompt.js";
 import SETTINGS from "./lib/Settings.js";
 
@@ -64,7 +65,7 @@ Hooks.on('init', function () {
 			if (value) button.addClass('active');
 			else button.removeClass('active');
 		}
-	})
+	});
 	Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
 		if (!DFManualRolls.toggleable) return;
 		controls.find(x => x.name === 'token').tools.push({
@@ -77,6 +78,20 @@ Hooks.on('init', function () {
 			onClick: (toggled: boolean) => DFManualRolls.setToggled(toggled)
 		});
 	});
+
+
+	SETTINGS.register(DFManualRollsLegacy.PREF_USE_LEGACY, {
+		name: 'Enable Legacy Synchronous Rolls',
+		hint: 'Some systems and modules have not migrated their roll calls to the new Async Roll System in FoundryVTT. To handle the use of the deprecated legacy roll system, this will enabled the old prompts for roll input.',
+		config: true,
+		scope: 'world',
+		type: Boolean,
+		default: false,
+		onChange: (value: Boolean) => {
+			if (value) DFManualRollsLegacy.patch();
+			else DFManualRollsLegacy.unpatch();
+		}
+	});
 });
 Hooks.on('ready', function () {
 	if (!game.modules.get('lib-wrapper')?.active && game.user.isGM) {
@@ -85,14 +100,17 @@ Hooks.on('ready', function () {
 	}
 	Handlebars.registerHelper({ mul: (v1, v2) => v1 * v2 });
 	DFManualRolls.patch();
+	if (SETTINGS.get(DFManualRollsLegacy.PREF_USE_LEGACY))
+		DFManualRollsLegacy.patch();
 });
 
 Hooks.on('createChatMessage', async (chatMessage: ChatMessage) => {
+	if (chatMessage.user.id !== game.userId) return;
 	// Ignore non-roll, non-flagged, non-manual messages
-	if (!chatMessage.isRoll && !DFManualRolls.flagged && !DFManualRolls.shouldRollManually) return;
+	if (!chatMessage.isRoll || !DFManualRolls.flagged || !DFManualRolls.shouldRollManually) return;
 	var flavor = game.i18n.localize("DF_MANUAL_ROLLS.Flag");
 	// If all of the manual rolls were cancelled, don't set the flag
-	if (!chatMessage.roll.terms.some((value) => value instanceof DiceTerm && value.options.isManualRoll))
+	if (!chatMessage.roll.terms.some((value: any) => value instanceof DiceTerm && (<any>value.options).isManualRoll))
 		return;
 	if (!!chatMessage.data.flavor)
 		flavor += " " + chatMessage.data.flavor;

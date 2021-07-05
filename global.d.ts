@@ -1,8 +1,30 @@
 
-interface Document<T> {
-	id: string;
-	object: T;
-	layer: PlaceablesLayer;
+// https://foundryvtt.com/api/abstract.Document.html
+class DocumentX<T, D> {
+	static collectionName: string
+	static database: DatabaseBackend
+	static documentName: string
+	static implementation: function
+	static metadata: object
+	collectionName: string
+	data: D
+	documentName: string
+	id: string | null
+	isEmbedded: boolean
+	name: string | null
+	pack: string | null
+	parent: Document | null
+
+	static canUserCreate(user): boolean
+	static create(data?= {}, context?= {}): Promise<T>
+	static createDocuments(data, context?): Promise<Array<T>>
+	delete(context?): Promise<Document>
+	deleteEmbeddedDocuments(embeddedName, ids, context?): Promise<Array<T>>
+	static deleteDocuments(ids, context?): Promise<Array<T>>
+	static updateDocuments(updates, context?): Promise<Array<T>>
+	getFlag(scope: string, key: string): any
+	setFlag(scope: string, key: string, value: any): Promise<T>
+	update(data?: any, context?: any): Promise<Document>
 }
 
 declare class WallDocument extends Document<Wall> {
@@ -92,19 +114,6 @@ declare class Sidebar extends Application {
 	 * Handle toggling of the Sidebar container's collapsed or expanded state
 	 */
 	protected _onToggleCollapse(event: MouseEvent): void;
-}
-
-declare namespace ChatMessage {
-	interface Data extends Entity.Data {
-		content: string;
-		roll?: string;
-		speaker: SpeakerData;
-		timestamp: number;
-		type: number;
-		user: string;
-		whisper: string[];
-		flavor?: string;
-	}
 }
 
 declare namespace Roll {
@@ -577,3 +586,135 @@ declare namespace Combat {
 }
 
 const foundry: any;
+
+class ChatMessage extends DocumentX<ChatMessage, ChatMessage.Data> {
+	constructor(data?: ChatMessage.Data, context?: any);
+	/**
+	 * Return the recommended String alias for this message.
+	 * The alias could be a Token name in the case of in-character messages or dice rolls.
+	 * Alternatively it could be a User name in the case of OOC chat or whispers.
+	 * @type {string}
+	 */
+	get alias();
+	/**
+	 * Is the current User the author of this message?
+	 * @type {boolean}
+	 */
+	get isAuthor();
+	/**
+	 * Return whether the content of the message is visible to the current user.
+	 * For certain dice rolls, for example, the message itself may be visible while the content of that message is not.
+	 * @type {boolean}
+	 */
+	get isContentVisible();
+	/**
+	 * Test whether the chat message contains a dice roll
+	 * @type {boolean}
+	 */
+	get isRoll();
+	/**
+	 * Return the Roll instance contained in this chat message, if one is present
+	 * @type {Roll|null}
+	 */
+	get roll();
+	/**
+	 * Return whether the ChatMessage is visible to the current User.
+	 * Messages may not be visible if they are private whispers.
+	 * @type {boolean}
+	 */
+	get visible();
+	/**
+	 * The User who created the chat message.
+	 * @type {User}
+	 */
+	get user(): User;
+	/** @inheritdoc */
+	prepareData();
+	/**
+	 * Transform a provided object of ChatMessage data by applying a certain rollMode to the data object.
+	 * @param {object} chatData     The object of ChatMessage data prior to applying a rollMode preference
+	 * @param {string} rollMode     The rollMode preference to apply to this message data
+	 * @returns {object}            The modified ChatMessage data with rollMode preferences applied
+	 */
+	static applyRollMode(chatData, rollMode);
+	/**
+	 * Update the data of a ChatMessage instance to apply a requested rollMode
+	 * @param {string} rollMode     The rollMode preference to apply to this message data
+	 */
+	applyRollMode(rollMode);
+	/**
+	 * Attempt to determine who is the speaking character (and token) for a certain Chat Message
+	 * First assume that the currently controlled Token is the speaker
+	 *
+	 * @param {Scene} [scene]     The Scene in which the speaker resides
+	 * @param {Actor} [actor]     The Actor whom is speaking
+	 * @param {Token} [token]     The Token whom is speaking
+	 * @param {string} [alias]     The name of the speaker to display
+	 *
+	 * @returns {Object}  The identified speaker data
+	 */
+	static getSpeaker({ scene, actor, token, alias } = {});
+	/**
+	 * A helper to prepare the speaker object based on a target Token
+	 * @private
+	 */
+	static _getSpeakerFromToken({ token, alias });
+	/**
+	 * A helper to prepare the speaker object based on a target Actor
+	 * @private
+	 */
+	static _getSpeakerFromActor({ scene, actor, alias });
+	/**
+	 * A helper to prepare the speaker object based on a target User
+	 * @private
+	 */
+	static _getSpeakerFromUser({ scene, user, alias });
+	/**
+	 * Obtain an Actor instance which represents the speaker of this message (if any)
+	 * @param {Object} speaker    The speaker data object
+	 * @return {Actor|null}
+	 */
+	static getSpeakerActor(speaker);
+	/**
+	 * Obtain a data object used to evaluate any dice rolls associated with this particular chat message
+	 * @return {object}
+	 */
+	getRollData();
+	/**
+	 * Given a string whisper target, return an Array of the user IDs which should be targeted for the whisper
+	 *
+	 * @param {string} name   The target name of the whisper target
+	 * @return {User[]}       An array of User instances
+	 */
+	static getWhisperRecipients(name);
+	/**
+	 * Render the HTML for the ChatMessage which should be added to the log
+	 * @return {Promise<jQuery>}
+	 */
+	getHTML(): Promise<JQuery>;
+	/** @override */
+	async _preCreate(data, options, user);
+	/** @override */
+	_onCreate(data, options, userId);
+	/** @override */
+	_onUpdate(data, options, userId);
+	/** @override */
+	_onDelete(options, userId);
+	/**
+	 * Export the content of the chat message into a standardized log format
+	 * @return {string}
+	 */
+	export();
+}
+declare namespace ChatMessage {
+	declare interface Data extends Entity.Data {
+		content: string;
+		roll?: string;
+		speaker: SpeakerData;
+		timestamp: number;
+		type: number;
+		user: string;
+		whisper: string[];
+		flavor?: string;
+	}
+}

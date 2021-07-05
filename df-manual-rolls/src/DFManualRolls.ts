@@ -29,7 +29,7 @@ export default class DFManualRolls {
 		libWrapper.register(SETTINGS.MOD_NAME, 'Roll.prototype._evaluate', this._Roll_evaluate, 'MIXED');
 		libWrapper.register(SETTINGS.MOD_NAME, 'DiceTerm.prototype._evaluate', this._DiceTerm_evaluate, 'MIXED');
 		libWrapper.register(SETTINGS.MOD_NAME, 'Combat.prototype.rollInitiative', this._Combat_rollInitiative, 'MIXED');
-		libWrapper.register(SETTINGS.MOD_NAME, 'Combatant.prototype.getInitiativeRoll', this._Combat_getInitiativeRoll, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'Combatant.prototype.getInitiativeRoll', this._Combat_getInitiativeRoll, 'OVERRIDE');
 	}
 	static unpatch() {
 		libWrapper.unregister(SETTINGS.MOD_NAME, 'Roll.prototype._identifyTerms', false);
@@ -166,13 +166,7 @@ export default class DFManualRolls {
 		/****************************** END OF CAPTURE ******************************/
 	}
 
-
-	private static _Combat_getInitiativeRoll(this: Combat, wrapper: Function, formula: string): Promise<Roll> | Roll {
-		// Ignore if we are disabled
-		if (!DFManualRolls.shouldRollManually) {
-			return wrapper(formula);
-		}
-
+	private static _Combat_getInitiativeRoll(this: Combat, formula: string): Promise<Roll> | Roll {
 		/** THIS IS CAPTURED DIRECTLY FROM Combat.prototype.getInitiativeRoll **/
 		formula = formula || (<any>this)._getInitiativeFormula();
 		const rollData = (<any>this).actor?.getRollData() || {};
@@ -180,7 +174,7 @@ export default class DFManualRolls {
 		/****** DF MANUAL ROLLS MODIFICATION ******/
 		// Added flavour that can be displayed in the title
 		roll.options.flavor = game.i18n.localize('DF_MANUAL_ROLLS.InitiativeRollFlavour').replace('{{name}}', this.name);
-		return roll.evaluate({ async: true }); // used to be: return roll.evaluate({ async: false });
+		return roll.evaluate({ async: DFManualRolls.shouldRollManually }); // used to be: return roll.evaluate({ async: false });
 		/************ END MODIFICATION ************/
 		/**************************** END OF CAPTURE ***************************/
 	}
