@@ -71,7 +71,7 @@
 	"DF_CHAT_LOG.Error_ConfigGmOnly": "GM만이 모험 기록 구성을 변경할 수 있습니다.",
 	"DF_CHAT_LOG.Error_Disabled": "GM이 모험 기록을 비활성화 했습니다.",
 	"DF_CHAT_LOG.Error_NoJournalSet": "GM이 모험 기록으로 사용할 저널을 설정하지 않았습니다.",
-	"DF_CHAT_LOG.Error_NoJournalSetGM": "모험 기록에 사용할 저널이 없습니다. \"<code>/기록 설정</code>\"을 사용하십시오.",
+	"DF_CHAT_LOG.Error_NoJournalSetGM": "모험 기록에 사용할 저널이 없습니다. \"<code>/log config</code>\" 명령어를 사용하십시오.",
 	"DF_CHAT_LOG.Error_MissingQuote": "{0}에 대한 마무리 인용구를 찾지 못했습니다.",
 	"DF_CHAT_LOG.Error_MissingMessage": "메시지를 제공하지 않았습니다.",
 	"DF_CHAT_LOG.Error_ApiLog_NotGm": "GM 모험 기록에 이벤트를 기록하려면 GM이어야 합니다.",
