@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"name": "df-chat-enhance",
-	"version": "3.0.2",
+	"version": "3.2.0",
 	"title": "DF Chat Enhancements",
 	"description": "Various enhancements to the chat features.",
 	"main": "src/df-chat-enhance.ts",
@@ -15,7 +15,8 @@
 		"stage": "npx gulp zip --gulpfile=../gulpfile.js --cwd=./ --min --sm",
 		"prod": "npx gulp zip --gulpfile=../gulpfile.js --cwd=./ --min",
 		"launch": "sudo ../launch-foundry `which node` /var/www/foundryvtt /var/www/foundrydata",
-		"tag": "git tag -d ${npm_package_name}_${npm_package_version} 2>/dev/null ; git tag ${npm_package_name}_${npm_package_version} && git push -f origin ${npm_package_name}_${npm_package_version}"
+		"tag": "git tag -d ${npm_package_name}_${npm_package_version} 2>/dev/null ; git tag ${npm_package_name}_${npm_package_version} && git push -f origin ${npm_package_name}_${npm_package_version}",
+		"release": "npm run tag && npm run prod"
 	},
 	"repository": {
 		"type": "git",

@@ -145,6 +145,7 @@ export class CurvyWallsToolBar extends Application {
 					name: it,
 					title: this._tools[it].title,
 					icon: this._tools[it].icon,
+					toggleable: true,
 					isActive: this._tools[it].isActive()
 				}
 			}),
@@ -172,6 +173,20 @@ export class CurvyWallsToolBar extends Application {
 	}
 
 	activateListeners(html: JQuery<HTMLElement>) {
+		if ((<any>window).buttonOverflow !== undefined) {
+			const align = () => {
+				const layersHeight = $("ol#controls").height();
+				const controlsHeight = $('ol#controls>li[data-control="walls"]>ol').height();
+				const layerCount = document.querySelector("ol#controls").childElementCount;
+				const controlCount = document.querySelector('ol#controls>li[data-control="walls"]>ol').childElementCount;
+				const layers = Math.ceil(((layerCount - ((<any>window).buttonOverflow.hiddenButtons || 0)) / layersHeight) * 46) * 46 + 10;
+				const controls = Math.ceil((controlCount / controlsHeight) * 46) * 46;
+				// document.body.style.setProperty("--playerlist-offset", `${layers}px`);
+				html.css('left', `${layers + controls}px`);
+			}
+			window.addEventListener("resize", align);
+			align();
+		}
 		html.find('li').on("click", (event: JQuery.ClickEvent) => {
 			const element = $(event.currentTarget);
 			const name = element.attr('data-tool');

@@ -1,5 +1,18 @@
 # DF Curvy Walls
 
+## Release 3.2.0 (2021-06-27)
+- Added settings option for the key held for doing quick tool placement.
+- Changed the quick tool placement key to Alt by default instead of Ctrl.
+- Restored the ability to hold the Ctrl key while Click+Dragging the tool onto the canvas. This allows you to easily start from an existing wall segment's end node.
+- Added compatibility with the [Button Overflow](https://github.com/ardittristan/VTTButtonOverflow) module. The toggles will now move to the right to make room for the wrapped scene controls.
+
+## Release 3.1.0 (2021-06-06)
+- Migrated to FoundryVTT 0.8.6
+
+## Release 3.0.1 (2021-05-27)
+- Japanese Locale update courtesy of Touge, Brother Sharp.
+- Small optimization in the controls template.
+
 ## Release 3.0.0 (2021-05-04)
 - Moved controls to the right of the wall selectors. This prevents the buttons going offscreen for those with a smaller monitor size. This also required me to overhaul the controls, and they are now more reliable and have a simpler implementation.
 - Adjusted the Enabled look of the toggleable controls to be more visually apparent that they are selected.

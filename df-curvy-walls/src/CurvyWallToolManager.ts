@@ -6,6 +6,7 @@ import CubicTool from './tools/CubicTool.js';
 import QuadTool from './tools/QuadTool.js';
 import { InputHandler } from './tools/ToolInputHandler.js';
 import PointMapper from './tools/PointMapper.js';
+import SETTINGS from './lib/Settings.js';
 
 declare global {
 	namespace PIXI {
@@ -33,7 +34,7 @@ MODE_NAMES[Mode.Rect] = 'bezierrect';
 class WallPool {
 	static readonly walls: Wall[] = [];
 	static acquire(wallData: Wall.Data): Wall {
-		const result = this.walls.pop() ?? new Wall(wallData);
+		const result = this.walls.pop() ?? new Wall(new WallDocument(wallData, { parent: canvas.scene }));
 		result.data = wallData;
 		return result;
 	}
@@ -41,6 +42,7 @@ class WallPool {
 }
 
 export class CurvyWallToolManager {
+	static readonly PREF_DROP_KEY = 'drop-key';
 	private static _instance: CurvyWallToolManager;
 	private _mode = Mode.None;
 	private wallsLayer: WallsLayer;
@@ -173,7 +175,11 @@ export class CurvyWallToolManager {
 			self.render();
 			return;
 		}
-		if (!event.data.originalEvent.ctrlKey) return;
+		if (event.data.originalEvent.ctrlKey) {
+			self.activeTool.startedWithCtrlHeld = true;
+		}
+		if (SETTINGS.get(CurvyWallToolManager.PREF_DROP_KEY) === 'ctrl' && !event.data.originalEvent.ctrlKey) return;
+		if (SETTINGS.get(CurvyWallToolManager.PREF_DROP_KEY) === 'alt' && !event.data.originalEvent.altKey) return;
 		self.activeTool.placeTool(event.data.origin, self._previousToolData.get(self._mode));
 		self.render();
 	}
@@ -195,12 +201,16 @@ export class CurvyWallToolManager {
 	static _onDragLeftMove(wrapped: Function, event: PIXI.InteractionEvent) {
 		const self = CurvyWallToolManager.instance;
 		if (self.mode == Mode.None || !self.currentHandler) return wrapped(event);
+		if (self.activeTool.startedWithCtrlHeld && !event.data.originalEvent.ctrlKey) {
+			self.activeTool.startedWithCtrlHeld = false;
+		}
 		self.currentHandler.move(event.data.origin, event.data.destination, event);
 		self.render();
 	}
 	static _onDragLeftDrop(wrapped: Function, event: PIXI.InteractionEvent) {
 		const self = CurvyWallToolManager.instance;
 		if (self.mode == Mode.None || !self.currentHandler) return wrapped(event);
+		self.activeTool.startedWithCtrlHeld = false;
 		self.currentHandler.stop(event.data.origin, event.data.destination, event);
 		self.currentHandler = null;
 		self.render();

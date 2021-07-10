@@ -7,10 +7,9 @@ const pointNearPoint = BezierTool.pointNearPoint;
 declare type Point = PIXI.Point;
 
 class InitializerIH extends InitializerInputHandler {
-	private tool: CubicTool;
+	private get cubicTool(): CubicTool { return this.tool as CubicTool; }
 	constructor(tool: CubicTool, success: () => void, fail: () => void) {
-		super(false, tool.lineA, tool.lineB, success, fail)
-		this.tool = tool;
+		super(tool, false, tool.lineA, tool.lineB, success, fail);
 	}
 	move(origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
 		super.move(origin, destination, event);
@@ -20,8 +19,8 @@ class InitializerIH extends InitializerInputHandler {
 		dx /= length;
 		dy /= length;
 		const barLength = length * (2 / 3);
-		this.tool.controlA.set(this.tool.lineA.x + (dy * barLength), this.tool.lineA.y + (-dx * barLength));
-		this.tool.controlB.set(this.tool.lineB.x + (dy * barLength), this.tool.lineB.y + (-dx * barLength));
+		this.cubicTool.controlA.set(this.tool.lineA.x + (dy * barLength), this.tool.lineA.y + (-dx * barLength));
+		this.cubicTool.controlB.set(this.tool.lineB.x + (dy * barLength), this.tool.lineB.y + (-dx * barLength));
 	}
 }
 
@@ -77,18 +76,18 @@ export default class CubicTool extends BezierTool {
 		}
 		if (pointNearPoint(point, this.lineA, BezierTool.HANDLE_RADIUS))
 			return CubicTool.lockHandles
-				? new MagnetPointInputHandler(this.lineA, this.controlA)
-				: new PointInputHandler(this.lineA);
+				? new MagnetPointInputHandler(this, this.lineA, this.controlA)
+				: new PointInputHandler(this, this.lineA);
 		else if (pointNearPoint(point, this.lineB, BezierTool.HANDLE_RADIUS))
 			return CubicTool.lockHandles
-				? new MagnetPointInputHandler(this.lineB, this.controlB)
-				: new PointInputHandler(this.lineB);
+				? new MagnetPointInputHandler(this, this.lineB, this.controlB)
+				: new PointInputHandler(this, this.lineB);
 		else if (pointNearPoint(point, this.controlA, BezierTool.HANDLE_RADIUS))
-			return new PointInputHandler(this.controlA);
+			return new PointInputHandler(this, this.controlA);
 		else if (pointNearPoint(point, this.controlB, BezierTool.HANDLE_RADIUS))
-			return new PointInputHandler(this.controlB);
+			return new PointInputHandler(this, this.controlB);
 		else if (this.polygon.contains(point.x, point.y))
-			return new PointArrayInputHandler(point, this.handles);
+			return new PointArrayInputHandler(this, point, this.handles);
 		return null;
 	}
 

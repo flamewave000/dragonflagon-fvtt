@@ -49,6 +49,8 @@ export abstract class BezierTool {
 			this._modeListener(value);
 	};
 
+	startedWithCtrlHeld: boolean = false;
+
 	constructor(segments: number = 10) {
 		this.segments = segments;
 	}

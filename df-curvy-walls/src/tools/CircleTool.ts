@@ -11,7 +11,7 @@ declare type Point = PIXI.Point;
 
 class InitializerIH extends InitializerInputHandler {
 	constructor(tool: CircleTool, success: () => void, fail: () => void) {
-		super(true, tool.lineA, tool.lineB, success, fail)
+		super(tool, true, tool.lineA, tool.lineB, success, fail)
 	}
 }
 
@@ -159,7 +159,7 @@ export default class CircleTool extends BezierTool {
 			.lineTo(slice.x, slice.y)
 			.endFill();
 		this.drawSegmentLabel(context);
-		const snapAngle = toDegrees(CircleTool.ANGLE_SNAP_STEPS[CircleTool.snapSetIndex]).toFixed(2);
+		const snapAngle = Math.toDegrees(CircleTool.ANGLE_SNAP_STEPS[CircleTool.snapSetIndex]).toFixed(2);
 		const arcLabel = BezierTool.createText(`⇲${snapAngle}°   ◶${180 / parseFloat(snapAngle)}`);
 		arcLabel.position.copyFrom(this.lineCenter);
 		arcLabel.position.y += BezierTool.TEXT_STYLE.fontSize as number + 4;
@@ -180,15 +180,15 @@ export default class CircleTool extends BezierTool {
 			return new InitializerIH(this, () => this.setMode(ToolMode.Placed), () => this.setMode(ToolMode.NotPlaced));
 		}
 		if (pointNearPoint(point, this.lineA, BezierTool.HANDLE_RADIUS))
-			return new PointInputHandler(this.lineA, null, this.lineB);
+			return new PointInputHandler(this, this.lineA, null, this.lineB);
 		else if (pointNearPoint(point, this.lineB, BezierTool.HANDLE_RADIUS))
-			return new PointInputHandler(this.lineB, null, this.lineA);
+			return new PointInputHandler(this, this.lineB, null, this.lineA);
 		else if (pointNearPoint(point, this.arcHandle.getHandlePoint(this.getCenter()), BezierTool.HANDLE_RADIUS))
-			return new PointRotationHandler(this.arcHandle, this.getCenter());
+			return new PointRotationHandler(this, this.arcHandle, this.getCenter());
 		else if (pointNearPoint(point, this.sliceHandle.getHandlePoint(this.getCenter()), BezierTool.HANDLE_RADIUS))
-			return new PointRotationHandler(this.sliceHandle, this.getCenter());
+			return new PointRotationHandler(this, this.sliceHandle, this.getCenter());
 		else if (this.polygon.contains(point.x, point.y))
-			return new PointArrayInputHandler(point, this.handles);
+			return new PointArrayInputHandler(this, point, this.handles);
 		return null;
 	}
 }
@@ -221,8 +221,8 @@ class PointRotationHandler extends InputHandler {
 	private original: number;
 	private arcHandle: RotatorHandle;
 	private center: PIXI.Point;
-	constructor(arcHandle: RotatorHandle, center: PIXI.Point) {
-		super();
+	constructor(tool: BezierTool, arcHandle: RotatorHandle, center: PIXI.Point) {
+		super(tool);
 		this.arcHandle = arcHandle;
 		this.original = this.arcHandle.angle;
 		this.center = center;

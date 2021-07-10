@@ -1,4 +1,5 @@
 import DFSceneRatio from "./df-scene-ratio.js";
+import SETTINGS from "./lib/Settings.js";
 
 declare global {
 	interface Scene {
@@ -6,8 +7,12 @@ declare global {
 		width: number
 		height: number
 	}
-	interface SceneConfig {
-		entity: Scene
+	interface SceneConfig extends FormApplication {
+		entity: Scene;
+		ratioScaler: DFSceneRatio;
+	}
+	namespace SceneConfig {
+		interface Options {}
 	}
 }
 
@@ -17,37 +22,37 @@ export default class DFSceneThumb {
 	static purge() {
 		if (!game.user.isGM) return;
 		let ids = []
-		for (var scene of game.scenes.entries as any as Entity[]) {
+		for (var scene of game.scenes.values() as any as Entity[]) {
 			ids.push(scene.id);
 		}
-		let config = JSON.parse(game.settings.get(DFSceneThumb.MODULE, DFSceneThumb.THUMBS));
+		let config = JSON.parse(SETTINGS.get(DFSceneThumb.THUMBS));
 		for (var id in config) {
 			if (!ids.includes(id))
 				delete config[id];
 		}
-		game.settings.set(DFSceneThumb.MODULE, DFSceneThumb.THUMBS, JSON.stringify(config));
+		SETTINGS.set(DFSceneThumb.THUMBS, JSON.stringify(config));
 	}
 	static updateThumb(sceneId: string, value?: string, generated: boolean = false) {
-		let config = JSON.parse(game.settings.get(DFSceneThumb.MODULE, DFSceneThumb.THUMBS));
+		let config = JSON.parse(SETTINGS.get(DFSceneThumb.THUMBS));
 		if (!value) delete config[sceneId];
 		else config[sceneId] = { url: value, thumb: generated };
-		game.settings.set(DFSceneThumb.MODULE, DFSceneThumb.THUMBS, JSON.stringify(config));
+		SETTINGS.set(DFSceneThumb.THUMBS, JSON.stringify(config));
 	}
 	static getThumb(sceneId: string) {
-		return JSON.parse(game.settings.get(DFSceneThumb.MODULE, DFSceneThumb.THUMBS))[sceneId] ?? null;
+		return JSON.parse(SETTINGS.get(DFSceneThumb.THUMBS))[sceneId] ?? null;
 	}
 
 	static init() {
-		game.settings.register(DFSceneThumb.MODULE, DFSceneThumb.THUMBS, {
+		SETTINGS.register(DFSceneThumb.THUMBS, {
 			scope: "world",
 			config: false,
 			type: String,
 			default: "{}"
 		});
-		Hooks.on('renderSceneConfig', async (app: any, html: JQuery<HTMLElement>, data: { entity: Scene }) => {
+		Hooks.on('renderSceneConfig', async (app: SceneConfig, html: JQuery<HTMLElement>, data: RenderData) => {
 			const imgInput = html.find('input[name ="img"]')[0];
 			if (!imgInput || !imgInput.parentElement || !imgInput.parentElement.parentElement) return;
-			const sceneId = data.entity._id;
+			const sceneId = data.document.id;
 			const thumbConfig = DFSceneThumb.getThumb(sceneId);
 			const injection = $(await renderTemplate(`modules/${DFSceneThumb.MODULE}/templates/scene-thumb.hbs`, { thumbPath: (thumbConfig && thumbConfig.url) || "" }));
 			const target = imgInput.parentElement.parentElement;
@@ -57,11 +62,7 @@ export default class DFSceneThumb {
 			}
 			html.find('#df-thumb-btn').on('click', () => {
 				let fp = FilePicker.fromButton(html.find('#df-thumb-btn')[0] as HTMLButtonElement);
-				let target = html.find('#df-thumb-btn')[0].getAttribute("data-target");
-				app.filepickers.push({
-					target: target,
-					app: fp
-				});
+				app.filepickers.push(fp);
 				fp.browse();
 			});
 			html.find('#df-thumb-img').on('change', () => DFSceneThumb.updateThumb(sceneId, html.find('#df-thumb-img').val() as string));

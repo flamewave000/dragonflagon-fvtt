@@ -1,5 +1,14 @@
 # DF Scene Enhancement Changes
 
+## Release 3.4.1 (2021-07-02)
+- Fixed some issues with the scenes directory.
+	- Fixed issue where the Create Scene/Folder buttons are missing when there are no scenes in the world yet.
+	- Fixed issue with PCs not being able to see the Scenes Directory correctly.
+
+## Release 3.4.0 (2021-06-06)
+- Migrated to FoundryVTT 0.8.6
+- Added libWrapper integration and dependency.
+
 ## Release 3.3.3 (2021-03-30)
 - Fixed a permissions issue with Journal entity links.
 

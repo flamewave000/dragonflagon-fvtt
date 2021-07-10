@@ -1,25 +1,52 @@
-import Actor5eExt from "./dnd5e/Actor5eExt.js";
 import DFManualRolls from "./DFManualRolls.js";
-import Item5eExt from './dnd5e/Item5eExt.js';
+import DFManualRollsLegacy from "./DFManualRollsLegacy.js";
+import DFRollPrompt from "./DFRollPrompt.js";
+import SETTINGS from "./lib/Settings.js";
+
+SETTINGS.init('df-manual-rolls');
 
 Hooks.on('init', function () {
 
-	game.settings.register(DFManualRolls.MODULE, DFManualRolls.FORCED, {
-		name: "DF_MANUAL_ROLLS.Settings_Force_Name",
-		hint: "DF_MANUAL_ROLLS.Settings_Force_Hint",
-		scope: 'world',
+	SETTINGS.register(DFManualRolls.PREF_GM_STATE, {
 		config: true,
-		type: Boolean,
-		default: false,
-		onChange: async _ => await Dialog.confirm({
-			title: game.i18n.localize("DF_MANUAL_ROLLS.Reload_Title"),
-			content: `<p>${game.i18n.localize("DF_MANUAL_ROLLS.Reload_Content")}</p>`,
-			yes: () => window.location.reload(),
-			no: () => { },
-			defaultYes: true
-		})
+		scope: 'world',
+		name: 'DF_MANUAL_ROLLS.Settings_GM_Name',
+		hint: 'DF_MANUAL_ROLLS.Settings_GM_Hint',
+		type: String,
+		default: 'disabled',
+		choices: {
+			disabled: 'DF_MANUAL_ROLLS.Setting_Options_Disabled',
+			always: 'DF_MANUAL_ROLLS.Setting_Options_Always',
+			toggle: 'DF_MANUAL_ROLLS.Setting_Options_Toggle'
+		},
+		onChange: () => { ui.controls.initialize() }
 	});
-	game.settings.register(DFManualRolls.MODULE, DFManualRolls.FLAGGED, {
+
+	SETTINGS.register(DFManualRolls.PREF_PC_STATE, {
+		config: true,
+		scope: 'world',
+		name: 'DF_MANUAL_ROLLS.Settings_PC_Name',
+		hint: 'DF_MANUAL_ROLLS.Settings_PC_Hint',
+		type: String,
+		default: 'disabled',
+		choices: {
+			disabled: 'DF_MANUAL_ROLLS.Setting_Options_Disabled',
+			always: 'DF_MANUAL_ROLLS.Setting_Options_Always',
+			toggle: 'DF_MANUAL_ROLLS.Setting_Options_Toggle'
+		},
+		onChange: () => { ui.controls.initialize() }
+	});
+
+	SETTINGS.register(DFRollPrompt.PREF_FOCUS_INPUT, {
+		config: true,
+		scope: 'client',
+		name: 'DF_MANUAL_ROLLS.Settings_FocusInput_Name',
+		hint: 'DF_MANUAL_ROLLS.Settings_FocusInput_Hint',
+		type: Boolean,
+		default: true
+	});
+
+	SETTINGS.register(DFManualRolls.PREF_FLAGGED, {
 		name: "DF_MANUAL_ROLLS.Settings_Flagged_Name",
 		hint: "DF_MANUAL_ROLLS.Settings_Flagged_Hint",
 		scope: 'world',
@@ -27,61 +54,63 @@ Hooks.on('init', function () {
 		type: Boolean,
 		default: false
 	});
-	if (!DFManualRolls.forced) {
-		game.settings.register(DFManualRolls.MODULE, DFManualRolls.ENABLED, {
-			name: "DF_MANUAL_ROLLS.Settings_Enabled_Name",
-			hint: "DF_MANUAL_ROLLS.Settings_Enabled_Hint",
-			scope: 'client',
-			config: true,
-			type: Boolean,
-			default: true,
-			onChange: value => {
-				if (value || DFManualRolls.forced) DFManualRolls.patch();
-				else DFManualRolls.unpatch();
-			}
-		});
-		game.settings.register(DFManualRolls.MODULE, DFManualRolls.ROLLBACK, {
-			name: "DF_MANUAL_ROLLS.Settings_Rollback_Name",
-			hint: "DF_MANUAL_ROLLS.Settings_Rollback_Hint",
-			scope: 'client',
-			config: true,
-			type: Boolean,
-			default: true
-		});
-	}
 
-	if (game.dnd5e) {
-		game.settings.register(DFManualRolls.MODULE, DFManualRolls.FLAVOUR_5E, {
-			name: "DF_MANUAL_ROLLS.Settings_Flavour5e_Name",
-			hint: "DF_MANUAL_ROLLS.Settings_Flavour5e_Hint",
-			scope: 'world',
-			config: true,
-			type: Boolean,
-			default: true,
-			onChange: async _ => await Dialog.confirm({
-				title: game.i18n.localize("DF_MANUAL_ROLLS.Reload_Title"),
-				content: `<p>${game.i18n.localize("DF_MANUAL_ROLLS.Reload_Content")}</p>`,
-				yes: () => window.location.reload(),
-				no: () => { },
-				defaultYes: true
-			})
-		});
-		if (game.settings.get(DFManualRolls.MODULE, DFManualRolls.FLAVOUR_5E)) {
-			CONFIG.Item.entityClass = Item5eExt as any;
-			CONFIG.Actor.entityClass = Actor5eExt as any;
+	SETTINGS.register(DFManualRolls.PREF_TOGGLED, {
+		config: false,
+		scope: 'client',
+		type: Boolean,
+		default: false,
+		onChange: (value: Boolean) => {
+			const button = $('ol#controls>li#df-manual-roll-toggle');
+			if (value) button.addClass('active');
+			else button.removeClass('active');
 		}
-	}
+	});
+	Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
+		if (!DFManualRolls.toggleable) return;
+		controls.find(x => x.name === 'token').tools.push({
+			icon: 'fas fa-dice-d20',
+			name: 'manualRoll',
+			title: 'DF_MANUAL_ROLLS.SceneControlTitle',
+			visible: DFManualRolls.toggleable,
+			toggle: true,
+			active: DFManualRolls.toggled,
+			onClick: (toggled: boolean) => DFManualRolls.setToggled(toggled)
+		});
+	});
+
+
+	SETTINGS.register(DFManualRollsLegacy.PREF_USE_LEGACY, {
+		name: 'Enable Legacy Synchronous Rolls',
+		hint: 'Some systems and modules have not migrated their roll calls to the new Async Roll System in FoundryVTT. To handle the use of the deprecated legacy roll system, this will enabled the old prompts for roll input.',
+		config: true,
+		scope: 'world',
+		type: Boolean,
+		default: false,
+		onChange: (value: Boolean) => {
+			if (value) DFManualRollsLegacy.patch();
+			else DFManualRollsLegacy.unpatch();
+		}
+	});
 });
 Hooks.on('ready', function () {
-	if (DFManualRolls.enabled || DFManualRolls.forced)
-		DFManualRolls.patch();
+	if (!game.modules.get('lib-wrapper')?.active && game.user.isGM) {
+		ui.notifications.error(game.i18n.localize("DF_MANUAL_ROLLS.Error_libWrapper_Missing"));
+		return;
+	}
+	Handlebars.registerHelper({ mul: (v1, v2) => v1 * v2 });
+	DFManualRolls.patch();
+	if (SETTINGS.get(DFManualRollsLegacy.PREF_USE_LEGACY))
+		DFManualRollsLegacy.patch();
 });
 
 Hooks.on('createChatMessage', async (chatMessage: ChatMessage) => {
-	if (!chatMessage.isRoll || !DFManualRolls.flagged || !(DFManualRolls.enabled || DFManualRolls.forced)) return;
+	if (chatMessage.user.id !== game.userId) return;
+	// Ignore non-roll, non-flagged, non-manual messages
+	if (!chatMessage.isRoll || !DFManualRolls.flagged || !DFManualRolls.shouldRollManually) return;
 	var flavor = game.i18n.localize("DF_MANUAL_ROLLS.Flag");
 	// If all of the manual rolls were cancelled, don't set the flag
-	if (!chatMessage.roll.terms.some((value) => value instanceof DiceTerm && value.options.isManualRoll))
+	if (!chatMessage.roll.terms.some((value: any) => value instanceof DiceTerm && (<any>value.options).isManualRoll))
 		return;
 	if (!!chatMessage.data.flavor)
 		flavor += " " + chatMessage.data.flavor;

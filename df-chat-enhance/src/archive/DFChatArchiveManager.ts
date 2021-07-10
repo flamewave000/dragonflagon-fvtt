@@ -20,7 +20,7 @@ export default class DFChatArchiveManager extends Application {
 		var messages = DFChatArchive.getLogs();
 		if (!game.user.isGM)
 			messages = messages.filter(x => x.visible);
-		mergeObject(data, { messages: messages });
+		mergeObject(data, { messages: messages, isGM: game.user.isGM });
 		return data;
 	}
 

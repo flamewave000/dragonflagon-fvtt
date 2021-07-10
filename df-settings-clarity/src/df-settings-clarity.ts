@@ -2,27 +2,19 @@ import FuzzySearch from "./FuzzySearch.js";
 
 
 export { };
-declare global {
-	export interface ClientSettings {
-		dfSettingsClarity_register(module: string, key: string, data: ClientSettings.PartialData<any>): void
-		dfSettingsClarity_registerMenu(module: string, key: string, data: ClientSettings.PartialMenuSettings): void;
-	}
-}
 
 class DFSettingsClarity {
 	static types = ["client", "world"];
 
 	static patchGameSettings() {
-		ClientSettings.prototype.dfSettingsClarity_register = ClientSettings.prototype.register;
-		ClientSettings.prototype.register = DFSettingsClarity.settingsRegister;
+		libWrapper.register('df-settings-clarity', 'ClientSettings.prototype.register', DFSettingsClarity.settingsRegister, 'WRAPPER');
 		for (var pair of game.settings.settings) {
 			pair[1].name = DFSettingsClarity.formatName(pair[1].name ?? '', pair[1]);
 		}
 	}
 
 	static patchGameSettingsMenus() {
-		ClientSettings.prototype.dfSettingsClarity_registerMenu = ClientSettings.prototype.registerMenu;
-		ClientSettings.prototype.registerMenu = DFSettingsClarity.settingsRegisterMenu;
+		libWrapper.register('df-settings-clarity', 'ClientSettings.prototype.registerMenu', DFSettingsClarity.settingsRegisterMenu, 'WRAPPER');
 		for (var pair of game.settings.menus) {
 			pair[1].name = DFSettingsClarity.formatName(pair[1].name ?? '', pair[1]);
 		}
@@ -47,14 +39,14 @@ class DFSettingsClarity {
 		return name;
 	}
 
-	static settingsRegister(this: ClientSettings, module: string, key: string, data: ClientSettings.PartialData<any>) {
+	static settingsRegister(this: ClientSettings, wrapper: Function, module: string, key: string, data: ClientSettings.PartialData<any>) {
 		data.name = DFSettingsClarity.formatName(data.name ?? '', data);
-		this.dfSettingsClarity_register(module, key, data);
+		wrapper(module, key, data);
 	}
 
-	static settingsRegisterMenu(this: ClientSettings, module: string, key: string, data: ClientSettings.PartialMenuSettings) {
+	static settingsRegisterMenu(this: ClientSettings, wrapper: Function, module: string, key: string, data: ClientSettings.PartialMenuSettings) {
 		data.name = DFSettingsClarity.formatName(data.name ?? '', data);
-		this.dfSettingsClarity_registerMenu(module, key, data);
+		wrapper(module, key, data);
 	}
 
 	static showWorldHover(event: JQuery.MouseMoveEvent) {
@@ -84,19 +76,26 @@ class DFSettingsClarity {
 	}
 }
 
-Hooks.once('init', function() {
+Hooks.once('init', function () {
 	FuzzySearch.init();
 });
 
 Hooks.once('setup', function () {
 	var user = game.data.users.find(x => x._id === game.userId) as any as User.Data;
-	if (!!user && user.role >= 3) {
+	const perms: { [key: string]: number[] } = game.settings.get('core', 'permissions');
+	if (!!user && perms['SETTINGS_MODIFY'].includes(user.role)) {
 		DFSettingsClarity.patchGameSettings();
 		DFSettingsClarity.patchGameSettingsMenus();
 	}
 	$(document.body).append(DFSettingsClarity.hover);
 });
 Hooks.once('ready', function () {
+	if (!game.modules.get('lib-wrapper')?.active) {
+		console.error('Missing libWrapper module dependency');
+		if (game.user.isGM)
+			ui.notifications.error(game.i18n.localize('DF_SETTINGS_CLARITY.errorLibWrapperMissing'));
+		return;
+	}
 	DFSettingsClarity.hover.remove();
 	DFSettingsClarity.hover.attr("style", "");
 })
