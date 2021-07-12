@@ -42,7 +42,7 @@ export default class ActiveLightConfig extends Application {
 		const obj = app.object as AmbientLight;
 		super({
 			id: obj.id + '-anims',
-			title: game.i18n.localize('Active Light Config: ') + obj.id,
+			title: game.i18n.localize('DF_ACTIVE_LIGHTS.Config.Title') + obj.id,
 		});
 		this._object = obj;
 		this._data = <AnimatorData>obj.getFlag(SETTINGS.MOD_NAME, LightAnimator.FLAG_ANIMS);
@@ -63,7 +63,7 @@ export default class ActiveLightConfig extends Application {
 	}
 
 	private _inject(html: JQuery<HTMLElement>) {
-		const animConfigButton = $(`<button type="button" style="margin:0.25em 0" name="anim-config"><i class="fas fa-cogs"></i> ${game.i18n.localize('Active Light Configuration')}</button>`);
+		const animConfigButton = $(`<button type="button" style="margin:0.25em 0" name="anim-config"><i class="fas fa-cogs"></i> ${game.i18n.localize('DF_ACTIVE_LIGHTS.Config.OpenButton')}</button>`);
 		animConfigButton.on('click', (e) => {
 			e.preventDefault();
 			if (this._state === Application.RENDER_STATES.RENDERED)
@@ -144,14 +144,14 @@ export default class ActiveLightConfig extends Application {
 			// If the value is zero, reset it! No keyframes can be manually set to zero
 			if (newValue === 0) {
 				e.currentTarget.setAttribute('value', keyFrame.time.toString());
-				ui.notifications.warn(game.i18n.localize('You cannot set a custom Key Frame to time ZERO!'));
+				ui.notifications.warn(game.i18n.localize('DF_ACTIVE_LIGHTS.Warnings.KeyFrame_Zero'));
 				return;
 			}
 			// If the value is equal to another keyframe, reset it it to previous value
 			const conflict = this._data.keys.find(x => x.time === newValue);
 			if (!!conflict) {
 				e.currentTarget.setAttribute('value', keyFrame.time.toString());
-				ui.notifications.warn(game.i18n.localize(`A Key Frame already exists for time ${newValue} Seconds`));
+				ui.notifications.warn(game.i18n.localize('DF_ACTIVE_LIGHTS.Warnings.KeyFrame_Exists').replace('{0}', newValue.toString()));
 				return;
 			}
 			// Set the time ID for the keyframe UI
@@ -159,7 +159,7 @@ export default class ActiveLightConfig extends Application {
 			const keys = <HTMLInputElement[]>Array.from(keysContainer[0].children);
 			const keyElement = keys.find(x => parseInt(x.getAttribute('data-time')) === keyFrame.time)
 			keyElement.setAttribute('data-time', newValue.toString());
-			keyElement.querySelector('span').innerHTML = (newValue / 1000).toNearest(0.001).toString() + ' ' + game.i18n.localize('Seconds');
+			keyElement.querySelector('span').innerHTML = (newValue / 1000).toNearest(0.001).toString() + ' ' + game.i18n.localize('DF_ACTIVE_LIGHTS.Seconds');
 			keys.sort((a, b) => parseInt(a.getAttribute('data-time')) < parseInt(b.getAttribute('data-time')) ? -1 : 1);
 			keysContainer.append(keys);
 			// Set the new time value
