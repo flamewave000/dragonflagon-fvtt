@@ -1,0 +1,94 @@
+<div>
+	<label>{{localize 'Key Frame Time Position (Milliseconds)'}}</label>
+	<input {{#if first}}disabled{{/if}} type="number" name="time" value="{{time}}">
+</div>
+<div id="dim">
+	<input type="checkbox" title="{{localize 'Enable Property'}}" {{#if dim.enabled}}checked{{/if}}>
+	<label>{{localize 'Dim Light Radius'}}</label>
+	<input {{#if first}}disabled{{/if}} type="number" name="dim" value="{{dim.value}}" {{#unless
+		dim.enabled}}disabled{{/unless}} data-type="prop">
+	<select {{#unless dim.enabled}}disabled{{/unless}}>
+		<option {{#if (eq dim.func 'linear')}}selected{{/if}} value="linear">Linear</option>
+		<option {{#if (eq dim.func 'quadIn')}}selected{{/if}} value="quadIn">Quadratic In</option>
+		<option {{#if (eq dim.func 'quadOut')}}selected{{/if}} value="quadOut">Quadratic Out</option>
+		<option {{#if (eq dim.func 'quadLoop')}}selected{{/if}} value="quadLoop">Quadratic Loop</option>
+		<option {{#if (eq dim.func 'ellipseIn')}}selected{{/if}} value="ellipseIn">Elliptic In</option>
+		<option {{#if (eq dim.func 'ellipseOut')}}selected{{/if}} value="ellipseOut">Elliptic Out</option>
+		<option {{#if (eq dim.func 'ellipseLoop')}}selected{{/if}} value="ellipseLoop">Elliptic Loop</option>
+	</select>
+</div>
+<div id="bright">
+	<input type="checkbox" title="{{localize 'Enable Property'}}" {{#if bright.enabled}}checked{{/if}}>
+	<label>{{localize 'Bright Light Radius'}}</label>
+	<input {{#if first}}disabled{{/if}} type="number" name="bright" value="{{bright.value}}" {{#unless
+		bright.enabled}}disabled{{/unless}} data-type="prop">
+	<select {{#unless bright.enabled}}disabled{{/unless}}>
+		<option {{#if (eq bright.func 'linear')}}selected{{/if}} value="linear">Linear</option>
+		<option {{#if (eq bright.func 'quadIn')}}selected{{/if}} value="quadIn">Quadratic In</option>
+		<option {{#if (eq bright.func 'quadOut')}}selected{{/if}} value="quadOut">Quadratic Out</option>
+		<option {{#if (eq bright.func 'quadLoop')}}selected{{/if}} value="quadLoop">Quadratic Loop</option>
+		<option {{#if (eq bright.func 'ellipseIn')}}selected{{/if}} value="ellipseIn">Elliptic In</option>
+		<option {{#if (eq bright.func 'ellipseOut')}}selected{{/if}} value="ellipseOut">Elliptic Out</option>
+		<option {{#if (eq bright.func 'ellipseLoop')}}selected{{/if}} value="ellipseLoop">Elliptic Loop</option>
+	</select>
+</div>
+<div id="angle">
+	<input type="checkbox" title="{{localize 'Enable Property'}}" {{#if angle.enabled}}checked{{/if}}>
+	<label>{{localize 'Emission Angle'}}</label>
+	<input {{#if first}}disabled{{/if}} type="number" name="angle" value="{{angle.value}}" {{#unless
+		angle.enabled}}disabled{{/unless}} data-type="prop">
+	<select {{#unless angle.enabled}}disabled{{/unless}}>
+		<option {{#if (eq angle.func 'linear')}}selected{{/if}} value="linear">Linear</option>
+		<option {{#if (eq angle.func 'quadIn')}}selected{{/if}} value="quadIn">Quadratic In</option>
+		<option {{#if (eq angle.func 'quadOut')}}selected{{/if}} value="quadOut">Quadratic Out</option>
+		<option {{#if (eq angle.func 'quadLoop')}}selected{{/if}} value="quadLoop">Quadratic Loop</option>
+		<option {{#if (eq angle.func 'ellipseIn')}}selected{{/if}} value="ellipseIn">Elliptic In</option>
+		<option {{#if (eq angle.func 'ellipseOut')}}selected{{/if}} value="ellipseOut">Elliptic Out</option>
+		<option {{#if (eq angle.func 'ellipseLoop')}}selected{{/if}} value="ellipseLoop">Elliptic Loop</option>
+	</select>
+</div>
+<div id="rotation">
+	<input type="checkbox" title="{{localize 'Enable Property'}}" {{#if rotation.enabled}}checked{{/if}}>
+	<label>{{localize 'Light Rotation Angle'}}</label>
+	<input {{#if first}}disabled{{/if}} type="number" name="rotation" value="{{rotation.value}}" {{#unless
+		rotation.enabled}}disabled{{/unless}} data-type="prop">
+	<select {{#unless rotation.enabled}}disabled{{/unless}}>
+		<option {{#if (eq rotation.func 'linear')}}selected{{/if}} value="linear">Linear</option>
+		<option {{#if (eq rotation.func 'quadIn')}}selected{{/if}} value="quadIn">Quadratic In</option>
+		<option {{#if (eq rotation.func 'quadOut')}}selected{{/if}} value="quadOut">Quadratic Out</option>
+		<option {{#if (eq rotation.func 'quadLoop')}}selected{{/if}} value="quadLoop">Quadratic Loop</option>
+		<option {{#if (eq rotation.func 'ellipseIn')}}selected{{/if}} value="ellipseIn">Elliptic In</option>
+		<option {{#if (eq rotation.func 'ellipseOut')}}selected{{/if}} value="ellipseOut">Elliptic Out</option>
+		<option {{#if (eq rotation.func 'ellipseLoop')}}selected{{/if}} value="ellipseLoop">Elliptic Loop</option>
+	</select>
+</div>
+<div id="tintColor">
+	<input type="checkbox" title="{{localize 'Enable Property'}}" {{#if tintColor.enabled}}checked{{/if}}>
+	<label>{{localize 'Light Colour'}}</label>
+	<input {{#if first}}disabled{{/if}} type="color" name="tintColor" value="{{tintColor.value}}" {{#unless
+		tintColor.enabled}}disabled{{/unless}} data-type="prop">
+	<select {{#unless tintColor.enabled}}disabled{{/unless}}>
+		<option {{#if (eq tintColor.func 'linear')}}selected{{/if}} value="linear">Linear</option>
+		<option {{#if (eq tintColor.func 'quadIn')}}selected{{/if}} value="quadIn">Quadratic In</option>
+		<option {{#if (eq tintColor.func 'quadOut')}}selected{{/if}} value="quadOut">Quadratic Out</option>
+		<option {{#if (eq tintColor.func 'quadLoop')}}selected{{/if}} value="quadLoop">Quadratic Loop</option>
+		<option {{#if (eq tintColor.func 'ellipseIn')}}selected{{/if}} value="ellipseIn">Elliptic In</option>
+		<option {{#if (eq tintColor.func 'ellipseOut')}}selected{{/if}} value="ellipseOut">Elliptic Out</option>
+		<option {{#if (eq tintColor.func 'ellipseLoop')}}selected{{/if}} value="ellipseLoop">Elliptic Loop</option>
+	</select>
+</div>
+<div id="tintAlpha">
+	<input type="checkbox" title="{{localize 'Enable Property'}}" {{#if tintAlpha.enabled}}checked{{/if}}>
+	<label>{{localize 'Colour Intensity'}}</label>
+	<input {{#if first}}disabled{{/if}} type="number" name="tintAlpha" value="{{tintAlpha.value}}" {{#unless
+		tintAlpha.enabled}}disabled{{/unless}} data-type="prop">
+	<select {{#unless tintAlpha.enabled}}disabled{{/unless}}>
+		<option {{#if (eq tintAlpha.func 'linear')}}selected{{/if}} value="linear">Linear</option>
+		<option {{#if (eq tintAlpha.func 'quadIn')}}selected{{/if}} value="quadIn">Quadratic In</option>
+		<option {{#if (eq tintAlpha.func 'quadOut')}}selected{{/if}} value="quadOut">Quadratic Out</option>
+		<option {{#if (eq tintAlpha.func 'quadLoop')}}selected{{/if}} value="quadLoop">Quadratic Loop</option>
+		<option {{#if (eq tintAlpha.func 'ellipseIn')}}selected{{/if}} value="ellipseIn">Elliptic In</option>
+		<option {{#if (eq tintAlpha.func 'ellipseOut')}}selected{{/if}} value="ellipseOut">Elliptic Out</option>
+		<option {{#if (eq tintAlpha.func 'ellipseLoop')}}selected{{/if}} value="ellipseLoop">Elliptic Loop</option>
+	</select>
+</div>

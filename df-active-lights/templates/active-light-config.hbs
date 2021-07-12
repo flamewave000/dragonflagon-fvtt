@@ -1,0 +1,25 @@
+<form class="dfal">
+	<aside>
+		<ol>
+			<li class="active">0 {{localize 'Seconds'}}</li>
+		</ol>
+		<button type="button" name="add-keyframe"><i class="fas fa-plus"></i> {{localize 'Add Key Frame'}}</button>
+	</aside>
+	<main>
+		<table>
+			<tr>
+				<td></td>
+				<td><input name="bounce" type="checkbox" {{#if bounce}}checked{{/if}}></td>
+				<td><label>{{localize 'Make animation bounce back and forth'}}</label></td>
+			</tr>
+			<tr>
+				<td><a class="button" title="{{localize 'Randomize offset based on current duration'}}"><i
+							class="fas fa-dice"></i></a></td>
+				<td><input name="offset" type="number" step="0.00" placeholder="0 seconds" value="{{offset}}"></td>
+				<td><label>{{localize 'Time Offset in seconds for "desyncing" similar animations'}}</label></td>
+			</tr>
+		</table>
+		<section>
+		</section>
+	</main>
+</form>
