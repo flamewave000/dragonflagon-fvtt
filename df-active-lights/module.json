@@ -4,8 +4,8 @@
 	"description": "{{description}}",
 	"version": "{{version}}",
 	"author": "flamewave000#6766",
-	"minimumCoreVersion": "0.7.9",
-	"compatibleCoreVersion": "0.7.9",
+	"minimumCoreVersion": "0.8.8",
+	"compatibleCoreVersion": "0.8.8",
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [
@@ -22,6 +22,11 @@
 	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues/new/choose",
 	"authors": [ { "name": "flamewave000", "discord": "flamewave000#6766", "url": "https://github.com/flamewave000" } ],
 	"media": [
-		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" }
+		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-active-lights.gif" },
+		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" },
+		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-active-lights2.gif" },
+		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-active-lights3.gif" },
+		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-active-lights-config-button.png" },
+		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-active-lights-config.png" }
 	]
 }

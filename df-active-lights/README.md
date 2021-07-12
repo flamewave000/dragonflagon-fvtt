@@ -4,8 +4,7 @@ This module provides a way to animate all the various configurations of a light.
 
 ![Light House](../.assets/df-active-lights.gif)
 ![Energy Dome](../.assets/df-active-lights2.gif)
-
-
+![Laser Light](../.assets/df-active-lights3.gif)
 
 ##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
 
