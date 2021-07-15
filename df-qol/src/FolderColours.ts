@@ -8,8 +8,8 @@ function apply(shouldApply: Boolean, hookName: string, func: Hooks.General) {
 export default class FolderColours {
 	static init() {
 		SETTINGS.register('folder-colour', {
-			name: 'DRAGON_FLAGON_QOL.FolderTextColour.Name',
-			hint: 'DRAGON_FLAGON_QOL.FolderTextColour.Hint',
+			name: 'DF_QOL.FolderTextColour.Name',
+			hint: 'DF_QOL.FolderTextColour.Hint',
 			scope: 'world',
 			type: Boolean,
 			default: true,

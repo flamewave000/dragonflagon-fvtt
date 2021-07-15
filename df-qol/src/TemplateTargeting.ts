@@ -12,8 +12,8 @@ export default class TemplateTargeting {
 		SETTINGS.register('template-targeting', {
 			config: true,
 			scope: 'world',
-			name: game.i18n.localize('DRAGON_FLAGON_QOL.TemplateTargeting.SettingName'),
-			hint: 'DRAGON_FLAGON_QOL.TemplateTargeting.SettingHint',
+			name: game.i18n.localize('DF_QOL.TemplateTargeting.SettingName'),
+			hint: 'DF_QOL.TemplateTargeting.SettingHint',
 			type: String,
 			choices: {
 				never: 'Never',
@@ -24,8 +24,8 @@ export default class TemplateTargeting {
 			onChange: (newValue: String) => { ui.controls.initialize(); ui.controls.render(true); }
 		});
 		SETTINGS.register('template-targeting-patch5e', {
-			name: 'DRAGON_FLAGON_QOL.TemplateTargeting.Patch5e_Name',
-			hint: 'DRAGON_FLAGON_QOL.TemplateTargeting.Patch5e_Hint',
+			name: 'DF_QOL.TemplateTargeting.Patch5e_Name',
+			hint: 'DF_QOL.TemplateTargeting.Patch5e_Hint',
 			config: true,
 			type: Boolean,
 			default: false,
@@ -37,8 +37,8 @@ export default class TemplateTargeting {
 			}
 		});
 		SETTINGS.register('template-targeting-patch5e-circle', {
-			name: 'DRAGON_FLAGON_QOL.TemplateTargeting.Patch5e_Circle_Name',
-			hint: 'DRAGON_FLAGON_QOL.TemplateTargeting.Patch5e_Circle_Hint',
+			name: 'DF_QOL.TemplateTargeting.Patch5e_Circle_Name',
+			hint: 'DF_QOL.TemplateTargeting.Patch5e_Circle_Hint',
 			config: true,
 			type: Boolean,
 			default: false,
@@ -55,7 +55,7 @@ export default class TemplateTargeting {
 			control.tools.splice(0, 0, {
 				icon: 'fas fa-bullseye',
 				name: 'autoTarget',
-				title: 'DRAGON_FLAGON_QOL.TemplateTargeting.ToggleTitle',
+				title: 'DF_QOL.TemplateTargeting.ToggleTitle',
 				visible: true,
 				toggle: true,
 				active: SETTINGS.get('template-targeting-toggle'),
