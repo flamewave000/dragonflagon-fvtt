@@ -2,7 +2,7 @@
 	"private": true,
 	"name": "df-active-lights",
 	"title": "DF Active Lights",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "Lights can now have complex animations attached to their various properties such as the direction or colour.",
 	"main": "src/df-active-lights.ts",
 	"scripts": {

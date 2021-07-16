@@ -1,5 +1,9 @@
 # DragonFlagon Active Lights
 
+## Release 1.1.1 (2021-07-16)
+- Fixed an issue with 0 Radius light animations. If you animate both the Dim and Bright radius to 0, the light would get removed from the lighting system. This has been corrected so that lights can be 0-radius while they are being animated.
+- Small optimizations in the light animation cycle.
+
 ## Release 1.1.0 (2021-02-12)
 - Revised animation functions
 	- Quadratic Loop renamed to Quadratic Full

@@ -51,7 +51,7 @@ export class LightAnimator {
 		libWrapper.register(SETTINGS.MOD_NAME, 'LightingLayer.prototype._animateSource', this._LightingLayer_animateSource, 'WRAPPER');
 	}
 	static ready() {
-		libWrapper.register(SETTINGS.MOD_NAME, 'AmbientLight.prototype._onUpdate', function(this: AmbientLight, wrapped: Function, ...args: any) {
+		libWrapper.register(SETTINGS.MOD_NAME, 'AmbientLight.prototype._onUpdate', function (this: AmbientLight, wrapped: Function, ...args: any) {
 			wrapped(...args);
 			delete (this as AmbientLightExt).animator;
 		}, 'WRAPPER');
@@ -61,8 +61,8 @@ export class LightAnimator {
 			if (!(source.object instanceof AmbientLight) || !source.active) continue;
 			LightAnimator._PointSource_animate.bind(source)(<AmbientLightExt>source.object);
 		}
+		(canvas as any).perception.schedule({ lighting: { refresh: true }, sight: { refresh: true } });
 		wrapper(dt);
-		this.refresh();
 	}
 	private static _PointSource_animate(this: PointSource, light: AmbientLightExt) {
 		try {
@@ -82,17 +82,49 @@ export class LightAnimator {
 			// Update the animation state
 			light.animator.tick();
 
-			light.origData = light.data;
+			// hold onto the original data
+			const origData = light.data;
+			// Merge a duplicate of the original data with the modified animation data
 			light.data = <AmbientLight.Data>mergeObject(duplicate(light.data), light.animData);
-			light.updateSource();
-			light.refresh();
-			light.data = light.origData;
+			// Update the light source with the new data
+			LightAnimator._updateSource.bind(light)();
+			// If we are on the LightingLayer, refresh the light's controls
+			if ((<any>canvas).lighting._active)
+				light.refresh();
+			// Restore the original data
+			light.data = origData;
 		}
+		// We catch all errors that might occur and print them to the console to
+		// prevent them from propagating up and crashing the lighting system
 		catch (e) {
 			console.error(e);
 		}
 	}
 
+	/**
+	 * Update the point source object associated with this light
+	 */
+	private static _updateSource(this: AmbientLight) {
+		// Update source data
+		this.source.initialize(<any>{
+			x: this.data.x,
+			y: this.data.y,
+			z: (<any>this).document.getFlag("core", "priority") || null,
+			dim: this.dimRadius,
+			bright: this.brightRadius,
+			angle: this.data.angle,
+			rotation: this.data.rotation,
+			color: this.data.tintColor,
+			alpha: this.data.tintAlpha,
+			animation: this.data.lightAnimation,
+			seed: (<any>this).document.getFlag("core", "animationSeed"),
+			darkness: (<any>this).data.darkness,
+			type: this.data.t
+		});
+		// Update the lighting layer sources
+		if (!this.data.hidden) (<any>this).layer.sources.set(this.sourceId, this.source);
+		else (<any>this).layer.sources.delete(this.sourceId);
+	}
 
 	private _data: AnimatorData;
 	private _object: AmbientLightExt;
@@ -170,7 +202,6 @@ export class LightAnimator {
 			const r = ((startValue >> 16) & 0xff) + Math.round((((endValue >> 16) & 0xff) - ((startValue >> 16) & 0xff)) * valueFactor);
 			const g = ((startValue >> 8) & 0xff) + Math.round((((endValue >> 8) & 0xff) - ((startValue >> 8) & 0xff)) * valueFactor);
 			const b = (startValue & 0xff) + Math.round(((endValue & 0xff) - (startValue & 0xff)) * valueFactor);
-
 			this._object.animData[prop.name] = '#' + ((r << 16) | (g << 8) | b).toString(16);
 		} else
 			this._object.animData[prop.name] = startValue + ((endValue - startValue) * valueFactor);

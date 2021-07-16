@@ -5,6 +5,7 @@ This module provides a way to animate all the various configurations of a light.
 ![Light House](../.assets/df-active-lights/df-active-lights.gif)
 ![Energy Dome](../.assets/df-active-lights/df-active-lights2.gif)
 ![Laser Light](../.assets/df-active-lights/df-active-lights3.gif)
+![Police Car](../.assets/df-active-lights/df-active-lights4.gif)
 
 
 ## Animation Functions

@@ -19,7 +19,7 @@
 <div id="{{name}}">
 	<input type="checkbox" title="{{localize 'DF_ACTIVE_LIGHTS.Props.Enable'}}" {{#if prop.enabled}}checked{{/if}}>
 	<label>{{localize label}}</label>
-	<input {{#if first}}disabled{{/if}} type="number" name="{{name}}" value="{{prop.value}}" {{#unless
+	<input type="number" name="{{name}}" value="{{prop.value}}" {{#unless
 		prop.enabled}}disabled{{/unless}} data-type="prop">
 	{{> functionsPartial prop=prop}}
 </div>
@@ -28,7 +28,7 @@
 <div id="{{name}}">
 	<input type="checkbox" title="{{localize 'DF_ACTIVE_LIGHTS.Props.Enable'}}" {{#if prop.enabled}}checked{{/if}}>
 	<label>{{localize label}}</label>
-	<input {{#if first}}disabled{{/if}} type="color" name="{{name}}" value="{{prop.value}}" {{#unless
+	<input type="color" name="{{name}}" value="{{prop.value}}" {{#unless
 		prop.enabled}}disabled{{/unless}} data-type="prop">
 	{{> functionsPartial prop=prop}}
 </div>
