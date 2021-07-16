@@ -1,5 +1,8 @@
 # DragonFlagon Quality of Life
 
+## Release 1.5.1 (2021-07-16)
+- Fixed Token Lock keyboard bypass issue. Token locks can no longer be bypassed via keyboard movement.
+
 ## Release 1.5.0 (2021-07-15)
 - Added new Token Lock feature. You can now lock tokens in position the same way that Tiles or Drawings can be locked.
 

@@ -48,10 +48,23 @@ export default class TokenLock {
 	}
 
 	private static _registerPatch(enabled: Boolean) {
-		if (enabled) libWrapper.register(SETTINGS.MOD_NAME, 'Token.prototype._canDrag', function (this: any, wrapped: Function, ...args: any) {
-			return wrapped(...args) && ((TokenLock.allowGM && game.user.isGM) || !TokenLock.getLocked(this.document));
-		}, 'WRAPPER');
-		else libWrapper.unregister(SETTINGS.MOD_NAME, 'Token.prototype._canDrag', false);
+		if (enabled) {
+			libWrapper.register(SETTINGS.MOD_NAME, 'Token.prototype._canDrag', function (this: any, wrapped: Function, ...args: any) {
+				return wrapped(...args) && ((TokenLock.allowGM && game.user.isGM) || !TokenLock.getLocked(this.document));
+			}, 'WRAPPER');
+			libWrapper.register(SETTINGS.MOD_NAME, 'TokenLayer.prototype.moveMany', async function (this: any, wrapped: Function, data: any) {
+				const ids = data.ids instanceof Array ? data.ids : this.controlled.filter((o: any) => !o.data.locked).map((o: any) => o.id);
+				data.ids = ids.filter((x: string) => {
+					return !TokenLock.getLocked((<any>canvas).tokens.documentCollection.get(x)) ||
+						(TokenLock.allowGM && game.user.isGM);
+				});
+				return wrapped(data)
+			}, 'WRAPPER');
+		}
+		else {
+			libWrapper.unregister(SETTINGS.MOD_NAME, 'Token.prototype._canDrag', false);
+			libWrapper.unregister(SETTINGS.MOD_NAME, 'TokenLayer.prototype.moveMany', false);
+		}
 	}
 	private static _registerHook(enabled: Boolean) {
 		if (!game.user.isGM) return;
