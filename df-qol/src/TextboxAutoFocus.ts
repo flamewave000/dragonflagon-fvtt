@@ -8,8 +8,8 @@ function apply(shouldApply: Boolean, hookName: string, func: Hooks.General) {
 export default class TextboxAutoFocus {
 	static init() {
 		SETTINGS.register('auto-focus', {
-			name: 'DRAGON_FLAGON_QOL.AutoFocus.Title',
-			hint: 'DRAGON_FLAGON_QOL.AutoFocus.Hint',
+			name: 'DF_QOL.AutoFocus.Title',
+			hint: 'DF_QOL.AutoFocus.Hint',
 			scope: 'world',
 			type: Boolean,
 			default: true,

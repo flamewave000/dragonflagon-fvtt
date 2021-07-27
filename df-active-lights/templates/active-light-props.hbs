@@ -1,0 +1,47 @@
+{{#*inline "functionsPartial"}}
+	<select {{#unless prop.enabled}}disabled{{/unless}}>
+		<option {{#if (eq prop.func 'linear')}}selected{{/if}} value="linear">{{localize 'DF_ACTIVE_LIGHTS.Funcs.Linear'}}</option>
+		<option {{#if (eq prop.func 'linearLoop')}}selected{{/if}} value="linearLoop">{{localize 'DF_ACTIVE_LIGHTS.Funcs.LinearLoop'}}</option>
+		<option {{#if (eq prop.func 'fixedStart')}}selected{{/if}} value="fixedStart">{{localize 'DF_ACTIVE_LIGHTS.Funcs.FixedStart'}}</option>
+		<option {{#if (eq prop.func 'fixedEnd')}}selected{{/if}} value="fixedEnd">{{localize 'DF_ACTIVE_LIGHTS.Funcs.FixedEnd'}}</option>
+		<option {{#if (eq prop.func 'quadIn')}}selected{{/if}} value="quadIn">{{localize 'DF_ACTIVE_LIGHTS.Funcs.QuadIn'}}</option>
+		<option {{#if (eq prop.func 'quadOut')}}selected{{/if}} value="quadOut">{{localize 'DF_ACTIVE_LIGHTS.Funcs.QuadOut'}}</option>
+		<option {{#if (eq prop.func 'quadFull')}}selected{{/if}} value="quadFull">{{localize 'DF_ACTIVE_LIGHTS.Funcs.QuadFull'}}</option>
+		<option {{#if (eq prop.func 'quadLoop')}}selected{{/if}} value="quadLoop">{{localize 'DF_ACTIVE_LIGHTS.Funcs.QuadLoop'}}</option>
+		<option {{#if (eq prop.func 'ellipseIn')}}selected{{/if}} value="ellipseIn">{{localize 'DF_ACTIVE_LIGHTS.Funcs.EllipseIn'}}</option>
+		<option {{#if (eq prop.func 'ellipseOut')}}selected{{/if}} value="ellipseOut">{{localize 'DF_ACTIVE_LIGHTS.Funcs.EllipseOut'}}</option>
+		<option {{#if (eq prop.func 'ellipseFull')}}selected{{/if}} value="ellipseFull">{{localize 'DF_ACTIVE_LIGHTS.Funcs.EllipseFull'}}</option>
+		<option {{#if (eq prop.func 'ellipseLoop')}}selected{{/if}} value="ellipseLoop">{{localize 'DF_ACTIVE_LIGHTS.Funcs.EllipseLoop'}}</option>
+	</select>
+{{/inline}}
+
+{{#*inline "numberPartial"}}
+<div id="{{name}}">
+	<input type="checkbox" title="{{localize 'DF_ACTIVE_LIGHTS.Props.Enable'}}" {{#if prop.enabled}}checked{{/if}}>
+	<label>{{localize label}}</label>
+	<input type="number" name="{{name}}" value="{{prop.value}}" {{#unless
+		prop.enabled}}disabled{{/unless}} data-type="prop">
+	{{> functionsPartial prop=prop}}
+</div>
+{{/inline}}
+{{#*inline "colorPartial"}}
+<div id="{{name}}">
+	<input type="checkbox" title="{{localize 'DF_ACTIVE_LIGHTS.Props.Enable'}}" {{#if prop.enabled}}checked{{/if}}>
+	<label>{{localize label}}</label>
+	<input type="color" name="{{name}}" value="{{prop.value}}" {{#unless
+		prop.enabled}}disabled{{/unless}} data-type="prop">
+	{{> functionsPartial prop=prop}}
+</div>
+{{/inline}}
+
+
+<div>
+	<label>{{localize 'DF_ACTIVE_LIGHTS.Props.Time'}}</label>
+	<input {{#if first}}disabled{{/if}} type="number" name="time" value="{{time}}">
+</div>
+{{> numberPartial first=first prop=dim name='dim' label='DF_ACTIVE_LIGHTS.Props.Dim'}}
+{{> numberPartial first=first prop=bright name='bright' label='DF_ACTIVE_LIGHTS.Props.Bright'}}
+{{> numberPartial first=first prop=angle name='angle' label='DF_ACTIVE_LIGHTS.Props.Angle'}}
+{{> numberPartial first=first prop=rotation name='rotation' label='DF_ACTIVE_LIGHTS.Props.Rotation'}}
+{{> colorPartial first=first prop=tintColor name='tintColor' label='DF_ACTIVE_LIGHTS.Props.TintColor'}}
+{{> numberPartial first=first prop=tintAlpha name='tintAlpha' label='DF_ACTIVE_LIGHTS.Props.TintAlpha'}}

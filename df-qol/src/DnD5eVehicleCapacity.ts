@@ -25,8 +25,8 @@ export default class DnD5eVehicleCapacity {
 			SETTINGS.register('vehicle-unit', {
 				scope: 'world',
 				config: true,
-				name: 'DRAGON_FLAGON_QOL.VehicleUnit.SettingName',
-				hint: 'DRAGON_FLAGON_QOL.VehicleUnit.SettingHint',
+				name: 'DF_QOL.VehicleUnit.SettingName',
+				hint: 'DF_QOL.VehicleUnit.SettingHint',
 				type: Boolean,
 				default: true,
 				onChange: DnD5eVehicleCapacity.DF_VEHICLE_UNITS
@@ -72,9 +72,9 @@ export default class DnD5eVehicleCapacity {
 	static renderActorSheet5eVehicle(app: ActorSheet, html: JQuery<HTMLElement>, data: any) {
 		var unit: any = app.object.getFlag(SETTINGS.MOD_NAME, 'unit') || (<DND5E>CONFIG.DND5E).encumbrance.vehicleWeightMultiplier;
 		switch (unit) {
-			case 2240: unit = ['L.Ton', 'DRAGON_FLAGON_QOL.VehicleUnit.Units_LongTon']; break;
-			case 2000: unit = ['S.Ton', 'DRAGON_FLAGON_QOL.VehicleUnit.Units_ShortTon']; break;
-			case 1: unit = ['lb.', 'DRAGON_FLAGON_QOL.VehicleUnit.Units_Pounds']; break;
+			case 2240: unit = ['L.Ton', 'DF_QOL.VehicleUnit.Units_LongTon']; break;
+			case 2000: unit = ['S.Ton', 'DF_QOL.VehicleUnit.Units_ShortTon']; break;
+			case 1: unit = ['lb.', 'DF_QOL.VehicleUnit.Units_Pounds']; break;
 		}
 		html.find('input[name="data.attributes.capacity.cargo"]')
 			.after(`<label style="margin-left:0.5em" title="${game.i18n.localize(unit[1])}">${unit[0]}</label>`);
@@ -86,13 +86,13 @@ export default class DnD5eVehicleCapacity {
 		if (!current) current = (<DND5E>CONFIG.DND5E).encumbrance.vehicleWeightMultiplier;
 
 		const unitSelector = $(`<div class="form-group">
-	<label>${game.i18n.localize('DRAGON_FLAGON_QOL.VehicleUnit.ConfigName')}</label>
+	<label>${game.i18n.localize('DF_QOL.VehicleUnit.ConfigName')}</label>
 	<select name="units">
-		<option value="lt"${current === 2240 ? ' selected' : ''}>${game.i18n.localize('DRAGON_FLAGON_QOL.VehicleUnit.Units_LongTon')}</option>
-		<option value="st"${current === 2000 ? ' selected' : ''}>${game.i18n.localize('DRAGON_FLAGON_QOL.VehicleUnit.Units_ShortTon')}</option>
-		<option value="lb"${current === 1 ? ' selected' : ''}>${game.i18n.localize('DRAGON_FLAGON_QOL.VehicleUnit.Units_Pounds')}</option>
+		<option value="lt"${current === 2240 ? ' selected' : ''}>${game.i18n.localize('DF_QOL.VehicleUnit.Units_LongTon')}</option>
+		<option value="st"${current === 2000 ? ' selected' : ''}>${game.i18n.localize('DF_QOL.VehicleUnit.Units_ShortTon')}</option>
+		<option value="lb"${current === 1 ? ' selected' : ''}>${game.i18n.localize('DF_QOL.VehicleUnit.Units_Pounds')}</option>
 	</select>
-	<p class="notes">${game.i18n.localize('DRAGON_FLAGON_QOL.VehicleUnit.ConfigHint')}</p>
+	<p class="notes">${game.i18n.localize('DF_QOL.VehicleUnit.ConfigHint')}</p>
 </div>`);
 		submitButton.before(unitSelector);
 		const newHeight = unitSelector.outerHeight(true);
@@ -119,8 +119,8 @@ export default class DnD5eVehicleCapacity {
 			}
 			// Ask if they would like us to convert the current value to the new unit of measure.
 			const confirm = await Dialog.confirm({
-				title: game.i18n.localize('DRAGON_FLAGON_QOL.VehicleUnit.ConvertTitle'),
-				content: game.i18n.localize('DRAGON_FLAGON_QOL.VehicleUnit.ConvertContent')
+				title: game.i18n.localize('DF_QOL.VehicleUnit.ConvertTitle'),
+				content: game.i18n.localize('DF_QOL.VehicleUnit.ConvertContent')
 					.replace('{{OLD}}', oldLabel).replace('{{NEW}}', newLabel),
 				defaultYes: true
 			});
