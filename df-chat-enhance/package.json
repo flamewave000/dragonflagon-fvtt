@@ -32,7 +32,7 @@
 		"df"
 	],
 	"author": "flamewave000#6766",
-	"license": "GPL-3.0",
+	"license": "BSD-3-Clause",
 	"bugs": {
 		"url": "https://github.com/flamewave000/dragonflagon-fvtt/issues"
 	},
