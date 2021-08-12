@@ -3,8 +3,8 @@ import SETTINGS from './libs/Settings.js';
 export default class BetterToggle {
 	static init() {
 		SETTINGS.register('better-toggle', {
-			name: 'DRAGON_FLAGON_QOL.BetterToggle.Name',
-			hint: 'DRAGON_FLAGON_QOL.BetterToggle.Hint',
+			name: 'DF_QOL.BetterToggle.Name',
+			hint: 'DF_QOL.BetterToggle.Hint',
 			scope: 'world',
 			type: Boolean,
 			default: true,

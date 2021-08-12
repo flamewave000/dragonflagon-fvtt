@@ -1,5 +1,5 @@
 # DragonFlagon Quality of Life
-
+![Forge Installs](https://img.shields.io/badge/dynamic/json?color=red&label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-qol) ![Latest Version](https://img.shields.io/badge/dynamic/json?label=Latest%20Release&prefix=v&query=package.versions%5B0%5D&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-qol)  
 Adds various Quality of Life improvements. These are all small, light-weight, adjustments that didn't fit in my other larger modules that help work out some of the kinks in Core FoundryVTT.
 
 Each feature is not only self-contained, but when disabled will completely and cleanly remove itself from Foundry. This is so that if any one feature happens to conflict with another module, disabling it guarantees the conflict will be resolved. There are currently no reported conflicts though, so have fun!
@@ -22,9 +22,17 @@ When enabled, the Core Foundry template measurements will be overridden to follo
 |:-:|:-:|
 |![Foundry Core Templates](../.assets/df-qol-templates-core.png)|![D&D5e Style Templates](../.assets/df-qol-templates-dnd5e.png)|
 
+## Token Locking
+
+If enabled, you will now be able to lock individual tokens. This works the same way as locking Tiles or Drawings. Perfect making sure players cannot move a token without having to pause the game. Or maybe you just want to place some tokens on a landing page and don't want players to accidentally move them around.
+
+By default, GM users are still able to move locked tokens around the scene. This can be disabled in the Module's configuration. Great to help keep yourself from shifting tokens by accident as well.
+
+![Token Lock](../.assets/df-qol-token-lock.png)
+
 ## Quick Table Rolling
 
-This is a very feature that adds a "Roll on the table" option to the context menu of RollTable entities. This allows you to roll the table without opening the Roll Table sheet and clicking the Roll button there.
+This is a very feature that adds a "Roll on the table" option to the context menu of RollTable entities. This allows you to roll the table without opening the Roll Table sheet and clicking the Roll button there. You can also Lock or Unlock a selected group of tokens.
 
 ![Quick Roll Option](../.assets/df-qol-roll-table.png)
 

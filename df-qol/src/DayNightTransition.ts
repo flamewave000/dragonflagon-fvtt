@@ -7,8 +7,8 @@ export default class DayNightTransition {
 			config: true,
 			type: Boolean,
 			default: true,
-			name: 'DRAGON_FLAGON_QOL.DayNight.ProgressSettingName',
-			hint: 'DRAGON_FLAGON_QOL.DayNight.ProgressSettingHint',
+			name: 'DF_QOL.DayNight.ProgressSettingName',
+			hint: 'DF_QOL.DayNight.ProgressSettingHint',
 			onChange: newValue => {
 				libWrapper.unregister(SETTINGS.MOD_NAME, 'LightingLayer.prototype.animateDarkness');
 			}
@@ -22,8 +22,8 @@ export default class DayNightTransition {
 			type: Number,
 			default: 10,
 			range: { min: 1, max: 60, step: 1 },
-			name: 'DRAGON_FLAGON_QOL.DayNight.DurationSettingName',
-			hint: 'DRAGON_FLAGON_QOL.DayNight.DurationSettingHint'
+			name: 'DF_QOL.DayNight.DurationSettingName',
+			hint: 'DF_QOL.DayNight.DurationSettingHint'
 		});
 	}
 	static async DF_DAY_NIGHT_PROGRESS(this: LightingLayer, target = 1.0, { duration = 10000 } = {}) {

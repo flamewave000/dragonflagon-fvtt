@@ -1,0 +1,26 @@
+<form class="dfal">
+	<aside>
+		<ol>
+			<li class="active">0 {{localize 'DF_ACTIVE_LIGHTS.Seconds'}}</li>
+		</ol>
+		<button type="button" name="add-keyframe"><i class="fas fa-plus"></i> {{localize
+			'DF_ACTIVE_LIGHTS.Config.AddKey'}}</button>
+	</aside>
+	<main>
+		<table>
+			<tr>
+				<td></td>
+				<td><input name="bounce" type="checkbox" {{#if bounce}}checked{{/if}}></td>
+				<td><label>{{localize 'DF_ACTIVE_LIGHTS.Config.Bounce'}}</label></td>
+			</tr>
+			<tr>
+				<td><a class="button" title="{{localize 'DF_ACTIVE_LIGHTS.Config.Randomize'}}"><i
+							class="fas fa-dice"></i></a></td>
+				<td><input name="offset" type="number" step="0.00" placeholder="0 seconds" value="{{offset}}"></td>
+				<td><label>{{localize 'DF_ACTIVE_LIGHTS.Config.Offset'}}</label></td>
+			</tr>
+		</table>
+		<section>
+		</section>
+	</main>
+</form>

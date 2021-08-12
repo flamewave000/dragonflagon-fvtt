@@ -1,0 +1,42 @@
+{
+	"DF_ACTIVE_LIGHTS": {
+		"name": "DF Active Lights",
+		"Seconds": "Seconds",
+		"Config": {
+			"Title": "Active Light Config: ",
+			"OpenButton": "Active Light Configuration",
+			"AddKey": "Add Key Frame",
+			"Bounce": "Make animation bounce back and forth",
+			"Randomize": "Randomize offset based on current duration",
+			"Offset": "Time Offset in seconds for \"desyncing\" similar animations"
+		},
+		"Props": {
+			"Time": "Key Frame Time Position (Milliseconds)",
+			"Enable": "Enable Property",
+			"Dim": "Dim Light Radius",
+			"Bright": "Bright Light Radius",
+			"Angle": "Emission Angle",
+			"Rotation": "Light Rotation Angle",
+			"TintColor": "Light Colour",
+			"TintAlpha": "Colour Intensity"
+		},
+		"Funcs": {
+			"Linear": "Linear",
+			"LinearLoop": "Linear Loop",
+			"FixedStart": "Fixed Start",
+			"FixedEnd": "Fixed End",
+			"QuadIn": "Quadratic In",
+			"QuadOut": "Quadratic Out",
+			"QuadFull": "Quadratic Full",
+			"QuadLoop": "Quadratic Loop",
+			"EllipseIn": "Elliptic In",
+			"EllipseOut": "Elliptic Out",
+			"EllipseFull": "Elliptic Full",
+			"EllipseLoop": "Elliptic Loop"
+		},
+		"Warnings": {
+			"KeyFrame_Zero": "You cannot set a custom Key Frame to time ZERO!",
+			"KeyFrame_Exists": "A Key Frame already exists for time {0} Seconds"
+		}
+	}
+}

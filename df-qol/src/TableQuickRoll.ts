@@ -3,8 +3,8 @@ import SETTINGS from './libs/Settings.js';
 
 async function requestReload() {
 	if (await Dialog.confirm({
-		title: game.i18n.localize("DRAGON_FLAGON_QOL.ReloadGame.Title"),
-		content: game.i18n.localize("DRAGON_FLAGON_QOL.ReloadGame.Content"),
+		title: game.i18n.localize("DF_QOL.ReloadGame.Title"),
+		content: game.i18n.localize("DF_QOL.ReloadGame.Content"),
 		defaultYes: true
 	} as any) as any as Boolean) {
 		window.location.reload();
@@ -14,8 +14,8 @@ async function requestReload() {
 export default class TableQuickRoll {
 	static init() {
 		SETTINGS.register('quick-roll', {
-			name: 'DRAGON_FLAGON_QOL.QuickRoll.Title',
-			hint: 'DRAGON_FLAGON_QOL.QuickRoll.Hint',
+			name: 'DF_QOL.QuickRoll.Title',
+			hint: 'DF_QOL.QuickRoll.Hint',
 			scope: 'world',
 			type: Boolean,
 			default: true,
@@ -28,7 +28,7 @@ export default class TableQuickRoll {
 
 	static DF_QUICK_ROLL(_html: any, entryOptions: any) {
 		entryOptions.unshift({
-			name: "DRAGON_FLAGON_QOL.QuickRoll.MenuItem",
+			name: "DF_QOL.QuickRoll.MenuItem",
 			icon: '<i class="fas fa-dice-d20"></i>',
 			condition: () => true,
 			callback: async (header: any) => {

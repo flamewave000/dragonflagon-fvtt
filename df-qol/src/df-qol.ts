@@ -7,6 +7,7 @@ import DnD5eVehicleCapacity from './DnD5eVehicleCapacity.js';
 import TemplateTargeting from './TemplateTargeting.js';
 
 import SETTINGS from './libs/Settings.js';
+import TokenLock from './TokenLock.js';
 SETTINGS.init('df-qol');
 
 
@@ -18,6 +19,7 @@ Hooks.once('init', function () {
 	DayNightTransition.init();
 	DnD5eVehicleCapacity.init();
 	TemplateTargeting.init();
+	TokenLock.init();
 });
 
 Hooks.once('ready', function () {
@@ -28,4 +30,5 @@ Hooks.once('ready', function () {
 		return;
 	}
 	DnD5eVehicleCapacity.ready();
+	TokenLock.ready();
 });
