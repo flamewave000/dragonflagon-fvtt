@@ -3,13 +3,16 @@
 	"I18N.MAINTAINERS": "@Viriato139ac#0342",
 	"DF-LOGGER": {
 		"Settings": {
-			"GmOnly_Title": "Mostrar mensajes solo al GM",
+			"ManageMessages": "Gestionar mensajes",
+			"Sound_Name": "Sonido usado para los mensajes",
+			"Sound_Hint": "Sonido que se reproducirá cuando se muestra en el chat un mensaje de conexión/desconexión de jugador",
+			"GmOnly_Name": "Mostrar mensajes solo al GM",
 			"GmOnly_Hint": "Mostrar mensajes de conexión/desconexión de usuarios únicamente al GM",
-			"NotMe_Title": "No mostrar mensajes propios",
+			"NotMe_Name": "No mostrar mensajes propios",
 			"NotMe_Hint": "Solo mostrar los mensajes de conexión/desconexión de otros usuarios",
-			"Delay_Title": "Retraso de borrado automático",
+			"Delay_Name": "Retraso de borrado automático",
 			"Delay_Hint": "Cuantos segundos deben permanecer en el registro los mensajes de conexión/desconexión",
-			"SelfDestruct_Title": "Borrar automáticamente mensajes",
+			"SelfDestruct_Name": "Borrar automáticamente mensajes",
 			"SelfDestruct_Hint": "Los mensajes se eliminarán del chat tras un tiempo determinado"
 		},
 		"Content": {
@@ -17,6 +20,30 @@
 			"Logout": "Se ha desconectado un usuario",
 			"Login_Persist": "*Se ha conectado un usuario",
 			"Logout_Persist": "*Se ha desconectado un usuario"
+		},
+		"ManageMenu": {
+			"Title": "Gestión de mensajes",
+			"Confirm": {
+				"Title": "Reiniciar mensajes",
+				"Content": "¿Está seguro de que quiere reiniciar los mensajes por defecto? Esta acción no se puede deshacer, perderá todos los mensajes personalizados"
+			},
+			"TabLogin": "Mensajes de conexión",
+			"TabLogout": "Mensajes de desconexión",
+			"Headers": {
+				"Toggle": "Usar mensaje",
+				"Message": "Texto del mensaje",
+				"Remove": "Borrar mensaje"
+			},
+			"Entry": {
+				"ToggleTitle": "Conmutar mensaje",
+				"MessagePlaceholder": "Escrina su mensaje personalizado aquí...",
+				"RemoveTitle": "Borrar entrada"
+			},
+			"Buttons": {
+				"Add": "Añadir entrada",
+				"Reset": "Reiniciar mensajes",
+				"Save": "Guardar mensajes"
+			}
 		},
 		"LoginMsg": {
 			"0": "{{username}} acaba de unirse al servidor. ¡buenas noches y buena suerte!",
@@ -43,7 +70,7 @@
 			"21": "Se acerca el Challenger - ¡{{username}} ha aparecido!",
 			"22": "¿Es un pájaro? ¿Es un avión? Nah, olvídalo, solo es {{username}}.",
 			"23": "¡Es {{username}}! ¡Alabado sea el Sol!\n\\\\[T]/",
-			"24": "Nunca perderé la confianza en {{username}}. Nunca decepcionaré a {{username}}.",
+			"24": "Buenas noches, bienvenidos\nHijos del rock and roll\nLos saludan los aliados de {{username}}",
 			"25": "¡Ja! ¡{{username}} se ha unido! ¡Activaste la trampa!",
 			"26": "¡Ánimo, cariño! ¡Un {{username}} ha llegado!",
 			"27": "¡Eh, escucha! ¡{{username}} se ha unido!",
@@ -56,10 +83,10 @@
 			"34": "Jugador preparado: {{username}}",
 			"35": "{{username}} ha venido a patear culos o a mascar chicle... y ya se le han acabado los chicles",
 			"36": "Hola. ¿Es este el {{username}} que estábais buscando?",
-			"37": "Las rosas son rojas, azules las violetas, y a {{username}} le vemos la jeta"
+			"37": "Las rosas son rojas, azules las violetas, y a {{username}} le aparece la jeta"
 		},
 		"LogoutMsg": {
-			"LogoutMsg0": "¡{{username}} dejó el garito!"
+			"0": "¡{{username}} dejó el garito!"
 		}
 	}
 }
