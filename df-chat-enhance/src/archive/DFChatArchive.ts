@@ -9,12 +9,64 @@ export interface DFChatArchiveEntry {
 	filepath: string;
 }
 
+
+class ArchiveFolderMenu extends FormApplication {
+	static get defaultOptions() {
+		return mergeObject(FormApplication.defaultOptions as Partial<FormApplication.Options>, {
+			width: 400,
+			height: 125,
+			resizable: false,
+			minimizable: false,
+			title: 'DF_CHAT_ARCHIVE.Settings.ArchiveFolder_Name',
+			template: "modules/df-chat-enhance/templates/archive-folder.hbs",
+			submitOnClose: false,
+			submitOnChange: false,
+			closeOnSubmit: true
+		}) as FormApplication.Options;
+	}
+
+	private folder = SETTINGS.get<string>(DFChatArchive.PREF_FOLDER);
+	private source = SETTINGS.get<string>(DFChatArchive.PREF_FOLDER_SOURCE);
+
+	getData(options: any): any {
+		return { path: this.folder }
+	}
+
+	async _renderInner(data: any, options?: any): Promise<JQuery<HTMLElement>> {
+		const html = await super._renderInner(data, options);
+		const input = html.find('input#dfce-ca-folder-path')[0] as HTMLInputElement;
+		html.find('label>button').on('click', async event => {
+			event.preventDefault();
+			const fp = new FilePicker(<any>{
+				current: SETTINGS.get(DFChatArchive.PREF_FOLDER),
+				title: 'DF_CHAT_ARCHIVE.Settings.ArchiveFolder_Name',
+				type: 'folder',
+				field: input,
+				callback: async (path: string) => {
+					this.source = fp.activeSource;
+					this.folder = path
+				},
+				button: event.currentTarget
+			});
+			await fp.browse();
+		});
+		return html;
+	}
+	protected async _updateObject(event: Event, formData?: object) {
+		await SETTINGS.set<string>(DFChatArchive.PREF_FOLDER, this.folder);
+		await SETTINGS.set<string>(DFChatArchive.PREF_FOLDER_SOURCE, this.source);
+	}
+}
+
 export class DFChatArchive {
 	private static readonly PREF_LOGS = 'logs';
 	private static readonly PREF_CID = 'currentId';
-	private static readonly PREF_FOLDER = 'archiveFolder';
-	private static readonly DATA_FOLDER = 'data';
+	static readonly PREF_FOLDER = 'archiveFolder';
+	static readonly PREF_FOLDER_SOURCE = 'archiveFolderSource';
+	private static readonly PREF_FOLDER_MENU = 'archiveFolderMenu';
 	private static _updateListener: () => void = null;
+
+	private static get DATA_FOLDER(): string { return SETTINGS.get(DFChatArchive.PREF_FOLDER_SOURCE) }
 
 	static setUpdateListener(listener: () => void) {
 		this._updateListener = listener;
@@ -37,28 +89,39 @@ export class DFChatArchive {
 			type: Number,
 			default: 0
 		});
-		SETTINGS.register(this.PREF_FOLDER, {
-			name: 'DF_CHAT_ARCHIVE.Settings.ArchiveFolder_Name',
+
+		game.settings.registerMenu(SETTINGS.MOD_NAME, this.PREF_FOLDER_MENU, {
+			label: 'DF_CHAT_ARCHIVE.Settings.ArchiveFolder_Name',
 			hint: 'DF_CHAT_ARCHIVE.Settings.ArchiveFolder_Hint',
+			restricted: true,
+			type: <any>ArchiveFolderMenu
+		});
+
+		SETTINGS.register(this.PREF_FOLDER, {
 			scope: 'world',
 			config: false,
 			type: String,
-			filePicker: true,
 			default: `worlds/${game.world.id}/chat-archive`,
-			onChange: <any>((a: any, b: any, c: any) => {
-				this.createArchiveFolderIfMissing();
+			onChange: async () => {
+				await this.createArchiveFolderIfMissing();
 				if (this._updateListener != null)
 					this._updateListener();
-			})
+			}
+		});
+		SETTINGS.register(this.PREF_FOLDER_SOURCE, {
+			scope: 'world',
+			config: false,
+			type: String,
+			default: 'data',
 		});
 		this.createArchiveFolderIfMissing();
 	}
 
-	private static createArchiveFolderIfMissing() {
+	private static async createArchiveFolderIfMissing() {
 		const folder: string = SETTINGS.get(this.PREF_FOLDER);
-		FilePicker.browse(this.DATA_FOLDER, folder)
+		await FilePicker.browse(this.DATA_FOLDER, folder)
 			.catch(async _ => {
-				if (!await FilePicker.createDirectory(origin, folder, {}))
+				if (!await FilePicker.createDirectory(this.DATA_FOLDER, folder, {}))
 					throw new Error('Could not access the archive folder: ' + folder)
 			});
 	}
