@@ -79,4 +79,9 @@
 .dfce-cm-bottom .message-portrait {
 	display: none;
 }
+
+.dfce-cm-middle .message-header .message-metadata,
+.dfce-cm-bottom .message-header .message-metadata {
+	flex: 2 !important;
+}
 /***********************************************/

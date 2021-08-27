@@ -2,6 +2,7 @@ import * as DFChatArchive from "./archive/df-chat-archive.js";
 import DFChatEdit from "./edit/df-chat-edit.js";
 import initDFChatEdit from "./edit/df-chat-edit.js";
 import * as DFAdventureLog from "./logger/df-adventure-log.js";
+import DFAdventureLogProcessor from "./logger/DFAdventureLogProcessor.js";
 import ChatMerge from "./merge/chat-merge.js";
 import initDFChatPrivacy from "./privacy/df-chat-privacy.js";
 import ScrollManage from "./scroll-manage/scroll-manage.js";
@@ -31,6 +32,13 @@ Hooks.once('init', function () {
 	DFAdventureLog.init();
 	ChatMerge.init();
 	ScrollManage.init();
+
+	libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype._getEntryContextOptions', function (wrapped: Function, ...args: any) {
+		const options = wrapped(...args) as ContextMenu.Item[];
+		DFChatEdit.appendChatContextMenuOptions(options);
+		DFAdventureLogProcessor.appendChatContextMenuOptions(options);
+		return options;
+	}, 'WRAPPER');
 });
 
 Hooks.once('ready', function () {
@@ -40,7 +48,7 @@ Hooks.once('ready', function () {
 			ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error_LibWrapperMissing'));
 	}
 	DFAdventureLog.ready();
-	DFChatEdit.initDFChatEdit();
+	DFChatEdit.ready();
 	ChatMerge.ready();
 	ScrollManage.ready();
 });

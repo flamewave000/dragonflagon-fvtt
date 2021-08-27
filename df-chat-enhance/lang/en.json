@@ -109,7 +109,8 @@
 		"Settings_IgnoreHtmlName": "Chat Edit: Ignore Messages Containing HTML",
 		"Settings_IgnoreHtmlHint": "Do not allow messages containing HTML to be edited.",
 		"EditedFlag": "(edited)",
-		"Error_NoPermission": "The Gamemaster has disabled editing"
+		"Error_NoPermission": "The Gamemaster has disabled editing",
+		"ContextOption": "Edit Message"
 	},
 	"DF_CHAT_MERGE": {
 		"EnableName": "Chat Merge: Enable Chat Message Merging",
