@@ -5,6 +5,7 @@
 - Updated supported Foundry version to 0.8.9.
 - Fixed #177: Could not create archive if the chat-archive folder was not already created.
 - WIP Added #132: You can now select the directory for storing Chat Archives.
+- Fixed #158: Chat Merging will now hide the Chat Portraits for all but the first meesage in each group.
 
 ## Release 3.2.0 (2021-06-29)
 - Chat Edit: Added option to ignore messages containing HTML from being editable. This will be on by default, but can be turned off to allow editing those messages.
