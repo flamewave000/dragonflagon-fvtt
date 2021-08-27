@@ -8,7 +8,7 @@
 		"ChatEnhanceSettingGroup": "Chat Aprimorado",
 		"ExportButtonTitle": "Arquivar Chat",
 		"OpenChatArchive": "Registros do Chat",
-		"Settings_HideExport": "Ocultar botão 'Exportar Registro de Chat'",
+		"Settings.HideExport": "Ocultar botão 'Exportar Registro de Chat'",
 		"ArchiveNew_Title": "Criar Registro de Chat",
 		"ArchiveNew_Name": "Nome:",
 		"ArchiveNew_NameHint": "Nome do arquivo",

@@ -8,7 +8,11 @@
 		"ChatEnhanceSettingGroup": "Chat Enhancement",
 		"ExportButtonTitle": "Archive chat log",
 		"OpenChatArchive": "Manage Chat Archive",
-		"Settings_HideExport": "Chat Archive: Hide the Export Chat Log button",
+		"Settings": {
+			"HideExport": "Chat Archive: Hide the Export Chat Log button",
+			"ArchiveFolder_Name": "Folder to save Chat Archives",
+			"ArchiveFolder_Hint": "The directory where chat archives are stored"
+		},
 		"ArchiveNew_Title": "DF Create Chat Archive",
 		"ArchiveNew_Name": "Archive Name:",
 		"ArchiveNew_NameHint": "Unamed Archive",

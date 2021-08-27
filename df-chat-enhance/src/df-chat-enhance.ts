@@ -34,7 +34,6 @@ Hooks.once('init', function () {
 });
 
 Hooks.once('ready', function () {
-	DFChatArchive.ready();
 	if (!game.modules.get('lib-wrapper')?.active) {
 		console.error('Missing libWrapper module dependency');
 		if (game.user.isGM)

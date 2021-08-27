@@ -9,14 +9,6 @@ export interface DFChatArchiveEntry {
 	filepath: string;
 }
 
-/** @deprecated */
-export interface ObsoleteDFChatArchiveEntry {
-	id: number;
-	name: string;
-	chats: ChatMessage[] | ChatMessage.Data[];
-	visible: boolean;
-}
-
 export class DFChatArchive {
 	private static readonly PREF_LOGS = 'logs';
 	private static readonly PREF_CID = 'currentId';
@@ -46,21 +38,25 @@ export class DFChatArchive {
 			default: 0
 		});
 		SETTINGS.register(this.PREF_FOLDER, {
+			name: 'DF_CHAT_ARCHIVE.Settings.ArchiveFolder_Name',
+			hint: 'DF_CHAT_ARCHIVE.Settings.ArchiveFolder_Hint',
 			scope: 'world',
 			config: false,
 			type: String,
+			filePicker: true,
 			default: `worlds/${game.world.id}/chat-archive`,
-			onChange: () => {
-				this.createArchiveFolderIfMissing(this.DATA_FOLDER, SETTINGS.get(this.PREF_FOLDER));
+			onChange: <any>((a: any, b: any, c: any) => {
+				this.createArchiveFolderIfMissing();
 				if (this._updateListener != null)
 					this._updateListener();
-			}
+			})
 		});
-		this.createArchiveFolderIfMissing(this.DATA_FOLDER, SETTINGS.get(this.PREF_FOLDER));
+		this.createArchiveFolderIfMissing();
 	}
 
-	private static createArchiveFolderIfMissing(origin: string, folder: string) {
-		FilePicker.browse(origin, folder)
+	private static createArchiveFolderIfMissing() {
+		const folder: string = SETTINGS.get(this.PREF_FOLDER);
+		FilePicker.browse(this.DATA_FOLDER, folder)
 			.catch(async _ => {
 				if (!await FilePicker.createDirectory(origin, folder, {}))
 					throw new Error('Could not access the archive folder: ' + folder)
@@ -165,36 +161,5 @@ export class DFChatArchive {
 		await SETTINGS.set(this.PREF_LOGS, logs);
 		if (this._updateListener != null)
 			this._updateListener();
-	}
-
-	static async upgradeFromDatabaseEntries() {
-		if (!game.user.isGM)
-			return;
-
-		var logData: ObsoleteDFChatArchiveEntry[] | DFChatArchiveEntry[] = SETTINGS.get(this.PREF_LOGS);
-		if (logData instanceof String) {
-			logData = JSON.parse(logData.toString());
-		}
-		const needUpgrades = (<ObsoleteDFChatArchiveEntry[]>logData).filter(x => x.chats !== undefined);
-		const logs = (<DFChatArchiveEntry[]>logData).filter(x => x.filename !== undefined);
-
-		console.log('DF Chat Enhancements: Upgrading obsolete entries: ', needUpgrades);
-		if (needUpgrades.length > 0)
-			ui.notifications.info('DF Chat Enhancements: Migrating Chat Archive data...');
-
-		const newEntries: DFChatArchiveEntry[] = [];
-		for (let entry of needUpgrades) {
-			newEntries.push(await this._generateChatArchiveFile(entry.id, entry.name, entry.chats, entry.visible));
-		}
-
-		console.log('DF Chat Enhancements: upgraded entries: ', JSON.stringify(newEntries.map(x => x.filepath), null, '\t'));
-		logs.push(...newEntries);
-
-		if (newEntries.length > 0) {
-			await SETTINGS.set(this.PREF_LOGS, logs);
-			if (this._updateListener != null)
-				this._updateListener();
-			ui.notifications.info('DF Chat Enhancements: Migration complete.');
-		}
 	}
 }

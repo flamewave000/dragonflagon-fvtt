@@ -8,7 +8,7 @@
 		"ChatEnhanceSettingGroup": "聊天增强",
 		"ExportButtonTitle": "归档聊天记录",
 		"OpenChatArchive": "管理聊天归档",
-		"Settings_HideExport": "聊天归档：隐藏导出聊天记录按钮",
+		"Settings.HideExport": "聊天归档：隐藏导出聊天记录按钮",
 		"ArchiveNew_Title": "DF 创建聊天归档",
 		"ArchiveNew_Name": "归档名称：",
 		"ArchiveNew_NameHint": "未命名归档",

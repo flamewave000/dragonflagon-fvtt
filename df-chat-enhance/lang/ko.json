@@ -8,7 +8,7 @@
 		"ChatEnhanceSettingGroup": "Chat Enhancement",
 		"ExportButtonTitle": "채팅 로그 아카이브",
 		"OpenChatArchive": "채팅 아카이브 관리자",
-		"Settings_HideExport": "채팅 아카이브: 채팅 로그 내보내기 버튼 숨기기",
+		"Settings.HideExport": "채팅 아카이브: 채팅 로그 내보내기 버튼 숨기기",
 		"ArchiveNew_Title": "DF 채팅 아카이브 생성",
 		"ArchiveNew_Name": "아카이브 이름:",
 		"ArchiveNew_NameHint": "이름 없는 아카이브",
