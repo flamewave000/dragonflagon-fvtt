@@ -4,6 +4,7 @@ import SETTINGS from "../SETTINGS.js";
 export default class ChatMerge {
 
 	private static readonly PREF_ENABLED = 'chat-merge-enabled';
+	private static readonly PREF_SPLIT_SPEAKER = 'chat-merge-split-speaker';
 	private static readonly PREF_EPOCH = 'chat-merge-epoch';
 	private static readonly PREF_ALLOW_ROLLS = 'chat-merge-allowRolls';
 	private static readonly PREF_SEPARATE = 'chat-merge-separateWithBorder';
@@ -42,6 +43,15 @@ export default class ChatMerge {
 					style.setProperty('--dfce-cm-header-delete-pad', newValue ? '' : '16px');
 				}
 			}
+		});
+		SETTINGS.register(this.PREF_SPLIT_SPEAKER, {
+			name: 'DF_CHAT_MERGE.SplitSpeakerName',
+			hint: 'DF_CHAT_MERGE.SplitSpeakerHint',
+			config: true,
+			scope: 'client',
+			default: true,
+			type: Boolean,
+			onChange: () => this._processAllMessage()
 		});
 		SETTINGS.register(this.PREF_ALLOW_ROLLS, {
 			name: 'DF_CHAT_MERGE.AllowRollsName',
@@ -188,8 +198,25 @@ export default class ChatMerge {
 
 	private static _isValidMessage(current: ChatMessage, previous: ChatMessage) {
 		const rolls = this._allowRolls;
-		return current.data.user === previous.data.user
+		const splitSpeaker = SETTINGS.get<boolean>(this.PREF_SPLIT_SPEAKER);
+		var userCompare = false;
+		if (splitSpeaker) {
+			// this is a bit complex, basically we want to group by actors, but if you're not using an actor, group by user instead
+			userCompare = ( // If actors are equal and NOT null
+				current.data.speaker.actor === previous.data.speaker.actor
+				&& current.data.speaker.actor != null
+			) || ( // If BOTH actors are null and users are equal
+				current.data.speaker.actor === null
+				&& previous.data.speaker.actor === null
+				&& current.data.user === previous.data.user
+			);
+		} else {
+			// If we are not splitting by speaker, just do the simple option of comparing the users
+			userCompare = current.data.user === previous.data.user;
+		}
+		return userCompare
 			&& this._inTimeFrame(current.data.timestamp, previous.data.timestamp)
+			// Check for merging with roll types
 			&& (rolls === 'all'
 				|| (rolls === 'rolls' && current.isRoll === previous.isRoll)
 				|| (rolls === 'none' && !current.isRoll && !previous.isRoll))

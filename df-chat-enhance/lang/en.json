@@ -121,6 +121,8 @@
 		"AllowRollsHint": "How Roll Messages should be handled.",
 		"SeparateName": "Chat Merge: Show Merged Message Divider",
 		"SeparateHint": "Show a thin divider between merged messages.",
+		"SplitSpeakerName": "Group By Speaker",
+		"SplitSpeakerHint": "If enabled, messages will be grouped based on the Actor speaking; otherwise all messages from a single user will be grouped together.",
 		"HoverName": "Chat Merge: Show Hover Shadow",
 		"HoverHint": "Show a border shadow when the mouse is hovering over a merged chat message.",
 		"EpochName": "Chat Merge: Maximum Period of Time",
