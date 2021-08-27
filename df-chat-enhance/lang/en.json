@@ -140,5 +140,11 @@
 		"ScrollIfYouHint": "If you have scrolled up through the chat log, this will automatically scroll you back to the bottom when you send a message.",
 		"ScrollButton": "Scroll to Bottom",
 		"NewMessage": "New Message!"
+	},
+	"DF_CHAT_WHISPER_TRUNC": {
+		"SettingEnabledName": "Enable Whisper Name List Truncation",
+		"SettingEnabledHint": "Will truncate long recipient name lists for whisper messages.",
+		"SettingCharLimitName": "Whisper Truncation Character Limit",
+		"SettingCharLimitHint": "The maximum number of characters to show before truncating the recipient names."
 	}
 }

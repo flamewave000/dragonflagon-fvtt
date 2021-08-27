@@ -7,6 +7,7 @@ import ChatMerge from "./merge/chat-merge.js";
 import initDFChatPrivacy from "./privacy/df-chat-privacy.js";
 import ScrollManage from "./scroll-manage/scroll-manage.js";
 import SETTINGS from "./SETTINGS.js";
+import WhisperTruncation from "./whisper-trunc/whisper-trunc.js";
 SETTINGS.init('df-chat-enhance');
 
 declare global {
@@ -32,6 +33,7 @@ Hooks.once('init', function () {
 	DFAdventureLog.init();
 	ChatMerge.init();
 	ScrollManage.init();
+	WhisperTruncation.init();
 
 	libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype._getEntryContextOptions', function (wrapped: Function, ...args: any) {
 		const options = wrapped(...args) as ContextMenu.Item[];
