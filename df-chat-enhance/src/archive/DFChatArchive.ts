@@ -61,11 +61,10 @@ export class DFChatArchive {
 
 	private static createArchiveFolderIfMissing(origin: string, folder: string) {
 		FilePicker.browse(origin, folder)
-			.then(loc => {
-				if (loc.target == 'worlds/' + game.world.id)
-					FilePicker.createDirectory(origin, folder, {});
-			})
-			.catch(_ => { throw new Error('Could not access the archive folder: ' + folder) });
+			.catch(async _ => {
+				if (!await FilePicker.createDirectory(origin, folder, {}))
+					throw new Error('Could not access the archive folder: ' + folder)
+			});
 	}
 
 	static getLogs(): DFChatArchiveEntry[] { return SETTINGS.get<DFChatArchiveEntry[]>(this.PREF_LOGS); }
@@ -79,9 +78,11 @@ export class DFChatArchive {
 		const fileName = encodeURI(`${id}_${name}.json`);
 		// Create the File and contents
 		const file = new File([JSON.stringify(chats, null, '')], fileName, { type: 'application/json' });
-		const response: { path?: string; message?: string } = <any>await FilePicker.upload(this.DATA_FOLDER, folderPath, file);
-		if (!response.path)
+		var response: { path?: string; message?: string } = <any>await FilePicker.upload(this.DATA_FOLDER, folderPath, file);
+		if (!response.path) {
+			console.error(`Could not create archive ${fileName}\nReason: ${response}`);
 			throw new Error('Could not upload the archive to server: ' + fileName);
+		}
 		const entry: DFChatArchiveEntry = {
 			id: id,
 			name: name,

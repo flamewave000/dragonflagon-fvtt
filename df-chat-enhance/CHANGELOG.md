@@ -2,6 +2,8 @@
 
 ## Release 3.3.0 (2021-08-26)
 - Korean Localization: Courtesy of [drdwing](https://github.com/drdwing).
+- Updated supported Foundry version to 0.8.9.
+- Fixed #177: Could not create archive if the chat-archive folder was not already created.
 
 ## Release 3.2.0 (2021-06-29)
 - Chat Edit: Added option to ignore messages containing HTML from being editable. This will be on by default, but can be turned off to allow editing those messages.
