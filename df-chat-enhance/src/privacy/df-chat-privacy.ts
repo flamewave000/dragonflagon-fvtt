@@ -50,8 +50,8 @@ async function handleChatLogRendering(chat: ChatLog, html: JQuery<HTMLElement>, 
 		buttonHtml.find('button.active').removeClass('active');
 		$(this).addClass('active');
 	});
-	html.find('select.roll-type-select').after(buttonHtml);
-	html.find('select.roll-type-select').remove();
+	html.find('[name=rollMode]').after(buttonHtml);
+	html.find('[name=rollMode]').remove();
 
 	if (!game.settings.get(CONFIG.MOD_NAME, 'replace-buttons'))
 		return;
