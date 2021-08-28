@@ -1,5 +1,8 @@
 # DF User Logger
 
+## Release 1.6.2 (2021-08-27)
+- Minor fix for a conflict with one of my own modules. They both used the same ID for their windows.
+
 ## Release 1.6.1 (2021-06-29)
 - Added sounds directory back in. Was not included in the previous release due to a broken build script.
 

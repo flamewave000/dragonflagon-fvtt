@@ -11,7 +11,6 @@ export default class DFLoggerMenu extends FormApplication {
 			closeOnSubmit: true,
 			width: 600,
 			height: 500,
-			id: 'DFHotkeyConfig',
 			title: 'DF-LOGGER.ManageMenu.Title',
 			tabs: [{ navSelector: ".tabs", contentSelector: "main", initial: "login" }],
 			template: 'modules/df-logger/templates/message-manage.hbs'
