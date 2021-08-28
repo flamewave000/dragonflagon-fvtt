@@ -4,6 +4,16 @@
 
 Multiple improvements to the chat system feature set. Brings a new Chat Archive that lets you save your current chat log to an archive and keep the chat clean between sessions. Gives an option to replace the Roll Type dropdown menu with a set of 4 buttons. This makes switching rolls much more efficient and provides a better visual indicator for what roll you're in.
 
+## Contributers
+
+- Code Contributions: [zeteticl](https://github.com/zeteticl).
+- Code Contributions: [hmqgg](https://github.com/hmqgg)
+- Japanese Localization: [BrotherSharper](https://github.com/BrotherSharper)
+- Korean Localization: [drdwing](https://github.com/drdwing)
+- Portuguese (Brazil) Localization: [Brn086](https://github.com/Brn086) and [Matheus Clemente](https://github.com/mclemente)
+
+## Table of Contents
+
 - [Adventure Log](#Adventure-Log)
 	- [Config](#Config)
 	- [Log Command Help](#Log-Command-Help)
