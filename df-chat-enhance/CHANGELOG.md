@@ -6,9 +6,10 @@
 - Added #132: You can now select the directory for storing Chat Archives.
 - Added #167: Merged messages will now default group by Speaker instead of by User. This can be toggled off in the module settings.
 - Added #160: Whispers with many recipients will now truncate and display a "(+4 more)" label. Hovering the visible names will show the hidden ones.
+- Added #163: Text selection of "formatted" chat messages.
 - Updated: The Chat Edit feature has been moved. Instead of an Edit button on each message, this has been moved to the Chat Message Context Menu which can be reached by right-clicking a chat message. This helps to declutter messages in the log.
 - Fixed #177: Could not create archive if the chat-archive folder was not already created.
-- Fixed #158: Chat Merging will now hide the Chat Portraits for all but the first meesage in each group.
+- Fixed #158: Chat Merging will now hide the Chat Portraits for all but the first message in each group.
 - Fixed: Chat Portrait CSS conflicted with Chat Merge's header adjustments and made delete button misaligned.
 
 ## Release 3.2.0 (2021-06-29)

@@ -209,3 +209,7 @@ Rolls can be merged in an independent way. You have three choices, No Merging, M
 Now when you whisper a message to a list of users, the Recipient List at the top of the message is truncated if it is too long. There are some games that have many GM users and hitting up `/w gm ...` can make a very massive chat message. Instead it will truncate the list and say how many more names there are. You simply have to hover your mouse over the visible names and the rest will show in the mouse-over hint bubble.
 
 ![Whisper Recipient List Truncation](../.assets/df-chat-enhance-whisper-trunc.png)
+
+## Formatted Message Text Selectable
+
+Core Foundry prevents the selection of text in ANY part of Foundry. This means sections need to be re-enabled for user text selection. Messages currently allow it, but only for the plain text part. If you attempt to select "formatted" or stylized text such as this: `"Hello, my name is <b>Bob</b>"`. The `<b>` makes the text "Bob" bold, and cannot be selected. DF Chat Enhancements makes it possible to select any and all text within a regular message (any message that is not a Roll).
