@@ -135,7 +135,7 @@
 		"ScrollIfYouHint": "채팅 로그를 스크롤 했을 때 메시지를 보내면 자동적으로 아래로 스크롤한다.",
 		"ScrollButton": "아래로 스크롤",
 		"NewMessage": "새 메시지 확인"
-	}
+	},
 	"DF_CHAT_WHISPER_TRUNC": {
 		"SettingEnabledName": "귓속말 이름 목록 자르기 활성화",
 		"SettingEnabledHint": "귓속말 메시지를 받는 사람의 이름 목록이 길면 자르기합니다.",
