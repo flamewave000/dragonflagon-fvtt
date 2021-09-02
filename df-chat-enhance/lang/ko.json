@@ -141,4 +141,5 @@
 		"SettingEnabledHint": "귓속말 메시지를 받는 사람의 이름 목록이 길면 자르기합니다.",
 		"SettingCharLimitName": "귓속말 글자 자르기 제한",
 		"SettingCharLimitHint": "이름이 잘리는 부분 전까지 표시할 최대 글자 수입니다."
+	}
 }
