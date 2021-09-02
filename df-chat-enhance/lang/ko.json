@@ -116,6 +116,8 @@
 		"AllowRollsHint": "굴림 메시지 처리 방법을 설정한다.",
 		"SeparateName": "채팅 병합: 병합된 메시지 구분선 표시",
 		"SeparateHint": "병합된 메시지 간에 얇은 구분선을 표시한다.",
+		"SplitSpeakerName": "발화자로 그룹화",
+		"SplitSpeakerHint": "활성화 시, 말하고 있는 액터 기준으로 메시지가 병합됩니다. 해제하면, 하나의 유저가 한 모든 메시지가 서로 병합됩니다.",
 		"HoverName": "채팅 병합: 호버 시 섀도우 표시",
 		"HoverHint": "마우스가 병합된 메시지 위에 있을 때 외곽 섀도우를 표시한다.",
 		"EpochName": "채팅 병합: 최대 기간",
@@ -134,4 +136,9 @@
 		"ScrollButton": "아래로 스크롤",
 		"NewMessage": "새 메시지 확인"
 	}
+	"DF_CHAT_WHISPER_TRUNC": {
+		"SettingEnabledName": "귓속말 이름 목록 자르기 활성화",
+		"SettingEnabledHint": "귓속말 메시지를 받는 사람의 이름 목록이 길면 자르기합니다.",
+		"SettingCharLimitName": "귓속말 글자 자르기 제한",
+		"SettingCharLimitHint": "이름이 잘리는 부분 전까지 표시할 최대 글자 수입니다."
 }
