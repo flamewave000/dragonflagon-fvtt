@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"name": "df-qol",
-	"version": "1.5.1",
+	"version": "1.5.2",
 	"title": "DF Quality of Life",
 	"description": "A set of various small Quality of Life changes that don't quite fit in my other larger modules.",
 	"main": "src/df-qol.ts",
@@ -23,7 +23,7 @@
 		"url": "git+https://github.com/flamewave000/dragonflagon-fvtt.git"
 	},
 	"author": "flamewave000#6766",
-	"license": "GPLv3",
+	"license": "BSD-3-Clause",
 	"bugs": {
 		"url": "https://github.com/flamewave000/dragonflagon-fvtt/issues"
 	},

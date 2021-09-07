@@ -25,6 +25,7 @@ Multiple improvements to the chat system feature set. Brings a new Chat Archive 
 	- [Message Divider](#Message-Divider)
 	- [Hover Shadow](#Hover-Shadow)
 	- [Roll Merging](#Roll-Merging)
+- [Whisper Recipient List Truncation](#Whisper-Recipient-List-Truncation)
 
 **[![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!**
 
@@ -202,3 +203,13 @@ Rolls can be merged in an independent way. You have three choices, No Merging, M
 |No Merging|Merge with other Rolls|Merge With Any|
 |:-:|:-:|:-:|
 |![No Merging](../.assets/df-chat-enhance-chat-merge-roll-none.png)|![Merge with other Rolls](../.assets/df-chat-enhance-chat-merge-roll-rolls.png)|![Merge With Any](../.assets/df-chat-enhance-chat-merge-roll-all.png)|
+
+## Whisper Recipient List Truncation
+
+Now when you whisper a message to a list of users, the Recipient List at the top of the message is truncated if it is too long. There are some games that have many GM users and hitting up `/w gm ...` can make a very massive chat message. Instead it will truncate the list and say how many more names there are. You simply have to hover your mouse over the visible names and the rest will show in the mouse-over hint bubble.
+
+![Whisper Recipient List Truncation](../.assets/df-chat-enhance-whisper-trunc.png)
+
+## Formatted Message Text Selectable
+
+Core Foundry prevents the selection of text in ANY part of Foundry. This means sections need to be re-enabled for user text selection. Messages currently allow it, but only for the plain text part. If you attempt to select "formatted" or stylized text such as this: `"Hello, my name is <b>Bob</b>"`. The `<b>` makes the text "Bob" bold, and cannot be selected. DF Chat Enhancements makes it possible to select any and all text within a regular message (any message that is not a Roll).

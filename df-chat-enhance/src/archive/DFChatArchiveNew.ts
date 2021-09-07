@@ -51,7 +51,13 @@ export default class DFChatArchiveNew extends FormApplication<{ shouldDelete: bo
 		}
 
 		ui.notifications.info(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveNew_NoticeSuccess').replace('{0}', name));
-		DFChatArchive.createChatArchive(name, chats, formData['visible']);
+		try {
+			await DFChatArchive.createChatArchive(name, chats, formData['visible']);
+		}
+		catch(e) {
+			// We have failed to create an archive so we should return immediately
+			return;
+		}
 		// If we don't want to delete the messages, return
 		if (!formData.delete) return;
 

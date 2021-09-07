@@ -55,76 +55,71 @@ export default class DFAdventureLogProcessor {
 	static logCommand: ChatCommand = null;
 	static gmlogCommand: ChatCommand = null;
 
-	static initialise() {
-		// Initialize libWrapper
-		libWrapper.register(CONFIG.MOD_NAME, 'ChatLog.prototype._getEntryContextOptions', function (wrapped: Function, ...args: any) {
-			const options = wrapped(...args) as ContextMenu.Item[];
-			options.push({
-				name: 'DF_CHAT_LOG.ContextMenu_AsEvent',
-				icon: '<i style="color:SeaGreen" class="fas fa-edit"></i>',
-				condition: () => {
-					const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
-					const isGM = game.user.isGM;
-					const gmOnly = SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY);
-					return enabled && (!gmOnly || isGM);
-				},
-				callback: (header) => {
-					const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
-					DFAdventureLogProcessor.commandProcessor(chatData.content, false);
-					return {};
-				}
-			});
-			options.push({
-				name: 'DF_CHAT_LOG.ContextMenu_AsQuote',
-				icon: '<i style="color:SeaGreen" class="fas fa-quote-right"></i>',
-				condition: () => {
-					const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
-					const isGM = game.user.isGM;
-					const gmOnly = SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY);
-					return enabled && (!gmOnly || isGM);
-				},
-				callback: (header) => {
-					const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
-					if (chatData.content.trimStart().startsWith('"'))
-						DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, false);
-					else
-						DFAdventureLogProcessor.commandProcessor(`q "${game.users.get(chatData.user).name}" ${chatData.content}`, false);
-					return {};
-				}
-			});
-			options.push({
-				name: 'DF_CHAT_LOG.ContextMenu_AsGmEvent',
-				icon: '<i style="color:FireBrick" class="fas fa-edit"></i>',
-				condition: () => {
-					const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
-					const isGM = game.user.isGM;
-					return enabled && isGM;
-				},
-				callback: (header) => {
-					const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
-					DFAdventureLogProcessor.commandProcessor(chatData.content, true);
-					return {};
-				}
-			});
-			options.push({
-				name: 'DF_CHAT_LOG.ContextMenu_AsGmQuote',
-				icon: '<i style="color:FireBrick" class="fas fa-quote-right"></i>',
-				condition: () => {
-					const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
-					const isGM = game.user.isGM;
-					return enabled && isGM;
-				},
-				callback: (header) => {
-					const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
-					if (chatData.content.trimStart().startsWith('"'))
-						DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, true);
-					else
-						DFAdventureLogProcessor.commandProcessor(`q "${game.users.get(chatData.user).name}" ${chatData.content}`, true);
-					return {};
-				}
-			});
-			return options;
-		}, 'WRAPPER');
+	static appendChatContextMenuOptions(options: ContextMenu.Item[]) {
+		options.push({
+			name: 'DF_CHAT_LOG.ContextMenu_AsEvent',
+			icon: '<i style="color:SeaGreen" class="fas fa-edit"></i>',
+			condition: () => {
+				const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
+				const isGM = game.user.isGM;
+				const gmOnly = SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY);
+				return enabled && (!gmOnly || isGM);
+			},
+			callback: (header) => {
+				const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+				DFAdventureLogProcessor.commandProcessor(chatData.content, false);
+				return {};
+			}
+		});
+		options.push({
+			name: 'DF_CHAT_LOG.ContextMenu_AsQuote',
+			icon: '<i style="color:SeaGreen" class="fas fa-quote-right"></i>',
+			condition: () => {
+				const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
+				const isGM = game.user.isGM;
+				const gmOnly = SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY);
+				return enabled && (!gmOnly || isGM);
+			},
+			callback: (header) => {
+				const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+				if (chatData.content.trimStart().startsWith('"'))
+					DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, false);
+				else
+					DFAdventureLogProcessor.commandProcessor(`q "${game.users.get(chatData.user).name}" ${chatData.content}`, false);
+				return {};
+			}
+		});
+		options.push({
+			name: 'DF_CHAT_LOG.ContextMenu_AsGmEvent',
+			icon: '<i style="color:FireBrick" class="fas fa-edit"></i>',
+			condition: () => {
+				const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
+				const isGM = game.user.isGM;
+				return enabled && isGM;
+			},
+			callback: (header) => {
+				const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+				DFAdventureLogProcessor.commandProcessor(chatData.content, true);
+				return {};
+			}
+		});
+		options.push({
+			name: 'DF_CHAT_LOG.ContextMenu_AsGmQuote',
+			icon: '<i style="color:FireBrick" class="fas fa-quote-right"></i>',
+			condition: () => {
+				const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
+				const isGM = game.user.isGM;
+				return enabled && isGM;
+			},
+			callback: (header) => {
+				const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+				if (chatData.content.trimStart().startsWith('"'))
+					DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, true);
+				else
+					DFAdventureLogProcessor.commandProcessor(`q "${game.users.get(chatData.user).name}" ${chatData.content}`, true);
+				return {};
+			}
+		});
 	}
 
 	static setupSettings() {

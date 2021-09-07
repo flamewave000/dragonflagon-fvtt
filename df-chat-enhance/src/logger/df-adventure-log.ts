@@ -13,9 +13,6 @@ declare global {
 }
 
 export function init() {
-	if (game.modules.get('lib-wrapper')?.active) {
-		DFAdventureLogProcessor.initialise();
-	}
 	const api: AdventurLogApi = {
 		event: (async function (message: string, postToChat: boolean = false) {
 			DFAdventureLogProcessor.commandProcessor('event ' + message, false, !postToChat);

@@ -14,7 +14,7 @@ export function init() {
 	DFChatArchiveNew.registerSettings();
 
 	SETTINGS.register(DFChatArchiveNew.PREF_HIDE_EXPORT, {
-		name: 'DF_CHAT_ARCHIVE.Settings_HideExport',
+		name: 'DF_CHAT_ARCHIVE.Settings.HideExport',
 		scope: 'world',
 		type: Boolean,
 		default: false,
@@ -66,9 +66,4 @@ export function init() {
 	Hooks.on(`renderDFChatArchiveNew`, function (app: any, html: JQuery, data: any) {
 		html.find('input[type="text"]')[0].focus();
 	});
-}
-
-export function ready() {
-	// Fire and forget.
-	DFChatArchive.upgradeFromDatabaseEntries();
 }

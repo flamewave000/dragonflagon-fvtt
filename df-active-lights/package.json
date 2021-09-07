@@ -2,7 +2,7 @@
 	"private": true,
 	"name": "df-active-lights",
 	"title": "DF Active Lights",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"description": "Lights can now have complex animations attached to their various properties such as the direction or colour.",
 	"main": "src/df-active-lights.ts",
 	"scripts": {
@@ -23,7 +23,7 @@
 		"url": "git+https://github.com/flamewave000/dragonflagon-fvtt.git"
 	},
 	"author": "flamewave000#6766",
-	"license": "GPLv3",
+	"license": "BSD-3-Clause",
 	"bugs": {
 		"url": "https://github.com/flamewave000/dragonflagon-fvtt/issues"
 	},

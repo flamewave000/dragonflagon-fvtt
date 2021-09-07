@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"name": "df-chat-enhance",
-	"version": "3.2.0",
+	"version": "3.3.0",
 	"title": "DF Chat Enhancements",
 	"description": "Various enhancements to the chat features.",
 	"main": "src/df-chat-enhance.ts",
@@ -32,7 +32,7 @@
 		"df"
 	],
 	"author": "flamewave000#6766",
-	"license": "GPL-3.0",
+	"license": "BSD-3-Clause",
 	"bugs": {
 		"url": "https://github.com/flamewave000/dragonflagon-fvtt/issues"
 	},
