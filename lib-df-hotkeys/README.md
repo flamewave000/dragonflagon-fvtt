@@ -149,8 +149,8 @@ Hooks.once('init', function() {
 		default: () => { return { key: Hotkeys.keys.KeyQ, alt: false, ctrl: false, shift: false }; },
 		onKeyDown: self => { console.log('You hit my custom hotkey!') },
 	});
-    /* Hotkeys.registerShortcut(config: HotkeySetting, throwOnError?: boolean): boolean */
-    Hotkeys.registerShortcut({...}, false);
+	/* Hotkeys.registerShortcut(config: HotkeySetting, throwOnError?: boolean): boolean */
+	Hotkeys.registerShortcut({...}, false);
 });
 ```
 
@@ -166,8 +166,8 @@ Hooks.once('init', function() {
 		default: () => { return { key: Hotkeys.keys.KeyQ, alt: false, ctrl: false, shift: false }; },
 		onKeyDown: (self: HotkeySetting) => { console.log('You hit my custom hotkey!') },
 	});
-    /* Hotkeys.registerShortcut(config: HotkeySetting, throwOnError?: boolean): boolean */
-    Hotkeys.registerShortcut({...}, false);
+	/* Hotkeys.registerShortcut(config: HotkeySetting, throwOnError?: boolean): boolean */
+	Hotkeys.registerShortcut({...}, false);
 });
 ```
 
@@ -269,9 +269,9 @@ You can do much more complex filtering with intermixed Regular Expressions, and 
 ```javascript
 await Hotkeys.showConfig('My Fancy Config',[
 	// You can mix exact group names with regex
-	'df-curvy-walls', // these will all match
-	'df-curvy.+',     // the same group
-	/df-cur.+/,       // RegExp objects are also allowed
+	'df-curvy-walls',	// these will all match
+	'df-curvy.+',		// the same group
+	/df-cur.+/,			// RegExp objects are also allowed
 	// You can also perform matches on the hotkeys within a group themselves
 	{
 		group: 'df-curvy-walls',
@@ -283,7 +283,7 @@ await Hotkeys.showConfig('My Fancy Config',[
 		// these hotkey names can also be regex strings or RegExp objects
 		hotkeys: [
 			/.+\.(in|de)crement/,
-            '.+\\.(in|de)crement'
+			'.+\\.(in|de)crement'
 		]
 	},
 	// You can also include options from the default "general" group
@@ -302,10 +302,6 @@ class Hotkeys {
 	static async showConfig(title: string, filters: (string | RegExp | GroupFilter)[])
 }
 ```
-
-
-
-
 
 ---
 
