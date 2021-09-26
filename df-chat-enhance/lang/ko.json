@@ -8,14 +8,18 @@
 		"ChatEnhanceSettingGroup": "Chat Enhancement",
 		"ExportButtonTitle": "채팅 로그 아카이브",
 		"OpenChatArchive": "채팅 아카이브 관리자",
-		"Settings.HideExport": "채팅 아카이브: 채팅 로그 내보내기 버튼 숨기기",
+		"Settings": {
+			"HideExport": "채팅 아카이브: 채팅 로그 내보내기 버튼 숨기기",
+			"ArchiveFolder_Name": "채팅 아카이브를 저장할 폴더",
+			"ArchiveFolder_Hint": "채팅 아카이브 파일이 저장될 디렉토리이다."
+		},
 		"ArchiveNew_Title": "DF 채팅 아카이브 생성",
 		"ArchiveNew_Name": "아카이브 이름:",
 		"ArchiveNew_NameHint": "이름 없는 아카이브",
 		"ArchiveNew_All": "현재 모든 채팅 아카이브",
 		"ArchiveNew_Date": "기간 지정 아카이브",
-		"ArchiveNew_FromDate": "From Date:",
-		"ArchiveNew_ToDate": "To Date:",
+		"ArchiveNew_FromDate": "시작 날짜:",
+		"ArchiveNew_ToDate": "마지막 날짜:",
 		"ArchiveNew_Delete": "채팅 로그에서 메시지를 삭제하시겠습니까?",
 		"ArchiveNew_Visible": "플레이어에게 표시합니까?",
 		"ArchiveNew_Submit": "아카이브 저장",
@@ -105,7 +109,8 @@
 		"Settings_IgnoreHtmlName": "채팅 수정: HTML이 포함된 메시지 무시",
 		"Settings_IgnoreHtmlHint": "HTML이 포함된 메시지의 수정을 허용하지 않는다.",
 		"EditedFlag": "(수정됨)",
-		"Error_NoPermission": "GM이 수정 기능을 비활성화했습니다."
+		"Error_NoPermission": "GM이 수정 기능을 비활성화했습니다.",
+		"ContextOption": "메시지 수정"
 	},
 	"DF_CHAT_MERGE": {
 		"EnableName": "채팅 병합: 채팅 메시지 병합 활성화",
