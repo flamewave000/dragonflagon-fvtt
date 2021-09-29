@@ -3,7 +3,7 @@
 	"title": "{{title}}",
 	"description": "{{description}}",
 	"version": "{{version}}",
-	"author": "flamewave000#6766",
+	"author": "flamewave000#0001",
 	"minimumCoreVersion": "0.7.9",
 	"compatibleCoreVersion": "0.8.6",
 	"esmodules": "{{sources}}",
@@ -14,14 +14,14 @@
 		{ "lang": "es", "name": "Español", "path": "lang/es.json" }
 	],
 	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}",
-	"license":	"https://github.com/flamewave000/dragonflagon-fvtt/blob/master/LICENSE",
+	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/LICENSE",
 	"manifest":	"https://dragonflagon.cafe/mods/man/{{name}}",
 	"download":	"https://dragonflagon.cafe/mods/pak/{{name}}",
 	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/README.md",
 	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/CHANGELOG.md",
 	"manifestPlusVersion": "1.0.0",
 	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues/new/choose",
-	"authors": [ { "name": "flamewave000", "discord": "flamewave000#6766", "url": "https://github.com/flamewave000" } ],
+	"authors": [ { "name": "flamewave000", "discord": "flamewave000#0001", "url": "https://github.com/flamewave000" } ],
 	"media": [
 		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" }
 	]
