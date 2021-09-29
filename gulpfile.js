@@ -20,6 +20,7 @@ const GLOB = '**/*';
 const DIST = 'dist/';
 const BUNDLE = 'bundle/';
 const SOURCE = 'src/';
+const LIBS = 'libs/';
 const LANG = 'lang/';
 const TEMPLATES = 'templates/';
 const SOUNDS = 'sounds/';
@@ -79,6 +80,7 @@ function buildSource(output = null) {
 				.split('/').length - 1) || './'
 		}))
 		if (!minifySources) stream = stream.pipe(tabify(4, false));
+		stream = stream.pipe(gulp.src(LIBS + GLOB));
 		return stream.pipe(gulp.dest((output || DIST) + SOURCE));
 	});
 }
@@ -241,6 +243,7 @@ exports.zip = gulp.series(
 			, pdel(DIST + SOURCE)
 			, () => gulp.src(DIST + '.temp/' + GLOB).pipe(gulp.dest(DIST + SOURCE))
 			, pdel([DIST + '.temp/'])
+			, () => gulp.src(LIBS + GLOB).pipe(gulp.dest(DIST + SOURCE))
 			, (() => {
 				const scripts = JSON.parse(fs.readFileSync('./module.json').toString()).scripts;
 				return scripts

@@ -14,7 +14,7 @@
 		{ "lang": "es", "name": "Español", "path": "lang/es.json" }
 	],
 	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}",
-	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/LICENSE",
+	"license":	"https://github.com/flamewave000/dragonflagon-fvtt/blob/master/LICENSE",
 	"manifest":	"https://dragonflagon.cafe/mods/man/{{name}}",
 	"download":	"https://dragonflagon.cafe/mods/pak/{{name}}",
 	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/README.md",
