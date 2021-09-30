@@ -1,6 +1,9 @@
 import SETTINGS from "./SETTINGS.js";
 
 //#region Type Definitions
+// If Ace Library is installed and enabled, this will exist
+declare const ace: any;
+
 declare class JSONEditor {
 	constructor(container: HTMLElement, options: JSONEditor.Options);
 	aceEditor: {
@@ -111,6 +114,8 @@ export default class FlagEditor extends Application {
 		await FlagEditor._loadEditor();
 		const result = await super._render(force, options);
 		const editorOptions = {
+			// If the Ace Lib is installed and running
+			ace: !!ace ? ace : undefined,
 			limitDragging: false,
 			mode: 'tree',
 			modes: ['tree', 'code'],
@@ -118,7 +123,9 @@ export default class FlagEditor extends Application {
 			mainMenuBar: true,
 			navigationBar: true,
 			statusBar: true,
-			colorPicker: true
+			colorPicker: true,
+			onCreateMenu: (items: any, _: any) => (items as { className: string }[])
+				.filter(x => !["jsoneditor-extract", "jsoneditor-transform"].includes(x.className))
 		};
 		this.editor = new JSONEditor(this.element.find('#editor')[0], editorOptions);
 		if (!this.document) {
@@ -152,7 +159,10 @@ export default class FlagEditor extends Application {
 				const script = document.createElement('script') as HTMLScriptElement;
 				script.async = true;
 				script.onload = () => res();
-				script.src = `/modules/${SETTINGS.MOD_NAME}/src/jsoneditor.min.js`;
+				if (!!ace)
+					script.src = `/modules/${SETTINGS.MOD_NAME}/src/jsoneditor-minimalist.min.js`;
+				else
+					script.src = `/modules/${SETTINGS.MOD_NAME}/src/jsoneditor.min.js`;
 				document.body.append(script);
 			});
 			const stylePromise = new Promise<void>(res => {
