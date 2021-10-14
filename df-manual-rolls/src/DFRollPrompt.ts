@@ -72,7 +72,7 @@ export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] 
 	async _render(force?: boolean, options?: Application.RenderOptions) {
 		await super._render(force, options);
 		if (DFRollPrompt.focusInput)
-			this.element.find('input').trigger('focus');
+			this.element.find('input')[0].focus();
 	}
 	protected _updateObject(_: Event, formData?: { [key: string]: string | null }): Promise<unknown> {
 		for (let x of this._terms) {

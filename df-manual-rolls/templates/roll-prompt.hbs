@@ -19,7 +19,7 @@
 						step="1" placeholder="1-{{term.faces}}{{localize "DF_MANUAL_ROLLS.Placeholder_Roll"}}"></input></td>
 				<td>
 					{{#if hasTotal}}
-					<input name="{{id}}-total" type="number" min="{{term.number}}" max="{{mul term.number term.faces}}"
+					<input name="{{id}}-total" type="number" min="{{term.number}}" max="{{mul term.number term.faces}}" tabindex="2{{id}}0"
 						step="1" placeholder="{{localize "DF_MANUAL_ROLLS.Placeholder_Total_Pt1"}}{{term.number}}{{localize "DF_MANUAL_ROLLS.Placeholder_Total_Pt2"}}{{mul term.number term.faces}}"></input>
 					{{/if}}
 				</td>
@@ -29,7 +29,7 @@
 		<tfoot>
 			<tr>
 				<td colspan="3" style="padding:0">
-					<button type="submit" style="width:100%" name="submit">
+					<button type="submit" style="width:100%" name="submit" tabindex="300">
 						<i class="fas fa-dice-d20"></i>{{localize "DF_MANUAL_ROLLS.Submit"}}</button>
 				</td>
 			</tr>
