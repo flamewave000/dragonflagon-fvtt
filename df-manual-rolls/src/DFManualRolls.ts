@@ -20,9 +20,10 @@ export default class DFManualRolls {
 	static get toggleable() {
 		return SETTINGS.get(game.user.isGM ? DFManualRolls.PREF_GM_STATE : DFManualRolls.PREF_PC_STATE) === 'toggle';
 	}
+	static tempDisable = false;
 	static get shouldRollManually() {
 		const state = SETTINGS.get(game.user.isGM ? DFManualRolls.PREF_GM_STATE : DFManualRolls.PREF_PC_STATE);
-		return state === 'always' || (state === 'toggle' && this.toggled);
+		return !this.tempDisable && (state === 'always' || (state === 'toggle' && this.toggled));
 	}
 
 	static patch() {

@@ -2,14 +2,84 @@ import DFManualRolls from "./DFManualRolls.js";
 import DFRollPrompt from "./DFRollPrompt.js";
 import SETTINGS from "./lib/Settings.js";
 
+/***** Pathfinder1 Roller Declaration *****/
+declare class RollPF {
+	static safeRoll(p1: any, p2: any): any;
+}
 
 export default class DFManualRollsLegacy {
 	static PREF_USE_LEGACY = 'use-legacy';
 
 	static get useLegacy(): boolean { return SETTINGS.get(DFManualRollsLegacy.PREF_USE_LEGACY); }
 
+	private static pf1HelpersPatched = false;
+
 	static patch() {
 		libWrapper.register(SETTINGS.MOD_NAME, 'DiceTerm.prototype._evaluateSync', this._DiceTerm_evaluateSync, 'MIXED');
+
+		if (this.pf1HelpersPatched) return;
+		this.pf1HelpersPatched = true
+		
+		/*******************************************************/
+		/************** This Code Copied From PF1 **************/
+		/*******************************************************/
+		Handlebars.registerHelper("itemDamage", (item, rollData) => {
+			if (!item.hasDamage) return null; // It was a mistake to call this
+
+			const actorData = item.document.parentActor.data.data,
+				itemData = item.data;
+
+			const rv = [];
+
+			const reduceFormula = (formula: any) => {
+				/******** MODIFIED PORTION START ********/
+				var roll: any;
+				try {
+					DFManualRolls.tempDisable = true;
+					roll = RollPF.safeRoll(formula, rollData);
+				} finally {
+					DFManualRolls.tempDisable = false;
+				}
+				/******** MODIFIED PORTION END ********/
+				formula = roll.formula.replace(/\[[^\]]+\]/g, ""); // remove flairs
+				return [roll, formula];
+			};
+
+			const handleParts = (parts: any) => {
+				for (const [formula, _] of parts) {
+					const [roll, newformula] = reduceFormula(formula);
+					if (roll.total == 0) continue;
+					rv.push(newformula);
+				}
+			};
+
+			// Normal damage parts
+			handleParts(itemData.damage.parts);
+
+			// Include ability score only if the string isn't too long yet
+			const dmgAbl = itemData.ability.damage;
+			const dmgAblMod = Math.floor((actorData.abilities[dmgAbl]?.mod ?? 0) * (itemData.ability.damageMult || 1));
+			if (dmgAblMod != 0) rv.push(dmgAblMod);
+
+			// Include damage parts that don't happen on crits
+			handleParts(itemData.damage.nonCritParts);
+
+			// Include general sources. Item enhancement bonus is among these.
+			const sources = item.document.allDamageSources;
+			for (const s of sources) rv.push(s.formula);
+
+			if (rv.length === 0) rv.push("NaN"); // Something probably went wrong
+
+			return rv
+				.join("+")
+				.replace(/\s+/g, "") // remove whitespaces
+				.replace(/\+-/, "-") // simplify math logic pt.1
+				.replace(/--/g, "+") // simplify math logic pt.2
+				.replace(/\+\++/, "+"); // simplify math logic pt.3
+		});
+		/********************************************************/
+		/**************** END OF COPIED PF1 CODE ****************/
+		/********************************************************/
 	}
 	static unpatch() {
 		libWrapper.unregister(SETTINGS.MOD_NAME, 'DiceTerm.prototype.roll', false);
