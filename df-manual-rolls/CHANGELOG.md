@@ -2,6 +2,7 @@
 
 ## Release 2.2.4 (2021-10-15)
 - NEW: Polish Localisation courtesy of [MichalGolaszewski](https://github.com/MichalGolaszewski).
+- FIX: Conflict with D&amp;D Beyond Importer module
 
 ## Release 2.2.3 (2021-10-14)
 - FIX: Tab Indexing in the prompt is corrected. First field will be focused and fields will focus in the correct order.

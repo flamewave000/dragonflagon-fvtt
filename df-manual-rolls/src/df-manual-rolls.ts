@@ -98,7 +98,7 @@ Hooks.on('ready', function () {
 		ui.notifications.error(game.i18n.localize("DF_MANUAL_ROLLS.Error_libWrapper_Missing"));
 		return;
 	}
-	Handlebars.registerHelper({ mul: (v1, v2) => v1 * v2 });
+	Handlebars.registerHelper({ dfmr_mul: (v1, v2) => v1 * v2 });
 	DFManualRolls.patch();
 	if (SETTINGS.get(DFManualRollsLegacy.PREF_USE_LEGACY))
 		DFManualRollsLegacy.patch();

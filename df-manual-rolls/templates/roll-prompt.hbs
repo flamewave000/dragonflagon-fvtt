@@ -19,8 +19,8 @@
 						step="1" placeholder="1-{{term.faces}}{{localize "DF_MANUAL_ROLLS.Placeholder.Roll"}}"></input></td>
 				<td>
 					{{#if hasTotal}}
-					<input name="{{id}}-total" type="number" min="{{term.number}}" max="{{mul term.number term.faces}}" tabindex="2{{id}}0"
-						step="1" placeholder="{{localize "DF_MANUAL_ROLLS.Placeholder.Total_Pt1"}}{{term.number}}{{localize "DF_MANUAL_ROLLS.Placeholder.Total_Pt2"}}{{mul term.number term.faces}}"></input>
+					<input name="{{id}}-total" type="number" min="{{term.number}}" max="{{dfmr_mul term.number term.faces}}" tabindex="2{{id}}0"
+						step="1" placeholder="{{localize "DF_MANUAL_ROLLS.Placeholder.Total_Pt1"}}{{term.number}}{{localize "DF_MANUAL_ROLLS.Placeholder.Total_Pt2"}}{{dfmr_mul term.number term.faces}}"></input>
 					{{/if}}
 				</td>
 			</tr>

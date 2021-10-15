@@ -3,10 +3,10 @@ import SETTINGS from "./lib/Settings.js";
 
 declare global {
 	interface String {
-		replaceAll(token: string, replacement: string): string;
+		dfmr_replaceAll(token: string, replacement: string): string;
 	}
 }
-String.prototype.replaceAll = function (token: string, replacement: string) { return this.split(token).join(replacement); };
+String.prototype.dfmr_replaceAll = function (token: string, replacement: string) { return this.split(token).join(replacement); };
 
 export default class DFManualRolls {
 	static PREF_GM_STATE = 'gm';
