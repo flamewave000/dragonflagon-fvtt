@@ -8,7 +8,7 @@
 			"AddKey": "Add Key Frame",
 			"Bounce": "Make animation bounce back and forth",
 			"Randomize": "Randomize offset based on current duration",
-			"Offset": "Time Offset in seconds for \"desyncing\" similar animations"
+			"Offset": "Time Offset in milliseconds for \"desyncing\" similar animations"
 		},
 		"Props": {
 			"Time": "Key Frame Time Position (Milliseconds)",

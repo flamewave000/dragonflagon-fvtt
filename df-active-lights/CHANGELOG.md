@@ -1,8 +1,14 @@
 # DragonFlagon Active Lights
 
+## Release 1.1.3 (2021-10-15)
+- FIX: Wrong word in a label.
+
+## Release 1.1.2 (2021-08-09)
+- Migrated license from GPLv3 to BSD 3-Clause
+
 ## Release 1.1.1 (2021-07-16)
-- Fixed an issue with 0 Radius light animations. If you animate both the Dim and Bright radius to 0, the light would get removed from the lighting system. This has been corrected so that lights can be 0-radius while they are being animated.
-- Small optimizations in the light animation cycle.
+- FIX: an issue with 0 Radius light animations. If you animate both the Dim and Bright radius to 0, the light would get removed from the lighting system. This has been corrected so that lights can be 0-radius while they are being animated.
+- FIX: Small optimizations in the light animation cycle.
 
 ## Release 1.1.0 (2021-02-12)
 - Revised animation functions
