@@ -135,11 +135,11 @@ export default class DFManualRollsLegacy {
 	static prompt(number: number, faces: number, flavour: string): [number, boolean] {
 		var failed = false;
 		var result: [number, boolean] = [0, false];
-		const promptText = game.i18n.localize('DF_MANUAL_ROLLS.Prompt_Legacy')
+		const promptText = game.i18n.localize('DF_MANUAL_ROLLS.Prompt.Legacy')
 			.replaceAll('{0}', number.toString())
 			.replaceAll('{1}', faces.toString())
 			.replaceAll('{2}', (number * faces).toString());
-		const invalidText = game.i18n.localize('DF_MANUAL_ROLLS.Prompt_Legacy_Invalid');
+		const invalidText = game.i18n.localize('DF_MANUAL_ROLLS.Prompt.Legacy_Invalid');
 		while (true) {
 			var value: string | number =
 				prompt(promptText + (!!flavour ? `\n${flavour}` : '') + (failed ? '\n' + invalidText : ''), '');

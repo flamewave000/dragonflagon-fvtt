@@ -28,7 +28,7 @@ export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] 
 		return <FormApplication.Options>mergeObject(
 			<DeepPartial<FormApplication.Options>>FormApplication.defaultOptions,
 			{
-				title: game.i18n.localize("DF_MANUAL_ROLLS.Prompt_DefaultTitle"),
+				title: game.i18n.localize("DF_MANUAL_ROLLS.Prompt.DefaultTitle"),
 				template: `modules/${SETTINGS.MOD_NAME}/templates/roll-prompt.hbs`,
 				width: 400,
 

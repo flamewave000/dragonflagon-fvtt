@@ -1,8 +1,11 @@
 # DF Manual Rolls
 
+## Release 2.2.4 (2021-10-15)
+- NEW: Polish Localisation courtesy of [MichalGolaszewski](https://github.com/MichalGolaszewski).
+
 ## Release 2.2.3 (2021-10-14)
 - FIX: Tab Indexing in the prompt is corrected. First field will be focused and fields will focus in the correct order.
-- FIX: Issue with Pathfinder 1 system that caused unecessary prompting due to unused background rolls in character sheets.
+- FIX: Issue with Pathfinder 1 system that caused unnecessary prompting due to unused background rolls in character sheets.
 
 ## Release 2.2.2 (2021-08-09)
 - Migrated license from GPLv3 to BSD 3-Clause.

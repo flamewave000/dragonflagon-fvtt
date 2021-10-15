@@ -1,12 +1,12 @@
 <form>
 	<table>
 		<thead>
-			<th>{{localize "DF_MANUAL_ROLLS.Prompt_Header_RollTerm"}}<a class="button" title="{{localize "DF_MANUAL_ROLLS.Tooltip_RollTerm"}}">
+			<th>{{localize "DF_MANUAL_ROLLS.Prompt.Header_RollTerm"}}<a class="button" title="{{localize "DF_MANUAL_ROLLS.Tooltip.RollTerm"}}">
 					<i class="fas fa-question-circle"></i></a></th>
-			<th>{{localize "DF_MANUAL_ROLLS.Prompt_Header_Rolls"}}<a class="button" title="{{localize "DF_MANUAL_ROLLS.Tooltip_Rolls"}}">
+			<th>{{localize "DF_MANUAL_ROLLS.Prompt.Header_Rolls"}}<a class="button" title="{{localize "DF_MANUAL_ROLLS.Tooltip.Rolls"}}">
 					<i class="fas fa-question-circle"></i></a></th>
-			<th>&nbsp;&nbsp;&nbsp;{{localize "DF_MANUAL_ROLLS.Prompt_Header_Total"}}
-				<a class="button" title="{{localize "DF_MANUAL_ROLLS.Tooltip_Total"}}">
+			<th>&nbsp;&nbsp;&nbsp;{{localize "DF_MANUAL_ROLLS.Prompt.Header_Total"}}
+				<a class="button" title="{{localize "DF_MANUAL_ROLLS.Tooltip.Total"}}">
 					<i class="fas fa-question-circle"></i>
 				</a>&nbsp;&nbsp;&nbsp;
 			</th>
@@ -16,11 +16,11 @@
 			<tr>
 				<td>{{faces}}</td>
 				<td><input name="{{id}}-{{idx}}" type="number" min="1" max="{{term.faces}}" tabindex="1{{id}}{{idx}}"
-						step="1" placeholder="1-{{term.faces}}{{localize "DF_MANUAL_ROLLS.Placeholder_Roll"}}"></input></td>
+						step="1" placeholder="1-{{term.faces}}{{localize "DF_MANUAL_ROLLS.Placeholder.Roll"}}"></input></td>
 				<td>
 					{{#if hasTotal}}
 					<input name="{{id}}-total" type="number" min="{{term.number}}" max="{{mul term.number term.faces}}" tabindex="2{{id}}0"
-						step="1" placeholder="{{localize "DF_MANUAL_ROLLS.Placeholder_Total_Pt1"}}{{term.number}}{{localize "DF_MANUAL_ROLLS.Placeholder_Total_Pt2"}}{{mul term.number term.faces}}"></input>
+						step="1" placeholder="{{localize "DF_MANUAL_ROLLS.Placeholder.Total_Pt1"}}{{term.number}}{{localize "DF_MANUAL_ROLLS.Placeholder.Total_Pt2"}}{{mul term.number term.faces}}"></input>
 					{{/if}}
 				</td>
 			</tr>

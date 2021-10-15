@@ -10,14 +10,14 @@ Hooks.on('init', function () {
 	SETTINGS.register(DFManualRolls.PREF_GM_STATE, {
 		config: true,
 		scope: 'world',
-		name: 'DF_MANUAL_ROLLS.Settings_GM_Name',
-		hint: 'DF_MANUAL_ROLLS.Settings_GM_Hint',
+		name: 'DF_MANUAL_ROLLS.Settings.GM_Name',
+		hint: 'DF_MANUAL_ROLLS.Settings.GM_Hint',
 		type: String,
 		default: 'disabled',
 		choices: {
-			disabled: 'DF_MANUAL_ROLLS.Setting_Options_Disabled',
-			always: 'DF_MANUAL_ROLLS.Setting_Options_Always',
-			toggle: 'DF_MANUAL_ROLLS.Setting_Options_Toggle'
+			disabled: 'DF_MANUAL_ROLLS.Setting_Options.Disabled',
+			always: 'DF_MANUAL_ROLLS.Setting_Options.Always',
+			toggle: 'DF_MANUAL_ROLLS.Setting_Options.Toggle'
 		},
 		onChange: () => { ui.controls.initialize() }
 	});
@@ -25,14 +25,14 @@ Hooks.on('init', function () {
 	SETTINGS.register(DFManualRolls.PREF_PC_STATE, {
 		config: true,
 		scope: 'world',
-		name: 'DF_MANUAL_ROLLS.Settings_PC_Name',
-		hint: 'DF_MANUAL_ROLLS.Settings_PC_Hint',
+		name: 'DF_MANUAL_ROLLS.Settings.PC_Name',
+		hint: 'DF_MANUAL_ROLLS.Settings.PC_Hint',
 		type: String,
 		default: 'disabled',
 		choices: {
-			disabled: 'DF_MANUAL_ROLLS.Setting_Options_Disabled',
-			always: 'DF_MANUAL_ROLLS.Setting_Options_Always',
-			toggle: 'DF_MANUAL_ROLLS.Setting_Options_Toggle'
+			disabled: 'DF_MANUAL_ROLLS.Setting_Options.Disabled',
+			always: 'DF_MANUAL_ROLLS.Setting_Options.Always',
+			toggle: 'DF_MANUAL_ROLLS.Setting_Options.Toggle'
 		},
 		onChange: () => { ui.controls.initialize() }
 	});
@@ -40,15 +40,15 @@ Hooks.on('init', function () {
 	SETTINGS.register(DFRollPrompt.PREF_FOCUS_INPUT, {
 		config: true,
 		scope: 'client',
-		name: 'DF_MANUAL_ROLLS.Settings_FocusInput_Name',
-		hint: 'DF_MANUAL_ROLLS.Settings_FocusInput_Hint',
+		name: 'DF_MANUAL_ROLLS.Settings.FocusInput_Name',
+		hint: 'DF_MANUAL_ROLLS.Settings.FocusInput_Hint',
 		type: Boolean,
 		default: true
 	});
 
 	SETTINGS.register(DFManualRolls.PREF_FLAGGED, {
-		name: "DF_MANUAL_ROLLS.Settings_Flagged_Name",
-		hint: "DF_MANUAL_ROLLS.Settings_Flagged_Hint",
+		name: "DF_MANUAL_ROLLS.Settings.Flagged_Name",
+		hint: "DF_MANUAL_ROLLS.Settings.Flagged_Hint",
 		scope: 'world',
 		config: true,
 		type: Boolean,
