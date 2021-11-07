@@ -52,7 +52,9 @@ export default class ControlManager extends Application {
 
 	private _getModuleToolGroups(): ToolGroup[] {
 		const groups: ToolGroup[] = [];
-		Hooks.callAll(`getModuleToolGroups`, groups);
+		Hooks.callAll(`getModuleToolGroupsPre`, this, groups);
+		Hooks.callAll(`getModuleToolGroups`, this, groups);
+		Hooks.callAll(`getModuleToolGroupsPost`, this, groups);
 		return groups;
 	}
 
@@ -103,23 +105,16 @@ export default class ControlManager extends Application {
 		if (group.toggle) {
 			group.active = !group.active;
 			if (group.onClick instanceof Function) this._invokeHandler(group.onClick, group, group.active);
+			// Render the controls
+			this.render();
 		}
 		// Handle Buttons
 		else if (group.button) {
 			if (group.onClick instanceof Function) this._invokeHandler(group.onClick, group);
 		}
 		// Handle Tools
-		else {
-			if (this.activeGroupName === groupName) return;
-			const prevGroup = this.activeGroup;
-			this.activeGroupName = groupName;
-			// Deactivate previous group
-			if (prevGroup?.onClick instanceof Function) this._invokeHandler(group.onClick, group, false);
-			// Activate new group
-			if (group.onClick instanceof Function) this._invokeHandler(group.onClick, group, true);
-		}
-		// Render the controls
-		this.render();
+		else
+			this.activateGroupByName(groupName);
 	}
 	private _onClickTool(event: JQuery.ClickEvent) {
 		event.preventDefault();
@@ -132,6 +127,8 @@ export default class ControlManager extends Application {
 		if (tool.toggle) {
 			tool.active = !tool.active;
 			if (tool.onClick instanceof Function) this._invokeHandler(tool.onClick, tool, tool.active);
+			// Render the controls
+			this.render();
 		}
 		// Handle Buttons
 		else if (tool.button) {
@@ -139,16 +136,7 @@ export default class ControlManager extends Application {
 		}
 		// Handle Tools
 		else {
-			if (group.activeTool === toolName) return;
-			const prevTool = this.activeTool;
-			group.activeTool = toolName;
-			// Deactivate previous group
-			if (prevTool?.onClick instanceof Function) this._invokeHandler(prevTool.onClick, prevTool, false);
-			// Activate new group
-			if (tool.onClick instanceof Function) this._invokeHandler(tool.onClick, tool, true);
 		}
-		// Render the controls
-		this.render();
 	}
 
 	async _render(force = false, options = {}): Promise<void> {
@@ -234,13 +222,24 @@ export default class ControlManager extends Application {
 
 	activateGroupByName(groupName: string) {
 		const self = <ControlManager>(<any>ui).moduleControls;
-		if (!self.groups.find(x => x.name === groupName)) {
+		const group = self.groups.find(x => x.name === groupName);
+		if (!group) {
 			console.warn(`ControlManager::activateGroupByName > Attempted to activate ToolGroup with non-existant name '${groupName}'`);
 			return;
 		}
-		if (self.activeGroupName === groupName) return;
-		self.activeGroupName = groupName;
+		if (group.button || group.toggle) {
+			console.warn(`ControlManager::activateGroupByName > Attempted to activate ToolGroup that is either a button or toggle`);
+			return;
+		}
+		if (this.activeGroupName === groupName) return;
+		const prevGroup = this.activeGroup;
+		this.activeGroupName = groupName;
+		// Deactivate previous group
+		if (prevGroup?.onClick instanceof Function) this._invokeHandler(group.onClick, group, false);
+		// Activate new group
+		if (group.onClick instanceof Function) this._invokeHandler(group.onClick, group, true);
 		self.render();
+		Hooks.callAll("toolGroupActivated", this, group);
 	}
 	activateToolByName(groupName: string, toolName: string, activateGroup?: boolean) {
 		const self = <ControlManager>(<any>ui).moduleControls;
@@ -254,9 +253,24 @@ export default class ControlManager extends Application {
 			console.warn(`ControlManager::activateToolByName > Attempted to activate Tool with non-existant name '${toolName}'`);
 			return;
 		}
+		if (tool.button || tool.toggle) {
+			console.warn(`ControlManager::activateToolByName > Attempted to activate Tool that is either a button or toggle`);
+			return;
+		}
+		if (group.activeTool === toolName) return;
+		const prevTool = group.tools.find(x => x.name === group.activeTool);
 		group.activeTool = toolName;
-		if (activateGroup || self.activeGroupName === groupName)
+		// Deactivate previous group
+		if (prevTool?.onClick instanceof Function) this._invokeHandler(prevTool.onClick, prevTool, false);
+		// Activate new group
+		if (tool.onClick instanceof Function) this._invokeHandler(tool.onClick, tool, true);
+		if (activateGroup && self.activeGroupName !== groupName) {
+			this.activateGroupByName(groupName);
+		}
+		else if (self.activeGroupName === groupName) {
 			self.render();
+		}
+		Hooks.callAll("toolActivated", this, group, tool);
 	}
 	reloadModuleButtons() {
 		(<ControlManager>(<any>ui).moduleControls).initialize();

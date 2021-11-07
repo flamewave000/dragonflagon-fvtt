@@ -23,19 +23,19 @@ All modules that wish to use the library should declare a dependency in their ma
 The library uses Hooks in the same way that the `SceneControls` class does. This Hook call receives a list of `ToolGroup` objects which can be appended to.
 
 ```JavaScript
-Hooks.on('getModuleToolGroups', (groups /*: ToolGroup[]*/) => {
+Hooks.on('getModuleToolGroups', (controlManager/*: ControlManager*/, groups /*: ToolGroup[]*/) => {
 	groups.push({
 		name: 'my-tool-group',// Unique group ID
 		icon: '<i class="fas fa-dice-one"></i>',// HTMLElement to be used as an Icon
 		title: 'My Tool Group',// Plain text or a localization key
 		tools: [
 			{
-				name: 'my-tool',// Unique tool ID within the scope of the parent Group
-				title: 'My Special Tool',// Plain text or a localization key
-				onClick: () => console.log("I've been clicked!"),// Click handler
-				icon: '<i class="fas fa-dice-one"></i>',// HTMLElement to be used as an Icon
-				button: true // This tool is just a button
-			},
+                name: 'my-tool',// Unique tool ID within the scope of the parent Group
+            	title: 'My Special Tool',// Plain text or a localization key
+                onClick: () => console.log("I've been clicked!"),// Click handler
+                icon: '<i class="fas fa-dice-one"></i>',// HTMLElement to be used as an Icon
+                button: true // This tool is just a button
+            },
 			...
 		]
 	});
@@ -105,3 +105,36 @@ export interface ToolGroup extends Tool {
 }
 ```
 
+## Hooks
+
+This library leverages the Hooks system for all of its interactions. This makes it easier for developers to register Tools/ToolGroups, or to listen to when groups or tools are activated. As well as to activate a Tool or ToolGroup programmatically.
+
+### Hooks that are broadcast
+
+```typescript
+/* Pre-ToolGroup populator. Invoked immediately before `getModuleToolGroups` */
+Hooks.on('getModuleToolGroupsPre', (app: ControlManager, groups: ToolGroup[]) => {});
+/* General request used to populate the list of Tool Groups and their collections of Tools */
+Hooks.on('getModuleToolGroups', (app: ControlManager, groups: ToolGroup[]) => {});
+/* Post-ToolGroup populator. Invoked immediately after `getModuleToolGroups` */
+Hooks.on('getModuleToolGroupsPost', (app: ControlManager, groups: ToolGroup[]) => {});
+/* Broadcast when a group has been activated, and the activated `ToolGroup` instance is passed to it */
+Hooks.on('toolGroupActivated', (app: ControlManager, groups: ToolGroup[]) => {});
+/* Broadcast when a Tool has been activated, and the parent `ToolGroup` and activated `Tool` instances are passed to it */
+Hooks.on('toolActivated', (app: ControlManager, groups: ToolGroup[]) => {});
+```
+### Hooks that are monitored
+```typescript
+/* Invoking this Hook will tell the ControlManager to activate the named ToolGroup */
+Hooks.call('activateGroupByName', "my-group-name");
+/* Invoking this Hook will tell the ControlManager to activate the named Tool that
+ * belongs to the named ToolGroup. You can also pass `true` as a 3rd parameter to
+ * have the ToolGroup also activated. (default: false)
+ */
+Hooks.call('activateToolByName', "my-group-name", "my-tool-name", true);
+/* Invoking this Hook will cause the ControlManager destroy the current ToolGroup
+ * collection and re-build it, calling `getModuleToolGroupsPre`, `getModuleToolGroups`,
+ * and `getModuleToolGroupsPost` as before. It then renders the new list of ToolGroups.
+ */
+Hooks.call('reloadModuleButtons');
+```

@@ -2,7 +2,7 @@
 	"private": true,
 	"name": "lib-df-buttons",
 	"title": "Library: DF Module Buttons",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Library that provides a way for modules to register controls outside of the scene layer controls",
 	"main": "src/lib-df-buttons.ts",
 	"scripts": {
