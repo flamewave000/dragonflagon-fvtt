@@ -44,7 +44,10 @@ A niche tool for entering the results of dice manually. Good for in-person games
 ## [DF Flags Editor](https://github.com/flamewave000/dragonflagon-fvtt/blob/master/df-flag-edit/README.md)
 ![Forge Installs](https://img.shields.io/badge/dynamic/json?color=red&label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-flag-edit) ![Latest Version](https://img.shields.io/badge/dynamic/json?label=Latest%20Release&prefix=v&query=package.versions%5B0%5D&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-flag-edit) [![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Fdf-flag-edit%2Fshield%2Fendorsements)](https://www.foundryvtt-hub.com/package/df-flag-edit/)  
 
-A simple tool for Macro and Module developers to view and edit Document Flags in Foundry.
+## [Library: DF Module Buttons](https://github.com/flamewave000/dragonflagon-fvtt/blob/master/lib-df-buttons/README.md)
+![Forge Installs](https://img.shields.io/badge/dynamic/json?color=red&label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Flib-df-buttons) ![Latest Version](https://img.shields.io/badge/dynamic/json?label=Latest%20Release&prefix=v&query=package.versions%5B0%5D&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Flib-df-buttons) [![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Flib-df-buttons%2Fshield%2Fendorsements)](https://www.foundryvtt-hub.com/package/lib-df-buttons/)  
+
+Library that provides a way for modules to register controls outside of the scene layer controls.
 
 ## [DragonFlagon FVTT Enhancement Suite](https://github.com/flamewave000/df-fvtt-enhancement-suite)
 DragonFlagon Enhancement Suite Patch for Foundry VTT
