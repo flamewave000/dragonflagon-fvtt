@@ -7,19 +7,15 @@
 			"request": "launch",
 			"port": 9222,
 			"url": "http://localhost:30000/game",
-			"webRoot": "${workspaceFolder}/dist",
+			"webRoot": "${fileDirname}",
 			"runtimeArgs": [
 				"--remote-debugging-port=9222",
 				"--app=http://localhost:30000"
-			]
-		},
-		{
-			"name": "Attach to Foundry",
-			"type": "chrome",
-			"request": "attach",
-			"port": 9222,
-			"url": "http://localhost:30000/game",
-			"webRoot": "${workspaceFolder}/dist",
+			],
+			"cwd": "${fileDirname}",
+			"sourceMapPathOverrides": {
+				"webpack:///./*": "${fileDirname}/../*"
+			}
 		}
 	]
 }

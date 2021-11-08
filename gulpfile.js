@@ -11,6 +11,9 @@ const sass = require('gulp-sass')(require('sass'));
 const webpack = require('webpack-stream');
 const TerserPlugin = require('terser-webpack-plugin');
 const concat = require('gulp-concat');
+const dts = require('bundle-dts');
+const rename = require('gulp-rename');
+const tabify = require('gulp-tabify');
 
 const GLOB = '**/*';
 const DIST = 'dist/';
@@ -63,8 +66,15 @@ function desc(name, lambda) {
  */
 function buildSource(output = null) {
 	return desc(`build Source: ./src/${PACKAGE.name}.ts`, () => {
+		var entry = `./src/${PACKAGE.name}.ts`;
+		if (fs.existsSync(`./src/${PACKAGE.name}-shim.ts`)) {
+			entry = {
+				main: entry,
+				shim: `./src/${PACKAGE.name}-shim.ts`
+			};
+		}
 		return webpack({
-			entry: `./src/${PACKAGE.name}.ts`,
+			entry,
 			devtool: process.argv.includes('--sm') ? 'source-map' : undefined,
 			mode: 'none',
 			module: {
@@ -76,7 +86,6 @@ function buildSource(output = null) {
 							{
 								loader: 'ts-loader',
 								options: {
-									// configFile: '../tsconfig.json',
 									context: process.cwd(),
 								}
 							}
@@ -110,6 +119,31 @@ exports.step_buildSource = gulp.series(pdel(DIST + SOURCE), buildSource());
 
 function copyDevDistToLocalDist() {
 	return gulp.src(DEV_DIST() + SOURCE + GLOB).pipe(gulp.dest(DIST + SOURCE));
+}
+
+/**
+ * Builds the Typings for the module
+ * @param {string} entry 
+ * @param {string} outputName 
+ * @param {string} destination 
+ * @returns 
+ */
+function generateTypings(entry, outputName, destination) {
+	return desc('generating typings for ' + entry, () => gulp.src(entry)
+		.pipe(dts())
+		.pipe(tabify(4, false))
+		.pipe(rename(outputName + '.d.ts'))
+		.pipe(replace(/\.js/g, ''))
+		.pipe(replace(/declare module ".+" \{\n/g, ''))
+		.pipe(replace(/\timport .+\n/g, ''))
+		.pipe(replace(/^\}\n?/mg, ''))
+		.pipe(replace(/^\t/mg, ''))
+		.pipe(replace(/^export (class|interface)/mg, 'declare $1'))
+		.pipe(replace(/^export default (class|interface)/mg, 'declare $1'))
+		.pipe(replace(/^\tprivate .+\n/mg, ''))
+		.pipe(replace(/^export {};\n/mg, ''))
+		.pipe(replace(/^declare global \{$(\n.+){5}/m, ''))
+		.pipe(gulp.dest(destination)));
 }
 
 /**
@@ -153,7 +187,7 @@ function compressDistribution() {
 		() => gulp.src(DIST + GLOB)
 			.pipe(gulp.dest(DIST + `${PACKAGE.name}/${PACKAGE.name}`))
 		// Compress the new folder into a ZIP and save it to the `bundle` folder
-		, () => gulp.src(DIST + /*PACKAGE.name + '/' +*/ GLOB)
+		, () => gulp.src(DIST + PACKAGE.name + '/' + GLOB)
 			.pipe(zip(PACKAGE.name + '.zip'))
 			.pipe(gulp.dest(BUNDLE))
 		// Copy the module.json to the bundle directory
@@ -220,6 +254,7 @@ exports.zip = gulp.series(
 		, outputPackFiles()
 		, outputLibraries()
 	)
+	, generateTypings(`src/${PACKAGE.name}.ts`, PACKAGE.name, BUNDLE)
 	, buildManifest()
 	, pwait(10) // <- This is here because GULP is not respecting the series request and executing compressDistribution before buildManifest has finished
 	, compressDistribution()

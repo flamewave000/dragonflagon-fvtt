@@ -1,11 +1,4 @@
-
-declare global {
-	interface LenientGlobalVariableTypes {
-		game: never;
-		canvas: never;
-	}
-}
-
+import {} from "../../common/global";
 import ControlManager from "./ControlManager";
 
 const MOD_NAME = 'lib-df-buttons';
@@ -60,9 +53,9 @@ Hooks.once('ready', () => {
 	(<ControlManager>(<any>ui).moduleControls).render(true);
 });
 /* Example code for appending ToolGroups and Tools */
-/**
+/**/
 import { Tool, ToolGroup } from "./ToolType";
-Hooks.on('getModuleToolGroups', (groups: ToolGroup[]) => {
+Hooks.on('getModuleToolGroups', (app: ControlManager, groups: ToolGroup[]) => {
 	const handleClick = function (this: Tool, active?: boolean) {
 		if (active !== undefined)
 			console.log(`${this.name}: active=${active}`);
