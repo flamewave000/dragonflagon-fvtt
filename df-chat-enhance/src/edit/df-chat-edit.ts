@@ -1,5 +1,4 @@
-import CONFIG from "../CONFIG";
-import SETTINGS from "../SETTINGS";
+import SETTINGS from "../../../common/SETTINGS";
 import DFChatEditor from './DFChatEditor';
 
 const PREF_EDIT_ALLOWED = 'edit-allowed';

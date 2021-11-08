@@ -33,7 +33,7 @@ export const Hotkeys: typeof _Hotkeys = _Hotkeys;
 }
 
 
-import SETTINGS from './Settings';
+import SETTINGS from "../../common/SETTINGS";
 // Initializes the SETTINGS helper with the name of this module
 SETTINGS.init('lib-df-hotkeys')
 

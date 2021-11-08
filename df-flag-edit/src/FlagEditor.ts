@@ -1,4 +1,4 @@
-import SETTINGS from "./SETTINGS";
+import SETTINGS from "../../common/SETTINGS";
 
 //#region Type Definitions
 // If Ace Library is installed and enabled, this will exist

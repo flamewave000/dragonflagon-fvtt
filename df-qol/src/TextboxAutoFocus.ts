@@ -1,4 +1,4 @@
-import SETTINGS from './libs/Settings';
+import SETTINGS from "../../common/SETTINGS";
 
 function apply(shouldApply: Boolean, hookName: string, func: Hooks.General) {
 	if (shouldApply) Hooks.on(hookName, func);

@@ -14,7 +14,7 @@ import DFAdventureLogProcessor from "./logger/DFAdventureLogProcessor";
 import ChatMerge from "./merge/chat-merge";
 import initDFChatPrivacy from "./privacy/df-chat-privacy";
 import ScrollManage from "./scroll-manage/scroll-manage";
-import SETTINGS from "./SETTINGS";
+import SETTINGS from "../../common/SETTINGS";
 import WhisperTruncation from "./whisper-trunc/whisper-trunc";
 SETTINGS.init('df-chat-enhance');
 

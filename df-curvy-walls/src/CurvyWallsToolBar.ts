@@ -1,6 +1,6 @@
 
 import { CurvyWallToolManager, Mode } from './CurvyWallToolManager';
-import SETTINGS from './lib/Settings';
+import SETTINGS from "../../common/SETTINGS";
 import { ToolMode } from './tools/BezierTool';
 
 export interface CurvyWallControl {

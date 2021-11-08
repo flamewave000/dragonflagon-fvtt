@@ -1,5 +1,5 @@
 import { _Hotkeys } from './Hotkeys';
-import SETTINGS from './Settings';
+import SETTINGS from "../../common/SETTINGS";
 
 export let hotkeys: typeof _Hotkeys = undefined;
 

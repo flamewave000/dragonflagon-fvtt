@@ -1,5 +1,5 @@
 import EaseFunctions from "./EaseFunctions";
-import SETTINGS from "./libs/SETTINGS";
+import SETTINGS from "../../common/SETTINGS";
 
 interface AmbientLightData extends Partial<AmbientLight.Data> {
 	[key: string]: any;

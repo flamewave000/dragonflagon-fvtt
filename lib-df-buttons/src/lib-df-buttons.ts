@@ -1,8 +1,14 @@
+
+declare global {
+	interface LenientGlobalVariableTypes {
+		game: never;
+		canvas: never;
+	}
+}
+
 import ControlManager from "./ControlManager";
 
 const MOD_NAME = 'lib-df-buttons';
-
-declare const libWrapper: any;
 
 Hooks.once('init', () => {
 	(<ControlManager>(<any>ui).moduleControls) = new ControlManager();

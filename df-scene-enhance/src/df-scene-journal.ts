@@ -1,4 +1,4 @@
-import SETTINGS from "./lib/Settings";
+import SETTINGS from "../../common/SETTINGS";
 
 
 interface Button {

@@ -1,7 +1,7 @@
 
 import { CurvyWallsToolBar } from './CurvyWallsToolBar';
 import { CurvyWallToolManager, Mode } from './CurvyWallToolManager';
-import SETTINGS from './lib/Settings';
+import SETTINGS from "../../common/SETTINGS";
 
 const curvyWallApp = new CurvyWallsToolBar();
 SETTINGS.init('df-curvy-walls');

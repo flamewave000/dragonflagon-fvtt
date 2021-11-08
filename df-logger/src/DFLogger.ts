@@ -1,5 +1,5 @@
 import { Message, MessageProcessor } from "./MessageProcessor";
-import SETTINGS from "./Settings";
+import SETTINGS from "../../common/SETTINGS";
 
 interface Payload {
 	type: string,

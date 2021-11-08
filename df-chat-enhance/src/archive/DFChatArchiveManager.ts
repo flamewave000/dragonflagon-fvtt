@@ -1,4 +1,4 @@
-import SETTINGS from "../SETTINGS";
+import SETTINGS from "../../../common/SETTINGS";
 import { DFChatArchive } from "./DFChatArchive";
 import DFChatArchiveViewer from "./DFChatArchiveViewer";
 

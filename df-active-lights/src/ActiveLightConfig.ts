@@ -1,4 +1,4 @@
-import SETTINGS from "./libs/SETTINGS";
+import SETTINGS from "../../common/SETTINGS";
 import { AmbientLightExt, AnimatorData, KeyFrame, LightAnimator, PropertyDelta } from "./LightAnimator";
 
 declare class LightConfigExt extends LightConfig {
@@ -39,7 +39,7 @@ export default class ActiveLightConfig extends Application {
 	private _data: AnimatorData;
 
 	constructor(app: LightConfig) {
-		const obj = app.object as AmbientLight;
+		const obj = app.object as AmbientLightDocument;
 		super({
 			id: obj.id + '-anims',
 			title: game.i18n.localize('DF_ACTIVE_LIGHTS.Config.Title') + obj.id,

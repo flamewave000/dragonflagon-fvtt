@@ -1,6 +1,5 @@
 
-import CONFIG from '../CONFIG';
-import SETTINGS from '../SETTINGS';
+import SETTINGS from "../../../common/SETTINGS";
 import DFAdventureLogConfig from './DFAdventureLogConfig';
 
 declare global {

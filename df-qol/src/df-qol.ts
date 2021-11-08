@@ -6,7 +6,7 @@ import DayNightTransition from './DayNightTransition';
 import DnD5eVehicleCapacity from './DnD5eVehicleCapacity';
 import TemplateTargeting from './TemplateTargeting';
 
-import SETTINGS from './libs/Settings';
+import SETTINGS from "../../common/SETTINGS";
 import TokenLock from './TokenLock';
 SETTINGS.init('df-qol');
 

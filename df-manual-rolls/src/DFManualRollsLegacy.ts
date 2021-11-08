@@ -1,6 +1,6 @@
 import DFManualRolls from "./DFManualRolls";
 import DFRollPrompt from "./DFRollPrompt";
-import SETTINGS from "./lib/Settings";
+import SETTINGS from "../../common/SETTINGS";
 
 /***** Pathfinder1 Roller Declaration *****/
 declare class RollPF {

@@ -1,5 +1,5 @@
 import DFManualRolls from "./DFManualRolls";
-import SETTINGS from "./lib/Settings";
+import SETTINGS from "../../common/SETTINGS";
 
 interface RollPromptData {
 	id: number;

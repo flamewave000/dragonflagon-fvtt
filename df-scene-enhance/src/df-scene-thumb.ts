@@ -1,5 +1,5 @@
 import DFSceneRatio from "./df-scene-ratio";
-import SETTINGS from "./lib/Settings";
+import SETTINGS from "../../common/SETTINGS";
 
 declare global {
 	interface Scene {

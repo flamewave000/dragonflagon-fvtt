@@ -1,4 +1,4 @@
-import SETTINGS from './libs/Settings';
+import SETTINGS from "../../common/SETTINGS";
 
 
 async function requestReload() {

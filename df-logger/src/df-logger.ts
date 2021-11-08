@@ -1,7 +1,7 @@
 import DFLogger from './DFLogger';
 import DFLoggerMenu from './DFLoggerMenu';
 import { MessageProcessor } from './MessageProcessor';
-import SETTINGS from './Settings';
+import SETTINGS from "../../common/SETTINGS";
 
 SETTINGS.init('df-logger');
 

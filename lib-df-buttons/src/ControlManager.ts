@@ -37,12 +37,12 @@ export default class ControlManager extends Application {
 		return tool || null;
 	}
 	static get defaultOptions(): Application.Options {
-		return mergeObject<PartialOptions>(super.defaultOptions as PartialOptions, {
+		return mergeObject(super.defaultOptions, {
 			width: 100,
 			id: "moduleControls",
 			template: `modules/lib-df-buttons/templates/controls.hbs`,
 			popOut: false
-		}) as Application.Options;
+		});
 	}
 
 	initialize() {
@@ -165,7 +165,7 @@ export default class ControlManager extends Application {
 		this._handleSidebarCollapse(ui.sidebar, (<any>ui.sidebar)._collapsed);
 		this._handleWindowResize();
 	}
-	close(options: Application.CloseOptions = {}): Promise<unknown> {
+	close(options?: Application.CloseOptions): Promise<void> {
 		Hooks.off('collapseSidebarPre', this._handleSidebarCollapse);
 		Hooks.off('activateGroupByName', this.activateGroupByName);
 		Hooks.off('activateToolByName', this.activateToolByName);

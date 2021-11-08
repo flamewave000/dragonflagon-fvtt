@@ -6,7 +6,7 @@ import CubicTool from './tools/CubicTool';
 import QuadTool from './tools/QuadTool';
 import { InputHandler } from './tools/ToolInputHandler';
 import PointMapper from './tools/PointMapper';
-import SETTINGS from './lib/Settings';
+import SETTINGS from "../../common/SETTINGS";
 
 declare global {
 	namespace PIXI {

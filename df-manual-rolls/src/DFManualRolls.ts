@@ -1,5 +1,5 @@
 import DFRollPrompt from "./DFRollPrompt";
-import SETTINGS from "./lib/Settings";
+import SETTINGS from "../../common/SETTINGS";
 
 declare global {
 	interface String {

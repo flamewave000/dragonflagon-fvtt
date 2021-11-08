@@ -1,4 +1,4 @@
-import SETTINGS from "../SETTINGS";
+import SETTINGS from "../../../common/SETTINGS";
 
 
 export default class ChatMerge {

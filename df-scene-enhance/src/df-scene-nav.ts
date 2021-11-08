@@ -1,4 +1,4 @@
-import SETTINGS from "./lib/Settings";
+import SETTINGS from "../../common/SETTINGS";
 
 export default class DFSceneNav {
 	static ON_CLICK = 'nav-on-click';
