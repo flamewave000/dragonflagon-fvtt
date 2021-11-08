@@ -1,6 +1,7 @@
 # DF Chat Enhancements
 
 ## Release 3.4.0 (2021-11-07)
+- FIX: Chat Merge was causing some errors on a rare occasions when large numbers of chats are deleted.
 - FIX: Chat Archive visibility not changing.
 - FIX: Roll Type conflict resolved: Courtesy of [zeteticl](https://github.com/zeteticl).
 - Japanese Localization: Courtesy of [BrotherSharper](https://github.com/BrotherSharper).

@@ -126,7 +126,7 @@ export default class ChatMerge {
 		if (!deleteAll && this._enabled) {
 			const element = document.querySelector(`li[data-message-id="${messageId}"`);
 			// If we were a TOP
-			if (element.classList.contains('dfce-cm-top')) {
+			if (element?.classList?.contains('dfce-cm-top')) {
 				element.classList.remove('dfce-cm-top');
 				// If the next element was a middle, make it a top
 				if (element.nextElementSibling.classList.contains('dfce-cm-middle')) {
@@ -137,7 +137,7 @@ export default class ChatMerge {
 				else element.nextElementSibling.classList.remove('dfce-cm-bottom');
 			}
 			// If we were a BOTTOM
-			else if (element.classList.contains('dfce-cm-bottom')) {
+			else if (element?.classList?.contains('dfce-cm-bottom')) {
 				element.classList.remove('dfce-cm-bottom');
 				// If the previous element was a middle, make it a bottom
 				if (element.previousElementSibling.classList.contains('dfce-cm-middle')) {
@@ -148,7 +148,7 @@ export default class ChatMerge {
 				else element.previousElementSibling.classList.remove('dfce-cm-top');
 			}
 			// If we were a MIDDLE, let the above and below snug and they'll be fine
-			else if (element.classList.contains('dfce-cm-middle'))
+			else if (element?.classList?.contains('dfce-cm-middle'))
 				element.classList.remove('dfce-cm-middle');
 		}
 		return wrapper(messageId, { deleteAll });
