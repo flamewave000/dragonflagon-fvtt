@@ -1,0 +1,94 @@
+#!/bin/bash
+
+SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+DEV_ENV="$SCRIPT_DIR/.devenv"
+if [[ -f $DEV_ENV ]]; then
+	MODULE=`npx json "module" < "$DEV_ENV"`
+	FPATH=`npx json "foundry.path" < "$DEV_ENV"`
+	FDATA=`npx json "foundry.data" < "$DEV_ENV"`
+fi
+
+set_dev_env() {
+	if [[ ! -f $DEV_ENV ]]; then
+		touch $DEV_ENV
+	fi
+	printf '{
+	"module": "%s",
+	"foundry": {
+		"path": "%s",
+		"data": "%s"
+	}
+}' "$1" "$2" "$3" > $DEV_ENV
+}
+
+set_module() {
+	# If there is no target passed, then print the current target
+	if [[ $# == 0 ]]; then
+		echo "Current Module Target: $MODULE"
+		return
+	fi
+	if [[ -d "$SCRIPT_DIR/$1" ]]; then
+		set_dev_env "$1" "$FPATH" "$FDATA"
+		echo -n "`npx json -0 -f .vscode/settings.template.json -e "this.TARGET='$1'"`" > .vscode/settings.json
+	else
+		echo "The module directory '$1' does not exist"
+	fi
+	echo "Module Target is now \"$1\""
+}
+
+set_foundry() {
+	if [[ ! "$1" = "" ]]; then
+		if [[ ! -d "$1" ]]; then
+			printf 'The FoundryVTT Program directory does not exist at\n\t%s\n' $1
+			return
+		fi
+	fi
+	if [[ ! -d "$2" ]]; then
+		printf 'The FoundryVTT Data directory does not exist at\n\t%s\n' $2
+		return
+	fi
+	set_dev_env $MODULE "$1" "$2"
+	printf 'Updated Foundry Reference
+	Foundry Path: %s
+	Foundry Data: %s\n' "$1" "$2"
+}
+
+launch_foundry() {
+	sudo `which node` "$FPATH/resources/app/main.js" --dataPath="$FDATA"
+}
+
+gulp_build() {
+	DIR="$SCRIPT_DIR/$MODULE"
+	if [[ ! -d "$DIR" ]]; then
+		echo "Could not navigate to '$DIR'"
+		echo "Please make sure the module directory exists and execute the following"
+		echo "	> npm run target df-module-name"
+		return
+	fi
+	# Go to module directory
+	cd $DIR
+	# Execute the gulp commands
+	npx gulp --gulpfile "${SCRIPT_DIR}/gulpfile.js" --cwd="$DIR" "$@"
+}
+
+git_tag() {
+	MANIFEST="$SCRIPT_DIR/$MODULE/module.json"
+	MODULE_NAME=`npx json "name" < "$MANIFEST"`
+	MODULE_VERS=`npx json "version" < "$MANIFEST"`
+	# git tag -d ${MODULE_NAME}_${MODULE_VERS} 2>/dev/null
+	# git tag ${MODULE_NAME}_${MODULE_VERS} \
+	# 	&& git push -f origin ${MODULE_NAME}_${MODULE_VERS}
+	echo "Tagged current commit as \"${MODULE_NAME}_${MODULE_VERS}\""
+}
+
+COMMAND="$1"
+shift
+case $COMMAND in
+	"target") set_module "$@" ;;
+	"foundry") set_foundry "$@" ;;
+	"launch") launch_foundry "$@" ;;
+	"build") gulp_build "$@" ;;
+	"tag") git_tag ;;
+	*) echo "Unknown Command: $COMMAND" ;;
+esac

@@ -3,5 +3,5 @@
 **/dist/
 **/bundle/
 **/package-lock.json
-dev
-current-project
+.devenv
+.vscode/settings.json

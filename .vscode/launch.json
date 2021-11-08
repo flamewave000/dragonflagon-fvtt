@@ -7,14 +7,14 @@
 			"request": "launch",
 			"port": 9222,
 			"url": "http://localhost:30000/game",
-			"webRoot": "${fileDirname}",
+			"webRoot": "${workspaceFolder}/${config:TARGET}",
 			"runtimeArgs": [
 				"--remote-debugging-port=9222",
 				"--app=http://localhost:30000"
 			],
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}/${config:TARGET}",
 			"sourceMapPathOverrides": {
-				"webpack:///./*": "${fileDirname}/../*"
+				"webpack:///./*": "${workspaceFolder}/${config:TARGET}/*"
 			}
 		}
 	]

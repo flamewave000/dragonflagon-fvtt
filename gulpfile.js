@@ -29,7 +29,8 @@ const LICENSE = '../LICENSE';
 console.log(process.cwd());
 
 var PACKAGE = JSON.parse(fs.readFileSync('module.json'));
-var DEV_DIR = fs.readFileSync('../dev').toString().trim();
+var DEV_DIR = fs.existsSync('../.devenv') ? JSON.parse(fs.readFileSync('../.devenv').toString())?.foundry?.data?.trim() + '/Data/modules/' : '';
+
 function reloadPackage(cb) { PACKAGE = JSON.parse(fs.readFileSync('module.json')); cb(); }
 function DEV_DIST() { return DEV_DIR + PACKAGE.name + '/'; }
 
@@ -73,42 +74,29 @@ function buildSource(output = null) {
 			entry[PACKAGE.name + '-shim'] = `./src/${PACKAGE.name}-shim.ts`;
 		}
 		return webpack({
-			entry,
+			entry, mode: 'none',
 			devtool: process.argv.includes('--sm') ? 'source-map' : undefined,
-			mode: 'none',
 			module: {
-				rules: [
-					{
-						test: /\.tsx?$/,
-						exclude: /node_modules/,
-						use: [
-							{
-								loader: 'ts-loader',
-								options: {
-									context: process.cwd(),
-								}
-							}
-						]
-					},
-				],
+				rules: [{
+					test: /\.tsx?$/,
+					exclude: /node_modules/,
+					use: [{
+						loader: 'ts-loader',
+						options: { context: process.cwd() }
+					}]
+				}]
 			},
-			resolve: {
-				extensions: ['.ts', '.tsx', '.js'],
-			},
+			resolve: { extensions: ['.ts', '.tsx', '.js'] },
 			optimization: {
 				minimize: process.argv.includes('--min'),
-				minimizer: [
-					new TerserPlugin({
-						terserOptions: {
-							keep_classnames: true,
-							keep_fnames: true
-						}
-					})
-				]
+				minimizer: [new TerserPlugin({
+					terserOptions: {
+						keep_classnames: true,
+						keep_fnames: true
+					}
+				})]
 			},
-			output: {
-				filename: '[name].js',
-			}
+			output: { filename: '[name].js' }
 		}).pipe(gulp.dest((output || DIST) + SOURCE));
 	});
 }
