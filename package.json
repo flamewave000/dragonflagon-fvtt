@@ -1,0 +1,59 @@
+{
+	"private": true,
+	"name": "dragon-flagon-modules",
+	"title": "DragonFlagon FoundryVTT Modules",
+	"scripts": {
+		"enable": "__process () { if [ -d \"$1\" ]; then printf '%s' \"$1\" > current-project ; else echo \"$1\" is invalid ; fi ; } ; __process ",
+		"build":	"cd `cat current-project` && npx gulp --gulpfile ../gulpfile.js --cwd=./ --sm && cd ..",
+		"watch":	"cd `cat current-project` && npx gulp --gulpfile ../gulpfile.js --cwd=./ watch --sm && cd ..",
+		"clean":	"cd `cat current-project` && npx gulp --gulpfile ../gulpfile.js --cwd=./ clean && cd ..",
+		"devbuild":	"cd `cat current-project` && npx gulp --gulpfile ../gulpfile.js --cwd=./ dev --sm && cd ..",
+		"devwatch":	"cd `cat current-project` && npx gulp --gulpfile ../gulpfile.js --cwd=./ devWatch --sm && cd ..",
+		"devclean":	"cd `cat current-project` && npx gulp --gulpfile ../gulpfile.js --cwd=./ devClean && cd ..",
+		"stage":	"cd `cat current-project` && npx gulp --gulpfile ../gulpfile.js --cwd=./ zip --sm && cd ..",
+		"prod":		"cd `cat current-project` && npx gulp --gulpfile ../gulpfile.js --cwd=./ zip --min --sm && cd ..",
+		"launch":	"sudo ../launch-foundry `which node` /var/www/foundryvtt /var/www/foundrydata",
+		"tag":		"git tag -d ${npm_package_name}_${npm_package_version} 2>/dev/null ; git tag ${npm_package_name}_${npm_package_version} && git push -f origin ${npm_package_name}_${npm_package_version}",
+		"release":	"npm run tag && npm run prod"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/flamewave000/dragonflagon-fvtt.git"
+	},
+	"keywords": [
+		"foundry",
+		"foundryvtt",
+		"module",
+		"dragon",
+		"flagon",
+		"dragonflagon",
+		"df"
+	],
+	"author": "flamewave000#0001",
+	"license": "BSD-3-Clause",
+	"bugs": {
+		"url": "https://github.com/flamewave000/dragonflagon-fvtt/issues"
+	},
+	"homepage": "https://github.com/flamewave000/dragonflagon-fvtt#readme",
+	"devDependencies": {
+		"@league-of-foundry-developers/foundry-vtt-types": "^0.8.9-7",
+		"acorn": "^8.5.0",
+		"del": "^6.0.0",
+		"gulp": "^4.0.2",
+		"gulp-cli": "^2.3.0",
+		"gulp-concat": "^2.6.1",
+		"gulp-jsonminify": "^1.1.0",
+		"gulp-notify": "^3.2.0",
+		"gulp-replace": "^1.1.3",
+		"gulp-sass": "^5.0.0",
+		"gulp-zip": "^5.0.2",
+		"json-stringify-pretty-compact": "^3.0.0",
+		"sass": "^1.43.4",
+		"terser-webpack-plugin": "^5.2.4",
+		"ts-loader": "^9.2.6",
+		"typescript": "^4.4.4",
+		"webpack": "^5.61.0",
+		"webpack-cli": "^4.9.1",
+		"webpack-stream": "^7.0.0"
+	}
+}
