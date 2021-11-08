@@ -1,4 +1,4 @@
-import {} from '../../common/global';
+import __init from '../../common/global'; __init();
 import * as DFChatArchive from "./archive/df-chat-archive";
 import DFChatEdit from "./edit/df-chat-edit";
 import * as DFAdventureLog from "./logger/df-adventure-log";
@@ -8,6 +8,7 @@ import initDFChatPrivacy from "./privacy/df-chat-privacy";
 import ScrollManage from "./scroll-manage/scroll-manage";
 import SETTINGS from "../../common/Settings";
 import WhisperTruncation from "./whisper-trunc/whisper-trunc";
+import PlayerColor from './player-color/PlayerColor';
 SETTINGS.init('df-chat-enhance');
 
 declare global {
@@ -34,6 +35,7 @@ Hooks.once('init', function () {
 	ChatMerge.init();
 	ScrollManage.init();
 	WhisperTruncation.init();
+	PlayerColor.init();
 
 	libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype._getEntryContextOptions', function (wrapped: Function, ...args: any) {
 		const options = wrapped(...args) as ContextMenu.Item[];

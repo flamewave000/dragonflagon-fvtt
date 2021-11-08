@@ -154,5 +154,8 @@
 		"SettingEnabledHint": "Will truncate long recipient name lists for whisper messages.",
 		"SettingCharLimitName": "Whisper Truncation Character Limit",
 		"SettingCharLimitHint": "The maximum number of characters to show before truncating the recipient names."
+	},
+	"DF_CHAT_PLAYER_COLOR": {
+		"Label": "Player Chat Color"
 	}
 }
