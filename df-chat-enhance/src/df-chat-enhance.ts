@@ -1,3 +1,11 @@
+
+declare global {
+	interface LenientGlobalVariableTypes {
+		game: never; // the type doesn't matter
+		canvas: never;
+	}
+}
+
 import * as DFChatArchive from "./archive/df-chat-archive.js";
 import DFChatEdit from "./edit/df-chat-edit.js";
 import initDFChatEdit from "./edit/df-chat-edit.js";
@@ -47,7 +55,7 @@ Hooks.once('ready', function () {
 	if (!game.modules.get('lib-wrapper')?.active) {
 		console.error('Missing libWrapper module dependency');
 		if (game.user.isGM)
-			ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error_LibWrapperMissing'));
+			ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error.LibWrapperMissing'));
 	}
 	DFAdventureLog.ready();
 	DFChatEdit.ready();

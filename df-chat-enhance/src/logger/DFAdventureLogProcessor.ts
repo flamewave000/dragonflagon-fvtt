@@ -52,6 +52,7 @@ export default class DFAdventureLogProcessor {
 	static readonly PREF_GMONLY_WHISPER = 'df-log-gmonly-whisper';
 	static readonly PREF_MESSAGES = 'df-log-messages';
 	static readonly PREF_SORTDESC = 'df-log-sortdesc';
+	static readonly PREF_SIMPLE_CALENDAR = 'df-log-use-simple-calendar';
 	static logCommand: ChatCommand = null;
 	static gmlogCommand: ChatCommand = null;
 
@@ -125,8 +126,8 @@ export default class DFAdventureLogProcessor {
 	static setupSettings() {
 		SETTINGS.register(DFAdventureLogProcessor.PREF_ENABLE, {
 			scope: 'world',
-			name: 'DF_CHAT_LOG.Setting_EnableTitle',
-			hint: 'DF_CHAT_LOG.Setting_EnableHint',
+			name: 'DF_CHAT_LOG.Setting.EnableTitle',
+			hint: 'DF_CHAT_LOG.Setting.EnableHint',
 			config: true,
 			type: Boolean,
 			default: true,
@@ -138,8 +139,8 @@ export default class DFAdventureLogProcessor {
 			}
 		});
 		SETTINGS.register(DFAdventureLogProcessor.PREF_GMONLY, {
-			name: 'DF_CHAT_LOG.Setting_GmOnlyTitle',
-			hint: 'DF_CHAT_LOG.Setting_GmOnlyHint',
+			name: 'DF_CHAT_LOG.Setting.GmOnlyTitle',
+			hint: 'DF_CHAT_LOG.Setting.GmOnlyHint',
 			scope: 'world',
 			type: Boolean,
 			default: false,
@@ -152,30 +153,42 @@ export default class DFAdventureLogProcessor {
 			}
 		});
 		SETTINGS.register(DFAdventureLogProcessor.PREF_GMONLY_WHISPER, {
-			name: 'DF_CHAT_LOG.Setting_GmOnlyWhisperName',
-			hint: 'DF_CHAT_LOG.Setting_GmOnlyWhisperHint',
+			name: 'DF_CHAT_LOG.Setting.GmOnlyWhisperName',
+			hint: 'DF_CHAT_LOG.Setting.GmOnlyWhisperHint',
 			scope: 'world',
 			type: Boolean,
 			default: false,
 			config: true
 		});
 		SETTINGS.register(DFAdventureLogProcessor.PREF_MESSAGES, {
-			name: 'DF_CHAT_LOG.Setting_PrintMessagesName',
-			hint: 'DF_CHAT_LOG.Setting_PrintMessagesHint',
+			name: 'DF_CHAT_LOG.Setting.PrintMessagesName',
+			hint: 'DF_CHAT_LOG.Setting.PrintMessagesHint',
 			scope: 'world',
 			type: Boolean,
 			default: true,
 			config: true
 		});
 		SETTINGS.register(DFAdventureLogProcessor.PREF_SORTDESC, {
-			name: 'DF_CHAT_LOG.Setting_SortDescendingName',
-			hint: 'DF_CHAT_LOG.Setting_SortDescendingHint',
+			name: 'DF_CHAT_LOG.Setting.SortDescendingName',
+			hint: 'DF_CHAT_LOG.Setting.SortDescendingHint',
 			scope: 'world',
 			type: Boolean,
 			default: false,
 			config: true,
 			onChange: () => this.resortLog()
 		})
+		// SimpleCalendar.api.dateToTimestamp({});
+		// If Simple Calendar is enabled
+		if (game.modules.get('foundryvtt-simple-calendar')) {
+			SETTINGS.register(DFAdventureLogProcessor.PREF_SIMPLE_CALENDAR, {
+				scope: 'world',
+				type: Boolean,
+				name: "DF_CHAT_LOG.Setting.SimpleCalendarName",
+				hint: "DF_CHAT_LOG.Setting.SimpleCalendarHint",
+				default: false,
+				config: true
+			});
+		}
 
 		Hooks.on('closeDFAdventureLogConfig', () => { DFAdventureLogProcessor.logConfig = null; });
 		if (!!(game as GameExt).chatCommands)
@@ -228,7 +241,7 @@ export default class DFAdventureLogProcessor {
 
 		if (!SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE)) {
 			(game as GameExt).chatCommands.deregisterCommand(DFAdventureLogProcessor.logCommand);
-			ui.notifications.warn(game.i18n.localize('DF_CHAT_LOG.Error_Disabled'));
+			ui.notifications.warn(game.i18n.localize('DF_CHAT_LOG.Error.Disabled'));
 			return;
 		}
 
@@ -259,7 +272,7 @@ export default class DFAdventureLogProcessor {
 		switch (tokens[0].toLowerCase()) {
 			case 'config':
 				if (!game.user.isGM) {
-					ui.notifications.warn(game.i18n.localize('DF_CHAT_LOG.Error_ConfigGmOnly'));
+					ui.notifications.warn(game.i18n.localize('DF_CHAT_LOG.Error.ConfigGmOnly'));
 					return;
 				}
 				setTimeout(async () => {
@@ -286,7 +299,7 @@ export default class DFAdventureLogProcessor {
 						}
 					}
 					if (index < 0) {
-						ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error_MissingQuote').replace('{0}', tokens[1]));
+						ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error.MissingQuote').replace('{0}', tokens[1]));
 						setTimeout(() => $('#chat-message').val('/log q ' + messageText), 1);
 						return;
 					}
@@ -300,7 +313,7 @@ export default class DFAdventureLogProcessor {
 				messageData.flavor = `${game.user.name} quoted ${source}`;
 				messageData.content = `<span class="dfal-qu">${messageText}</span>`;
 				if (messageText.length == 0) {
-					ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error_MissingMessage'));
+					ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error.MissingMessage'));
 					setTimeout(() => $('#chat-message').val(`/log q "${source}" ${messageText}`), 1);
 					return;
 				}
@@ -328,9 +341,9 @@ export default class DFAdventureLogProcessor {
 		const journalId = SETTINGS.get(gmLog ? DFAdventureLogConfig.PREF_JOURNAL_GM : DFAdventureLogConfig.PREF_JOURNAL) as string;
 		if (!game.journal.has(journalId)) {
 			if (game.user.isGM)
-				ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error_NoJournalSetGM'), { permanent: true });
+				ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error.NoJournalSetGM'), { permanent: true });
 			else
-				ui.notifications.warn(game.i18n.localize('DF_CHAT_LOG.Error_NoJournalSet'));
+				ui.notifications.warn(game.i18n.localize('DF_CHAT_LOG.Error.NoJournalSet'));
 			return;
 		}
 		const journal = game.journal.get(journalId);

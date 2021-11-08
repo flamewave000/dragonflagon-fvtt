@@ -22,13 +22,13 @@ export default class DFAdventureLogConfig extends FormApplication {
 			type: String,
 			default: '',
 			config: false
-		})
+		});
 		game.settings.register(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL_GM, {
 			scope: 'world',
 			type: String,
 			default: '',
 			config: false
-		})
+		});
 		game.settings.registerMenu(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_CONFIG, {
 			restricted: true,
 			type: DFAdventureLogConfig,
