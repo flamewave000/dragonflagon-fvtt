@@ -1,4 +1,4 @@
-import SETTINGS from "./lib/Settings.js";
+import SETTINGS from "./lib/Settings";
 
 
 interface Button {

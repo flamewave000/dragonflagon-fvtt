@@ -1,4 +1,4 @@
-import CONFIG from "../CONFIG.js";
+import CONFIG from "../CONFIG";
 
 
 const ICONS_FOR_KNOWN_ROLL_TYPES: {

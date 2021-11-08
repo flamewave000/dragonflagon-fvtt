@@ -1,5 +1,5 @@
-import SETTINGS from "./libs/SETTINGS.js";
-import { AmbientLightExt, AnimatorData, KeyFrame, LightAnimator, PropertyDelta } from "./LightAnimator.js";
+import SETTINGS from "./libs/SETTINGS";
+import { AmbientLightExt, AnimatorData, KeyFrame, LightAnimator, PropertyDelta } from "./LightAnimator";
 
 declare class LightConfigExt extends LightConfig {
 	anims: ActiveLightConfig;

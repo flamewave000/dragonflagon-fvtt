@@ -1,5 +1,5 @@
-import DFSceneRatio from "./df-scene-ratio.js";
-import SETTINGS from "./lib/Settings.js";
+import DFSceneRatio from "./df-scene-ratio";
+import SETTINGS from "./lib/Settings";
 
 declare global {
 	interface Scene {

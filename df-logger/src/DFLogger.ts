@@ -1,5 +1,5 @@
-import { Message, MessageProcessor } from "./MessageProcessor.js";
-import SETTINGS from "./Settings.js";
+import { Message, MessageProcessor } from "./MessageProcessor";
+import SETTINGS from "./Settings";
 
 interface Payload {
 	type: string,

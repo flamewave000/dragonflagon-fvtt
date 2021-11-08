@@ -1,5 +1,5 @@
-import EaseFunctions from "./EaseFunctions.js";
-import SETTINGS from "./libs/SETTINGS.js";
+import EaseFunctions from "./EaseFunctions";
+import SETTINGS from "./libs/SETTINGS";
 
 interface AmbientLightData extends Partial<AmbientLight.Data> {
 	[key: string]: any;

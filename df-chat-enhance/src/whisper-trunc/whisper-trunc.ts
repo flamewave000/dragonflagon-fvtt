@@ -1,4 +1,4 @@
-import SETTINGS from "../SETTINGS.js";
+import SETTINGS from "../SETTINGS";
 
 
 const TEMPLATE = "$0: $1 (+$2&nbsp;more)";

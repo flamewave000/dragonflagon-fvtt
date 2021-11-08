@@ -1,5 +1,5 @@
-import GroupFilter from "./GroupFilter.js";
-import { KeyMap, HotkeySetting, _Hotkeys } from "./Hotkeys.js";
+import GroupFilter from "./GroupFilter";
+import { KeyMap, HotkeySetting, _Hotkeys } from "./Hotkeys";
 
 interface Options {
 	title: string | undefined;

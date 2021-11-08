@@ -1,4 +1,4 @@
-import FuzzySearch from "./FuzzySearch.js";
+import FuzzySearch from "./FuzzySearch";
 
 
 export { };

@@ -1,5 +1,5 @@
-import { InputHandler } from "./ToolInputHandler.js";
-import { CurvyWallControl } from '../CurvyWallsToolBar.js';
+import { InputHandler } from "./ToolInputHandler";
+import { CurvyWallControl } from '../CurvyWallsToolBar';
 
 export enum ToolMode {
 	NotPlaced,

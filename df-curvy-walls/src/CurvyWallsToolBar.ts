@@ -1,7 +1,7 @@
 
-import { CurvyWallToolManager, Mode } from './CurvyWallToolManager.js';
-import SETTINGS from './lib/Settings.js';
-import { ToolMode } from './tools/BezierTool.js';
+import { CurvyWallToolManager, Mode } from './CurvyWallToolManager';
+import SETTINGS from './lib/Settings';
+import { ToolMode } from './tools/BezierTool';
 
 export interface CurvyWallControl {
 	title: string;

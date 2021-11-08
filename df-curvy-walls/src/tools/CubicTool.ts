@@ -1,7 +1,7 @@
-import { CurvyWallControl } from '../CurvyWallsToolBar.js';
-import { Bezier } from '../lib/bezier.js';
-import { BezierTool, ToolMode } from './BezierTool.js';
-import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler, MagnetPointInputHandler } from "./ToolInputHandler.js";
+import { CurvyWallControl } from '../CurvyWallsToolBar';
+import { Bezier } from '../lib/bezier';
+import { BezierTool, ToolMode } from './BezierTool';
+import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler, MagnetPointInputHandler } from "./ToolInputHandler";
 
 const pointNearPoint = BezierTool.pointNearPoint;
 declare type Point = PIXI.Point;

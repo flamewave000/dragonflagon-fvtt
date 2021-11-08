@@ -1,5 +1,5 @@
-import { DFChatArchive } from "./DFChatArchive.js";
-import CONFIG from '../CONFIG.js';
+import { DFChatArchive } from "./DFChatArchive";
+import CONFIG from '../CONFIG';
 
 export default class DFChatArchiveNew extends FormApplication<{ shouldDelete: boolean }> {
 	static readonly PREF_DELETE = 'new-should-delete';

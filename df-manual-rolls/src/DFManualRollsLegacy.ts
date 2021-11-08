@@ -1,6 +1,6 @@
-import DFManualRolls from "./DFManualRolls.js";
-import DFRollPrompt from "./DFRollPrompt.js";
-import SETTINGS from "./lib/Settings.js";
+import DFManualRolls from "./DFManualRolls";
+import DFRollPrompt from "./DFRollPrompt";
+import SETTINGS from "./lib/Settings";
 
 /***** Pathfinder1 Roller Declaration *****/
 declare class RollPF {

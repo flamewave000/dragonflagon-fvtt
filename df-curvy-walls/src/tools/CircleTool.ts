@@ -1,6 +1,6 @@
-import { BezierTool, ToolMode } from './BezierTool.js';
-import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler.js";
-import { CurvyWallControl } from '../CurvyWallsToolBar.js';
+import { BezierTool, ToolMode } from './BezierTool';
+import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler";
+import { CurvyWallControl } from '../CurvyWallsToolBar';
 
 const pointNearPoint = BezierTool.pointNearPoint;
 const PI2 = Math.PI * 2

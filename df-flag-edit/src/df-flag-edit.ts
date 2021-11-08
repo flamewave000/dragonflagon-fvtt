@@ -1,5 +1,5 @@
-import FlagEditor from "./FlagEditor.js";
-import SETTINGS from "./SETTINGS.js";
+import FlagEditor from "./FlagEditor";
+import SETTINGS from "./SETTINGS";
 SETTINGS.init('df-flag-edit');
 
 Hooks.once('init', function() {

@@ -1,4 +1,4 @@
-import { } from "./lib/fuzzysort.js";
+import { } from "./lib/fuzzysort";
 
 declare global {
 	interface Application {

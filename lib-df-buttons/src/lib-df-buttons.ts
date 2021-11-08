@@ -1,4 +1,4 @@
-import ControlManager from "./ControlManager.js";
+import ControlManager from "./ControlManager";
 
 const MOD_NAME = 'lib-df-buttons';
 
@@ -55,7 +55,7 @@ Hooks.once('ready', () => {
 });
 /* Example code for appending ToolGroups and Tools */
 /**
-import { Tool, ToolGroup } from "./ToolType.js";
+import { Tool, ToolGroup } from "./ToolType";
 Hooks.on('getModuleToolGroups', (groups: ToolGroup[]) => {
 	const handleClick = function (this: Tool, active?: boolean) {
 		if (active !== undefined)

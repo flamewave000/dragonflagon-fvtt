@@ -1,4 +1,4 @@
-import { DFChatArchive, DFChatArchiveEntry } from './DFChatArchive.js';
+import { DFChatArchive, DFChatArchiveEntry } from './DFChatArchive';
 
 export default class DFChatArchiveViewer extends Application {
 	archive: DFChatArchiveEntry;

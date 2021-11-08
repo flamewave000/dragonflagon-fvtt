@@ -1,8 +1,8 @@
-import { CurvyWallControl } from "../CurvyWallsToolBar.js";
-import { CurvyWallToolManager, Mode } from "../CurvyWallToolManager.js";
-import { Bezier } from "../lib/bezier.js";
-import { BezierTool } from "./BezierTool.js";
-import { InputHandler, PointInputHandler } from "./ToolInputHandler.js";
+import { CurvyWallControl } from "../CurvyWallsToolBar";
+import { CurvyWallToolManager, Mode } from "../CurvyWallToolManager";
+import { Bezier } from "../lib/bezier";
+import { BezierTool } from "./BezierTool";
+import { InputHandler, PointInputHandler } from "./ToolInputHandler";
 
 const pointNearPoint = BezierTool.pointNearPoint;
 

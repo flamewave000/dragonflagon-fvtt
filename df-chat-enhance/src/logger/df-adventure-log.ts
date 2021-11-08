@@ -1,5 +1,5 @@
-import DFAdventureLogConfig from "./DFAdventureLogConfig.js";
-import DFAdventureLogProcessor from "./DFAdventureLogProcessor.js";
+import DFAdventureLogConfig from "./DFAdventureLogConfig";
+import DFAdventureLogProcessor from "./DFAdventureLogProcessor";
 
 
 interface AdventurLogApi {

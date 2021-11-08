@@ -1,8 +1,8 @@
 // Import and declare the classes/interfaces Global
-import GroupFilter from './GroupFilter.js';
-import { HotkeyConfig } from './HotkeyConfig.js';
-import { _Hotkeys } from './Hotkeys.js';
-import { KeyMap, HotkeySetting } from './Hotkeys.js';
+import GroupFilter from './GroupFilter';
+import { HotkeyConfig } from './HotkeyConfig';
+import { _Hotkeys } from './Hotkeys';
+import { KeyMap, HotkeySetting } from './Hotkeys';
 
 // Initialize Hotkeys on the global scope
 export const Hotkeys: typeof _Hotkeys = _Hotkeys;
@@ -33,7 +33,7 @@ export const Hotkeys: typeof _Hotkeys = _Hotkeys;
 }
 
 
-import SETTINGS from './Settings.js';
+import SETTINGS from './Settings';
 // Initializes the SETTINGS helper with the name of this module
 SETTINGS.init('lib-df-hotkeys')
 

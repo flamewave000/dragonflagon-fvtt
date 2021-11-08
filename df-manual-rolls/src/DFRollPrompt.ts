@@ -1,5 +1,5 @@
-import DFManualRolls from "./DFManualRolls.js";
-import SETTINGS from "./lib/Settings.js";
+import DFManualRolls from "./DFManualRolls";
+import SETTINGS from "./lib/Settings";
 
 interface RollPromptData {
 	id: number;

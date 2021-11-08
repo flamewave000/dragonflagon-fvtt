@@ -1,4 +1,4 @@
-import SETTINGS from "./SETTINGS.js";
+import SETTINGS from "./SETTINGS";
 
 //#region Type Definitions
 // If Ace Library is installed and enabled, this will exist

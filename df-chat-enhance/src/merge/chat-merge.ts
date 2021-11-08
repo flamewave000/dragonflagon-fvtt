@@ -1,4 +1,4 @@
-import SETTINGS from "../SETTINGS.js";
+import SETTINGS from "../SETTINGS";
 
 
 export default class ChatMerge {

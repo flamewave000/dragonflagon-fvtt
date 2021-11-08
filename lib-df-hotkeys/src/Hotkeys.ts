@@ -1,6 +1,6 @@
-import GroupFilter from "./GroupFilter.js";
-import { Keys } from "./Keys.js";
-import SETTINGS from "./Settings.js";
+import GroupFilter from "./GroupFilter";
+import { Keys } from "./Keys";
+import SETTINGS from "./Settings";
 
 /** Simple KeyMap for a Hotkey */
 export interface KeyMap {

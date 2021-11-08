@@ -1,12 +1,12 @@
-import { hotkeys } from './lib/lib-df-hotkeys.shim.js';
-import { BezierTool, ToolMode } from './tools/BezierTool.js';
-import CircleTool from './tools/CircleTool.js';
-import RectangleTool from './tools/RectangleTool.js';
-import CubicTool from './tools/CubicTool.js';
-import QuadTool from './tools/QuadTool.js';
-import { InputHandler } from './tools/ToolInputHandler.js';
-import PointMapper from './tools/PointMapper.js';
-import SETTINGS from './lib/Settings.js';
+import { hotkeys } from './lib/lib-df-hotkeys.shim';
+import { BezierTool, ToolMode } from './tools/BezierTool';
+import CircleTool from './tools/CircleTool';
+import RectangleTool from './tools/RectangleTool';
+import CubicTool from './tools/CubicTool';
+import QuadTool from './tools/QuadTool';
+import { InputHandler } from './tools/ToolInputHandler';
+import PointMapper from './tools/PointMapper';
+import SETTINGS from './lib/Settings';
 
 declare global {
 	namespace PIXI {

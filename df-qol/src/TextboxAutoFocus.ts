@@ -1,4 +1,4 @@
-import SETTINGS from './libs/Settings.js';
+import SETTINGS from './libs/Settings';
 
 function apply(shouldApply: Boolean, hookName: string, func: Hooks.General) {
 	if (shouldApply) Hooks.on(hookName, func);

@@ -1,4 +1,4 @@
-import { Message, MessageProcessor } from "./MessageProcessor.js";
+import { Message, MessageProcessor } from "./MessageProcessor";
 
 
 export default class DFLoggerMenu extends FormApplication {

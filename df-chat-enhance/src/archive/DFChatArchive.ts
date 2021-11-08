@@ -1,5 +1,5 @@
-import CONFIG from '../CONFIG.js';
-import SETTINGS from '../SETTINGS.js';
+import CONFIG from '../CONFIG';
+import SETTINGS from '../SETTINGS';
 
 export interface DFChatArchiveEntry {
 	id: number;

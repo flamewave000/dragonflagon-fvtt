@@ -1,6 +1,6 @@
-import SETTINGS from "../SETTINGS.js";
-import { DFChatArchive } from "./DFChatArchive.js";
-import DFChatArchiveViewer from "./DFChatArchiveViewer.js";
+import SETTINGS from "../SETTINGS";
+import { DFChatArchive } from "./DFChatArchive";
+import DFChatArchiveViewer from "./DFChatArchiveViewer";
 
 export default class DFChatArchiveManager extends Application {
 	static readonly PREF_REVERSE_SORT = 'dfca-manager-reverseSort';

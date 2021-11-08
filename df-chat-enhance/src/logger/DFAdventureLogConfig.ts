@@ -1,5 +1,5 @@
-import CONFIG from "../CONFIG.js";
-import DFAdventureLogProcessor from "./DFAdventureLogProcessor.js";
+import CONFIG from "../CONFIG";
+import DFAdventureLogProcessor from "./DFAdventureLogProcessor";
 
 
 export default class DFAdventureLogConfig extends FormApplication {

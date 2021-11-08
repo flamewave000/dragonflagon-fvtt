@@ -6,16 +6,16 @@ declare global {
 	}
 }
 
-import * as DFChatArchive from "./archive/df-chat-archive.js";
-import DFChatEdit from "./edit/df-chat-edit.js";
-import initDFChatEdit from "./edit/df-chat-edit.js";
-import * as DFAdventureLog from "./logger/df-adventure-log.js";
-import DFAdventureLogProcessor from "./logger/DFAdventureLogProcessor.js";
-import ChatMerge from "./merge/chat-merge.js";
-import initDFChatPrivacy from "./privacy/df-chat-privacy.js";
-import ScrollManage from "./scroll-manage/scroll-manage.js";
-import SETTINGS from "./SETTINGS.js";
-import WhisperTruncation from "./whisper-trunc/whisper-trunc.js";
+import * as DFChatArchive from "./archive/df-chat-archive";
+import DFChatEdit from "./edit/df-chat-edit";
+import initDFChatEdit from "./edit/df-chat-edit";
+import * as DFAdventureLog from "./logger/df-adventure-log";
+import DFAdventureLogProcessor from "./logger/DFAdventureLogProcessor";
+import ChatMerge from "./merge/chat-merge";
+import initDFChatPrivacy from "./privacy/df-chat-privacy";
+import ScrollManage from "./scroll-manage/scroll-manage";
+import SETTINGS from "./SETTINGS";
+import WhisperTruncation from "./whisper-trunc/whisper-trunc";
 SETTINGS.init('df-chat-enhance');
 
 declare global {

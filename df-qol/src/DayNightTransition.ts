@@ -1,4 +1,4 @@
-import SETTINGS from './libs/Settings.js';
+import SETTINGS from './libs/Settings';
 
 export default class DayNightTransition {
 	static init() {

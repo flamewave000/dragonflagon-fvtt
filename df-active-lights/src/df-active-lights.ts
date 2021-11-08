@@ -1,6 +1,6 @@
-import ActiveLightConfig from "./ActiveLightConfig.js";
-import { LightAnimator } from "./LightAnimator.js";
-import SETTINGS from "./libs/SETTINGS.js";
+import ActiveLightConfig from "./ActiveLightConfig";
+import { LightAnimator } from "./LightAnimator";
+import SETTINGS from "./libs/SETTINGS";
 SETTINGS.init('df-active-lights');
 
 Hooks.once('init', function () {

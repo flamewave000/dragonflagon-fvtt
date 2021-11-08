@@ -1,7 +1,7 @@
 
-import CONFIG from '../CONFIG.js';
-import SETTINGS from '../SETTINGS.js';
-import DFAdventureLogConfig from './DFAdventureLogConfig.js';
+import CONFIG from '../CONFIG';
+import SETTINGS from '../SETTINGS';
+import DFAdventureLogConfig from './DFAdventureLogConfig';
 
 declare global {
 	interface String {

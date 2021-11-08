@@ -1,5 +1,5 @@
-import DFRollPrompt from "./DFRollPrompt.js";
-import SETTINGS from "./lib/Settings.js";
+import DFRollPrompt from "./DFRollPrompt";
+import SETTINGS from "./lib/Settings";
 
 declare global {
 	interface String {

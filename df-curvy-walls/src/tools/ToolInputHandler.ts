@@ -1,4 +1,4 @@
-import { BezierTool } from "./BezierTool.js";
+import { BezierTool } from "./BezierTool";
 
 declare type Point = PIXI.Point;
 export abstract class InputHandler {

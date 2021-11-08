@@ -1,8 +1,8 @@
-import DFChatArchiveNew from "./DFChatArchiveNew.js";
-import DFChatArchiveManager from "./DFChatArchiveManager.js";
-import { DFChatArchive } from "./DFChatArchive.js";
-import CONFIG from "../CONFIG.js";
-import SETTINGS from "../SETTINGS.js";
+import DFChatArchiveNew from "./DFChatArchiveNew";
+import DFChatArchiveManager from "./DFChatArchiveManager";
+import { DFChatArchive } from "./DFChatArchive";
+import CONFIG from "../CONFIG";
+import SETTINGS from "../SETTINGS";
 
 
 export function init() {

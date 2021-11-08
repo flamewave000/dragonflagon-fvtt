@@ -1,7 +1,7 @@
-import DFManualRolls from "./DFManualRolls.js";
-import DFManualRollsLegacy from "./DFManualRollsLegacy.js";
-import DFRollPrompt from "./DFRollPrompt.js";
-import SETTINGS from "./lib/Settings.js";
+import DFManualRolls from "./DFManualRolls";
+import DFManualRollsLegacy from "./DFManualRollsLegacy";
+import DFRollPrompt from "./DFRollPrompt";
+import SETTINGS from "./lib/Settings";
 
 SETTINGS.init('df-manual-rolls');
 

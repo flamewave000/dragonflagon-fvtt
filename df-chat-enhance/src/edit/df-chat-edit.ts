@@ -1,6 +1,6 @@
-import CONFIG from "../CONFIG.js";
-import SETTINGS from "../SETTINGS.js";
-import DFChatEditor from './DFChatEditor.js';
+import CONFIG from "../CONFIG";
+import SETTINGS from "../SETTINGS";
+import DFChatEditor from './DFChatEditor';
 
 const PREF_EDIT_ALLOWED = 'edit-allowed';
 const PREF_GM_ALL = 'gm-edit-all';

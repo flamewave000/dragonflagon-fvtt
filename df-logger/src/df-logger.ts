@@ -1,7 +1,7 @@
-import DFLogger from './DFLogger.js';
-import DFLoggerMenu from './DFLoggerMenu.js';
-import { MessageProcessor } from './MessageProcessor.js';
-import SETTINGS from './Settings.js';
+import DFLogger from './DFLogger';
+import DFLoggerMenu from './DFLoggerMenu';
+import { MessageProcessor } from './MessageProcessor';
+import SETTINGS from './Settings';
 
 SETTINGS.init('df-logger');
 
