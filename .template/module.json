@@ -1,11 +1,11 @@
 {
-	"name": "{{name}}",
-	"title": "{{title}}",
-	"description": "{{description}}",
-	"version": "{{version}}",
+	"name": "df-module-name",
+	"title": "Module Name",
+	"version": "1.0.0",
+	"description": "Description",
 	"author": "flamewave000#0001",
-	"minimumCoreVersion": "0.7.9",
-	"compatibleCoreVersion": "0.7.9",
+	"minimumCoreVersion": "0.8.9",
+	"compatibleCoreVersion": "0.8.9",
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [

@@ -1,8 +1,8 @@
 {
-	"name": "{{name}}",
-	"title": "{{title}}",
-	"description": "{{description}}",
-	"version": "{{version}}",
+	"name": "lib-df-hotkeys",
+	"title": "Library: DF Hotkeys",
+	"version": "2.3.5",
+	"description": "Library for providing a way for modules to register keyboard shortcuts",
 	"author": "flamewave000#0001",
 	"minimumCoreVersion": "0.7.9",
 	"compatibleCoreVersion": "0.8.6",

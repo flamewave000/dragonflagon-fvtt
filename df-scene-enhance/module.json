@@ -1,8 +1,8 @@
 {
-	"name": "{{name}}",
-	"title": "{{title}}",
-	"description": "{{description}}",
-	"version": "{{version}}",
+	"name": "df-scene-enhance",
+	"version": "3.4.2",
+	"title": "DF Scene Enhancement",
+	"description": "A few enhancements to scene management for players and GMs.",
 	"author": "flamewave000#0001",
 	"minimumCoreVersion": "0.8.6",
 	"compatibleCoreVersion": "0.8.8",

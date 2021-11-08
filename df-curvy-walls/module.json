@@ -1,8 +1,8 @@
 {
-	"name": "{{name}}",
-	"title": "{{title}}",
-	"description": "{{description}}",
-	"version": "{{version}}",
+	"name": "df-curvy-walls",
+	"version": "3.2.1",
+	"title": "DF Curvy Walls",
+	"description": "Creates wall segments along a Bezier Cubic or Quadratic curve, an ellipse, or a rectangle",
 	"author": "flamewave000#0001",
 	"minimumCoreVersion": "0.8.6",
 	"compatibleCoreVersion": "0.8.8",

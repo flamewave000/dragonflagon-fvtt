@@ -1,8 +1,8 @@
 {
-	"name": "{{name}}",
-	"title": "{{title}}",
-	"description": "{{description}}",
-	"version": "{{version}}",
+	"name": "df-chat-enhance",
+	"title": "DF Chat Enhancements",
+	"description": "Various enhancements to the chat features.",
+	"version": "3.3.0",
 	"author": "flamewave000#0001",
 	"minimumCoreVersion": "0.8.8",
 	"compatibleCoreVersion": "0.8.9",

@@ -1,8 +1,8 @@
 {
-	"name": "{{name}}",
-	"title": "{{title}}",
-	"description": "{{description}}",
-	"version": "{{version}}",
+	"name": "df-flag-edit",
+	"title": "DF Flags Editor",
+	"version": "1.0.0",
+	"description": "Foundry Document Flags Editor",
 	"author": "flamewave000#0001",
 	"minimumCoreVersion": "0.8.9",
 	"compatibleCoreVersion": "0.8.9",
