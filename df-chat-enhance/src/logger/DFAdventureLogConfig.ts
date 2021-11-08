@@ -1,3 +1,4 @@
+import SETTINGS from "../../../common/Settings";
 import CONFIG from "../CONFIG";
 import DFAdventureLogProcessor from "./DFAdventureLogProcessor";
 
@@ -17,19 +18,19 @@ export default class DFAdventureLogConfig extends FormApplication {
 	}
 
 	static setupSettings() {
-		game.settings.register(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL, {
+		SETTINGS.register(DFAdventureLogConfig.PREF_JOURNAL, {
 			scope: 'world',
 			type: String,
 			default: '',
 			config: false
 		});
-		game.settings.register(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL_GM, {
+		SETTINGS.register(DFAdventureLogConfig.PREF_JOURNAL_GM, {
 			scope: 'world',
 			type: String,
 			default: '',
 			config: false
 		});
-		game.settings.registerMenu(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_CONFIG, {
+		SETTINGS.registerMenu(DFAdventureLogConfig.PREF_CONFIG, {
 			restricted: true,
 			type: DFAdventureLogConfig,
 			label: "DF_CHAT_LOG.Config_Title",
@@ -40,8 +41,8 @@ export default class DFAdventureLogConfig extends FormApplication {
 	getData(options?: any) {
 		const data = super.getData(options);
 		const keys = game.journal.keys();
-		const selectedLog = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL) as string;
-		const selectedGMLog = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL_GM) as string;
+		const selectedLog = SETTINGS.get(DFAdventureLogConfig.PREF_JOURNAL) as string;
+		const selectedGMLog = SETTINGS.get(DFAdventureLogConfig.PREF_JOURNAL_GM) as string;
 		var logJournals = [];
 		var gmlogJournals = [];
 		for (let key of keys) {
@@ -71,8 +72,8 @@ export default class DFAdventureLogConfig extends FormApplication {
 		const gmlogJournal = formData['dfal-journal-gm'];
 		const clear = formData['dfal-clear'];
 		const gmClear = formData['dfal-clear-gm'];
-		game.settings.set(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL, logJournal);
-		game.settings.set(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL_GM, gmlogJournal);
+		SETTINGS.set(DFAdventureLogConfig.PREF_JOURNAL, logJournal);
+		SETTINGS.set(DFAdventureLogConfig.PREF_JOURNAL_GM, gmlogJournal);
 		await DFAdventureLogConfig.initializeJournal(logJournal, clear, false);
 		await DFAdventureLogConfig.initializeJournal(gmlogJournal, gmClear, true);
 	}

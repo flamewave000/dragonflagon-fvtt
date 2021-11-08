@@ -7,7 +7,7 @@ import SETTINGS from "../../common/Settings";
 SETTINGS.init('df-logger');
 
 Hooks.once('init', function () {
-	game.settings.registerMenu(SETTINGS.MOD_NAME, 'message-manage', {
+	SETTINGS.registerMenu('message-manage', {
 		restricted: true,
 		type: DFLoggerMenu,
 		label: 'DF-LOGGER.Settings.ManageMessages',

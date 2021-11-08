@@ -1,6 +1,4 @@
 export default class CONFIG {
-	static readonly MOD_NAME = "df-chat-enhance";
-
 	static async requestReload() {
 		if (await Dialog.confirm({
 			title: game.i18n.localize("DF_CHAT_ENHANCE.ReloadGameTitle"),

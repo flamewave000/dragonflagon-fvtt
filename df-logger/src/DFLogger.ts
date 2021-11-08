@@ -47,7 +47,7 @@ export default class DFLogger {
 
 	static onEvent(data: Payload) {
 		// ignore message if GM-Only and we are not a GM
-		if (game.settings.get(SETTINGS.MOD_NAME, DFLogger.SETTING_GM_ONLY) && !game.user.isGM) return;
+		if (SETTINGS.get(DFLogger.SETTING_GM_ONLY) && !game.user.isGM) return;
 		if (data.type === DFLogger.EV_LOGIN) DFLogger.onLogin(data);
 		else if (data.type === DFLogger.EV_LOGOUT) DFLogger.onLogout(data);
 	}
@@ -67,7 +67,7 @@ export default class DFLogger {
 			msg: DFLogger.getMessageText(MessageProcessor.loginMessages)
 		}
 		game.socket.emit(`module.${SETTINGS.MOD_NAME}`, payload);
-		if (!game.settings.get(SETTINGS.MOD_NAME, DFLogger.SETTING_NOT_ME))
+		if (!SETTINGS.get(DFLogger.SETTING_NOT_ME))
 			DFLogger.onEvent(payload);
 	}
 

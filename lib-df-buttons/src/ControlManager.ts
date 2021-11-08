@@ -1,6 +1,5 @@
+import SETTINGS from "../../common/Settings";
 import { Tool, ToolGroup } from "./ToolType";
-
-const MOD_NAME = 'lib-df-buttons';
 
 interface ToolUI {
 	name: string;
@@ -154,7 +153,7 @@ export default class ControlManager extends Application {
 
 		this.element[0].removeAttribute('class');
 		this.element[0].classList.add('app');
-		switch (game.settings.get(MOD_NAME, 'position')) {
+		switch (SETTINGS.get('position')) {
 			case 'top': this.element[0].classList.add('top'); break;
 			case 'left': this.element[0].classList.add('left'); break;
 			case 'bottom': this.element[0].classList.add('bottom'); break;
@@ -174,7 +173,7 @@ export default class ControlManager extends Application {
 	}
 
 	private _handleSidebarCollapse(sideBar: Sidebar, collapsed: boolean) {
-		if (game.settings.get(MOD_NAME, 'position') !== 'right') {
+		if (SETTINGS.get('position') !== 'right') {
 			(<ControlManager>(<any>ui).moduleControls).element.css('right', 'unset');
 			return;
 		}
@@ -188,7 +187,7 @@ export default class ControlManager extends Application {
 	private _handleWindowResize() {
 		const self = <ControlManager>(<any>ui).moduleControls;
 
-		switch (game.settings.get(MOD_NAME, 'position')) {
+		switch (SETTINGS.get('position')) {
 			case 'top': {
 				const sceneTools = document.querySelector<HTMLElement>('#controls > li.scene-control.active > ol');
 				var max = Math.floor(sceneTools.offsetHeight / ControlManager.CONTROL_SIZE);

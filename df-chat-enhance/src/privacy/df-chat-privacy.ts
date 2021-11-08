@@ -1,3 +1,4 @@
+import SETTINGS from "../../../common/Settings";
 import CONFIG from "../CONFIG";
 
 
@@ -53,7 +54,7 @@ async function handleChatLogRendering(chat: ChatLog, html: JQuery<HTMLElement>, 
 	html.find('select[name=rollMode]').after(buttonHtml);
 	html.find('select[name=rollMode]').remove();
 
-	if (!game.settings.get(CONFIG.MOD_NAME, 'replace-buttons'))
+	if (!SETTINGS.get('replace-buttons'))
 		return;
 
 	// Adjust the button container to remove the extra margin since those buttons are now moving in.
@@ -81,7 +82,7 @@ async function handleChatLogRendering(chat: ChatLog, html: JQuery<HTMLElement>, 
 }
 
 export default function initDFChatPrivacy() {
-	game.settings.register(CONFIG.MOD_NAME, 'enabled', {
+	SETTINGS.register('enabled', {
 		name: 'DF_CHAT_PRIVACY.Settings_EnableTitle',
 		hint: 'DF_CHAT_PRIVACY.Settings_EnableHint',
 		scope: 'client',
@@ -90,7 +91,7 @@ export default function initDFChatPrivacy() {
 		config: true,
 		onChange: CONFIG.requestReload
 	});
-	game.settings.register(CONFIG.MOD_NAME, 'replace-buttons', {
+	SETTINGS.register('replace-buttons', {
 		name: 'DF_CHAT_PRIVACY.Settings_ReplaceButtonsTitle',
 		hint: 'DF_CHAT_PRIVACY.Settings_ReplaceButtonsHint',
 		scope: 'client',
@@ -100,7 +101,7 @@ export default function initDFChatPrivacy() {
 		onChange: CONFIG.requestReload
 	});
 
-	if (game.settings.get(CONFIG.MOD_NAME, 'enabled') === false)
+	if (SETTINGS.get('enabled') === false)
 		return;
 
 	Hooks.on('renderChatLog', handleChatLogRendering);

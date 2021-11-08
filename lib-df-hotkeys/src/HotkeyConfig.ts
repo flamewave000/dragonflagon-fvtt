@@ -1,3 +1,4 @@
+import SETTINGS from "../../common/Settings";
 import GroupFilter from "./GroupFilter";
 import { KeyMap, HotkeySetting, _Hotkeys } from "./Hotkeys";
 
@@ -50,7 +51,7 @@ export class HotkeyConfig extends FormApplication<FormApplication.Options, Optio
 	}
 
 	static init() {
-		game.settings.registerMenu('lib-df-hotkeys', this.PREF_MENU, {
+		SETTINGS.registerMenu(this.PREF_MENU, {
 			restricted: true,
 			type: HotkeyConfig,
 			icon: 'fas fa-keyboard',

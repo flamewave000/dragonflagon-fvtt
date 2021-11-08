@@ -90,7 +90,7 @@ export class DFChatArchive {
 			default: 0
 		});
 
-		game.settings.registerMenu(SETTINGS.MOD_NAME, this.PREF_FOLDER_MENU, {
+		SETTINGS.registerMenu(this.PREF_FOLDER_MENU, {
 			label: 'DF_CHAT_ARCHIVE.Settings.ArchiveFolder_Name',
 			hint: 'DF_CHAT_ARCHIVE.Settings.ArchiveFolder_Hint',
 			restricted: true,

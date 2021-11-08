@@ -1,12 +1,13 @@
 import {} from "../../common/global";
+import SETTINGS from "../../common/Settings";
 import ControlManager from "./ControlManager";
 
-const MOD_NAME = 'lib-df-buttons';
+SETTINGS.init('lib-df-buttons');
 
 Hooks.once('init', () => {
 	(<ControlManager>(<any>ui).moduleControls) = new ControlManager();
 
-	game.settings.register(MOD_NAME, 'position', {
+	SETTINGS.register('position', {
 		scope: 'client',
 		choices: {
 			right: 'LIB_DF_BUTTONS.choices.right',
@@ -24,11 +25,11 @@ Hooks.once('init', () => {
 
 	// Soft Dependency on `libwrapper`. Only use it if it already exists
 	if (game.modules.get('libWrapper')) {
-		libWrapper.register(MOD_NAME, 'Sidebar.prototype.expand', function (this: Sidebar, wrapped: Function) {
+		libWrapper.register(SETTINGS.MOD_NAME, 'Sidebar.prototype.expand', function (this: Sidebar, wrapped: Function) {
 			Hooks.callAll('collapseSidebarPre', this, !this._collapsed);
 			wrapped();
 		}, 'WRAPPER');
-		libWrapper.register(MOD_NAME, 'Sidebar.prototype.collapse', function (this: Sidebar, wrapped: Function) {
+		libWrapper.register(SETTINGS.MOD_NAME, 'Sidebar.prototype.collapse', function (this: Sidebar, wrapped: Function) {
 			Hooks.callAll('collapseSidebarPre', this, !this._collapsed);
 			wrapped();
 		}, 'WRAPPER');

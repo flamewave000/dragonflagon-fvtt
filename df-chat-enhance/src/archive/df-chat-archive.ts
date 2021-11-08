@@ -48,7 +48,7 @@ export function init() {
 		html.find('.control-buttons')
 			.prepend(archiveButton)
 			.attr('style', 'flex:0 0 auto;');
-		if (game.settings.get(CONFIG.MOD_NAME, DFChatArchiveNew.PREF_HIDE_EXPORT)) {
+		if (SETTINGS.get(DFChatArchiveNew.PREF_HIDE_EXPORT)) {
 			html.find('.control-buttons .export-log').hide();
 		}
 	});

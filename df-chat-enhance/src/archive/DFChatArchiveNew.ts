@@ -1,5 +1,5 @@
 import { DFChatArchive } from "./DFChatArchive";
-import CONFIG from '../CONFIG';
+import SETTINGS from "../../../common/Settings";
 
 SceneConfig
 
@@ -16,7 +16,7 @@ export default class DFChatArchiveNew extends FormApplication<FormApplication.Op
 	}
 
 	static registerSettings() {
-		game.settings.register(CONFIG.MOD_NAME, DFChatArchiveNew.PREF_DELETE, {
+		SETTINGS.register(DFChatArchiveNew.PREF_DELETE, {
 			config: false,
 			scope: 'world',
 			type: Boolean,
@@ -26,12 +26,12 @@ export default class DFChatArchiveNew extends FormApplication<FormApplication.Op
 
 	getData(options?: any) {
 		return mergeObject(super.getData(options), {
-			shouldDelete: game.settings.get(CONFIG.MOD_NAME, DFChatArchiveNew.PREF_DELETE) as boolean
+			shouldDelete: SETTINGS.get(DFChatArchiveNew.PREF_DELETE) as boolean
 		});
 	}
 
 	async _updateObject(_event?: any, formData?: any) {
-		game.settings.set(CONFIG.MOD_NAME, DFChatArchiveNew.PREF_DELETE, formData.delete);
+		SETTINGS.set(DFChatArchiveNew.PREF_DELETE, formData.delete);
 
 		const name = formData.name;
 		if (!name) {
