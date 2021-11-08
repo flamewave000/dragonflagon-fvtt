@@ -1,4 +1,4 @@
-import SETTINGS from "../../../common/SETTINGS";
+import SETTINGS from "../../../common/Settings";
 import { DFChatArchive } from "./DFChatArchive";
 import DFChatArchiveViewer from "./DFChatArchiveViewer";
 
@@ -106,7 +106,7 @@ export default class DFChatArchiveManager extends Application {
 		});
 	}
 
-	close(options: {} = {}): Promise<unknown> {
+	close(options?: any): Promise<void> {
 		DFChatArchive.setUpdateListener(null);
 		return super.close(options);
 	}

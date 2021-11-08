@@ -1,4 +1,5 @@
-import SETTINGS from "../../../common/SETTINGS";
+import { ChatMessageData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import SETTINGS from "../../../common/Settings";
 
 
 const TEMPLATE = "$0: $1 (+$2&nbsp;more)";
@@ -40,7 +41,7 @@ export default class WhisperTruncation {
 		});
 	}
 
-	private static _messageRender(message: ChatMessage, html: JQuery<HTMLElement>, messageData: ChatMessage.Data) {
+	private static _messageRender(message: ChatMessage, html: JQuery<HTMLElement>, messageData: ChatMessageData) {
 		// ignore regular messages, or whispers with only 1 recipient
 		if (!SETTINGS.get(this.PREF_ENABLED) || !(message.data.whisper) || message.data.whisper.length <= 1) return;
 		var users = message.data.whisper.map(x => game.users.get(x));

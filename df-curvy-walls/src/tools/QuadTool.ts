@@ -2,7 +2,7 @@
 import { BezierTool, ToolMode } from './BezierTool';
 import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler";
 import { CurvyWallControl } from '../CurvyWallsToolBar';
-import { Bezier } from '../lib/bezier';
+import { Bezier } from '../../libs/bezier';
 
 const pointNearPoint = BezierTool.pointNearPoint;
 declare type Point = PIXI.Point;

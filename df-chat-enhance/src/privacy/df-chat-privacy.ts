@@ -46,7 +46,7 @@ async function handleChatLogRendering(chat: ChatLog, html: JQuery<HTMLElement>, 
 	const buttonHtml = $(await renderTemplate('modules/df-chat-enhance/templates/privacy-button.hbs', { buttons }));
 	buttonHtml.find('button').on('click', function () {
 		const rollType = $(this).attr('data-id');
-		game.settings.set("core", "rollMode", rollType);
+		game.settings.set("core", "rollMode", <any>rollType);
 		buttonHtml.find('button.active').removeClass('active');
 		$(this).addClass('active');
 	});

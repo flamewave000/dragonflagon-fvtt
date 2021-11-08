@@ -1,6 +1,6 @@
 import GroupFilter from "./GroupFilter";
 import { Keys } from "./Keys";
-import SETTINGS from "../../common/SETTINGS";
+import SETTINGS from "../../common/Settings";
 
 /** Simple KeyMap for a Hotkey */
 export interface KeyMap {

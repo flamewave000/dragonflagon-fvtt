@@ -1,7 +1,8 @@
+import {} from '../../common/global';
 import DFManualRolls from "./DFManualRolls";
 import DFManualRollsLegacy from "./DFManualRollsLegacy";
 import DFRollPrompt from "./DFRollPrompt";
-import SETTINGS from "../../common/SETTINGS";
+import SETTINGS from "../../common/Settings";
 
 SETTINGS.init('df-manual-rolls');
 

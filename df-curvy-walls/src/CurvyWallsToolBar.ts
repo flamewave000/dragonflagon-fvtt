@@ -1,6 +1,6 @@
 
 import { CurvyWallToolManager, Mode } from './CurvyWallToolManager';
-import SETTINGS from "../../common/SETTINGS";
+import SETTINGS from "../../common/Settings";
 import { ToolMode } from './tools/BezierTool';
 
 export interface CurvyWallControl {
@@ -29,13 +29,10 @@ export class CurvyWallsToolBar extends Application {
 	static readonly PREF_PRESERVE = 'preserve-tool';
 
 	static get defaultOptions(): Application.Options {
-		return <Application.Options>mergeObject<Partial<Application.Options>>(
-			super.defaultOptions,
-			{
-				popOut: false,
-				template: 'modules/df-curvy-walls/templates/curvy-walls-controls.hbs'
-			}
-		);
+		return mergeObject(super.defaultOptions, {
+			popOut: false,
+			template: 'modules/df-curvy-walls/templates/curvy-walls-controls.hbs'
+		});
 	}
 
 	private _closing = false;
@@ -213,7 +210,7 @@ export class CurvyWallsToolBar extends Application {
 		});
 	}
 
-	close(options?: Application.CloseOptions): Promise<unknown> {
+	close(options?: Application.CloseOptions): Promise<void> {
 		if (!SETTINGS.get(CurvyWallsToolBar.PREF_PRESERVE)) {
 			this._closing = true;
 			CurvyWallToolManager.instance.mode = Mode.None;

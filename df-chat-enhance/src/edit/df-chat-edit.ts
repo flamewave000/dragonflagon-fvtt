@@ -1,4 +1,4 @@
-import SETTINGS from "../../../common/SETTINGS";
+import SETTINGS from "../../../common/Settings";
 import DFChatEditor from './DFChatEditor';
 
 const PREF_EDIT_ALLOWED = 'edit-allowed';
@@ -45,7 +45,7 @@ export default class DFChatEdit {
 			// We have used the Shift+Up combo to edit previously sent message
 			if (code === "ArrowUp" && event.shiftKey) {
 				event.preventDefault();
-				var messages = [...(ui.chat.collection as Map<string, ChatMessage>).values()];
+				var messages = <ChatMessage[]>[...(ui.chat.collection.values())];
 				// Perform an inverted sort ( n<0 before, n=0 same, n>0 after )
 				messages = messages.sort((a, b) => b.data.timestamp - a.data.timestamp);
 				const message = messages.find(x => x.data.user === game.user.id);
@@ -62,11 +62,11 @@ export default class DFChatEdit {
 			name: 'DF_CHAT_EDIT.ContextOption',
 			icon: '<i class="fas fa-pencil-alt"></i>',
 			condition: (header) => {
-				const chatData: ChatMessage = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id'));
+				const chatData: ChatMessage = ui.chat.collection.get($(header).attr('data-message-id'));
 				return this.processChatMessage(chatData);
 			},
 			callback: (header) => {
-				const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id'));
+				const chatData = ui.chat.collection.get($(header).attr('data-message-id'));
 				DFChatEdit.editChatMessage.bind(chatData)();
 				return {};
 			}
@@ -106,7 +106,7 @@ export default class DFChatEdit {
 
 	static processChatMessage(chatMessage: ChatMessage/*, html: JQuery<HTMLElement>*/): boolean {
 		// If we are catching the render of an archived message
-		if (!(ui.chat.collection as Map<string, ChatMessage>).has(chatMessage.id))
+		if (!ui.chat.collection.has(chatMessage.id))
 			return false;
 		// // If an edit button has already been placed
 		// if (html.find('a.button.message-edit').length != 0) {

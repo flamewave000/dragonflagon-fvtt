@@ -20,7 +20,7 @@ export default class DFChatEditor extends FormApplication {
 	}
 
 	constructor(chatMessage: ChatMessage) {
-		super();
+		super({});
 		this.chatMessage = chatMessage;
 	}
 

@@ -1,4 +1,4 @@
-import SETTINGS from "../../common/SETTINGS";
+import SETTINGS from "../../common/Settings";
 
 export default class TemplateTargeting {
 	static init() {
@@ -74,6 +74,7 @@ export default class TemplateTargeting {
 				t.setTarget(false, { releaseOthers: false, groupSelection: true });
 			}
 		}
+		// @ts-ignore
 		if (!game.dnd5e || !SETTINGS.get('template-targeting-patch5e')) {
 			// Call the original function
 			wrapped();
@@ -91,7 +92,7 @@ export default class TemplateTargeting {
 			/************** THIS CODE IS DIRECTLY COPIED FROM 'MeasuredTemplate.prototype.highlightGrid' ****************/
 			const grid = canvas.grid;
 			const d = canvas.dimensions;
-			const border = this.borderColor;
+			const border = <number>this.borderColor;
 			const color = this.fillColor;
 
 			// Only highlight for objects which have a defined shape

@@ -1,4 +1,5 @@
 // Import and declare the classes/interfaces Global
+import {} from '../../common/global';
 import GroupFilter from './GroupFilter';
 import { HotkeyConfig } from './HotkeyConfig';
 import { _Hotkeys } from './Hotkeys';
@@ -33,7 +34,7 @@ export const Hotkeys: typeof _Hotkeys = _Hotkeys;
 }
 
 
-import SETTINGS from "../../common/SETTINGS";
+import SETTINGS from "../../common/Settings";
 // Initializes the SETTINGS helper with the name of this module
 SETTINGS.init('lib-df-hotkeys')
 

@@ -1,10 +1,10 @@
-import SETTINGS from "../../common/SETTINGS";
+import { AmbientLightData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs";
+import SETTINGS from "../../common/Settings";
 import { AmbientLightExt, AnimatorData, KeyFrame, LightAnimator, PropertyDelta } from "./LightAnimator";
 
 declare class LightConfigExt extends LightConfig {
 	anims: ActiveLightConfig;
 }
-declare class AmbientLightDocument { }
 
 export default class ActiveLightConfig extends Application {
 	static init() {
@@ -35,11 +35,11 @@ export default class ActiveLightConfig extends Application {
 		});
 	}
 
-	private _object: AmbientLight;
+	private _object: AmbientLightDocument;
 	private _data: AnimatorData;
 
 	constructor(app: LightConfig) {
-		const obj = app.object as AmbientLightDocument;
+		const obj = app.object;
 		super({
 			id: obj.id + '-anims',
 			title: game.i18n.localize('DF_ACTIVE_LIGHTS.Config.Title') + obj.id,
@@ -74,7 +74,7 @@ export default class ActiveLightConfig extends Application {
 		html.find('button').before(animConfigButton);
 	}
 
-	private static _createKeyFrame(time: number, data?: Partial<AmbientLight.Data>): KeyFrame {
+	private static _createKeyFrame(time: number, data?: Partial<AmbientLightData>): KeyFrame {
 		return {
 			time,
 			angle: { enabled: false, value: data?.angle ?? 0 },

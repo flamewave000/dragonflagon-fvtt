@@ -1,6 +1,5 @@
 import { Tool, ToolGroup } from "./ToolType";
 
-type PartialOptions = Partial<Application.Options>;
 const MOD_NAME = 'lib-df-buttons';
 
 interface ToolUI {

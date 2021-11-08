@@ -1,4 +1,5 @@
-import SETTINGS from "../../common/SETTINGS";
+import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import SETTINGS from "../../common/Settings";
 
 interface DND5E {
 	encumbrance: {
@@ -21,6 +22,7 @@ interface EntityConfigData<T> {
 export default class DnD5eVehicleCapacity {
 	static init() {
 		// If we have D&D5e running
+		// @ts-ignore
 		if (!!game.dnd5e) {
 			SETTINGS.register('vehicle-unit', {
 				scope: 'world',
@@ -37,6 +39,7 @@ export default class DnD5eVehicleCapacity {
 
 	static ready() {
 		// If we have D&D5e running
+		// @ts-ignore
 		if (!!game.dnd5e)
 			DnD5eVehicleCapacity.DF_VEHICLE_UNITS();
 	}
@@ -55,21 +58,26 @@ export default class DnD5eVehicleCapacity {
 		clazz.prototype._computeEncumbrance = DnD5eVehicleCapacity.VehicleComputeEncumbrance;
 		Hooks.on('renderActorSheet5eVehicle', DnD5eVehicleCapacity.renderActorSheet5eVehicle);
 	}
-	static VehicleComputeEncumbrance(this: ActorSheet, totalWeight: number, actorData: Actor.Data) {
+	static VehicleComputeEncumbrance(this: ActorSheet, totalWeight: number, actorData: ActorData) {
+		// @ts-ignore
 		const DND5E = <DND5E>CONFIG.DND5E;
 		// Compute currency weight
+		// @ts-ignore
 		const totalCoins = Object.values((<Record<string, number>>actorData.data.currency)).reduce((acc, denom) => acc + denom, 0);
 		totalWeight += totalCoins / DND5E.encumbrance.currencyPerWeight;
 
 		// Vehicle weights are an order of magnitude greater.
-		totalWeight /= <number>this.object.getFlag(SETTINGS.MOD_NAME, 'unit') || DND5E.encumbrance.vehicleWeightMultiplier;
+		// @ts-ignore
+		totalWeight /= <number>this.document.getFlag(SETTINGS.MOD_NAME, 'unit') || DND5E.encumbrance.vehicleWeightMultiplier;
 
 		// Compute overall encumbrance
+		// @ts-ignore
 		const max = actorData.data.attributes.capacity.cargo;
 		const pct = Math.clamped((totalWeight * 100) / max, 0, 100);
 		return { value: totalWeight.toNearest(0.01), max, pct };
 	}
 	static renderActorSheet5eVehicle(app: ActorSheet, html: JQuery<HTMLElement>, data: any) {
+		// @ts-ignore
 		var unit: any = app.object.getFlag(SETTINGS.MOD_NAME, 'unit') || (<DND5E>CONFIG.DND5E).encumbrance.vehicleWeightMultiplier;
 		switch (unit) {
 			case 2240: unit = ['L.Ton', 'DF_QOL.VehicleUnit.Units_LongTon']; break;
@@ -79,10 +87,11 @@ export default class DnD5eVehicleCapacity {
 		html.find('input[name="data.attributes.capacity.cargo"]')
 			.after(`<label style="margin-left:0.5em" title="${game.i18n.localize(unit[1])}">${unit[0]}</label>`);
 	}
-	static DF_VEHICLE_UNIT_CONFIG(app: EntitySheetConfig, html: JQuery<HTMLElement>, data: EntityConfigData<Actor.Data>) {
+	static DF_VEHICLE_UNIT_CONFIG(app: EntitySheetConfig, html: JQuery<HTMLElement>, data: EntityConfigData<ActorData>) {
 		if (data.object.type !== "vehicle") return;
 		const submitButton = html.find('section > form > button');
 		var current = !!data.object.flags && !!(<any>data.object.flags[SETTINGS.MOD_NAME]) ? (<any>data.object.flags[SETTINGS.MOD_NAME]).unit : null;
+		// @ts-ignore
 		if (!current) current = (<DND5E>CONFIG.DND5E).encumbrance.vehicleWeightMultiplier;
 
 		const unitSelector = $(`<div class="form-group">
@@ -97,8 +106,11 @@ export default class DnD5eVehicleCapacity {
 		submitButton.before(unitSelector);
 		const newHeight = unitSelector.outerHeight(true);
 		app.setPosition(mergeObject(app.position, <any>{ height: <number>app.position.height + newHeight }));
+		// @ts-ignore
 		const core = app._updateObject.bind(app);
+		// @ts-ignore
 		app._updateObject = async function (event?: Event, formData?: any) {
+			// @ts-ignore
 			const current = <number>(<Actor>this.object).getFlag(SETTINGS.MOD_NAME, 'unit') || (<DND5E>CONFIG.DND5E).encumbrance.vehicleWeightMultiplier;
 			var unit = 0;
 			var newLabel = '';
@@ -126,10 +138,10 @@ export default class DnD5eVehicleCapacity {
 			});
 			// Convert the data
 			if (confirm) {
-				const pounds = Math.round((<Actor>this.object).data.data.attributes.capacity.cargo * current);
-				await (<Actor>this.object).update({ 'data.attributes.capacity.cargo': (pounds / unit).toNearest(0.01) });
+				const pounds = Math.round(this.object.data.data.attributes.capacity.cargo * current);
+				await this.object.update({ 'data.attributes.capacity.cargo': (pounds / unit).toNearest(0.01) });
 			}
-			await (<Actor>this.object).setFlag(SETTINGS.MOD_NAME, 'unit', unit);
+			await this.object.setFlag(SETTINGS.MOD_NAME, 'unit', unit);
 			return core(event, formData);
 		}
 	}

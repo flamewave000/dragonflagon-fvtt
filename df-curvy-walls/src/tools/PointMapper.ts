@@ -1,6 +1,6 @@
 import { CurvyWallControl } from "../CurvyWallsToolBar";
 import { CurvyWallToolManager, Mode } from "../CurvyWallToolManager";
-import { Bezier } from "../lib/bezier";
+import { Bezier } from "../../libs/bezier";
 import { BezierTool } from "./BezierTool";
 import { InputHandler, PointInputHandler } from "./ToolInputHandler";
 

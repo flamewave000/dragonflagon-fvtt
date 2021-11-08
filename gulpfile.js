@@ -68,10 +68,9 @@ function buildSource(output = null) {
 	return desc(`build Source: ./src/${PACKAGE.name}.ts`, () => {
 		var entry = `./src/${PACKAGE.name}.ts`;
 		if (fs.existsSync(`./src/${PACKAGE.name}-shim.ts`)) {
-			entry = {
-				main: entry,
-				shim: `./src/${PACKAGE.name}-shim.ts`
-			};
+			entry = {};
+			entry[PACKAGE.name] = `./src/${PACKAGE.name}.ts`;
+			entry[PACKAGE.name + '-shim'] = `./src/${PACKAGE.name}-shim.ts`;
 		}
 		return webpack({
 			entry,
@@ -108,7 +107,7 @@ function buildSource(output = null) {
 				]
 			},
 			output: {
-				filename: `${PACKAGE.name}.js`,
+				filename: '[name].js',
 			}
 		}).pipe(gulp.dest((output || DIST) + SOURCE));
 	});

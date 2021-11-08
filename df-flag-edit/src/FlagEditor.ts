@@ -1,4 +1,4 @@
-import SETTINGS from "../../common/SETTINGS";
+import SETTINGS from "../../common/Settings";
 
 //#region Type Definitions
 // If Ace Library is installed and enabled, this will exist
@@ -67,8 +67,8 @@ export default class FlagEditor extends Application {
 		if (typeof id !== 'string' && !(id instanceof String)) return Promise.reject("Invalid parameter: id must be type 'string'");
 		return await new Promise<FoundryDocument | null>((res, rej) => {
 			// Search the collections
-			const collections = game.collections as Map<string, Map<string, FoundryDocument>>;
-			for (let [key, map] of collections.entries()) { //(map => map.has(<any>document));
+			const collections = game.collections
+			for (let [key, map] of collections.entries()) {
 				if (FlagEditor.IGNORED_COLLECTIONS.includes(key) || !map.has(<any>id)) continue;
 				res(map.get(<any>id));
 				break;

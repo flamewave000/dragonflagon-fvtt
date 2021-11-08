@@ -1,6 +1,7 @@
-import SETTINGS from "../../common/SETTINGS";
+import { FolderData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import SETTINGS from "../../common/Settings";
 
-function apply(shouldApply: Boolean, hookName: string, func: Hooks.General) {
+function apply(shouldApply: Boolean, hookName: string, func: (...args: any) => any) {
 	if (shouldApply) Hooks.on(hookName, func);
 	else Hooks.off(hookName, func);
 }
@@ -28,7 +29,7 @@ export default class FolderColours {
 		apply(SETTINGS.get('folder-colour'), 'renderRollTableDirectory', FolderColours.DF_SCENE_DIRECTORY_RENDER);
 	}
 
-	static DF_FOLDER_TEXT_COLOUR(app: FolderConfig, html: JQuery, data: { folder: Folder.Data, sortingModes: { a: string, m: string }, submitText: string }) {
+	static DF_FOLDER_TEXT_COLOUR(app: FolderConfig, html: JQuery, data: { folder: FolderData, sortingModes: { a: string, m: string }, submitText: string }) {
 		if (!data.folder.flags) {
 			data.folder.flags = {};
 		}

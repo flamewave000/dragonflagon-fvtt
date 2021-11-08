@@ -1,4 +1,5 @@
-import SETTINGS from "../../../common/SETTINGS";
+import { ChatMessageData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import SETTINGS from "../../../common/Settings";
 
 export interface DFChatArchiveEntry {
 	id: number;
@@ -31,8 +32,8 @@ class ArchiveFolderMenu extends FormApplication {
 		return { path: this.folder }
 	}
 
-	async _renderInner(data: any, options?: any): Promise<JQuery<HTMLElement>> {
-		const html = await super._renderInner(data, options);
+	async _renderInner(data: any): Promise<JQuery<HTMLElement>> {
+		const html = await super._renderInner(data);
 		const input = html.find('input#dfce-ca-folder-path')[0] as HTMLInputElement;
 		html.find('label>button').on('click', async event => {
 			event.preventDefault();
@@ -65,7 +66,7 @@ export class DFChatArchive {
 	private static readonly PREF_FOLDER_MENU = 'archiveFolderMenu';
 	private static _updateListener: () => void = null;
 
-	private static get DATA_FOLDER(): string { return SETTINGS.get(DFChatArchive.PREF_FOLDER_SOURCE) }
+	private static get DATA_FOLDER(): FilePicker.DataSource { return SETTINGS.get(DFChatArchive.PREF_FOLDER_SOURCE) }
 
 	static setUpdateListener(listener: () => void) {
 		this._updateListener = listener;
@@ -129,7 +130,7 @@ export class DFChatArchive {
 	static getArchive(id: number): DFChatArchiveEntry { return this.getLogs().find(x => x.id == id); }
 	static exists(id: number): boolean { return !!this.getLogs().find(x => x.id == id); }
 
-	private static async _generateChatArchiveFile(id: number, name: string, chats: ChatMessage[] | ChatMessage.ChatData[], visible: boolean): Promise<DFChatArchiveEntry> {
+	private static async _generateChatArchiveFile(id: number, name: string, chats: ChatMessage[] | ChatMessageData[], visible: boolean): Promise<DFChatArchiveEntry> {
 		// Get the folder path
 		const folderPath = SETTINGS.get<string>(this.PREF_FOLDER);
 		// Generate the system safe filename
@@ -163,16 +164,16 @@ export class DFChatArchive {
 		return entry;
 	}
 
-	static async getArchiveContents(archive: DFChatArchiveEntry): Promise<(ChatMessage | ChatMessage.Data)[]> {
+	static async getArchiveContents(archive: DFChatArchiveEntry): Promise<(ChatMessage | ChatMessageData)[]> {
 		const response = await fetch(archive.filepath);
 		const data = await response.json().catch(error => console.error(`Failed to read JSON for archive ${archive.filepath}\n${error}`));
 		if (response.ok)
-			return data as (ChatMessage | ChatMessage.Data)[];
+			return data as (ChatMessage | ChatMessageData)[];
 		else
 			throw new Error('Could not access the archive from server side: ' + archive.filepath);
 	}
 
-	static async updateChatArchive(archive: DFChatArchiveEntry, newChatData?: (ChatMessage | ChatMessage.Data)[]): Promise<DFChatArchiveEntry> {
+	static async updateChatArchive(archive: DFChatArchiveEntry, newChatData?: (ChatMessage | ChatMessageData)[]): Promise<DFChatArchiveEntry> {
 		if (!this.getLogs().find(x => x.id == archive.id))
 			throw new Error('Could not locate an archive for the given ID: ' + archive.id.toString());
 		// If we are updating the contents of an archive

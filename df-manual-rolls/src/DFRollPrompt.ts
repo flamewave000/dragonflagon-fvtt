@@ -1,5 +1,5 @@
 import DFManualRolls from "./DFManualRolls";
-import SETTINGS from "../../common/SETTINGS";
+import SETTINGS from "../../common/Settings";
 
 interface RollPromptData {
 	id: number;
@@ -14,7 +14,7 @@ interface RenderData {
 	term: DiceTerm
 }
 
-export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] }> {
+export default class DFRollPrompt extends FormApplication<FormApplication.Options, { terms: RenderData[] }> {
 
 	static readonly PREF_FOCUS_INPUT = 'focus-input';
 

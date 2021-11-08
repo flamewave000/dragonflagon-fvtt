@@ -1,4 +1,4 @@
-import { } from "./lib/fuzzysort";
+import { } from "../libs/fuzzysort";
 
 declare global {
 	interface Application {
@@ -211,7 +211,7 @@ class TidyUiSettingsProcessor extends SettingsProcessor {
 export default class FuzzySearch {
 	private static _settingsProcessor: SettingsProcessor = null;
 	static init() {
-		Hooks.on('renderSettingsConfig', (_settingsConfig: SettingsConfig, html: JQuery<HTMLElement>, _data) => {
+		Hooks.on('renderSettingsConfig', (_settingsConfig: SettingsConfig, html: JQuery<HTMLElement>, _data: any) => {
 			// Process entire settings list
 			// First detect if Tidy UI is installed
 			if (game.modules.get('tidy-ui_game-settings')?.active)

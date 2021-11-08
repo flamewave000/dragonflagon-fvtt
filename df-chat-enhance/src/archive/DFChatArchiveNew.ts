@@ -1,16 +1,18 @@
 import { DFChatArchive } from "./DFChatArchive";
 import CONFIG from '../CONFIG';
 
-export default class DFChatArchiveNew extends FormApplication<{ shouldDelete: boolean }> {
+SceneConfig
+
+export default class DFChatArchiveNew extends FormApplication<FormApplication.Options, { shouldDelete: boolean }> {
 	static readonly PREF_DELETE = 'new-should-delete';
 	static readonly PREF_HIDE_EXPORT = 'hide-export';
 	static get defaultOptions() {
-		return mergeObject(FormApplication.defaultOptions as Partial<FormApplication.Options>, {
+		return mergeObject(FormApplication.defaultOptions, {
 			template: "modules/df-chat-enhance/templates/archive-new.hbs",
 			resizable: false,
 			minimizable: false,
 			title: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveNew_Title")
-		}) as FormApplication.Options;
+		});
 	}
 
 	static registerSettings() {
@@ -37,7 +39,7 @@ export default class DFChatArchiveNew extends FormApplication<{ shouldDelete: bo
 			throw Error(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveNew_ErrorNameMissing'));
 		}
 
-		var chats = [...(ui.chat.collection as Map<String, ChatMessage>).values()];
+		var chats = <ChatMessage[]>[...(ui.chat.collection.values())];
 
 		// If we are selecting a date range
 		if (formData['date-or-all'] === 'date') {
@@ -54,7 +56,7 @@ export default class DFChatArchiveNew extends FormApplication<{ shouldDelete: bo
 		try {
 			await DFChatArchive.createChatArchive(name, chats, formData['visible']);
 		}
-		catch(e) {
+		catch (e) {
 			// We have failed to create an archive so we should return immediately
 			return;
 		}
@@ -66,8 +68,8 @@ export default class DFChatArchiveNew extends FormApplication<{ shouldDelete: bo
 		}
 	}
 
-	_renderInner(data: any, options?: any): Promise<JQuery<HTMLElement>> {
-		return super._renderInner(data, options)
+	_renderInner(data: { shouldDelete: boolean }): Promise<JQuery<HTMLElement>> {
+		return super._renderInner(data)
 			.then((html) => {
 				const from = html.find('#dfca-from');
 				const to = html.find('#dfca-to');

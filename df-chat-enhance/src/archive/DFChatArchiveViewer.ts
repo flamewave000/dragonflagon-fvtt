@@ -1,3 +1,4 @@
+import { ChatMessageData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs';
 import { DFChatArchive, DFChatArchiveEntry } from './DFChatArchive';
 
 export default class DFChatArchiveViewer extends Application {
@@ -30,8 +31,8 @@ export default class DFChatArchiveViewer extends Application {
 		};
 	}
 
-	_renderInner(data: {}, options?: any): Promise<JQuery> {
-		return (super._renderInner(data, options) as Promise<JQuery>)
+	_renderInner(data: {}): Promise<JQuery> {
+		return (super._renderInner(data) as Promise<JQuery>)
 			.then(async (html: JQuery<HTMLElement>) => {
 				html.find("#visible-df-chat-log-" + this.archive.id).on('change', async (element) => {
 					this.archive.visible = (element.target as HTMLInputElement).checked;
@@ -105,8 +106,8 @@ export default class DFChatArchiveViewer extends Application {
 									const source = DFChatArchive.getLogs().find(x => x.id == id);
 									const currentChats = await DFChatArchive.getArchiveContents(this.archive);
 									const sourceChats = await DFChatArchive.getArchiveContents(source);
-									const mergedChats = (currentChats as ChatMessage.Data[])
-										.concat(sourceChats as ChatMessage.Data[])
+									const mergedChats = (currentChats as ChatMessageData[])
+										.concat(sourceChats as ChatMessageData[])
 										.sort((a, b) => a.timestamp - b.timestamp);
 									DFChatArchive.updateChatArchive(this.archive, mergedChats);
 									this.render(false);
@@ -125,7 +126,7 @@ export default class DFChatArchiveViewer extends Application {
 				var currentChats = await DFChatArchive.getArchiveContents(this.archive);
 				const deletionList: string[] = [];
 				const deleteButton = html.find('#dfal-save-changes');
-				for (let value of currentChats as ChatMessage.Data[]) {
+				for (let value of currentChats as ChatMessageData[]) {
 					const chatMessage = value instanceof ChatMessage ? value : new ChatMessage(value);
 					try {
 						// @ts-ignore
@@ -185,7 +186,7 @@ export default class DFChatArchiveViewer extends Application {
 				return html;
 			});
 	}
-	close(options: Application.CloseOptions = {}): Promise<unknown> {
+	close(options?: Application.CloseOptions): Promise<void> {
 		this.onCloseCallBack(this);
 		return super.close(options);
 	}

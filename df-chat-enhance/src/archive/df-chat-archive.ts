@@ -2,7 +2,7 @@ import DFChatArchiveNew from "./DFChatArchiveNew";
 import DFChatArchiveManager from "./DFChatArchiveManager";
 import { DFChatArchive } from "./DFChatArchive";
 import CONFIG from "../CONFIG";
-import SETTINGS from "../../../common/SETTINGS";
+import SETTINGS from "../../../common/Settings";
 
 
 export function init() {
@@ -39,7 +39,7 @@ export function init() {
 		<i class="fas fa-archive"></i></a>`)
 		archiveButton.on('click', () => {
 			if (archiveNew == null) {
-				archiveNew = new DFChatArchiveNew();
+				archiveNew = new DFChatArchiveNew({});
 				archiveNew.render(true);
 			} else {
 				archiveNew.bringToTop()
@@ -68,8 +68,8 @@ export function init() {
 		});
 		html.find('#settings-game').append(archiveManagerHtml)
 	});
-	Hooks.on('closeDFChatArchiveNew', () => archiveNew = null)
-	Hooks.on('closeDFChatArchiveManager', () => archiveManager = null)
+	Hooks.on('closeDFChatArchiveNew', () => { archiveNew = null })
+	Hooks.on('closeDFChatArchiveManager', () => { archiveNew = null })
 	Hooks.on(`renderDFChatArchiveNew`, function (app: any, html: JQuery, data: any) {
 		html.find('input[type="text"]')[0].focus();
 	});

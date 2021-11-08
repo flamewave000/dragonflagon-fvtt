@@ -1,10 +1,11 @@
-import { hotkeys } from './lib/lib-df-hotkeys.shim';
+import { hotkeys } from '../libs/lib-df-hotkeys.shim';
 import { BezierTool, ToolMode } from './tools/BezierTool';
 import CircleTool from './tools/CircleTool';
 import RectangleTool from './tools/RectangleTool';
 import CubicTool from './tools/CubicTool';
 import QuadTool from './tools/QuadTool';
 import { InputHandler } from './tools/ToolInputHandler';
+import { WallData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs';
 
 declare global {
 	namespace PIXI {
@@ -31,8 +32,8 @@ MODE_NAMES[Mode.Circ] = 'beziercirc';
 MODE_NAMES[Mode.Rect] = 'bezierrect';
 class WallPool {
 	static readonly walls: Wall[] = [];
-	static acquire(wallData: Wall.Data): Wall {
-		const result = this.walls.pop() ?? new Wall(wallData);
+	static acquire(wallData: WallData): Wall {
+		const result = this.walls.pop() ?? new Wall(new WallDocument(wallData));
 		result.data = wallData;
 		return result;
 	}
@@ -101,7 +102,7 @@ export class CurvyWallToolManager {
 
 	async apply() {
 		if (!this.activeTool || this.activeTool.mode != ToolMode.Placed) return;
-		await Wall.create(this.walls.map(e => e.data), {});
+		await WallDocument.createDocuments(this.walls.map(e => e.data));
 		this.clearTool();
 	}
 
@@ -120,7 +121,7 @@ export class CurvyWallToolManager {
 		const pointData = this.activeTool?.getSegments(this.segments);
 		if (pointData.length == 0) return;
 		this.walls.length
-		const wallData = (<any>this.wallsLayer)._getWallDataFromActiveTool(game.activeTool) as Wall.Data;
+		const wallData = (<any>this.wallsLayer)._getWallDataFromActiveTool(game.activeTool) as WallData;
 
 		while (this.walls.length > pointData.length - 1) {
 			const wall = this.walls.pop();
@@ -130,7 +131,7 @@ export class CurvyWallToolManager {
 		if ((<PIXI.Point>pointData[0]).x !== undefined) {
 			const points = pointData as PIXI.Point[];
 			for (var c = 0; c < points.length - 1; c++) {
-				const data = duplicate(wallData) as Wall.Data;
+				const data = duplicate(wallData) as WallData;
 				data.c = [points[c].x, points[c].y, points[c + 1].x, points[c + 1].y]
 				if (c == this.walls.length) {
 					this.walls.push(WallPool.acquire(data));
@@ -151,7 +152,7 @@ export class CurvyWallToolManager {
 				this.wallsLayer.preview.removeChild(wall);
 			}
 			for (var c = 0; c < points.length; c++) {
-				const data = duplicate(wallData) as Wall.Data;
+				const data = duplicate(wallData) as WallData;
 				data.c = [points[c][0].x, points[c][0].y, points[c][1].x, points[c][1].y]
 				if (c == this.walls.length) {
 					this.walls.push(WallPool.acquire(data));

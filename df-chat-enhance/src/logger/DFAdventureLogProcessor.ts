@@ -1,5 +1,7 @@
 
-import SETTINGS from "../../../common/SETTINGS";
+import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
+import { ChatSpeakerDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import SETTINGS from "../../../common/Settings";
 import DFAdventureLogConfig from './DFAdventureLogConfig';
 
 declare global {
@@ -66,7 +68,7 @@ export default class DFAdventureLogProcessor {
 				return enabled && (!gmOnly || isGM);
 			},
 			callback: (header) => {
-				const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+				const chatData = ui.chat.collection.get($(header).attr('data-message-id')).data;
 				DFAdventureLogProcessor.commandProcessor(chatData.content, false);
 				return {};
 			}
@@ -81,7 +83,7 @@ export default class DFAdventureLogProcessor {
 				return enabled && (!gmOnly || isGM);
 			},
 			callback: (header) => {
-				const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+				const chatData = ui.chat.collection.get($(header).attr('data-message-id')).data;
 				if (chatData.content.trimStart().startsWith('"'))
 					DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, false);
 				else
@@ -98,7 +100,7 @@ export default class DFAdventureLogProcessor {
 				return enabled && isGM;
 			},
 			callback: (header) => {
-				const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+				const chatData = ui.chat.collection.get($(header).attr('data-message-id')).data;
 				DFAdventureLogProcessor.commandProcessor(chatData.content, true);
 				return {};
 			}
@@ -112,7 +114,7 @@ export default class DFAdventureLogProcessor {
 				return enabled && isGM;
 			},
 			callback: (header) => {
-				const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+				const chatData = ui.chat.collection.get($(header).attr('data-message-id')).data;
 				if (chatData.content.trimStart().startsWith('"'))
 					DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, true);
 				else
@@ -260,8 +262,8 @@ export default class DFAdventureLogProcessor {
 			return;
 		}
 
-		const speaker = ChatMessage.getSpeaker({ user: game.user } as Partial<ChatMessage.SpeakerCreateData>);
-		const messageData: DeepPartial<ChatMessage.CreateData> = {
+		const speaker = ChatMessage.getSpeaker(<any>{ user: game.user });
+		const messageData: DeepPartial<ChatMessageDataConstructorData> = {
 			flavor: '',
 			user: game.user.id,
 			speaker: speaker,
@@ -278,7 +280,7 @@ export default class DFAdventureLogProcessor {
 					if (!!DFAdventureLogProcessor.logConfig)
 						DFAdventureLogProcessor.logConfig.bringToTop();
 					else {
-						DFAdventureLogProcessor.logConfig = new DFAdventureLogConfig();
+						DFAdventureLogProcessor.logConfig = new DFAdventureLogConfig({});
 						DFAdventureLogProcessor.logConfig.render(true);
 					}
 				}, 1);

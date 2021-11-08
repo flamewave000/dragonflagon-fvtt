@@ -1,5 +1,5 @@
 import DFRollPrompt from "./DFRollPrompt";
-import SETTINGS from "../../common/SETTINGS";
+import SETTINGS from "../../common/Settings";
 
 declare global {
 	interface String {
@@ -54,7 +54,7 @@ export default class DFManualRolls {
 			if (term.isIntermediate) {
 				await term.evaluate({ minimize, maximize, async: true });
 				this._dice = this._dice.concat((<any>term).dice);
-				term = new NumericTerm({ number: term.total, options: (<any>term).options });
+				term = new NumericTerm({ number: <number>term.total, options: (<any>term).options });
 			}
 			intermediate.push(term);
 		}
@@ -64,6 +64,7 @@ export default class DFManualRolls {
 		this.terms = Roll.simplifyTerms(this.terms);
 
 		/****** DF MANUAL ROLLS MODIFICATION ******/
+		// @ts-ignore
 		const rollPrompt = new DFRollPrompt({}, !!this.options.flavor ? { title: this.options.flavor } : {});
 
 		for (let term of this.terms) {
@@ -74,6 +75,7 @@ export default class DFManualRolls {
 		// Step 3 - Evaluate remaining terms
 		const promises: Promise<RollTerm>[] = [];
 		for (let term of this.terms) {
+			// @ts-ignore
 			if (term._evaluated) continue;
 			promises.push(term.evaluate({ minimize, maximize, async: true }));
 		}
@@ -174,6 +176,7 @@ export default class DFManualRolls {
 		const roll: Roll = Roll.create(formula, rollData);
 		/****** DF MANUAL ROLLS MODIFICATION ******/
 		// Added flavour that can be displayed in the title
+		// @ts-ignore
 		roll.options.flavor = game.i18n.localize('DF_MANUAL_ROLLS.InitiativeRollFlavour').replace('{{name}}', this.name);
 		return roll.evaluate({ async: DFManualRolls.shouldRollManually }); // used to be: return roll.evaluate({ async: false });
 		/************ END MODIFICATION ************/

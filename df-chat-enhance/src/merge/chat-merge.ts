@@ -1,4 +1,5 @@
-import SETTINGS from "../../../common/SETTINGS";
+import { ChatMessageData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import SETTINGS from "../../../common/Settings";
 
 
 export default class ChatMerge {
@@ -91,7 +92,7 @@ export default class ChatMerge {
 				style.setProperty('--dfce-cm-hover-shadow', newValue ? '' : '0');
 			}
 		});
-		SETTINGS.register(this.PREF_EPOCH, {
+		SETTINGS.register<number>(this.PREF_EPOCH, {
 			name: 'DF_CHAT_MERGE.EpochName',
 			hint: 'DF_CHAT_MERGE.EpochHint',
 			config: true,
@@ -180,7 +181,7 @@ export default class ChatMerge {
 		}
 	}
 
-	private static _renderChatMessage(message: ChatMessage, html: JQuery<HTMLElement>, messageData: ChatMessage.Data) {
+	private static _renderChatMessage(message: ChatMessage, html: JQuery<HTMLElement>, messageData: ChatMessageData) {
 		if (!ChatMerge._enabled) return;
 		// Find the most recent message in the chat log
 		const partnerElem = $(`li.chat-message`).last()[0];

@@ -1,7 +1,8 @@
 import EaseFunctions from "./EaseFunctions";
-import SETTINGS from "../../common/SETTINGS";
+import SETTINGS from "../../common/Settings";
+import { AmbientLightData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 
-interface AmbientLightData extends Partial<AmbientLight.Data> {
+interface AmbientLightDataExt extends Partial<AmbientLightData> {
 	[key: string]: any;
 	animation?: any;
 	alpha?: number;
@@ -11,8 +12,8 @@ interface AmbientLightData extends Partial<AmbientLight.Data> {
 
 export declare class AmbientLightExt extends AmbientLight {
 	animator?: LightAnimator;
-	animData: AmbientLightData;
-	origData: AmbientLight.Data;
+	animData: AmbientLightDataExt;
+	origData: AmbientLightDataExt;
 }
 
 export interface KeyFrame {
@@ -85,7 +86,7 @@ export class LightAnimator {
 			// hold onto the original data
 			const origData = light.data;
 			// Merge a duplicate of the original data with the modified animation data
-			light.data = <AmbientLight.Data>mergeObject(duplicate(light.data), light.animData);
+			light.data = <AmbientLightData>mergeObject(duplicate(light.data), light.animData);
 			// Update the light source with the new data
 			LightAnimator._updateSource.bind(light)();
 			// If we are on the LightingLayer, refresh the light's controls

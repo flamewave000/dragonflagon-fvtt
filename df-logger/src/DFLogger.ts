@@ -1,5 +1,5 @@
 import { Message, MessageProcessor } from "./MessageProcessor";
-import SETTINGS from "../../common/SETTINGS";
+import SETTINGS from "../../common/Settings";
 
 interface Payload {
 	type: string,
@@ -26,7 +26,7 @@ export default class DFLogger {
 
 	static async displayMessage(user: User, alias: any, msg: string) {
 		let chatMsg = await ChatMessage.create({
-			sound: SETTINGS.get(DFLogger.SETTING_SOUND),
+			sound: SETTINGS.get<string>(DFLogger.SETTING_SOUND),
 			content: msg.replace(/\{\{username\}\}/g, user.name),
 			speaker: {
 				scene: null,
@@ -41,7 +41,7 @@ export default class DFLogger {
 		if (!DFLogger.Persist) {
 			setTimeout(async () => {
 				await chatMsg.delete();
-			}, Math.round(game.settings.get(SETTINGS.MOD_NAME, 'delay') * 1000));
+			}, Math.round(SETTINGS.get<number>('delay') * 1000));
 		}
 	}
 

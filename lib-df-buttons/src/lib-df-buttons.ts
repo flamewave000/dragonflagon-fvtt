@@ -53,7 +53,7 @@ Hooks.once('ready', () => {
 	(<ControlManager>(<any>ui).moduleControls).render(true);
 });
 /* Example code for appending ToolGroups and Tools */
-/**/
+/**
 import { Tool, ToolGroup } from "./ToolType";
 Hooks.on('getModuleToolGroups', (app: ControlManager, groups: ToolGroup[]) => {
 	const handleClick = function (this: Tool, active?: boolean) {

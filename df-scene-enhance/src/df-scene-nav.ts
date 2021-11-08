@@ -1,4 +1,4 @@
-import SETTINGS from "../../common/SETTINGS";
+import SETTINGS from "../../common/Settings";
 
 export default class DFSceneNav {
 	static ON_CLICK = 'nav-on-click';
@@ -58,6 +58,7 @@ export default class DFSceneNav {
 	static patchSidebar() {
 		libWrapper.register(SETTINGS.MOD_NAME, 'Sidebar.prototype._render', async function (this: Sidebar, wrapper: Function, force: boolean, options = {}) {
 			// Render the Sidebar container only once
+			// @ts-ignore
 			if (!this.rendered) await Application.prototype._render.bind(this)(force, options);
 			var pcClick = SETTINGS.get(DFSceneNav.ON_CLICK_PLAYER);
 			// Define the sidebar tab names to render
@@ -66,6 +67,7 @@ export default class DFSceneNav {
 
 			// Render sidebar Applications
 			for (let [name, app] of Object.entries(this.tabs)) {
+				// @ts-ignore
 				app._render(true).catch(err => {
 					err.message = `Failed to render Sidebar tab ${name}: ${err.message}`;
 					console.error(err);
@@ -80,12 +82,15 @@ export default class DFSceneNav {
 			return {
 				coreUpdate: game.user.isGM && game.data.coreUpdate ? game.i18n.format("SETUP.UpdateAvailable", {
 					type: game.i18n.localize("Software"),
+					// @ts-ignore
 					channel: game.data.coreUpdate.channel,
+					// @ts-ignore
 					version: game.data.coreUpdate.version
 				}) : false,
 				systemUpdate: game.user.isGM && game.data.systemUpdate ? game.i18n.format("SETUP.UpdateAvailable", {
 					type: game.i18n.localize("System"),
 					channel: game.data.system.data.title,
+					// @ts-ignore
 					version: game.data.systemUpdate.version
 				}) : false,
 				user: game.user,

@@ -30,7 +30,7 @@ function isStringRegex(object: string | RegExp | GroupFilter): object is (string
 	return typeof (object) === 'string' || object instanceof RegExp || object instanceof String;
 }
 
-export class HotkeyConfig extends FormApplication<Options> {
+export class HotkeyConfig extends FormApplication<FormApplication.Options, Options> {
 	private static readonly PREF_MENU = "HotkeySettingsMenu";
 	private _filters: (string | RegExp | GroupFilter)[];
 

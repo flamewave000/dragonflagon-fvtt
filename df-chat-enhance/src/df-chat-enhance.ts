@@ -1,11 +1,4 @@
-
-declare global {
-	interface LenientGlobalVariableTypes {
-		game: never; // the type doesn't matter
-		canvas: never;
-	}
-}
-
+import {} from '../../common/global';
 import * as DFChatArchive from "./archive/df-chat-archive";
 import DFChatEdit from "./edit/df-chat-edit";
 import initDFChatEdit from "./edit/df-chat-edit";
@@ -14,7 +7,7 @@ import DFAdventureLogProcessor from "./logger/DFAdventureLogProcessor";
 import ChatMerge from "./merge/chat-merge";
 import initDFChatPrivacy from "./privacy/df-chat-privacy";
 import ScrollManage from "./scroll-manage/scroll-manage";
-import SETTINGS from "../../common/SETTINGS";
+import SETTINGS from "../../common/Settings";
 import WhisperTruncation from "./whisper-trunc/whisper-trunc";
 SETTINGS.init('df-chat-enhance');
 

@@ -1,5 +1,4 @@
-import SETTINGS from "../../common/SETTINGS";
-
+import SETTINGS from "../../common/Settings";
 
 interface Button {
 	icon: string,
@@ -11,15 +10,6 @@ declare interface DataSet {
 	pack?: string;
 	lookup?: string;
 	id: string;
-}
-
-declare global {
-	interface Scene {
-		testUserPermission(user: User, permission: string, { exact }?: { exact: boolean | false }): boolean;
-	}
-	interface JournalEntry {
-		testUserPermission(user: User, permission: string, { exact }?: { exact: boolean | false }): boolean;
-	}
 }
 
 export default class DFSceneJournal {

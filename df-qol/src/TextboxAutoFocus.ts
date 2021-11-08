@@ -1,6 +1,6 @@
-import SETTINGS from "../../common/SETTINGS";
+import SETTINGS from "../../common/Settings";
 
-function apply(shouldApply: Boolean, hookName: string, func: Hooks.General) {
+function apply(shouldApply: Boolean, hookName: string, func: (...args: any) => any) {
 	if (shouldApply) Hooks.on(hookName, func);
 	else Hooks.off(hookName, func);
 }

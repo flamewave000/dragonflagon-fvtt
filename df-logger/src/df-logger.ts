@@ -1,7 +1,8 @@
+import {} from '../../common/global';
 import DFLogger from './DFLogger';
 import DFLoggerMenu from './DFLoggerMenu';
 import { MessageProcessor } from './MessageProcessor';
-import SETTINGS from "../../common/SETTINGS";
+import SETTINGS from "../../common/Settings";
 
 SETTINGS.init('df-logger');
 
@@ -12,14 +13,14 @@ Hooks.once('init', function () {
 		label: 'DF-LOGGER.Settings.ManageMessages',
 		icon: 'fas fa-comment-alt'
 	});
-	SETTINGS.register(DFLogger.SETTING_SOUND, {
+	SETTINGS.register<string>(DFLogger.SETTING_SOUND, {
 		name: 'DF-LOGGER.Settings.Sound_Name',
 		hint: 'DF-LOGGER.Settings.Sound_Hint',
 		scope: 'world',
 		config: true,
 		type: String,
 		default: 'modules/df-logger/sounds/chime.mp3',
-		filePicker: true
+		filePicker: 'audio'
 	});
 
 	SETTINGS.register(DFLogger.SETTING_GM_ONLY, {
@@ -38,7 +39,7 @@ Hooks.once('init', function () {
 		type: Boolean,
 		default: true
 	});
-	SETTINGS.register(DFLogger.SETTING_DELAY, {
+	SETTINGS.register<number>(DFLogger.SETTING_DELAY, {
 		name: "DF-LOGGER.Settings.Delay_Name",
 		hint: "DF-LOGGER.Settings.Delay_Hint",
 		scope: "client",

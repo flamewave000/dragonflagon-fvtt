@@ -1,3 +1,4 @@
+import {} from '../../common/global';
 import TableQuickRoll from './TableQuickRoll';
 import FolderColours from './FolderColours';
 import TextboxAutoFocus from './TextboxAutoFocus';
@@ -6,7 +7,7 @@ import DayNightTransition from './DayNightTransition';
 import DnD5eVehicleCapacity from './DnD5eVehicleCapacity';
 import TemplateTargeting from './TemplateTargeting';
 
-import SETTINGS from "../../common/SETTINGS";
+import SETTINGS from "../../common/Settings";
 import TokenLock from './TokenLock';
 SETTINGS.init('df-qol');
 

@@ -1,4 +1,4 @@
-import SETTINGS from "../../common/SETTINGS";
+import SETTINGS from "../../common/Settings";
 
 export default class TokenLock {
 	private static readonly TokenLockFlag = 'locked';

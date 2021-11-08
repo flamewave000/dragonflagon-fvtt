@@ -1,28 +1,13 @@
 import DFSceneRatio from "./df-scene-ratio";
-import SETTINGS from "../../common/SETTINGS";
-
-declare global {
-	interface Scene {
-		dfThumb_update(data: Scene.Data, options: any): Promise<Scene>;
-		width: number
-		height: number
-	}
-	interface SceneConfig extends FormApplication {
-		entity: Scene;
-		ratioScaler: DFSceneRatio;
-	}
-	namespace SceneConfig {
-		interface Options {}
-	}
-}
+import SETTINGS from "../../common/Settings";
 
 export default class DFSceneThumb {
 	static MODULE = 'df-scene-enhance';
 	static THUMBS = 'thumbs';
 	static purge() {
 		if (!game.user.isGM) return;
-		let ids = []
-		for (var scene of game.scenes.values() as any as Entity[]) {
+		let ids: string[] = []
+		for (var scene of game.scenes.values() as any as Scene[]) {
 			ids.push(scene.id);
 		}
 		let config = JSON.parse(SETTINGS.get(DFSceneThumb.THUMBS));
@@ -49,7 +34,7 @@ export default class DFSceneThumb {
 			type: String,
 			default: "{}"
 		});
-		Hooks.on('renderSceneConfig', async (app: SceneConfig, html: JQuery<HTMLElement>, data: RenderData) => {
+		Hooks.on('renderSceneConfig', async (app: SceneConfig, html: JQuery<HTMLElement>, data: SceneConfig.Data) => {
 			const imgInput = html.find('input[name ="img"]')[0];
 			if (!imgInput || !imgInput.parentElement || !imgInput.parentElement.parentElement) return;
 			const sceneId = data.document.id;
@@ -66,8 +51,10 @@ export default class DFSceneThumb {
 				fp.browse();
 			});
 			html.find('#df-thumb-img').on('change', () => DFSceneThumb.updateThumb(sceneId, html.find('#df-thumb-img').val() as string));
+			// @ts-ignore
 			app.ratioScaler = new DFSceneRatio();
-			await app.ratioScaler.render(app, html, data);
+			// @ts-ignore
+			await (<DFSceneRatio>app.ratioScaler).render(app, html, data);
 		});
 		Hooks.on('closeSceneConfig', async (app: SceneConfig, html: JQuery<HTMLElement>) => {
 			const dfSceneConfig = DFSceneThumb.getThumb(app.entity.id);
@@ -80,7 +67,7 @@ export default class DFSceneThumb {
 				dfSceneConfig.thumb = true;
 				DFSceneThumb.updateThumb(scene.id, img, true);
 				await scene.update({ thumb: td.thumb } as any, {});
-			} catch (err) {
+			} catch (err: any) {
 				ui.notifications.error("Thumbnail Override generation for Scene failed: " + err.message);
 			}
 		});
