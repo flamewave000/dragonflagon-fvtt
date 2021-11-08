@@ -27,6 +27,13 @@ export function init() {
 		}
 	});
 
+	SETTINGS.register(DFChatArchiveManager.PREF_REVERSE_SORT, {
+		scope: 'world',
+		type: Boolean,
+		default: false,
+		config: false
+	});
+
 	Hooks.on('renderChatLog', function (chatLog: ChatLog, html: JQuery<HTMLElement>, data: {}) {
 		const archiveButton = $(`<a class="button chat-archive" title="${game.i18n.localize('DF_CHAT_ARCHIVE.ExportButtonTitle')}">
 		<i class="fas fa-archive"></i></a>`)

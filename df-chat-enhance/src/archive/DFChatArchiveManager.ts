@@ -1,7 +1,9 @@
+import SETTINGS from "../SETTINGS.js";
 import { DFChatArchive } from "./DFChatArchive.js";
 import DFChatArchiveViewer from "./DFChatArchiveViewer.js";
 
 export default class DFChatArchiveManager extends Application {
+	static readonly PREF_REVERSE_SORT = 'dfca-manager-reverseSort';
 	static chatViewers: Map<Number, DFChatArchiveViewer> = new Map();
 
 	static get defaultOptions() {
@@ -19,8 +21,14 @@ export default class DFChatArchiveManager extends Application {
 		let data = super.getData(options);
 		var messages = DFChatArchive.getLogs();
 		if (!game.user.isGM)
-			messages = messages.filter(x => x.visible);
-		mergeObject(data, { messages: messages, isGM: game.user.isGM });
+			messages = messages.filter(x => x.visible)
+		messages = messages.sort((a, b) => a.name.localeCompare(b.name));
+		const reverseSort = SETTINGS.get<boolean>(DFChatArchiveManager.PREF_REVERSE_SORT);
+		mergeObject(data, {
+			messages: reverseSort ? messages.reverse() : messages,
+			isGM: game.user.isGM,
+			reverseSort
+		});
 		return data;
 	}
 
@@ -81,6 +89,20 @@ export default class DFChatArchiveManager extends Application {
 					})
 				}
 			})
+		});
+		const asc = html.find('#dfca-sort-asc');
+		const dsc = html.find('#dfca-sort-dsc');
+		asc.on('click', async () => {
+			await SETTINGS.set(DFChatArchiveManager.PREF_REVERSE_SORT, true);
+			asc.hide();
+			dsc.show();
+			this.render();
+		});
+		dsc.on('click', async () => {
+			await SETTINGS.set(DFChatArchiveManager.PREF_REVERSE_SORT, false);
+			dsc.hide();
+			asc.show();
+			this.render();
 		});
 	}
 
