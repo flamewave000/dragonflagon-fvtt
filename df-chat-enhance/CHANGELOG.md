@@ -1,5 +1,11 @@
 # DF Chat Enhancements
 
+## Release 3.4.0 (2021-11-07)
+- FIX: Chat Archive visibility not changing.
+- FIX: Roll Type conflict resolved: Courtesy of [zeteticl](https://github.com/zeteticl).
+- Japanese Localization: Courtesy of [BrotherSharper](https://github.com/BrotherSharper).
+- Korean Localization: Courtesy of [drdwing](https://github.com/drdwing).
+
 ## Release 3.3.0 (2021-08-26)
 - Korean Localization: Courtesy of [drdwing](https://github.com/drdwing).
 - Updated supported Foundry version to 0.8.9.

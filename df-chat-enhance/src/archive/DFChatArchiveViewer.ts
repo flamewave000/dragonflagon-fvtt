@@ -33,7 +33,7 @@ export default class DFChatArchiveViewer extends Application {
 	_renderInner(data: {}, options?: any): Promise<JQuery> {
 		return (super._renderInner(data, options) as Promise<JQuery>)
 			.then(async (html: JQuery<HTMLElement>) => {
-				html.find("#visible").on('change', async (element) => {
+				html.find("#visible-df-chat-log-" + this.archive.id).on('change', async (element) => {
 					this.archive.visible = (element.target as HTMLInputElement).checked;
 					await DFChatArchive.updateChatArchive(this.archive);
 				});
