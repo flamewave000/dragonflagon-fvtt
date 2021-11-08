@@ -1,7 +1,6 @@
 import {} from '../../common/global';
 import * as DFChatArchive from "./archive/df-chat-archive";
 import DFChatEdit from "./edit/df-chat-edit";
-import initDFChatEdit from "./edit/df-chat-edit";
 import * as DFAdventureLog from "./logger/df-adventure-log";
 import DFAdventureLogProcessor from "./logger/DFAdventureLogProcessor";
 import ChatMerge from "./merge/chat-merge";

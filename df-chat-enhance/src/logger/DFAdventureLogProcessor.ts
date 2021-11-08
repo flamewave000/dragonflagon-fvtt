@@ -1,8 +1,27 @@
 
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
-import { ChatSpeakerDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import SETTINGS from "../../../common/Settings";
 import DFAdventureLogConfig from './DFAdventureLogConfig';
+
+declare namespace SimpleCalendar.api {
+	function formatDateTime(time: {
+		year: number,
+		month: number,
+		day: number,
+		hour: number,
+		minute: number,
+		second: number
+	}): { date: string, time: string }
+	function timestamp(): number
+	function timestampToDate(timestamp: number): {
+		year: number,
+		month: number,
+		day: number,
+		hour: number,
+		minute: number,
+		second: number
+	}
+}
 
 declare global {
 	interface String {
@@ -54,6 +73,7 @@ export default class DFAdventureLogProcessor {
 	static readonly PREF_MESSAGES = 'df-log-messages';
 	static readonly PREF_SORTDESC = 'df-log-sortdesc';
 	static readonly PREF_SIMPLE_CALENDAR = 'df-log-use-simple-calendar';
+	static readonly PREF_USE_TIME = 'df-log-use-time';
 	static logCommand: ChatCommand = null;
 	static gmlogCommand: ChatCommand = null;
 
@@ -161,6 +181,14 @@ export default class DFAdventureLogProcessor {
 			default: false,
 			config: true
 		});
+		SETTINGS.register(DFAdventureLogProcessor.PREF_USE_TIME, {
+			scope: 'world',
+			type: Boolean,
+			name: "DF_CHAT_LOG.Setting.UseTimeName",
+			hint: "DF_CHAT_LOG.Setting.UseTimeHint",
+			default: true,
+			config: true
+		});
 		SETTINGS.register(DFAdventureLogProcessor.PREF_MESSAGES, {
 			name: 'DF_CHAT_LOG.Setting.PrintMessagesName',
 			hint: 'DF_CHAT_LOG.Setting.PrintMessagesHint',
@@ -178,9 +206,8 @@ export default class DFAdventureLogProcessor {
 			config: true,
 			onChange: () => this.resortLog()
 		})
-		// SimpleCalendar.api.dateToTimestamp({});
 		// If Simple Calendar is enabled
-		if (game.modules.get('foundryvtt-simple-calendar')) {
+		if (game.modules.get('foundryvtt-simple-calendar')?.active) {
 			SETTINGS.register(DFAdventureLogProcessor.PREF_SIMPLE_CALENDAR, {
 				scope: 'world',
 				type: Boolean,
@@ -233,6 +260,19 @@ export default class DFAdventureLogProcessor {
 			description: game.i18n.localize("DF_CHAT_LOG.GMCommandDescription")
 		});
 		(game as GameExt).chatCommands.registerCommand(DFAdventureLogProcessor.gmlogCommand);
+	}
+
+	private static _getTimestamp() {
+		const useTime = SETTINGS.get(DFAdventureLogProcessor.PREF_USE_TIME);
+		if (game.modules.get('foundryvtt-simple-calendar')?.active && SETTINGS.get(DFAdventureLogProcessor.PREF_SIMPLE_CALENDAR)) {
+			const stamp = SimpleCalendar.api.formatDateTime(SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp()));
+			return useTime ? `${stamp.date} ${stamp.time}` : stamp.date;
+		}
+		else if (useTime)
+			return new Date().toLocaleString('sv').replace(',', '').replace(/ ([AP])/, '$1');
+		else {
+			return new Date().toLocaleString('sv').replace(',', '').replace(/ ([AP])/, '$1').split(' ')[0];
+		}
 	}
 
 	private static logConfig: DFAdventureLogConfig = null;
@@ -319,7 +359,7 @@ export default class DFAdventureLogProcessor {
 					return;
 				}
 				var line = game.i18n.localize('DF_CHAT_LOG.Log_Quote');
-				line = line.replace('{0}', new Date().toLocaleString('sv').replace(',', '').replace(/ ([AP])/, '$1'));
+				line = line.replace('{0}', this._getTimestamp());
 				line = line.replace('{1}', game.user.name);
 				line = line.replace('{2}', source);
 				messageText = line.replace('{3}', messageText);
@@ -332,7 +372,7 @@ export default class DFAdventureLogProcessor {
 				messageData.flavor = 'Event Logged';
 				messageData.content = `<span class="dfal-ev">${messageText}</span>`;
 				var line = game.i18n.localize('DF_CHAT_LOG.Log_Event');
-				line = line.replace('{0}', new Date().toLocaleString('sv').replace(',', '').replace(/ ([AP])/, '$1'));
+				line = line.replace('{0}', this._getTimestamp());
 				line = line.replace('{1}', game.user.name);
 				messageText = line.replace('{2}', messageText);
 				break;
