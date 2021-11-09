@@ -48,6 +48,8 @@ export default class PlayerColor {
 			html[0].style.setProperty('--dfce-mc-border-color', chatColor);
 			if (SETTINGS.get(PlayerColor.PREF_TINT_BG)) {
 				html[0].style.backgroundColor = chatColor;
+				html[0].style.backgroundImage = 'url(../ui/parchment.jpg)';
+				html[0].style.backgroundRepeat = 'repeat';
 				html[0].style.backgroundBlendMode = 'screen';
 			}
 			return html;

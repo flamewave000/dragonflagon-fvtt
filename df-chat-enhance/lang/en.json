@@ -45,6 +45,7 @@
 		"ArchiveViewer_Visible": "Visible to players",
 		"ArchiveViewer_DeleteTitle": "Delete Archived Messages",
 		"ArchiveViewer_DeleteContent": "Are you sure you wish to apply all previous deletion?",
+		"ArchiveViewer_Html": "Save the chat log as html",
 		"ArchiveViewer_Print": "Print this chat archive",
 		"ArchiveViewer_Merge": "Merge an archive into this one",
 		"ArchiveViewer_Merge_Title": "Merge Chat Archive",

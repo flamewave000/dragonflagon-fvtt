@@ -63,7 +63,7 @@ export function init() {
 				archiveManager = new DFChatArchiveManager();
 				archiveManager.render(true);
 			} else {
-				archiveManager.bringToTop()
+				archiveManager.bringToTop();
 			}
 		});
 		html.find('#settings-game').append(archiveManagerHtml)

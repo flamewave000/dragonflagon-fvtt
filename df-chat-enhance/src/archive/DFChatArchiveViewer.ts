@@ -122,6 +122,14 @@ export default class DFChatArchiveViewer extends Application {
 					await dialog.render(true);
 				});
 
+				html.find('#html').on('click', () => {
+					const data = $('<div></div>').append(html.find('#df-chat-log').clone()).html();
+					const anchor = document.createElement('a');
+					anchor.download = encodeURI(this.archive.name) + '.html';
+					anchor.href = "data:text/html;base64," + btoa(data);
+					anchor.click();
+				});
+
 				const log = html.find('#df-chat-log');
 				const messageHtml = [];
 				this.messages = await DFChatArchive.getArchiveContents(this.archive);
