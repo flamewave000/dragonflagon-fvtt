@@ -1,5 +1,7 @@
 import { ChatMessageData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import SETTINGS from "../../../common/Settings";
+import { DFChatArchive } from "../archive/DFChatArchive";
+import DFChatArchiveManager from "../archive/DFChatArchiveManager";
 
 
 export default class ChatMerge {
@@ -119,7 +121,9 @@ export default class ChatMerge {
 			style.setProperty('--dfce-cm-header-delete', this._showHeader ? '' : '0');
 			style.setProperty('--dfce-cm-header-delete-pad', this._showHeader ? '' : '16px');
 		}
-		this._processAllMessage();
+		this._processAllMessage(ui.chat.element);
+		Hooks.on('renderChatLog', (_: any, html: JQuery<HTMLElement>) => this._processAllMessage(html));
+		Hooks.on('renderDFChatArchiveViewer', (_: any, html: JQuery<HTMLElement>) => this._processAllMessage(html));
 	}
 
 	private static _deleteMessage(wrapper: Function, messageId: string, { deleteAll = false } = {}) {
@@ -155,15 +159,16 @@ export default class ChatMerge {
 		return wrapper(messageId, { deleteAll });
 	}
 
-	private static _processAllMessage() {
+	private static _processAllMessage(element?: JQuery<HTMLElement>) {
+		element = element ?? $(document.body);
 		// Remove the old CSS class designations
-		$('.dfce-cm-top').removeClass('dfce-cm-top');
-		$('.dfce-cm-middle').removeClass('dfce-cm-middle');
-		$('.dfce-cm-bottom').removeClass('dfce-cm-bottom');
+		element.find('.dfce-cm-top').removeClass('dfce-cm-top');
+		element.find('.dfce-cm-middle').removeClass('dfce-cm-middle');
+		element.find('.dfce-cm-bottom').removeClass('dfce-cm-bottom');
 		// If we are disabled, return
 		if (!ChatMerge._enabled) return;
 		// Collect all rendered chat messages
-		const messages = $('li.chat-message');
+		const messages = element.find('li.chat-message');
 		// Return if there are no messages rendered
 		if (messages.length === 0) return;
 		// Make sure to set the hover colour for the first message since we skip it in the processor bellow.
@@ -201,22 +206,26 @@ export default class ChatMerge {
 		const rolls = this._allowRolls;
 		const splitSpeaker = SETTINGS.get<boolean>(this.PREF_SPLIT_SPEAKER);
 		var userCompare = false;
+
+		const currData = current.data ?? <ChatMessageData><any>current;
+		const prevData = previous.data ?? <ChatMessageData><any>previous;
+
 		if (splitSpeaker) {
 			// this is a bit complex, basically we want to group by actors, but if you're not using an actor, group by user instead
 			userCompare = ( // If actors are equal and NOT null
-				current.data.speaker.actor === previous.data.speaker.actor
-				&& current.data.speaker.actor != null
+				currData.speaker.actor === prevData.speaker.actor
+				&& !currData.speaker.actor
 			) || ( // If BOTH actors are null and users are equal
-				current.data.speaker.actor === null
-				&& previous.data.speaker.actor === null
-				&& current.data.user === previous.data.user
-			);
+					!currData.speaker.actor
+					&& !prevData.speaker.actor
+					&& currData.user === prevData.user
+				);
 		} else {
 			// If we are not splitting by speaker, just do the simple option of comparing the users
-			userCompare = current.data.user === previous.data.user;
+			userCompare = currData.user === prevData.user;
 		}
 		return userCompare
-			&& this._inTimeFrame(current.data.timestamp, previous.data.timestamp)
+			&& this._inTimeFrame(currData.timestamp, prevData.timestamp)
 			// Check for merging with roll types
 			&& (rolls === 'all'
 				|| (rolls === 'rolls' && current.isRoll === previous.isRoll)
@@ -226,6 +235,14 @@ export default class ChatMerge {
 	private static _styleChatMessages(curr: ChatMessage, currElem: HTMLElement, prev: ChatMessage, prevElem: HTMLElement) {
 		if (currElem.hasAttribute('style')) {
 			currElem.style.setProperty('--dfce-mc-border-color', currElem.style.borderColor);
+		}
+		// If we are running in a Chat Archive
+		if (curr === undefined && prev === undefined) {
+			const logId = parseInt(/df-chat-log-(\d+)/.exec(currElem.parentElement.parentElement.id)[1]);
+			if (isNaN(logId)) return;
+			const chatLog = DFChatArchiveManager.chatViewers.get(logId);
+			curr = <ChatMessage>chatLog.messages.find(x => x._id == currElem.dataset.messageId);
+			prev = <ChatMessage>chatLog.messages.find(x => x._id == prevElem.dataset.messageId);
 		}
 		if (!ChatMerge._isValidMessage(curr, prev)) return;
 		if (prevElem.classList.contains('dfce-cm-bottom')) {
