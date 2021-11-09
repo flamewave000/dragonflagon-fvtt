@@ -156,6 +156,8 @@
 		"SettingCharLimitHint": "The maximum number of characters to show before truncating the recipient names."
 	},
 	"DF_CHAT_PLAYER_COLOR": {
-		"Label": "Player Chat Color"
+		"Label": "Player Chat Colour",
+		"SettingTintBackgroundName": "Tint Chat Message Background",
+		"SettingTintBackgroundHint": "Tint the backgrounds of chat messages to the player's colour."
 	}
 }

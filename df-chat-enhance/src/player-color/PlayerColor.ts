@@ -2,9 +2,19 @@ import { ChatMessageData } from "@league-of-foundry-developers/foundry-vtt-types
 import SETTINGS from "../../../common/Settings";
 
 export default class PlayerColor {
+	static readonly PREF_TINT_BG = 'PlayerColor_TintBackground';
 	static readonly FLAG_CHAT_COLOR = 'chat-color';
 
 	static init() {
+		SETTINGS.register(PlayerColor.PREF_TINT_BG, {
+			config: true,
+			name: 'DF_CHAT_PLAYER_COLOR.SettingTintBackgroundName',
+			hint: 'DF_CHAT_PLAYER_COLOR.SettingTintBackgroundHint',
+			scope: 'world',
+			type: Boolean,
+			default: false
+		});
+
 		Hooks.on('renderUserConfig', (app: UserConfig, html: JQuery<HTMLElement>, data: UserConfig.Data<any>) => {
 			const color = data.user.getFlag(SETTINGS.MOD_NAME, PlayerColor.FLAG_CHAT_COLOR) ?? '';
 			html.find('input[name="color"]').parent().after(`
@@ -28,13 +38,20 @@ export default class PlayerColor {
 				await wrapped(event, formData);
 			}, 'WRAPPER');
 
-		Hooks.on("renderChatMessage", (msg: ChatMessage, html: JQuery<HTMLElement>, messageData: { borderColor: string }) => {
-			const chatColor = (<string>msg.user.getFlag(SETTINGS.MOD_NAME, PlayerColor.FLAG_CHAT_COLOR))?.trim();
+		libWrapper.register(SETTINGS.MOD_NAME, 'ChatMessage.prototype.getHTML', async function (this: ChatMessage, wrapper: Function, ...args: any) {
+			const html = <JQuery<HTMLElement>>await wrapper(...args);
+			var chatColor = (<string>this.user.getFlag(SETTINGS.MOD_NAME, PlayerColor.FLAG_CHAT_COLOR))?.trim();
 			// If it is a valid color
-			if (chatColor.length > 0 && /#[a-fA-F0-9]{6,8}/.test(chatColor)) {
-				html[0].style.borderColor = chatColor;
-				html[0].style.setProperty('--dfce-mc-border-color', chatColor);
+			if (chatColor.length == 0 || !/#[a-fA-F0-9]{6,8}/.test(chatColor)) {
+				chatColor = this.user.color;
 			}
-		});
+			html[0].style.borderColor = chatColor;
+			html[0].style.setProperty('--dfce-mc-border-color', chatColor);
+			if (SETTINGS.get(PlayerColor.PREF_TINT_BG)) {
+				html[0].style.backgroundColor = chatColor;
+				html[0].style.backgroundBlendMode = 'screen';
+			}
+			return html;
+		}, 'WRAPPER');
 	}
 }
