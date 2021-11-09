@@ -41,7 +41,7 @@ export default class PlayerColor {
 			const html = <JQuery<HTMLElement>>await wrapper(...args);
 			var chatColor = (<string>this.user.getFlag(SETTINGS.MOD_NAME, PlayerColor.FLAG_CHAT_COLOR))?.trim();
 			// If it is a valid color
-			if (chatColor.length == 0 || !/#[a-fA-F0-9]{6,8}/.test(chatColor)) {
+			if (!chatColor || !/#[a-fA-F0-9]{6,8}/.test(chatColor)) {
 				chatColor = this.user.color;
 			}
 			html[0].style.borderColor = chatColor;

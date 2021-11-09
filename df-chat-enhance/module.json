@@ -2,9 +2,9 @@
 	"name": "df-chat-enhance",
 	"title": "DF Chat Enhancements",
 	"description": "Various enhancements to the chat features.",
-	"version": "3.4.0",
+	"version": "3.4.1",
 	"author": "flamewave000#0001",
-	"minimumCoreVersion": "0.8.8",
+	"minimumCoreVersion": "0.8.9",
 	"compatibleCoreVersion": "0.8.9",
 	"dependencies": [
 		{ "name": "_chatcommands" },

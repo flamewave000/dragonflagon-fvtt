@@ -1,5 +1,8 @@
 # DF Chat Enhancements
 
+## Release 3.4.1 (2021-11-09)
+- **FIX #203:** Custom Chat Colour crash due to unset flag.
+
 ## Release 3.4.0 (2021-11-09)
 - **NEW #102:** Chat Color: You can now specify a custom colour for Chat Messages in the User Configuration. This is great for adjusting the tint slightly if the regular colour does not show up well.
 - **NEW #102:** Chat Message Background: You can now tint the backgrounds of chat messages. This works the same as the feature in Chat Portraits and does not conflict, but will use the new custom chat colour if available.
