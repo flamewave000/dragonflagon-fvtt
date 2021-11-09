@@ -76,9 +76,9 @@ git_tag() {
 	MANIFEST="$SCRIPT_DIR/$MODULE/module.json"
 	MODULE_NAME=`npx json "name" < "$MANIFEST"`
 	MODULE_VERS=`npx json "version" < "$MANIFEST"`
-	# git tag -d ${MODULE_NAME}_${MODULE_VERS} 2>/dev/null
-	# git tag ${MODULE_NAME}_${MODULE_VERS} \
-	# 	&& git push -f origin ${MODULE_NAME}_${MODULE_VERS}
+	git tag -d ${MODULE_NAME}_${MODULE_VERS} 2>/dev/null
+	git tag ${MODULE_NAME}_${MODULE_VERS} \
+		&& git push -f origin ${MODULE_NAME}_${MODULE_VERS}
 	echo "Tagged current commit as \"${MODULE_NAME}_${MODULE_VERS}\""
 }
 
