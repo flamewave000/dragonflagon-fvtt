@@ -59,7 +59,7 @@ export function init() {
 	<button data-action="archive"><i class="fas fa-archive"></i>${'DF_CHAT_ARCHIVE.OpenChatArchive'.localize()}</button>
 </div>`);
 		archiveManagerHtml.on('click', () => {
-			if (archiveManager == null) {
+			if (archiveManager == null || ![Application.RENDER_STATES.RENDERED, Application.RENDER_STATES.RENDERING].includes((<any>archiveManager)._state)) {
 				archiveManager = new DFChatArchiveManager();
 				archiveManager.render(true);
 			} else {
