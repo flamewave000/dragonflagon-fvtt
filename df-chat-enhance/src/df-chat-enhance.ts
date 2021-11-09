@@ -21,7 +21,7 @@ declare global {
 	this.element[0].style.height = '';
 	this.element[0].style.width = '';
 	this.setPosition({});
-}
+};
 
 Hooks.once('init', function () {
 	/**
@@ -37,8 +37,8 @@ Hooks.once('init', function () {
 	WhisperTruncation.init();
 	PlayerColor.init();
 
-	libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype._getEntryContextOptions', function (wrapped: Function, ...args: any) {
-		const options = wrapped(...args) as ContextMenu.Item[];
+	libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype._getEntryContextOptions', function (wrapped: (...args: any) => ContextMenu.Item[], ...args: any) {
+		const options = wrapped(...args);
 		DFChatEdit.appendChatContextMenuOptions(options);
 		DFAdventureLogProcessor.appendChatContextMenuOptions(options);
 		return options;

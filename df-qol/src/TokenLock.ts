@@ -12,10 +12,10 @@ export default class TokenLock {
 		return token.setFlag(SETTINGS.MOD_NAME, TokenLock.TokenLockFlag, value);
 	}
 
-	private static get enabled(): Boolean {
+	private static get enabled(): boolean {
 		return SETTINGS.get(this.PREF_ENABLED);
 	}
-	private static get allowGM(): Boolean {
+	private static get allowGM(): boolean {
 		return SETTINGS.get(this.PREF_ALLOW_GM);
 	}
 
@@ -27,7 +27,7 @@ export default class TokenLock {
 			scope: 'world',
 			type: Boolean,
 			default: true,
-			onChange: x => {
+			onChange: (x: boolean) => {
 				this._registerPatch(x);
 				this._registerHook(x);
 			}
@@ -47,18 +47,18 @@ export default class TokenLock {
 		this._registerHook(this.enabled);
 	}
 
-	private static _registerPatch(enabled: Boolean) {
+	private static _registerPatch(enabled: boolean) {
 		if (enabled) {
-			libWrapper.register(SETTINGS.MOD_NAME, 'Token.prototype._canDrag', function (this: any, wrapped: Function, ...args: any) {
+			libWrapper.register(SETTINGS.MOD_NAME, 'Token.prototype._canDrag', function (this: any, wrapped: AnyFunction, ...args: any) {
 				return wrapped(...args) && ((TokenLock.allowGM && game.user.isGM) || !TokenLock.getLocked(this.document));
 			}, 'WRAPPER');
-			libWrapper.register(SETTINGS.MOD_NAME, 'TokenLayer.prototype.moveMany', async function (this: any, wrapped: Function, data: any) {
+			libWrapper.register(SETTINGS.MOD_NAME, 'TokenLayer.prototype.moveMany', async function (this: any, wrapped: (data: any) => any, data: any) {
 				const ids = data.ids instanceof Array ? data.ids : this.controlled.filter((o: any) => !o.data.locked).map((o: any) => o.id);
 				data.ids = ids.filter((x: string) => {
 					return !TokenLock.getLocked((<any>canvas).tokens.documentCollection.get(x)) ||
 						(TokenLock.allowGM && game.user.isGM);
 				});
-				return wrapped(data)
+				return wrapped(data);
 			}, 'WRAPPER');
 		}
 		else {
@@ -66,13 +66,13 @@ export default class TokenLock {
 			libWrapper.unregister(SETTINGS.MOD_NAME, 'TokenLayer.prototype.moveMany', false);
 		}
 	}
-	private static _registerHook(enabled: Boolean) {
+	private static _registerHook(enabled: boolean) {
 		if (!game.user.isGM) return;
 		if (enabled) Hooks.on('renderTokenHUD', this._renderTokenHUD);
 		else Hooks.off('renderTokenHUD', this._renderTokenHUD);
 	}
 
-	private static _renderTokenHUD(app: TokenHUD, html: JQuery<HTMLElement>, data: any) {
+	private static _renderTokenHUD(app: TokenHUD, html: JQuery<HTMLElement>, _data: any) {
 		const toggle = $(`<div class="control-icon${TokenLock.getLocked((<any>app.object).document) ? ' active' : ''}" data-action="lock">
 <img src="icons/svg/padlock.svg" width="36" height="36" title="${game.i18n.localize('DF_WOL.TokenLock.LockTitle')}">
 </div>`);
@@ -92,7 +92,7 @@ export default class TokenLock {
 						return {
 							_id: x.data._id,
 							flags: { 'df-qol': { locked } }
-						}
+						};
 					});
 				// Perform Batch Update
 				await (<any>canvas).scene.updateEmbeddedDocuments("Token", data);

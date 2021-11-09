@@ -32,7 +32,7 @@ export default class DFChatArchiveViewer extends Application {
 		};
 	}
 
-	_renderInner(data: {}): Promise<JQuery> {
+	_renderInner(data: any): Promise<JQuery> {
 		return (super._renderInner(data) as Promise<JQuery>)
 			.then(async (html: JQuery<HTMLElement>) => {
 				html.find("#visible-df-chat-log-" + this.archive.id).on('change', async (element) => {
@@ -135,7 +135,7 @@ export default class DFChatArchiveViewer extends Application {
 				this.messages = await DFChatArchive.getArchiveContents(this.archive);
 				const deletionList: string[] = [];
 				const deleteButton = html.find('#dfal-save-changes');
-				for (let value of this.messages as ChatMessageData[]) {
+				for (const value of this.messages as ChatMessageData[]) {
 					const chatMessage = value instanceof ChatMessage ? value : new ChatMessage(value);
 					try {
 						// @ts-ignore
@@ -180,9 +180,8 @@ export default class DFChatArchiveViewer extends Application {
 						title: "DF_CHAT_ARCHIVE.ArchiveViewer_DeleteTitle".localize(),
 						content: "DF_CHAT_ARCHIVE.ArchiveViewer_DeleteContent".localize(),
 						defaultYes: false,
-						no: () => { },
 						yes: async () => {
-							for (let id of deletionList) {
+							for (const id of deletionList) {
 								const message = html.find(`li[data-message-id="${id}"]`);
 								message.hide(500, () => message.remove());
 							}

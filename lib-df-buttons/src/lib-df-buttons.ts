@@ -24,7 +24,7 @@ Hooks.once('init', () => {
 	});
 
 	// Soft Dependency on `libwrapper`. Only use it if it already exists
-	if (game.modules.get('libWrapper')) {
+	if (game.modules.get('libWrapper')?.active) {
 		libWrapper.register(SETTINGS.MOD_NAME, 'Sidebar.prototype.expand', function (this: Sidebar, wrapped: Function) {
 			Hooks.callAll('collapseSidebarPre', this, !this._collapsed);
 			wrapped();

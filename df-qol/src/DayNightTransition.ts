@@ -9,7 +9,7 @@ export default class DayNightTransition {
 			default: true,
 			name: 'DF_QOL.DayNight.ProgressSettingName',
 			hint: 'DF_QOL.DayNight.ProgressSettingHint',
-			onChange: newValue => {
+			onChange: () => {
 				libWrapper.unregister(SETTINGS.MOD_NAME, 'LightingLayer.prototype.animateDarkness');
 			}
 		});

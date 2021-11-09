@@ -7,17 +7,14 @@ declare class LightConfigExt extends LightConfig {
 }
 
 export default class ActiveLightConfig extends Application {
-	static init() {
-	}
-
 	static ready() {
 		if (game.user.isGM)
 			Hooks.on('renderLightConfig', this._renderLightConfig);
 	}
 
-	private static _renderLightConfig(app: LightConfig, html: JQuery<HTMLElement>, data: any) {
+	private static _renderLightConfig(app: LightConfig, html: JQuery<HTMLElement>) {
 		if (!(app.object instanceof AmbientLightDocument)) return;
-		const config = app as LightConfigExt
+		const config = app as LightConfigExt;
 		if (!config.anims) {
 			config.anims = new ActiveLightConfig(app);
 		}
@@ -51,11 +48,11 @@ export default class ActiveLightConfig extends Application {
 				bounce: false,
 				offset: 0,
 				keys: [ActiveLightConfig._createKeyFrame(0, obj.data)]
-			}
+			};
 		} else this._data = <any>duplicate(this._data);
 	}
 
-	getData(options?: Application.RenderOptions): any {
+	getData(_options?: Application.RenderOptions): any {
 		return {
 			bounce: this._data.bounce,
 			offset: this._data.offset === 0 ? '' : this._data.offset
@@ -83,7 +80,7 @@ export default class ActiveLightConfig extends Application {
 			rotation: { enabled: false, value: data?.rotation ?? 0 },
 			tintAlpha: { enabled: false, value: data?.tintAlpha ?? 0 },
 			tintColor: { enabled: false, value: data?.tintColor ?? '#000000', isColor: true }
-		}
+		};
 	}
 
 	async activateListeners(html: JQuery<HTMLElement>) {
@@ -102,7 +99,7 @@ export default class ActiveLightConfig extends Application {
 
 		// Listen for Add KeyFrame button
 		html.find('button[name="add-keyframe"]').on('click', async () => {
-			this._data.keys[this._data.keys.length - 1].time
+			this._data.keys[this._data.keys.length - 1].time;
 			// Create KeyFrame and set time to Duration + 1
 			const keyFrame = ActiveLightConfig._createKeyFrame(this._data.keys[this._data.keys.length - 1].time + 1000);
 			// Add new Key Frame to the keys list
@@ -114,7 +111,7 @@ export default class ActiveLightConfig extends Application {
 		});
 
 		// Inject all the keyframe buttons
-		for (let key of this._data.keys.slice(1)) {
+		for (const key of this._data.keys.slice(1)) {
 			await this._appendKeyFrame(propContainer, keysContainer, key);
 		}
 
@@ -140,7 +137,7 @@ export default class ActiveLightConfig extends Application {
 
 		// Listen to Time input changes
 		propsElement.find('input[name="time"]').on('change', async (e) => {
-			var newValue = (e.currentTarget as HTMLInputElement).valueAsNumber;
+			const newValue = (e.currentTarget as HTMLInputElement).valueAsNumber;
 			// If the value is zero, reset it! No keyframes can be manually set to zero
 			if (newValue === 0) {
 				e.currentTarget.setAttribute('value', keyFrame.time.toString());
@@ -149,7 +146,7 @@ export default class ActiveLightConfig extends Application {
 			}
 			// If the value is equal to another keyframe, reset it it to previous value
 			const conflict = this._data.keys.find(x => x.time === newValue);
-			if (!!conflict) {
+			if (conflict) {
 				e.currentTarget.setAttribute('value', keyFrame.time.toString());
 				ui.notifications.warn(game.i18n.localize('DF_ACTIVE_LIGHTS.Warnings.KeyFrame_Exists').replace('{0}', newValue.toString()));
 				return;
@@ -157,7 +154,7 @@ export default class ActiveLightConfig extends Application {
 			// Set the time ID for the keyframe UI
 			e.currentTarget.setAttribute('data-time', newValue.toString());
 			const keys = <HTMLInputElement[]>Array.from(keysContainer[0].children);
-			const keyElement = keys.find(x => parseInt(x.getAttribute('data-time')) === keyFrame.time)
+			const keyElement = keys.find(x => parseInt(x.getAttribute('data-time')) === keyFrame.time);
 			keyElement.setAttribute('data-time', newValue.toString());
 			keyElement.querySelector('span').innerHTML = (newValue / 1000).toNearest(0.001).toString() + ' ' + game.i18n.localize('DF_ACTIVE_LIGHTS.Seconds');
 			keys.sort((a, b) => parseInt(a.getAttribute('data-time')) < parseInt(b.getAttribute('data-time')) ? -1 : 1);
@@ -243,7 +240,7 @@ export default class ActiveLightConfig extends Application {
 			keysContainer.find('li')[index - 1].classList.add('active');
 			this._loadDataForKeyFrame(propContainer, keysContainer, this._data.keys[index - 1], (index - 1) === 0);
 		}
-		$(element).remove()
+		$(element).remove();
 		this._data.keys.splice(index, 1);
 		await this._save();
 	}

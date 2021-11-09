@@ -21,9 +21,9 @@ function calcColour(current: number, count: number): string {
 
 interface ChatLogData {
 	user: User,
-	rollMode: String,
+	rollMode: string,
 	rollModes: any,
-	isStream: Boolean
+	isStream: boolean
 }
 
 async function handleChatLogRendering(chat: ChatLog, html: JQuery<HTMLElement>, data: ChatLogData) {
@@ -61,14 +61,14 @@ async function handleChatLogRendering(chat: ChatLog, html: JQuery<HTMLElement>, 
 	buttonHtml.attr('style', 'margin:0 0 0 0.5em');
 
 	// Convert the old <a> tag elements to <button> tags
-	var first = true;
-	html.find('#chat-controls div.control-buttons a').each(function (idx, element) {
-		let html = $(this).html();
-		let classes = $(this).attr('class');
-		let title = $(this).attr('title');
-		let style = $(this).attr('style');
-		let click = ($ as any)._data(this, 'events')['click'][0].handler;
-		let button = $(`<button class="${classes}" title="${title}" style="${style}">${html}</button>`);
+	let first = true;
+	html.find('#chat-controls div.control-buttons a').each(function() {
+		const html = $(this).html();
+		const classes = $(this).attr('class');
+		const title = $(this).attr('title');
+		const style = $(this).attr('style');
+		const click = ($ as any)._data(this, 'events')['click'][0].handler;
+		const button = $(`<button class="${classes}" title="${title}" style="${style}">${html}</button>`);
 		button.on('click', click);
 		// Add a small margin between the first button and the RollTypes
 		if (first) {

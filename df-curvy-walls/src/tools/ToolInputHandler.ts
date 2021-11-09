@@ -140,11 +140,11 @@ export class PointArrayInputHandler extends InputHandler {
 	private moveAll(to: Point, event: PIXI.InteractionEvent) {
 		const delta = new PIXI.Point(to.x - this._start.x, to.y - this._start.y);
 		const snap = this.shouldSnap(event);
-		var o: PIXI.Point;
+		let o: PIXI.Point;
 		this.points.forEach((e, i) => {
 			o = this.originalPoints[i];
 			e.copyFrom(this.getWallEndPoint(new PIXI.Point(o.x + delta.x, o.y + delta.y), snap));
-		})
+		});
 	}
 	start(_origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
 		this.moveAll(destination, event);
@@ -185,17 +185,17 @@ export class MagnetPointInputHandler extends InputHandler {
 	}
 	move(_origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
 		this.masterPoint.copyFrom(this.getWallEndPoint(destination, this.shouldSnap(event)) as PIXI.Point);
-		this.slavePoint.set(this.masterPoint.x + this.offsetX, this.masterPoint.y + this.offsetY)
+		this.slavePoint.set(this.masterPoint.x + this.offsetX, this.masterPoint.y + this.offsetY);
 	}
 	stop(_origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
 		this.masterPoint.copyFrom(this.getWallEndPoint(destination, this.shouldSnap(event)) as PIXI.Point);
-		this.slavePoint.set(this.masterPoint.x + this.offsetX, this.masterPoint.y + this.offsetY)
+		this.slavePoint.set(this.masterPoint.x + this.offsetX, this.masterPoint.y + this.offsetY);
 		if (this.completion != null)
 			this.completion(this);
 	}
 	cancel() {
 		this.masterPoint.copyFrom(this.originalPoint);
-		this.slavePoint.set(this.masterPoint.x + this.offsetX, this.masterPoint.y + this.offsetY)
+		this.slavePoint.set(this.masterPoint.x + this.offsetX, this.masterPoint.y + this.offsetY);
 		if (this.completion != null)
 			this.completion(this);
 	}

@@ -1,6 +1,6 @@
 import SETTINGS from "../../common/Settings";
 
-function apply(shouldApply: Boolean, hookName: string, func: (...args: any) => any) {
+function apply(shouldApply: boolean, hookName: string, func: AnyFunction) {
 	if (shouldApply) Hooks.on(hookName, func);
 	else Hooks.off(hookName, func);
 }
@@ -14,7 +14,7 @@ export default class TextboxAutoFocus {
 			type: Boolean,
 			default: true,
 			config: true,
-			onChange: newValue => {
+			onChange: (newValue: boolean) => {
 				apply(newValue, 'renderDialog', TextboxAutoFocus.DF_AUTO_FOCUS);
 				apply(newValue, 'renderFolderConfig', TextboxAutoFocus.DF_AUTO_FOCUS);
 			}
@@ -25,7 +25,7 @@ export default class TextboxAutoFocus {
 
 	static DF_AUTO_FOCUS(_app: any, html: JQuery, _data: any) {
 		const inputs = html.find('input[type="text"]');
-		if (inputs.length == 0) return
+		if (inputs.length == 0) return;
 		inputs[0].focus();
 	}
 }

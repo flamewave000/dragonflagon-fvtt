@@ -6,19 +6,19 @@ export default class DFSceneThumb {
 	static THUMBS = 'thumbs';
 	static purge() {
 		if (!game.user.isGM) return;
-		let ids: string[] = []
-		for (var scene of game.scenes.values() as any as Scene[]) {
+		const ids: string[] = [];
+		for (const scene of game.scenes.values() as any as Scene[]) {
 			ids.push(scene.id);
 		}
-		let config = JSON.parse(SETTINGS.get(DFSceneThumb.THUMBS));
-		for (var id in config) {
+		const config = JSON.parse(SETTINGS.get(DFSceneThumb.THUMBS));
+		for (const id in config) {
 			if (!ids.includes(id))
 				delete config[id];
 		}
 		SETTINGS.set(DFSceneThumb.THUMBS, JSON.stringify(config));
 	}
 	static updateThumb(sceneId: string, value?: string, generated: boolean = false) {
-		let config = JSON.parse(SETTINGS.get(DFSceneThumb.THUMBS));
+		const config = JSON.parse(SETTINGS.get(DFSceneThumb.THUMBS));
 		if (!value) delete config[sceneId];
 		else config[sceneId] = { url: value, thumb: generated };
 		SETTINGS.set(DFSceneThumb.THUMBS, JSON.stringify(config));
@@ -41,12 +41,12 @@ export default class DFSceneThumb {
 			const thumbConfig = DFSceneThumb.getThumb(sceneId);
 			const injection = $(await renderTemplate(`modules/${DFSceneThumb.MODULE}/templates/scene-thumb.hbs`, { thumbPath: (thumbConfig && thumbConfig.url) || "" }));
 			const target = imgInput.parentElement.parentElement;
-			for (var c = 0; c < injection.length; c++) {
+			for (let c = 0; c < injection.length; c++) {
 				if (injection[c].nodeType != 1) continue;
 				target.after(injection[c]);
 			}
 			html.find('#df-thumb-btn').on('click', () => {
-				let fp = FilePicker.fromButton(html.find('#df-thumb-btn')[0] as HTMLButtonElement);
+				const fp = FilePicker.fromButton(html.find('#df-thumb-btn')[0] as HTMLButtonElement);
 				app.filepickers.push(fp);
 				fp.browse();
 			});
@@ -56,13 +56,13 @@ export default class DFSceneThumb {
 			// @ts-ignore
 			await (<DFSceneRatio>app.ratioScaler).render(app, html, data);
 		});
-		Hooks.on('closeSceneConfig', async (app: SceneConfig, html: JQuery<HTMLElement>) => {
-			const dfSceneConfig = DFSceneThumb.getThumb(app.entity.id);
+		Hooks.on('closeSceneConfig', async (app: SceneConfig, _: JQuery<HTMLElement>) => {
+			const dfSceneConfig = DFSceneThumb.getThumb(app.document.id);
 			const scene: Scene = app.entity;
 			if (!dfSceneConfig || !dfSceneConfig.url) return;
 			// Update thumbnail and image dimensions
 			try {
-				let img = (dfSceneConfig && dfSceneConfig.url) ?? scene.data.img;
+				const img = (dfSceneConfig && dfSceneConfig.url) ?? scene.data.img;
 				const td = await ImageHelper.createThumbnail(img, { width: 300, height: 100 });
 				dfSceneConfig.thumb = true;
 				DFSceneThumb.updateThumb(scene.id, img, true);

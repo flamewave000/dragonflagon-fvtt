@@ -63,12 +63,13 @@ export default class FlagEditor extends Application {
 		});
 	}
 
+	// eslint-disable-next-line @typescript-eslint/ban-types
 	private static async _findObject(id: string | String): Promise<FoundryDocument | null> {
 		if (typeof id !== 'string' && !(id instanceof String)) return Promise.reject("Invalid parameter: id must be type 'string'");
 		return await new Promise<FoundryDocument | null>((res, rej) => {
 			// Search the collections
-			const collections = game.collections
-			for (let [key, map] of collections.entries()) {
+			const collections = game.collections;
+			for (const [key, map] of collections.entries()) {
 				if (FlagEditor.IGNORED_COLLECTIONS.includes(key) || !map.has(<any>id)) continue;
 				res(map.get(<any>id));
 				break;
@@ -76,7 +77,7 @@ export default class FlagEditor extends Application {
 			rej();
 		}).catch(() => new Promise<FoundryDocument | null>((res, rej) => {
 			// Search the layers
-			for (let layer of canvas.layers) {
+			for (const layer of canvas.layers) {
 				if (!(layer instanceof PlaceablesLayer)) continue;
 				if (!(<Map<string, FoundryDocument>>(<any>layer).documentCollection).has(<string>id)) continue;
 				res((<Map<string, FoundryDocument>>(<any>layer).documentCollection).get(<string>id));
@@ -88,7 +89,7 @@ export default class FlagEditor extends Application {
 
 	static init() {
 		SETTINGS.register(FlagEditor.PREF_LAST_OBJ, { scope: 'client', type: String, default: '', config: false });
-		Hooks.on('renderSettings', (settings: Settings, html: JQuery<HTMLElement>, data: {}) => {
+		Hooks.on('renderSettings', (_: Settings, html: JQuery<HTMLElement>) => {
 			if (!game.user.isGM) return;
 			const captureButton = $(`<div><button data-action="edit-json"><i class="fas fa-code"></i>${game.i18n.localize('DF_FLAG_EDIT.EditButtonLabel')}</button></div>`);
 			captureButton.find('button').on('click', () => (new FlagEditor()).render(true));
@@ -115,7 +116,7 @@ export default class FlagEditor extends Application {
 		const result = await super._render(force, options);
 		const editorOptions = {
 			// If the Ace Lib is installed and running
-			ace: !!ace ? ace : undefined,
+			ace: ace ? ace : undefined,
 			limitDragging: false,
 			mode: 'tree',
 			modes: ['tree', 'code'],
@@ -145,7 +146,7 @@ export default class FlagEditor extends Application {
 				return;
 			const flags = this.editor.get();
 			console.log(flags);
-			await this.document.update({ flags: this.editor.get() })
+			await this.document.update({ flags: this.editor.get() });
 		});
 		return result;
 	}
@@ -159,7 +160,7 @@ export default class FlagEditor extends Application {
 				const script = document.createElement('script') as HTMLScriptElement;
 				script.async = true;
 				script.onload = () => res();
-				if (!!ace)
+				if (ace)
 					script.src = `/modules/${SETTINGS.MOD_NAME}/src/jsoneditor-minimalist.min.js`;
 				else
 					script.src = `/modules/${SETTINGS.MOD_NAME}/src/jsoneditor.min.js`;
@@ -198,12 +199,12 @@ export default class FlagEditor extends Application {
 	getData(): any {
 		return {
 			path: SETTINGS.get(FlagEditor.PREF_LAST_OBJ)
-		}
+		};
 	}
 
 	private async _handlePathChange(data: string) {
 		await SETTINGS.set(FlagEditor.PREF_LAST_OBJ, data);
-		var document: FoundryDocument | null;
+		let document: FoundryDocument | null;
 		if (data.length === 0) {
 			this._hideError();
 			document = null;
@@ -215,7 +216,7 @@ export default class FlagEditor extends Application {
 				document = await FlagEditor.extractID(data);
 			// we are an object path
 			else {
-				var temp = FlagEditor.evaluateDocument(data);
+				let temp = FlagEditor.evaluateDocument(data);
 				// If the result is NOT a Document/Data
 				if (!FlagEditor.isDocument(temp)) {
 					// If the Object Path result is an ID
@@ -247,7 +248,7 @@ export default class FlagEditor extends Application {
 	}
 
 	private static isID(target: any): boolean {
-		return /^['"`]?[a-z0-9]+['"`]?$/im.test(target)
+		return /^['"`]?[a-z0-9]+['"`]?$/im.test(target);
 	}
 	private static isDocument(target: any): boolean {
 		return target?.data !== undefined || target?.document !== undefined;
@@ -255,7 +256,7 @@ export default class FlagEditor extends Application {
 	private static extractID(target: string): Promise<FoundryDocument | null> {
 		return FlagEditor._findObject(target.match(/^['"`]?([a-z0-9]+)['"`]?$/im)[1]);
 	}
-	private static evaluateDocument(target: string): FoundryDocument | string | null { return eval(target) }
+	private static evaluateDocument(target: string): FoundryDocument | string | null { return eval(target); }
 }
 
 
@@ -263,7 +264,7 @@ export default class FlagEditor extends Application {
 	if (document.data === undefined) {
 		if (document.document === undefined) {
 			if (document instanceof String || typeof document === 'string') {
-				document = (<any>FlagEditor)._findObject(document)
+				document = (<any>FlagEditor)._findObject(document);
 			}
 			else throw Error("Invalid object: document must be of type 'string', 'Document', or 'DocumentData'");
 		}
@@ -277,5 +278,5 @@ export default class FlagEditor extends Application {
 	}
 	const editor = new FlagEditor();
 	await editor.render(true);
-	editor.document = document
-}
+	editor.document = document;
+};

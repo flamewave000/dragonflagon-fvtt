@@ -4,7 +4,7 @@ import DFChatArchiveViewer from "./DFChatArchiveViewer";
 
 export default class DFChatArchiveManager extends Application {
 	static readonly PREF_REVERSE_SORT = 'dfca-manager-reverseSort';
-	static chatViewers: Map<Number, DFChatArchiveViewer> = new Map();
+	static chatViewers: Map<number, DFChatArchiveViewer> = new Map();
 
 	static get defaultOptions() {
 		return mergeObject(Application.defaultOptions as Partial<Application.Options>, {
@@ -18,10 +18,10 @@ export default class DFChatArchiveManager extends Application {
 	}
 
 	getData(options?: any) {
-		let data = super.getData(options);
-		var messages = DFChatArchive.getLogs();
+		const data = super.getData(options);
+		let messages = DFChatArchive.getLogs();
 		if (!game.user.isGM)
-			messages = messages.filter(x => x.visible)
+			messages = messages.filter(x => x.visible);
 		messages = messages.sort((a, b) => a.name.localeCompare(b.name));
 		const reverseSort = SETTINGS.get<boolean>(DFChatArchiveManager.PREF_REVERSE_SORT);
 		mergeObject(data, {
@@ -70,8 +70,8 @@ export default class DFChatArchiveManager extends Application {
 		DFChatArchive.setUpdateListener(this._archiveChanged.bind(this));
 		if (DFChatArchive.getLogs().length > 0)
 			html.find('p.dfca-no-items').hide();
-		html.find('a[data-type="view"]').each((i, element) => { this._subscribeView($(element)) });
-		html.find('a[data-type="delete"]').each((i, element) => { this._subscribeDelete($(element)) });
+		html.find('a[data-type="view"]').each((i, element) => { this._subscribeView($(element)); });
+		html.find('a[data-type="delete"]').each((i, element) => { this._subscribeDelete($(element)); });
 		html.find('#dfca-delete-all').on('click', async function () {
 			await Dialog.confirm({
 				title: 'DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllTitle'.localize(),
@@ -86,9 +86,9 @@ export default class DFChatArchiveManager extends Application {
 							await DFChatArchive.deleteAll();
 							ui.notifications.info('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllComplete'.localize());
 						}
-					})
+					});
 				}
-			})
+			});
 		});
 		const asc = html.find('#dfca-sort-asc');
 		const dsc = html.find('#dfca-sort-dsc');
@@ -112,13 +112,13 @@ export default class DFChatArchiveManager extends Application {
 	}
 
 	private async _archiveChanged() {
-		var logs = DFChatArchive.getLogs();
+		let logs = DFChatArchive.getLogs();
 		if (!game.user.isGM)
 			logs = logs.filter(x => x.visible);
 		const archiveContainer = this.element.find('#dfca-archives');
 		archiveContainer.empty();
 		// Add new items
-		for (let archive of logs) {
+		for (const archive of logs) {
 			const visible = archive.visible === true
 				? `<i class="dfca-visible fas fa-users" title="${'DF_CHAT_ARCHIVE.ArchiveManager_VisibleToPlayers'.localize()}"></i>` : '';
 			const html = $(`

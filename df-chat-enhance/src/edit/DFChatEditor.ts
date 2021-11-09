@@ -29,7 +29,7 @@ export default class DFChatEditor extends FormApplication {
 		return mergeObject(options, {
 			messageText: this.chatMessage.data.content
 				.replace(/< *br *\/?>/gm, '\n')
-				.replace(/\<p +class="df-edited"\>.+/, '')
+				.replace(/<p +class="df-edited">.+/, '')
 		});
 	}
 
@@ -41,9 +41,9 @@ export default class DFChatEditor extends FormApplication {
 
 	/** @override */
 	async _updateObject(_event?: any, formData?: any) {
-		var data = formData.content as string;
+		let data = formData.content as string;
 		data = data.replace(/\r?\n/gm, '<br/>');
-		if (data.search(/\<p +class="df-edited"\>/) < 0) {
+		if (data.search(/<p +class="df-edited">/) < 0) {
 			data += `<p class="df-edited">${'DF_CHAT_EDIT.EditedFlag'.localize()}</p>`;
 		}
 		this.chatMessage.update({

@@ -190,19 +190,19 @@ export default class ControlManager extends Application {
 		switch (SETTINGS.get('position')) {
 			case 'top': {
 				const sceneTools = document.querySelector<HTMLElement>('#controls > li.scene-control.active > ol');
-				var max = Math.floor(sceneTools.offsetHeight / ControlManager.CONTROL_SIZE);
-				var cols = Math.ceil(sceneTools.childElementCount / max);
+				let max = Math.floor(sceneTools.offsetHeight / ControlManager.CONTROL_SIZE);
+				let cols = Math.ceil(sceneTools.childElementCount / max);
 				self.element[0].style.marginLeft = `${(cols - 1) * (ControlManager.CONTROL_SIZE - 2)}px`;
 				break;
 			}
 			case 'left': {
-				var max = Math.floor(self.element[0].offsetHeight / ControlManager.CONTROL_SIZE);
-				var cols = Math.ceil(self.groups.length / max);
+				let max = Math.floor(self.element[0].offsetHeight / ControlManager.CONTROL_SIZE);
+				let cols = Math.ceil(self.groups.length / max);
 				self.element.find('.group-tools').css('margin-left', `${(cols - 1) * (ControlManager.CONTROL_SIZE - 2)}px`);
 
 				const sceneTools = document.querySelector<HTMLElement>('#controls > li.scene-control.active > ol');
-				var max = Math.floor(sceneTools.offsetHeight / ControlManager.CONTROL_SIZE);
-				var cols = Math.ceil(sceneTools.childElementCount / max);
+				let max = Math.floor(sceneTools.offsetHeight / ControlManager.CONTROL_SIZE);
+				let cols = Math.ceil(sceneTools.childElementCount / max);
 				self.element[0].style.marginLeft = `${(cols - 1) * (ControlManager.CONTROL_SIZE - 2)}px`;
 				break;
 			}

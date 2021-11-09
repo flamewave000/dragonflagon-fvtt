@@ -1,6 +1,5 @@
 import { ChatMessageData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import SETTINGS from "../../../common/Settings";
-import { DFChatArchive } from "../archive/DFChatArchive";
 import DFChatArchiveManager from "../archive/DFChatArchiveManager";
 
 
@@ -15,11 +14,11 @@ export default class ChatMerge {
 	private static readonly PREF_SHOW_HEADER = 'chat-merge-showheader';
 
 	private static get _enabled(): boolean { return SETTINGS.get(this.PREF_ENABLED); }
-	private static get _epoch(): number { return SETTINGS.get(this.PREF_EPOCH) }
-	private static get _allowRolls(): string { return SETTINGS.get(this.PREF_ALLOW_ROLLS) }
-	private static get _separateWithBorder(): boolean { return SETTINGS.get(this.PREF_SEPARATE) }
-	private static get _showHover(): boolean { return SETTINGS.get(this.PREF_HOVER) }
-	private static get _showHeader(): boolean { return SETTINGS.get(this.PREF_SHOW_HEADER) }
+	private static get _epoch(): number { return SETTINGS.get(this.PREF_EPOCH); }
+	private static get _allowRolls(): string { return SETTINGS.get(this.PREF_ALLOW_ROLLS); }
+	private static get _separateWithBorder(): boolean { return SETTINGS.get(this.PREF_SEPARATE); }
+	private static get _showHover(): boolean { return SETTINGS.get(this.PREF_HOVER); }
+	private static get _showHeader(): boolean { return SETTINGS.get(this.PREF_SHOW_HEADER); }
 
 	static init() {
 		SETTINGS.register(this.PREF_ENABLED, {
@@ -38,7 +37,7 @@ export default class ChatMerge {
 			scope: 'client',
 			default: false,
 			type: Boolean,
-			onChange: (newValue: Boolean) => {
+			onChange: (newValue: boolean) => {
 				const style = (<HTMLElement>document.querySelector(':root')).style;
 				style.setProperty('--dfce-cm-header', newValue ? '' : 'none');
 				if (game.user.isGM) {
@@ -77,7 +76,7 @@ export default class ChatMerge {
 			scope: 'client',
 			default: false,
 			type: Boolean,
-			onChange: (newValue: Boolean) => {
+			onChange: (newValue: boolean) => {
 				const style = (<HTMLElement>document.querySelector(':root')).style;
 				style.setProperty('--dfce-cm-separation', newValue ? '' : '0');
 			}
@@ -89,7 +88,7 @@ export default class ChatMerge {
 			scope: 'client',
 			default: true,
 			type: Boolean,
-			onChange: (newValue: Boolean) => {
+			onChange: (newValue: boolean) => {
 				const style = (<HTMLElement>document.querySelector(':root')).style;
 				style.setProperty('--dfce-cm-hover-shadow', newValue ? '' : '0');
 			}
@@ -126,7 +125,7 @@ export default class ChatMerge {
 		Hooks.on('renderDFChatArchiveViewer', (_: any, html: JQuery<HTMLElement>) => this._processAllMessage(html));
 	}
 
-	private static _deleteMessage(wrapper: Function, messageId: string, { deleteAll = false } = {}) {
+	private static _deleteMessage(wrapper: (arg0: any, arg1: any) => any, messageId: string, { deleteAll = false } = {}) {
 		// Ignore the Delete All process. Everything is being obliterated, who cares about the styling
 		if (!deleteAll && this._enabled) {
 			const element = document.querySelector(`li[data-message-id="${messageId}"`);
@@ -186,7 +185,7 @@ export default class ChatMerge {
 		}
 	}
 
-	private static _renderChatMessage(message: ChatMessage, html: JQuery<HTMLElement>, messageData: ChatMessageData) {
+	private static _renderChatMessage(message: ChatMessage, html: JQuery<HTMLElement>, _cmd: ChatMessageData) {
 		if (!ChatMerge._enabled) return;
 		// Find the most recent message in the chat log
 		const partnerElem = $(`li.chat-message`).last()[0];
@@ -205,7 +204,7 @@ export default class ChatMerge {
 	private static _isValidMessage(current: ChatMessage, previous: ChatMessage) {
 		const rolls = this._allowRolls;
 		const splitSpeaker = SETTINGS.get<boolean>(this.PREF_SPLIT_SPEAKER);
-		var userCompare = false;
+		let userCompare = false;
 
 		const currData = current.data ?? <ChatMessageData><any>current;
 		const prevData = previous.data ?? <ChatMessageData><any>previous;
@@ -215,7 +214,8 @@ export default class ChatMerge {
 			userCompare = ( // If actors are equal and NOT null
 				currData.speaker.actor === prevData.speaker.actor
 				&& !currData.speaker.actor
-			) || ( // If BOTH actors are null and users are equal
+			) ||
+				( // If BOTH actors are null and users are equal
 					!currData.speaker.actor
 					&& !prevData.speaker.actor
 					&& currData.user === prevData.user
@@ -229,7 +229,7 @@ export default class ChatMerge {
 			// Check for merging with roll types
 			&& (rolls === 'all'
 				|| (rolls === 'rolls' && current.isRoll === previous.isRoll)
-				|| (rolls === 'none' && !current.isRoll && !previous.isRoll))
+				|| (rolls === 'none' && !current.isRoll && !previous.isRoll));
 	}
 
 	private static _styleChatMessages(curr: ChatMessage, currElem: HTMLElement, prev: ChatMessage, prevElem: HTMLElement) {

@@ -5,6 +5,8 @@
 	"scripts": {
 		"target": "./.cmds target",
 		"env": "./.cmds foundry",
+		"lint": "./.cmds lint",
+		"lint-fix": "./.cmds lint --fix",
 		"build": "./.cmds build --sm",
 		"watch": "./.cmds build watch --sm",
 		"clean": "./.cmds build clean",
@@ -15,7 +17,7 @@
 		"prod": "./.cmds build zip --min --sm",
 		"launch": "./.cmds launch",
 		"tag": "./.cmds tag",
-		"release": "npm run tag && npm run prod"
+		"release": "npm run tag && npm run prod && ./.cmds bundle"
 	},
 	"repository": {
 		"type": "git",
@@ -38,9 +40,12 @@
 	"homepage": "https://github.com/flamewave000/dragonflagon-fvtt#readme",
 	"devDependencies": {
 		"@league-of-foundry-developers/foundry-vtt-types": "^0.8.9-7",
+		"@typescript-eslint/eslint-plugin": "^5.3.1",
+		"@typescript-eslint/parser": "^5.3.1",
 		"acorn": "^8.5.0",
 		"bundle-dts": "^1.1.4",
 		"del": "^6.0.0",
+		"eslint": "^8.2.0",
 		"gulp": "^4.0.2",
 		"gulp-cli": "^2.3.0",
 		"gulp-concat": "^2.6.1",
@@ -60,5 +65,43 @@
 		"webpack": "^5.61.0",
 		"webpack-cli": "^4.9.1",
 		"webpack-stream": "^7.0.0"
+	},
+	"eslintConfig": {
+		"env": {
+			"browser": true,
+			"es2021": true
+		},
+		"extends": [
+			"eslint:recommended",
+			"plugin:@typescript-eslint/recommended"
+		],
+		"parser": "@typescript-eslint/parser",
+		"parserOptions": {
+			"ecmaVersion": "latest",
+			"sourceType": "module"
+		},
+		"plugins": [
+			"@typescript-eslint"
+		],
+		"ignorePatterns": ["*.d.ts", "*.json", "gulpfile.js", "foundry-reference.js"],
+		"rules": {
+			"indent": ["error", "tab", { "SwitchCase": 1 }],
+			"linebreak-style": ["error", "unix"],
+			"quotes": "off",
+			"semi-style": ["error", "last"],
+			"semi": ["error", "always"],
+			"array-callback-return": "error",
+			"no-var": "error",
+			"no-unused-vars": "off",
+			"no-constant-condition": ["error", {"checkLoops": false}],
+			"no-case-declarations": "off",
+			"no-async-promise-executor": "off",
+			"@typescript-eslint/ban-ts-comment": "off",
+			"@typescript-eslint/no-unused-vars": ["error", { "args": "after-used", "argsIgnorePattern": "^_", "varsIgnorePattern": "^_", "caughtErrors": "none" }],
+			"@typescript-eslint/no-explicit-any": "off",
+			"@typescript-eslint/no-namespace": ["error", {"allowDeclarations": true}],
+			"@typescript-eslint/no-empty-function": "warn",
+			"@typescript-eslint/no-inferrable-types": ["error", {"ignoreParameters": true, "ignoreProperties": true}]
+		}
 	}
 }

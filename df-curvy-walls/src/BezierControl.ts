@@ -1,10 +1,8 @@
-import { hotkeys } from '../libs/lib-df-hotkeys.shim';
 import { BezierTool, ToolMode } from './tools/BezierTool';
 import CircleTool from './tools/CircleTool';
 import RectangleTool from './tools/RectangleTool';
 import CubicTool from './tools/CubicTool';
 import QuadTool from './tools/QuadTool';
-import { InputHandler } from './tools/ToolInputHandler';
 import { WallData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs';
 
 declare global {
@@ -57,7 +55,8 @@ export class CurvyWallToolManager {
 	}
 	get activeTool(): BezierTool | null { return this._activeTool; }
 
-	private constructor() { }
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	private constructor() {}
 	public static get instance(): CurvyWallToolManager {
 		return this._instance || (this._instance = new this());
 	}
@@ -116,11 +115,11 @@ export class CurvyWallToolManager {
 
 	private graphicsContext = new PIXI.Graphics(null);
 	render() {
-		this.wallsLayer.preview.removeChildren()
+		this.wallsLayer.preview.removeChildren();
 		if (this.activeTool == null) return;
 		const pointData = this.activeTool?.getSegments(this.segments);
 		if (pointData.length == 0) return;
-		this.walls.length
+		this.walls.length;
 		const wallData = (<any>this.wallsLayer)._getWallDataFromActiveTool(game.activeTool) as WallData;
 
 		while (this.walls.length > pointData.length - 1) {
@@ -130,9 +129,9 @@ export class CurvyWallToolManager {
 		}
 		if ((<PIXI.Point>pointData[0]).x !== undefined) {
 			const points = pointData as PIXI.Point[];
-			for (var c = 0; c < points.length - 1; c++) {
+			for (let c = 0; c < points.length - 1; c++) {
 				const data = duplicate(wallData) as WallData;
-				data.c = [points[c].x, points[c].y, points[c + 1].x, points[c + 1].y]
+				data.c = [points[c].x, points[c].y, points[c + 1].x, points[c + 1].y];
 				if (c == this.walls.length) {
 					this.walls.push(WallPool.acquire(data));
 					this.wallsLayer.preview.addChild(this.walls[c]);
@@ -151,9 +150,9 @@ export class CurvyWallToolManager {
 				WallPool.release(wall);
 				this.wallsLayer.preview.removeChild(wall);
 			}
-			for (var c = 0; c < points.length; c++) {
+			for (let c = 0; c < points.length; c++) {
 				const data = duplicate(wallData) as WallData;
-				data.c = [points[c][0].x, points[c][0].y, points[c][1].x, points[c][1].y]
+				data.c = [points[c][0].x, points[c][0].y, points[c][1].x, points[c][1].y];
 				if (c == this.walls.length) {
 					this.walls.push(WallPool.acquire(data));
 					this.wallsLayer.preview.addChild(this.walls[c]);

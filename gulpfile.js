@@ -26,8 +26,6 @@ const TEMPLATES = 'templates/';
 const CSS = 'css/';
 const LICENSE = '../LICENSE';
 
-console.log(process.cwd());
-
 var PACKAGE = JSON.parse(fs.readFileSync('module.json'));
 var DEV_DIR = fs.existsSync('../.devenv') ? JSON.parse(fs.readFileSync('../.devenv').toString())?.foundry?.data?.trim() + '/Data/modules/' : '';
 
@@ -207,7 +205,7 @@ exports.default = gulp.series(
 	)
 	, buildManifest()
 	, plog('Build Complete')
-	, pnotify('Default distribution build completed.', 'Build Complete')
+	// , pnotify('Default distribution build completed.', 'Build Complete')
 );
 /**
  * Extends the default build task by copying the result to the Development Environment

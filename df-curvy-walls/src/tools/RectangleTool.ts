@@ -6,7 +6,7 @@ const pointNearPoint = BezierTool.pointNearPoint;
 
 class InitializerIH extends InitializerInputHandler {
 	constructor(tool: RectangleTool, success: () => void, fail: () => void) {
-		super(tool, true, tool.lineA, tool.lineB, success, fail)
+		super(tool, true, tool.lineA, tool.lineB, success, fail);
 	}
 }
 
@@ -112,15 +112,15 @@ export default class RectangleTool extends BezierTool {
 			.lineTo(this.lineB.x, this.lineB.y)
 			.endFill();
 		this.drawSegmentLabels(context);
-		this.drawButtons(context)
+		this.drawButtons(context);
 		this.drawHandle(context, 0xff4444, this.lineA);
 		this.drawHandle(context, 0xaaff44, this.lineB);
 	}
 	protected drawSegmentLabels(context: PIXI.Graphics) {
-		this.textTop.text = `⊷${Math.trunc(this.topCount + this.lastCount)}`
-		this.textRight.text = `⊷${Math.trunc(this.rightCount + this.lastCount)}`
-		this.textBottom.text = `⊷${Math.trunc(this.bottomCount + this.lastCount)}`
-		this.textLeft.text = `⊷${Math.trunc(this.leftCount + this.lastCount)}`
+		this.textTop.text = `⊷${Math.trunc(this.topCount + this.lastCount)}`;
+		this.textRight.text = `⊷${Math.trunc(this.rightCount + this.lastCount)}`;
+		this.textBottom.text = `⊷${Math.trunc(this.bottomCount + this.lastCount)}`;
+		this.textLeft.text = `⊷${Math.trunc(this.leftCount + this.lastCount)}`;
 		const offset = 25;
 		const bounds = this.bounds;
 		this.textTop.position = new PIXI.Point(this.lineCenter.x, bounds.minY - offset);
@@ -154,7 +154,7 @@ export default class RectangleTool extends BezierTool {
 		const height = bounds.maxY - bounds.minY;
 		const points: PIXI.Point[][] = [];
 		// top
-		var size = width / (count + this.topCount);
+		let size = width / (count + this.topCount);
 		for (let c = 0; c < count + this.topCount; c++) {
 			points.push([
 				new PIXI.Point(bounds.minX + (c * size), bounds.minY),
@@ -202,7 +202,6 @@ export default class RectangleTool extends BezierTool {
 	}
 
 	checkPointForClick(point: PIXI.Point): boolean {
-		const center = this.lineCenter;
 		if (pointNearPoint(point, this.incTop.position, BezierTool.HANDLE_RADIUS * 2)) {
 			this.topCount = Math.clamped(this.topCount + 1, -64, 64);
 			return true;

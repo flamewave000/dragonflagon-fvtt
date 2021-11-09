@@ -1,12 +1,42 @@
 #!/bin/bash
 
-SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+confirm() {
+	# https://djm.me/ask
+	local prompt default reply
+	while true; do
+		if [ "${2:-}" = "Y" ]; then
+			prompt="Y/n"
+			default=Y
+		elif [ "${2:-}" = "N" ]; then
+			prompt="y/N"
+			default=N
+		else
+			prompt="y/n"
+			default=
+		fi
+		# Ask the question (not using "read -p" as it uses stderr not stdout)
+		printf "$1 [$prompt] "
+		# Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
+		read reply </dev/tty
+		# Default?
+		if [ -z "$reply" ]; then
+			reply=$default
+		fi
+		# Check if the reply is valid
+		case "$reply" in
+		Y* | y*) return 0 ;;
+		N* | n*) return 1 ;;
+		esac
+	done
+}
+
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 
 DEV_ENV="$SCRIPT_DIR/.devenv"
 if [[ -f $DEV_ENV ]]; then
-	MODULE=`npx json "module" < "$DEV_ENV"`
-	FPATH=`npx json "foundry.path" < "$DEV_ENV"`
-	FDATA=`npx json "foundry.data" < "$DEV_ENV"`
+	MODULE=$(npx json "module" <"$DEV_ENV")
+	FPATH=$(npx json "foundry.path" <"$DEV_ENV")
+	FDATA=$(npx json "foundry.data" <"$DEV_ENV")
 fi
 
 set_dev_env() {
@@ -19,7 +49,7 @@ set_dev_env() {
 		"path": "%s",
 		"data": "%s"
 	}
-}' "$1" "$2" "$3" > $DEV_ENV
+}' "$1" "$2" "$3" >$DEV_ENV
 }
 
 set_module() {
@@ -30,7 +60,7 @@ set_module() {
 	fi
 	if [[ -d "$SCRIPT_DIR/$1" ]]; then
 		set_dev_env "$1" "$FPATH" "$FDATA"
-		echo -n "`npx json -0 -f .vscode/settings.template.json -e "this.TARGET='$1'"`" > .vscode/settings.json
+		echo -n "$(npx json -0 -f .vscode/settings.template.json -e "this.TARGET='$1'")" >.vscode/settings.json
 	else
 		echo "The module directory '$1' does not exist"
 	fi
@@ -55,10 +85,16 @@ set_foundry() {
 }
 
 launch_foundry() {
-	sudo `which node` "$FPATH/resources/app/main.js" --dataPath="$FDATA"
+	sudo $(which node) "$FPATH/resources/app/main.js" --dataPath="$FDATA"
+}
+
+run_linter() {
+	echo "Linting $MODULE"
+	npx eslint --color --ext .ts,.tsx "$@" "$SCRIPT_DIR/$MODULE/src" | sed 's|'"$SCRIPT_DIR"'/||g'
 }
 
 gulp_build() {
+	echo "Building $MODULE"
 	DIR="$SCRIPT_DIR/$MODULE"
 	if [[ ! -d "$DIR" ]]; then
 		echo "Could not navigate to '$DIR'"
@@ -69,17 +105,31 @@ gulp_build() {
 	# Go to module directory
 	cd $DIR
 	# Execute the gulp commands
-	npx gulp --gulpfile "${SCRIPT_DIR}/gulpfile.js" --cwd="$DIR" "$@"
+	npx gulp --color --gulpfile "${SCRIPT_DIR}/gulpfile.js" --cwd="$DIR" "$@" |& sed 's|'"$SCRIPT_DIR"'/||g'
 }
 
 git_tag() {
+	echo "Tagging ${MODULE_NAME}_${MODULE_VERS}"
 	MANIFEST="$SCRIPT_DIR/$MODULE/module.json"
-	MODULE_NAME=`npx json "name" < "$MANIFEST"`
-	MODULE_VERS=`npx json "version" < "$MANIFEST"`
+	MODULE_NAME=$(npx json "name" <"$MANIFEST")
+	MODULE_VERS=$(npx json "version" <"$MANIFEST")
 	git tag -d ${MODULE_NAME}_${MODULE_VERS} 2>/dev/null
-	git tag ${MODULE_NAME}_${MODULE_VERS} \
-		&& git push -f origin ${MODULE_NAME}_${MODULE_VERS}
+	git tag ${MODULE_NAME}_${MODULE_VERS} &&
+		git push -f origin ${MODULE_NAME}_${MODULE_VERS}
 	echo "Tagged current commit as \"${MODULE_NAME}_${MODULE_VERS}\""
+}
+
+open_bundle() {
+	if command -v explorer.exe &>/dev/null; then
+		confirm "Do you want to open the bundle in explorer?" Y &&
+			explorer.exe $(wslpath -w "$SCRIPT_DIR/$MODULE/bundle/")
+	elif command -v browse &>/dev/null; then
+		confirm "Do you want to open the bundle in file browser?" Y &&
+			browse "$SCRIPT_DIR/$MODULE/bundle/"
+	elif command -v open &>/dev/null; then
+		confirm "Do you want to open the bundle in finder?" Y &&
+			open "$SCRIPT_DIR/$MODULE/bundle/"
+	fi
 }
 
 COMMAND="$1"
@@ -88,7 +138,9 @@ case $COMMAND in
 	"target") set_module "$@" ;;
 	"foundry") set_foundry "$@" ;;
 	"launch") launch_foundry "$@" ;;
+	"lint") run_linter "$@" ;;
 	"build") gulp_build "$@" ;;
 	"tag") git_tag ;;
+	"bundle") open_bundle ;;
 	*) echo "Unknown Command: $COMMAND" ;;
 esac

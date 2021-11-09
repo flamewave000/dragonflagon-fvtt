@@ -72,6 +72,7 @@ export class CurvyWallToolManager {
 	private _inPointMapMode = false;
 	get currentlyMappingPoints(): boolean { return this._inPointMapMode; }
 
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	private constructor() { }
 	public static get instance(): CurvyWallToolManager {
 		return this._instance || (this._instance = new this());
@@ -160,7 +161,7 @@ export class CurvyWallToolManager {
 		this.render();
 	}
 
-	static _onClickLeft(wrapped: Function, event: PIXI.InteractionEvent) {
+	static _onClickLeft(wrapped: AnyFunction, event: PIXI.InteractionEvent) {
 		const self = CurvyWallToolManager.instance;
 		if (self._inPointMapMode) {
 			if (!self._pointMapper.checkPointForClick(event.data.origin, event))
@@ -184,7 +185,7 @@ export class CurvyWallToolManager {
 		self.activeTool.placeTool(event.data.origin, self._previousToolData.get(self._mode));
 		self.render();
 	}
-	static _onDragLeftStart(wrapped: Function, event: PIXI.InteractionEvent) {
+	static _onDragLeftStart(wrapped: AnyFunction, event: PIXI.InteractionEvent) {
 		const self = CurvyWallToolManager.instance;
 		if (self._inPointMapMode) {
 			self.currentHandler = self._pointMapper.checkPointForDrag(event.data.origin);
@@ -199,7 +200,7 @@ export class CurvyWallToolManager {
 		self.currentHandler.start(event.data.origin, event.data.destination, event);
 		self.render();
 	}
-	static _onDragLeftMove(wrapped: Function, event: PIXI.InteractionEvent) {
+	static _onDragLeftMove(wrapped: AnyFunction, event: PIXI.InteractionEvent) {
 		const self = CurvyWallToolManager.instance;
 		if (self.mode == Mode.None || !self.currentHandler) return wrapped(event);
 		if (self.activeTool.startedWithCtrlHeld && !event.data.originalEvent.ctrlKey) {
@@ -208,7 +209,7 @@ export class CurvyWallToolManager {
 		self.currentHandler.move(event.data.origin, event.data.destination, event);
 		self.render();
 	}
-	static _onDragLeftDrop(wrapped: Function, event: PIXI.InteractionEvent) {
+	static _onDragLeftDrop(wrapped: AnyFunction, event: PIXI.InteractionEvent) {
 		const self = CurvyWallToolManager.instance;
 		if (self.mode == Mode.None || !self.currentHandler) return wrapped(event);
 		self.activeTool.startedWithCtrlHeld = false;
@@ -216,7 +217,7 @@ export class CurvyWallToolManager {
 		self.currentHandler = null;
 		self.render();
 	}
-	static _onDragLeftCancel(wrapped: Function, event: PIXI.InteractionEvent) {
+	static _onDragLeftCancel(wrapped: AnyFunction, event: PIXI.InteractionEvent) {
 		const self = CurvyWallToolManager.instance;
 		if (self.mode == Mode.None) return wrapped(event);
 		else if (!self.currentHandler) return;
@@ -224,7 +225,7 @@ export class CurvyWallToolManager {
 		self.currentHandler = null;
 		self.render();
 	}
-	static _onClickRight(wrapped: Function, event: PIXI.InteractionEvent) {
+	static _onClickRight(wrapped: AnyFunction, event: PIXI.InteractionEvent) {
 		const self = CurvyWallToolManager.instance;
 		if (!event.data.originalEvent.ctrlKey || self.mode == Mode.None) return wrapped(event);
 		self.mode = Mode.None;
@@ -233,7 +234,7 @@ export class CurvyWallToolManager {
 
 	private graphicsContext = new PIXI.Graphics(null);
 	render() {
-		this.wallsLayer.preview.removeChildren()
+		this.wallsLayer.preview.removeChildren();
 		if (this.currentlyMappingPoints) {
 			this._pointMapper.clearContext(this.graphicsContext);
 			this.graphicsContext.clear();
@@ -246,7 +247,7 @@ export class CurvyWallToolManager {
 		if (this.activeTool == null) return;
 		const pointData = this.activeTool?.getSegments(this.segments);
 		if (pointData.length == 0) return;
-		this.walls.length
+		this.walls.length;
 		const wallData = (<any>this.wallsLayer)._getWallDataFromActiveTool(game.activeTool) as WallData;
 
 		while (this.walls.length > pointData.length - 1) {
@@ -256,9 +257,9 @@ export class CurvyWallToolManager {
 		}
 		if ((<PIXI.Point>pointData[0]).x !== undefined) {
 			const points = pointData as PIXI.Point[];
-			for (var c = 0; c < points.length - 1; c++) {
+			for (let c = 0; c < points.length - 1; c++) {
 				const data = duplicate(wallData) as WallData;
-				data.c = [points[c].x, points[c].y, points[c + 1].x, points[c + 1].y]
+				data.c = [points[c].x, points[c].y, points[c + 1].x, points[c + 1].y];
 				if (c == this.walls.length) {
 					this.walls.push(WallPool.acquire(data));
 					this.wallsLayer.preview.addChild(this.walls[c]);
@@ -277,9 +278,9 @@ export class CurvyWallToolManager {
 				WallPool.release(wall);
 				this.wallsLayer.preview.removeChild(wall);
 			}
-			for (var c = 0; c < points.length; c++) {
+			for (let c = 0; c < points.length; c++) {
 				const data = duplicate(wallData) as WallData;
-				data.c = [points[c][0].x, points[c][0].y, points[c][1].x, points[c][1].y]
+				data.c = [points[c][0].x, points[c][0].y, points[c][1].x, points[c][1].y];
 				if (c == this.walls.length) {
 					this.walls.push(WallPool.acquire(data));
 					this.wallsLayer.preview.addChild(this.walls[c]);

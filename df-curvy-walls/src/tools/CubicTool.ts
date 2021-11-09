@@ -13,8 +13,8 @@ class InitializerIH extends InitializerInputHandler {
 	}
 	move(origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
 		super.move(origin, destination, event);
-		var dx = this.tool.lineB.x - this.tool.lineA.x;
-		var dy = this.tool.lineB.y - this.tool.lineA.y;
+		let dx = this.tool.lineB.x - this.tool.lineA.x;
+		let dy = this.tool.lineB.y - this.tool.lineA.y;
 		const length = Math.sqrt((dx * dx) + (dy * dy));
 		dx /= length;
 		dy /= length;

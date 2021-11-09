@@ -1,14 +1,13 @@
 import DFChatArchiveNew from "./DFChatArchiveNew";
 import DFChatArchiveManager from "./DFChatArchiveManager";
 import { DFChatArchive } from "./DFChatArchive";
-import CONFIG from "../CONFIG";
 import SETTINGS from "../../../common/Settings";
 
 
 export function init() {
 
-	var archiveNew: DFChatArchiveNew = null;
-	var archiveManager: DFChatArchiveManager = null;
+	let archiveNew: DFChatArchiveNew = null;
+	let archiveManager: DFChatArchiveManager = null;
 
 	DFChatArchive.registerSettings();
 	DFChatArchiveNew.registerSettings();
@@ -34,15 +33,15 @@ export function init() {
 		config: false
 	});
 
-	Hooks.on('renderChatLog', function (chatLog: ChatLog, html: JQuery<HTMLElement>, data: {}) {
+	Hooks.on('renderChatLog', function (chatLog: ChatLog, html: JQuery<HTMLElement>) {
 		const archiveButton = $(`<a class="button chat-archive" title="${'DF_CHAT_ARCHIVE.ExportButtonTitle'.localize()}">
-		<i class="fas fa-archive"></i></a>`)
+		<i class="fas fa-archive"></i></a>`);
 		archiveButton.on('click', () => {
 			if (archiveNew == null) {
 				archiveNew = new DFChatArchiveNew({});
 				archiveNew.render(true);
 			} else {
-				archiveNew.bringToTop()
+				archiveNew.bringToTop();
 			}
 		});
 		html.find('.control-buttons')
@@ -53,7 +52,7 @@ export function init() {
 		}
 	});
 
-	Hooks.on('renderSettings', function (settings: Settings, html: JQuery<HTMLElement>, data: {}) {
+	Hooks.on('renderSettings', function (settings: Settings, html: JQuery<HTMLElement>) {
 		const archiveManagerHtml = $(`<div id="df-chat-enhance-settings" style="margin:0">
 	<h4>${'DF_CHAT_ARCHIVE.ChatEnhanceSettingGroup'.localize()}</h4>
 	<button data-action="archive"><i class="fas fa-archive"></i>${'DF_CHAT_ARCHIVE.OpenChatArchive'.localize()}</button>
@@ -66,11 +65,11 @@ export function init() {
 				archiveManager.bringToTop();
 			}
 		});
-		html.find('#settings-game').append(archiveManagerHtml)
+		html.find('#settings-game').append(archiveManagerHtml);
 	});
-	Hooks.on('closeDFChatArchiveNew', () => { archiveNew = null })
-	Hooks.on('closeDFChatArchiveManager', () => { archiveNew = null })
-	Hooks.on(`renderDFChatArchiveNew`, function (app: any, html: JQuery, data: any) {
+	Hooks.on('closeDFChatArchiveNew', () => { archiveNew = null; });
+	Hooks.on('closeDFChatArchiveManager', () => { archiveNew = null; });
+	Hooks.on(`renderDFChatArchiveNew`, function (app: any, html: JQuery) {
 		html.find('input[type="text"]')[0].focus();
 	});
 }

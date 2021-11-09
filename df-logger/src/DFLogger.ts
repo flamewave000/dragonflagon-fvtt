@@ -25,7 +25,7 @@ export default class DFLogger {
 	}
 
 	static async displayMessage(user: User, alias: any, msg: string) {
-		let chatMsg = await ChatMessage.create({
+		const chatMsg = await ChatMessage.create({
 			sound: SETTINGS.get<string>(DFLogger.SETTING_SOUND),
 			content: msg.replace(/\{\{username\}\}/g, user.name),
 			speaker: {
@@ -61,11 +61,11 @@ export default class DFLogger {
 	}
 
 	static performLogin() {
-		let payload: Payload = {
+		const payload: Payload = {
 			type: DFLogger.EV_LOGIN,
 			id: game.user.id,
 			msg: DFLogger.getMessageText(MessageProcessor.loginMessages)
-		}
+		};
 		game.socket.emit(`module.${SETTINGS.MOD_NAME}`, payload);
 		if (!SETTINGS.get(DFLogger.SETTING_NOT_ME))
 			DFLogger.onEvent(payload);
@@ -85,8 +85,8 @@ export default class DFLogger {
 		if (DFLogger.Persist) return;
 		game.messages.forEach(async it => {
 			if (!it.isAuthor) return;
-			let alias = it.data.speaker.alias;
-			if (alias !== DFLogger.LoginContent && alias !== DFLogger.LogoutContent) return
+			const alias = it.data.speaker.alias;
+			if (alias !== DFLogger.LoginContent && alias !== DFLogger.LogoutContent) return;
 			await it.delete();
 		});
 	}

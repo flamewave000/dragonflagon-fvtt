@@ -20,7 +20,7 @@ Hooks.on('init', function () {
 			always: 'DF_MANUAL_ROLLS.Setting_Options.Always',
 			toggle: 'DF_MANUAL_ROLLS.Setting_Options.Toggle'
 		},
-		onChange: () => { ui.controls.initialize() }
+		onChange: () => { ui.controls.initialize(); }
 	});
 
 	SETTINGS.register(DFManualRolls.PREF_PC_STATE, {
@@ -35,7 +35,7 @@ Hooks.on('init', function () {
 			always: 'DF_MANUAL_ROLLS.Setting_Options.Always',
 			toggle: 'DF_MANUAL_ROLLS.Setting_Options.Toggle'
 		},
-		onChange: () => { ui.controls.initialize() }
+		onChange: () => { ui.controls.initialize(); }
 	});
 
 	SETTINGS.register(DFRollPrompt.PREF_FOCUS_INPUT, {
@@ -61,7 +61,7 @@ Hooks.on('init', function () {
 		scope: 'client',
 		type: Boolean,
 		default: false,
-		onChange: (value: Boolean) => {
+		onChange: (value: boolean) => {
 			const button = $('ol#controls>li#df-manual-roll-toggle');
 			if (value) button.addClass('active');
 			else button.removeClass('active');
@@ -88,7 +88,7 @@ Hooks.on('init', function () {
 		scope: 'world',
 		type: Boolean,
 		default: false,
-		onChange: (value: Boolean) => {
+		onChange: (value: boolean) => {
 			if (value) DFManualRollsLegacy.patch();
 			else DFManualRollsLegacy.unpatch();
 		}
@@ -109,11 +109,11 @@ Hooks.on('createChatMessage', async (chatMessage: ChatMessage) => {
 	if (chatMessage.user.id !== game.userId) return;
 	// Ignore non-roll, non-flagged, non-manual messages
 	if (!chatMessage.isRoll || !DFManualRolls.flagged || !DFManualRolls.shouldRollManually) return;
-	var flavor = game.i18n.localize("DF_MANUAL_ROLLS.Flag");
+	let flavor = game.i18n.localize("DF_MANUAL_ROLLS.Flag");
 	// If all of the manual rolls were cancelled, don't set the flag
 	if (!chatMessage.roll.terms.some((value: any) => value instanceof DiceTerm && (<any>value.options).isManualRoll))
 		return;
-	if (!!chatMessage.data.flavor)
+	if (chatMessage.data.flavor)
 		flavor += " " + chatMessage.data.flavor;
 	await chatMessage.update({ flavor: flavor });
 });

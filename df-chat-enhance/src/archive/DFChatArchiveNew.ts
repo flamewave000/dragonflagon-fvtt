@@ -1,8 +1,6 @@
 import { DFChatArchive } from "./DFChatArchive";
 import SETTINGS from "../../../common/Settings";
 
-SceneConfig
-
 export default class DFChatArchiveNew extends FormApplication<FormApplication.Options, { shouldDelete: boolean }> {
 	static readonly PREF_DELETE = 'new-should-delete';
 	static readonly PREF_HIDE_EXPORT = 'hide-export';
@@ -39,7 +37,7 @@ export default class DFChatArchiveNew extends FormApplication<FormApplication.Op
 			throw Error('DF_CHAT_ARCHIVE.ArchiveNew_ErrorNameMissing'.localize());
 		}
 
-		var chats = <ChatMessage[]>[...(ui.chat.collection.values())];
+		let chats = <ChatMessage[]>[...(ui.chat.collection.values())];
 
 		// If we are selecting a date range
 		if (formData['date-or-all'] === 'date') {

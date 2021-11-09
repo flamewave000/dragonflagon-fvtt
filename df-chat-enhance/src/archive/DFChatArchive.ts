@@ -28,8 +28,8 @@ class ArchiveFolderMenu extends FormApplication {
 	private folder = SETTINGS.get<string>(DFChatArchive.PREF_FOLDER);
 	private source = SETTINGS.get<string>(DFChatArchive.PREF_FOLDER_SOURCE);
 
-	getData(options: any): any {
-		return { path: this.folder }
+	getData(_options: any): any {
+		return { path: this.folder };
 	}
 
 	async _renderInner(data: any): Promise<JQuery<HTMLElement>> {
@@ -44,7 +44,7 @@ class ArchiveFolderMenu extends FormApplication {
 				field: input,
 				callback: async (path: string) => {
 					this.source = fp.activeSource;
-					this.folder = path
+					this.folder = path;
 				},
 				button: event.currentTarget
 			});
@@ -52,7 +52,7 @@ class ArchiveFolderMenu extends FormApplication {
 		});
 		return html;
 	}
-	protected async _updateObject(event: Event, formData?: object) {
+	protected async _updateObject() {
 		await SETTINGS.set<string>(DFChatArchive.PREF_FOLDER, this.folder);
 		await SETTINGS.set<string>(DFChatArchive.PREF_FOLDER_SOURCE, this.source);
 	}
@@ -66,7 +66,7 @@ export class DFChatArchive {
 	private static readonly PREF_FOLDER_MENU = 'archiveFolderMenu';
 	private static _updateListener: () => void = null;
 
-	private static get DATA_FOLDER(): FilePicker.DataSource { return SETTINGS.get(DFChatArchive.PREF_FOLDER_SOURCE) }
+	private static get DATA_FOLDER(): FilePicker.DataSource { return SETTINGS.get(DFChatArchive.PREF_FOLDER_SOURCE); }
 
 	static setUpdateListener(listener: () => void) {
 		this._updateListener = listener;
@@ -122,7 +122,7 @@ export class DFChatArchive {
 		await FilePicker.browse(this.DATA_FOLDER, folder)
 			.catch(async _ => {
 				if (!await FilePicker.createDirectory(this.DATA_FOLDER, folder, {}))
-					throw new Error('Could not access the archive folder: ' + folder)
+					throw new Error('Could not access the archive folder: ' + folder);
 			});
 	}
 
@@ -137,7 +137,7 @@ export class DFChatArchive {
 		const fileName = encodeURI(`${id}_${name}.json`);
 		// Create the File and contents
 		const file = new File([JSON.stringify(chats, null, '')], fileName, { type: 'application/json' });
-		var response: { path?: string; message?: string } = <any>await FilePicker.upload(this.DATA_FOLDER, folderPath, file);
+		const response: { path?: string; message?: string } = <any>await FilePicker.upload(this.DATA_FOLDER, folderPath, file);
 		if (!response.path) {
 			console.error(`Could not create archive ${fileName}\nReason: ${response}`);
 			throw new Error('Could not upload the archive to server: ' + fileName);
@@ -153,7 +153,7 @@ export class DFChatArchive {
 	}
 
 	static async createChatArchive(name: string, chats: ChatMessage[], visible: boolean): Promise<DFChatArchiveEntry> {
-		var newId = SETTINGS.get<number>(this.PREF_CID) + 1;
+		const newId = SETTINGS.get<number>(this.PREF_CID) + 1;
 		SETTINGS.set(this.PREF_CID, newId);
 		const entry = await this._generateChatArchiveFile(newId, name, chats, visible);
 		const logs = SETTINGS.get<DFChatArchiveEntry[]>(this.PREF_LOGS);
@@ -177,7 +177,7 @@ export class DFChatArchive {
 		if (!this.getLogs().find(x => x.id == archive.id))
 			throw new Error('Could not locate an archive for the given ID: ' + archive.id.toString());
 		// If we are updating the contents of an archive
-		if (!!newChatData) {
+		if (newChatData) {
 			const folderPath = SETTINGS.get<string>(this.PREF_FOLDER);
 			const file = new File([JSON.stringify(newChatData)], archive.filename, { type: 'application/json' });
 			const response: {
@@ -197,7 +197,7 @@ export class DFChatArchive {
 
 	static async deleteAll() {
 		const folderPath = SETTINGS.get<string>(this.PREF_FOLDER);
-		var logs = SETTINGS.get<DFChatArchiveEntry[]>(this.PREF_LOGS);
+		const logs = SETTINGS.get<DFChatArchiveEntry[]>(this.PREF_LOGS);
 		// Can not delete files currently, truncate instead to make filtering easier.
 		await Promise.all(logs.map(archive => {
 			const file = new File([''], archive.filename, { type: 'application/json' });
@@ -208,10 +208,10 @@ export class DFChatArchive {
 			this._updateListener();
 	}
 
-	static async deleteChatArchive(id: Number) {
+	static async deleteChatArchive(id: number) {
 		const folderPath = SETTINGS.get<string>(this.PREF_FOLDER);
 		const logs = SETTINGS.get<DFChatArchiveEntry[]>(this.PREF_LOGS);
-		const entryIdx = logs.findIndex(x => x.id === id)
+		const entryIdx = logs.findIndex(x => x.id === id);
 		if (entryIdx < 0) {
 			console.error(`Could not find entry for ID#${id}`);
 			return;

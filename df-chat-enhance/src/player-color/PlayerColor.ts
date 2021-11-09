@@ -32,14 +32,14 @@ export default class PlayerColor {
 		});
 
 		libWrapper.register(SETTINGS.MOD_NAME, 'UserConfig.prototype._updateObject',
-			async function (this: UserConfig, wrapped: Function, event: any, formData: { "chat-color": string }) {
+			async function (this: UserConfig, wrapped: (arg0: any, arg1: any) => any, event: any, formData: { "chat-color": string }) {
 				await this.object.setFlag(SETTINGS.MOD_NAME, PlayerColor.FLAG_CHAT_COLOR, formData["chat-color"]);
 				await wrapped(event, formData);
 			}, 'WRAPPER');
 
-		libWrapper.register(SETTINGS.MOD_NAME, 'ChatMessage.prototype.getHTML', async function (this: ChatMessage, wrapper: Function, ...args: any) {
-			const html = <JQuery<HTMLElement>>await wrapper(...args);
-			var chatColor = (<string>this.user.getFlag(SETTINGS.MOD_NAME, PlayerColor.FLAG_CHAT_COLOR))?.trim();
+		libWrapper.register(SETTINGS.MOD_NAME, 'ChatMessage.prototype.getHTML', async function (this: ChatMessage, wrapper: (...arg: any) => Promise<JQuery<HTMLElement>>, ...args: any) {
+			const html = await wrapper(...args);
+			let chatColor = (<string>this.user.getFlag(SETTINGS.MOD_NAME, PlayerColor.FLAG_CHAT_COLOR))?.trim();
 			// If it is a valid color
 			if (!chatColor || !/#[a-fA-F0-9]{6,8}/.test(chatColor)) {
 				chatColor = this.user.color;

@@ -1,7 +1,7 @@
 import { FolderData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import SETTINGS from "../../common/Settings";
 
-function apply(shouldApply: Boolean, hookName: string, func: (...args: any) => any) {
+function apply(shouldApply: boolean, hookName: string, func: AnyFunction) {
 	if (shouldApply) Hooks.on(hookName, func);
 	else Hooks.off(hookName, func);
 }
@@ -15,7 +15,7 @@ export default class FolderColours {
 			type: Boolean,
 			default: true,
 			config: true,
-			onChange: newValue => {
+			onChange: (newValue: boolean) => {
 				apply(newValue, 'renderFolderConfig', FolderColours.DF_FOLDER_TEXT_COLOUR);
 				apply(newValue, 'renderSceneDirectory', FolderColours.DF_SCENE_DIRECTORY_RENDER);
 				ui.sidebar.render(false);
@@ -45,7 +45,7 @@ export default class FolderColours {
 			height: "auto"
 		});
 	}
-	static DF_SCENE_DIRECTORY_RENDER(app: SceneDirectory, html: JQuery<HTMLElement>, data: any) {
+	static DF_SCENE_DIRECTORY_RENDER(app: SceneDirectory, html: JQuery<HTMLElement>, _data: any) {
 		html.find('li[data-folder-id]').each((idx: number, element: HTMLElement) => {
 			const id = element.getAttribute('data-folder-id');
 			if (id === null || id === undefined) return;

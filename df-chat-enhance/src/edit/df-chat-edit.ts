@@ -21,8 +21,7 @@ export default class DFChatEdit {
 			type: Boolean,
 			default: false,
 			config: true,
-			scope: 'world',
-			onChange: () => { }//DFChatEdit.processAllMessages()
+			scope: 'world'
 		});
 		SETTINGS.register(PREF_IGNORE_HTML, {
 			name: 'DF_CHAT_EDIT.Settings_IgnoreHtmlName',
@@ -30,8 +29,7 @@ export default class DFChatEdit {
 			type: Boolean,
 			default: true,
 			config: true,
-			scope: 'world',
-			onChange: () => { }//DFChatEdit.processAllMessages()
+			scope: 'world'
 		});
 
 		if (game.user.isGM || SETTINGS.get(PREF_EDIT_ALLOWED)) {
@@ -39,13 +37,13 @@ export default class DFChatEdit {
 			// DFChatEdit.processAllMessages();
 		}
 
-		libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype._onChatKeyDown', (wrapper: Function, ...args: any) => {
+		libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype._onChatKeyDown', (wrapper: (..._: any) => void, ...args: any) => {
 			const event = args[0] as KeyboardEvent;
 			const code = game.keyboard.getKey(event);
 			// We have used the Shift+Up combo to edit previously sent message
 			if (code === "ArrowUp" && event.shiftKey) {
 				event.preventDefault();
-				var messages = <ChatMessage[]>[...(ui.chat.collection.values())];
+				let messages = <ChatMessage[]>[...(ui.chat.collection.values())];
 				// Perform an inverted sort ( n<0 before, n=0 same, n>0 after )
 				messages = messages.sort((a, b) => b.data.timestamp - a.data.timestamp);
 				const message = messages.find(x => x.data.user === game.user.id);
@@ -82,7 +80,7 @@ export default class DFChatEdit {
 			// DFChatEdit.processAllMessages();
 			return;
 		}
-		if (!!(<any>this).chatEditor) {
+		if ((<any>this).chatEditor) {
 			(<any>this).chatEditor.bringToTop();
 		} else {
 			(<any>this).chatEditor = new DFChatEditor(this);
@@ -91,7 +89,7 @@ export default class DFChatEdit {
 	}
 
 	// static processAllMessages() {
-	// 	var element: JQuery<HTMLLIElement>;
+	// 	let element: JQuery<HTMLLIElement>;
 	// 	ui.chat.element.find('li.chat-message').each(function () {
 	// 		element = $(this) as JQuery<HTMLLIElement>;
 	// 		const message = game.messages.get(element.attr('data-message-id'));
@@ -100,7 +98,7 @@ export default class DFChatEdit {
 	// }
 
 	static isHTML(str: string): boolean {
-		var doc = new DOMParser().parseFromString(str, "text/html");
+		const doc = new DOMParser().parseFromString(str, "text/html");
 		return Array.from(doc.body.childNodes).some(node => node.nodeType === 1);
 	}
 

@@ -3,7 +3,7 @@ import SETTINGS from "../../common/Settings";
 
 interface RollPromptData {
 	id: number;
-	res: Function;
+	res: AnyFunction;
 	term: DiceTerm;
 }
 interface RenderData {
@@ -35,9 +35,9 @@ export default class DFRollPrompt extends FormApplication<FormApplication.Option
 			});
 	}
 
-	getData(options?: Application.RenderOptions): { terms: RenderData[] } {
+	getData(_options?: Application.RenderOptions): { terms: RenderData[] } {
 		const data: RenderData[] = [];
-		for (let term of this._terms) {
+		for (const term of this._terms) {
 			const die = term.term;
 			for (let c = 0; c < die.number; c++) {
 				data.push({
@@ -55,7 +55,7 @@ export default class DFRollPrompt extends FormApplication<FormApplication.Option
 		// If we have not actually rolled anything yet, we need to resolve these with RNG values
 		if (!this._rolled) {
 			this._rolled = true;
-			for (let x of this._terms) {
+			for (const x of this._terms) {
 				const results: number[] = [];
 				for (let c = 0; c < x.term.number; c++) {
 					results.push(Math.ceil(CONFIG.Dice.randomUniform() * x.term.faces));
@@ -75,12 +75,12 @@ export default class DFRollPrompt extends FormApplication<FormApplication.Option
 			this.element.find('input')[0].focus();
 	}
 	protected _updateObject(_: Event, formData?: { [key: string]: string | null }): Promise<unknown> {
-		for (let x of this._terms) {
+		for (const x of this._terms) {
 			const results: number[] = [];
 			const total = formData[`${x.id}-total`];
 			// If a total input was defined and given, it overrides everything else.
 			if (total !== undefined && total !== null) {
-				var value = parseInt(total);
+				const value = parseInt(total);
 				results.push(...DFRollPrompt.distributeRoll(value, x.term.number));
 				if (DFManualRolls.flagged)
 					x.term.options.flavor = (x.term.options.flavor || '') + '[MRT]';
@@ -88,7 +88,7 @@ export default class DFRollPrompt extends FormApplication<FormApplication.Option
 				const flags = [];
 				for (let c = 0; c < x.term.number; c++) {
 					const roll = formData[`${x.id}-${c}`];
-					var value = parseInt(roll);
+					let value = parseInt(roll);
 					if (isNaN(value)) {
 						value = Math.ceil(CONFIG.Dice.randomUniform() * x.term.faces);
 						flags.push('RN');
@@ -116,7 +116,7 @@ export default class DFRollPrompt extends FormApplication<FormApplication.Option
 	static distributeRoll(total: number, count: number): number[] {
 		const results: number[] = [];
 		// If a total input was defined and given, it overrides everything else.
-		var base = 0;
+		let base = 0;
 		// Append dice with the base average of the total.
 		for (let c = 0; c < count - 1; c++) {
 			base = Math.ceil(total / (count - results.length));

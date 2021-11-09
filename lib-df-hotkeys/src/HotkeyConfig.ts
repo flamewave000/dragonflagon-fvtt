@@ -4,23 +4,23 @@ import { KeyMap, HotkeySetting, _Hotkeys } from "./Hotkeys";
 
 interface Options {
 	title: string | undefined;
-	keys: { key: String, label: String }[];
+	keys: { key: string, label: string }[];
 	groups: {
-		name: String,
-		label: String,
-		description: String,
+		name: string,
+		label: string,
+		description: string,
 		items: {
-			name: String,
-			label: String,
+			name: string,
+			label: string,
 			map: KeyMap
 		}[]
 	}[];
 }
 
 interface SettingGroup {
-	name: String,
-	label: String,
-	description: String,
+	name: string,
+	label: string,
+	description: string,
 	items: HotkeySetting[]
 }
 
@@ -93,9 +93,9 @@ export class HotkeyConfig extends FormApplication<FormApplication.Options, Optio
 			});
 	}
 
-	getData(options?: Application.RenderOptions): Options {
+	getData(_?: Application.RenderOptions): Options {
 		return {
-			title: !!this._filters ? this.options.title : undefined,
+			title: this._filters ? this.options.title : undefined,
 			keys: _Hotkeys.keys.entries,
 			// @ts-expect-error
 			groups: this._filterGroups([...Hotkeys._settings.values()])
@@ -114,7 +114,7 @@ export class HotkeyConfig extends FormApplication<FormApplication.Options, Optio
 								map: i.get()
 							};
 						})
-					}
+					};
 				})
 		};
 	}
@@ -125,36 +125,36 @@ export class HotkeyConfig extends FormApplication<FormApplication.Options, Optio
 		// Process group settings
 		// @ts-expect-error
 		const settings = _Hotkeys._settings;
-		const groups = new Map<String, Map<String, HotkeySetting>>();
-		settings.forEach(x => groups.set(x.name, new Map(x.items.map(x => [x.name, x]))));
+		const groups = new Map<string, Map<string, HotkeySetting>>();
+		settings.forEach(x => groups.set(x.name as string, new Map(x.items.map(x => [x.name as string, x]))));
 
-		const saveData = new Map<String, Map<String, String[]>>();
-		for (let entry of Object.keys(formData)) {
+		const saveData = new Map<string, Map<string, string[]>>();
+		for (const entry of Object.keys(formData)) {
 			const tokens = entry.split('::');
 			const group = saveData.has(tokens[0]) ? saveData.get(tokens[0]) : saveData.set(tokens[0], new Map()).get(tokens[0]);
 			const key = tokens[1];
 			const item = group.has(key) ? group.get(key) : group.set(key, []).get(key);
 			item.push(tokens[tokens.length - 1]);
 		}
-		for (let groupName of saveData.keys()) {
+		for (const groupName of saveData.keys()) {
 			if (!groups.has(groupName)) {
 				console.error(`Did not find hotkey group with the name "${groupName}"`);
 				continue;
 			}
 			const group = groups.get(groupName);
-			for (let itemName of saveData.get(groupName).keys()) {
+			for (const itemName of saveData.get(groupName).keys()) {
 				if (!group.has(itemName)) {
 					console.error(`Did not find hotkey with the name "${itemName}"`);
 					continue;
 				}
 				const item = group.get(itemName);
-				const rootKey: string = `${groupName}::${itemName}::`;
+				const rootKey = `${groupName}::${itemName}::`;
 				const keyMap: Partial<KeyMap> = {
 					key: formData[rootKey + 'key'],
 					alt: formData[rootKey + 'alt'],
 					ctrl: formData[rootKey + 'ctrl'],
 					shift: formData[rootKey + 'shift']
-				}
+				};
 				if (keyMap.key === undefined || typeof (keyMap.key) !== 'string') { console.error(`HotkeyConfig: "${itemName}" was missing 'key' field`); continue; }
 				if (keyMap.alt === undefined || typeof (keyMap.alt) !== 'boolean') { console.error(`HotkeyConfig: "${itemName}" was missing 'alt' field`); continue; }
 				if (keyMap.ctrl === undefined || typeof (keyMap.ctrl) !== 'boolean') { console.error(`HotkeyConfig: "${itemName}" was missing 'ctrl' field`); continue; }
@@ -171,7 +171,7 @@ export class HotkeyConfig extends FormApplication<FormApplication.Options, Optio
 			e.preventDefault();
 			// @ts-expect-error
 			const groups = this._filterGroups([..._Hotkeys._settings.values()]).filter(x => x.items.length > 0);
-			for (let group of groups) {
+			for (const group of groups) {
 				group.items.forEach(x => {
 					const defValue = x.default instanceof Function ? x.default() : x.default;
 					$(`#DFHotkeyConfig select[name="${group.name}::${x.name}::key"]`).val(defValue.key.toString());

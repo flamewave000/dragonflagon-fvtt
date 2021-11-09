@@ -10,14 +10,14 @@ class DFSettingsClarity {
 
 	static patchGameSettings() {
 		libWrapper.register('df-settings-clarity', 'ClientSettings.prototype.register', DFSettingsClarity.settingsRegister, 'WRAPPER');
-		for (var pair of game.settings.settings) {
+		for (const pair of game.settings.settings) {
 			pair[1].name = DFSettingsClarity.formatName(pair[1].name ?? '', pair[1]);
 		}
 	}
 
 	static patchGameSettingsMenus() {
 		libWrapper.register('df-settings-clarity', 'ClientSettings.prototype.registerMenu', DFSettingsClarity.settingsRegisterMenu, 'WRAPPER');
-		for (var pair of game.settings.menus) {
+		for (const pair of game.settings.menus) {
 			pair[1].name = DFSettingsClarity.formatName(pair[1].name ?? '', pair[1]);
 		}
 	}
@@ -25,12 +25,12 @@ class DFSettingsClarity {
 	static formatName(name: string, data: ClientSettings.PartialSetting<any> | ClientSettings.PartialMenuSetting): string {
 		if (name.startsWith('👤') || name.startsWith('🌎'))
 			return name;
-		var scope;
-		if (!!(data as ClientSettings.PartialSetting<any>).scope)
+		let scope;
+		if ((data as ClientSettings.PartialSetting<any>).scope)
 			scope = DFSettingsClarity.types.includes((data as ClientSettings.PartialSetting<any>).scope)
 				? (data as ClientSettings.PartialSetting<any>).scope
 				: "client";
-		else if (!!(data as ClientSettings.PartialMenuSetting).restricted)
+		else if ((data as ClientSettings.PartialMenuSetting).restricted)
 			scope = (data as ClientSettings.PartialMenuSetting) ? 'world' : 'client';
 		else {
 			console.warn('Unknown restriction/scope on registered setting for ' + name + '". Defaulting to "client"');
@@ -41,12 +41,12 @@ class DFSettingsClarity {
 		return name;
 	}
 
-	static settingsRegister(this: ClientSettings, wrapper: Function, module: string, key: string, data: ClientSettings.PartialSetting<any>) {
+	static settingsRegister(this: ClientSettings, wrapper: AnyFunction, module: string, key: string, data: ClientSettings.PartialSetting<any>) {
 		data.name = DFSettingsClarity.formatName(data.name ?? '', data);
 		wrapper(module, key, data);
 	}
 
-	static settingsRegisterMenu(this: ClientSettings, wrapper: Function, module: string, key: string, data: ClientSettings.PartialMenuSetting) {
+	static settingsRegisterMenu(this: ClientSettings, wrapper: AnyFunction, module: string, key: string, data: ClientSettings.PartialMenuSetting) {
 		data.name = DFSettingsClarity.formatName(data.name ?? '', data);
 		wrapper(module, key, data);
 	}
@@ -63,7 +63,7 @@ class DFSettingsClarity {
 	static showHover(element: JQuery<HTMLElement>, scope: string) {
 		const hover = DFSettingsClarity.hover;
 		if (hover.parent().length != 0) return;
-		hover.find('span.msg').text(game.i18n.localize('DF_SETTINGS_CLARITY.Scope_' + scope))
+		hover.find('span.msg').text(game.i18n.localize('DF_SETTINGS_CLARITY.Scope_' + scope));
 		$(document.body).append(hover);
 		const css = {
 			position: 'absolute',
@@ -83,7 +83,7 @@ Hooks.once('init', function () {
 });
 
 Hooks.once('setup', function () {
-	var user = game.data.users.find(x => x._id === game.userId) as any as UserData;
+	const user = game.data.users.find(x => x._id === game.userId) as any as UserData;
 	const perms: { [key: string]: number[] } = game.settings.get('core', 'permissions');
 	if (!!user && perms['SETTINGS_MODIFY'].includes(user.role)) {
 		DFSettingsClarity.patchGameSettings();
@@ -100,13 +100,13 @@ Hooks.once('ready', function () {
 	}
 	DFSettingsClarity.hover.remove();
 	DFSettingsClarity.hover.attr("style", "");
-})
+});
 
 Hooks.on('renderSettingsConfig', function (_app: any, html: JQuery<HTMLElement>, _data: any) {
 	const world = html.find("label:contains('🌎')");
 	world.on('mousemove', DFSettingsClarity.showWorldHover);
 	world.on('mouseleave', DFSettingsClarity.hideHover);
-	const client = html.find("label:contains('👤')")
+	const client = html.find("label:contains('👤')");
 	client.on('mousemove', DFSettingsClarity.showClientHover);
 	client.on('mouseleave', DFSettingsClarity.hideHover);
 });

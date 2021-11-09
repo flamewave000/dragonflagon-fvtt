@@ -41,13 +41,13 @@ export abstract class BezierTool {
 	}
 
 	private _modeListener: (mode: ToolMode) => void = null;
-	get mode(): ToolMode { return this._mode; };
+	get mode(): ToolMode { return this._mode; }
 	protected setMode(value: ToolMode) {
 		if (this._mode === value) return;
 		this._mode = value;
 		if (this._modeListener !== null)
 			this._modeListener(value);
-	};
+	}
 
 	startedWithCtrlHeld: boolean = false;
 
@@ -62,8 +62,9 @@ export abstract class BezierTool {
 	abstract getData(): object;
 	abstract getTools(): Record<string, CurvyWallControl>
 
-	checkPointForClick(point: PIXI.Point, event: PIXI.InteractionEvent): boolean { return false; }
-	clearContext(context: PIXI.Graphics): void { }
+	checkPointForClick(_point: PIXI.Point, _event: PIXI.InteractionEvent): boolean { return false; }
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	clearContext(_context: PIXI.Graphics): void { }
 	clearTool() {
 		this.setMode(ToolMode.NotPlaced);
 	}
@@ -86,7 +87,7 @@ export abstract class BezierTool {
 		context.beginFill(0, 0)
 			.lineStyle(BezierTool.LINE_SIZE, 0xE88D2D, 1, 0.5)
 			.drawRoundedRect(bounds.left - 20, bounds.top - 20, bounds.width + 40, bounds.height + 40, 20)
-			.endFill()
+			.endFill();
 	}
 	protected drawHandle(context: PIXI.Graphics, fill: number, point: PIXI.Point): PIXI.Graphics {
 		return context.beginFill(fill, 1)
@@ -96,8 +97,8 @@ export abstract class BezierTool {
 	}
 
 	static pointNearPoint(a: { x: number, y: number }, b: { x: number, y: number }, threshold: number): boolean {
-		var x = a.x - b.x;
-		var y = a.y - b.y;
+		const x = a.x - b.x;
+		const y = a.y - b.y;
 		return ((x * x) + (y * y)) <= (threshold * threshold); // super simple and efficient Squared Length circle collision
 	}
 }

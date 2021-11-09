@@ -9,31 +9,31 @@ interface AdventurLogApi {
 	gmquote(speaker: string, message: string, postToChat?: boolean): Promise<void>
 }
 declare global {
-	const AdventureLog: AdventurLogApi
+	const AdventureLog: AdventurLogApi;
 }
 
 export function init() {
 	const api: AdventurLogApi = {
-		event: (async function (message: string, postToChat: boolean = false) {
+		event: (async function (message: string, postToChat = false) {
 			DFAdventureLogProcessor.commandProcessor('event ' + message, false, !postToChat);
 		}).bind(DFAdventureLogProcessor),
 
-		gmevent: (async function (message: string, postToChat: boolean = false) {
+		gmevent: (async function (message: string, postToChat = false) {
 			if (game.user.isGM)
 				DFAdventureLogProcessor.commandProcessor('event ' + message, true, !postToChat);
 			else ui.notifications.warn("DF_CHAT_LOG.Error.ApiLog_NotGm".localize());
 		}).bind(DFAdventureLogProcessor),
 
-		quote: (async function (speaker: string, message: string, postToChat: boolean = false) {
+		quote: (async function (speaker: string, message: string, postToChat = false) {
 			DFAdventureLogProcessor.commandProcessor(`quote "${speaker}" ${message}`, false, !postToChat);
 		}).bind(DFAdventureLogProcessor),
 
-		gmquote: (async function (speaker: string, message: string, postToChat: boolean = false) {
+		gmquote: (async function (speaker: string, message: string, postToChat = false) {
 			if (game.user.isGM)
 				DFAdventureLogProcessor.commandProcessor(`quote "${speaker}" ${message}`, true, !postToChat);
 			else ui.notifications.warn("DF_CHAT_LOG.Error.ApiLog_NotGm".localize());
 		}).bind(DFAdventureLogProcessor)
-	}
+	};
 	// @ts-expect-error
 	window.AdventureLog = api;
 }

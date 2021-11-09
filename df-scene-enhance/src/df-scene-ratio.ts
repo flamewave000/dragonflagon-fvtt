@@ -1,9 +1,9 @@
 
 // Reduce a fraction by finding the Greatest Common Divisor and dividing by it.
 function reduce(numerator: number, denominator: number) {
-	var a = numerator;
-	var b = denominator;
-	var c;
+	let a = numerator;
+	let b = denominator;
+	let c;
 	while (b) {
 		c = a % b; a = b; b = c;
 	}
@@ -79,7 +79,7 @@ export default class DFSceneRatio {
 	_performScale() {
 		const num = this._numerator;
 		const den = this._denominator;
-		const scale = this._scale
+		const scale = this._scale;
 		if (isNaN(num) || isNaN(den) || isNaN(scale)) return;
 		// if ((num == den && this._width > this._height) || num > den) {
 		// 	this._width = Math.round(this.initialWidth * scale);
@@ -139,7 +139,7 @@ export default class DFSceneRatio {
 		this.widthField.on('change', () => this._performDimensionChange(this._width));
 		this.heightField.on('change', () => this._performDimensionChange(undefined, this._height));
 
-		this.lockRatio.on('change', () => { this.isLocked = this.lockRatio[0].checked; })
+		this.lockRatio.on('change', () => { this.isLocked = this.lockRatio[0].checked; });
 		this.customRatio.on('change', () => {
 			this.useCustom = this.customRatio[0].checked;
 			this.numerator.prop('disabled', this.useCustom == false);

@@ -5,7 +5,6 @@ import SETTINGS from "../../common/Settings";
 SETTINGS.init('df-active-lights');
 
 Hooks.once('init', function () {
-	ActiveLightConfig.init();
 	LightAnimator.init();
 });
 Hooks.once('ready', function () {

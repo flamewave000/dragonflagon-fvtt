@@ -9,7 +9,7 @@ declare global {
 (<any>Application.prototype)._recalculateDimensions = function () {
 	this.element[0].style.height = '';
 	this.setPosition({});
-}
+};
 
 abstract class SettingsProcessor {
 	static readonly DELIM = ' `````` ';
@@ -18,7 +18,7 @@ abstract class SettingsProcessor {
 	abstract performSearch(pattern: string): void;
 
 	protected _updateLabels(text: string, div: JQuery<HTMLElement>, percentage?: number) {
-		var [label, hint] = text.split(SettingsProcessor.DELIM);
+		const [label, hint] = text.split(SettingsProcessor.DELIM);
 		if (percentage !== undefined) {
 			if (isNaN(percentage)) percentage = 0;
 			const [redPerc, greenPerc] = percentage <= 0.5
@@ -46,7 +46,7 @@ abstract class SettingsProcessor {
 			limit: Infinity,
 			threshold: -threshold,
 			allowTypo: false,
-		}
+		};
 	}
 }
 
@@ -92,7 +92,7 @@ class DefaultSettingsProcessor extends SettingsProcessor {
 	}
 	performSearch(pattern: string) {
 		if (pattern.length < 2) {
-			for (let item of this._settings) {
+			for (const item of this._settings) {
 				item.el.show();
 				this._updateLabels(item.text, item.el);
 			}
@@ -101,8 +101,8 @@ class DefaultSettingsProcessor extends SettingsProcessor {
 		const results = fuzzysort.go(pattern, this._settings, this._getOptions(pattern));
 		for (let c = 0; c < this._settings.length; c++) {
 			const resultIdx = results.findIndex(x => x.obj === this._settings[c]);
-			var text: string;
-			var percentage: number = undefined;
+			let text: string;
+			let percentage: number = undefined;
 			if (resultIdx >= 0) {
 				this._settings[c].el.show();
 				text = fuzzysort.highlight(results[resultIdx][0]);
@@ -157,7 +157,7 @@ class TidyUiSettingsProcessor extends SettingsProcessor {
 					this._settings.push(this._getMenuData(element, child));
 				else
 					this._settings.push(this._getRegularData(element, child));
-			})
+			});
 		});
 	}
 	injectSearch(html: JQuery<HTMLElement>): JQuery<HTMLInputElement> {
@@ -172,24 +172,24 @@ class TidyUiSettingsProcessor extends SettingsProcessor {
 	}
 	performSearch(pattern: string) {
 		if (pattern.length < 2) {
-			for (let item of this._settings) {
+			for (const item of this._settings) {
 				item.el.show();
 				super._updateLabels(item.text, item.el);
 			}
-			for (let article of this._articles.entries()) {
+			for (const article of this._articles.entries()) {
 				this._articles.set(article[0], false);
 				this._toggleArticle($(article[0]), false);
 			}
 			return;
 		}
 		const results = fuzzysort.go(pattern, this._settings, this._getOptions(pattern));
-		for (let article of this._articles.keys()) {
+		for (const article of this._articles.keys()) {
 			this._articles.set(article, false);
 		}
 		for (let c = 0; c < this._settings.length; c++) {
 			const resultIdx = results.findIndex(x => x.obj === this._settings[c]);
-			var text: string;
-			var percentage: number = undefined;
+			let text: string;
+			let percentage: number = undefined;
 			if (resultIdx >= 0) {
 				this._articles.set(this._settings[c].article, true);
 				this._settings[c].el.show();
@@ -200,9 +200,9 @@ class TidyUiSettingsProcessor extends SettingsProcessor {
 				this._settings[c].el.hide();
 				text = this._settings[c].text;
 			}
-			this._updateLabels(text, this._settings[c].el, percentage)
+			this._updateLabels(text, this._settings[c].el, percentage);
 		}
-		for (let article of this._articles.entries()) {
+		for (const article of this._articles.entries()) {
 			this._toggleArticle($(article[0]), article[1]);
 		}
 	}
