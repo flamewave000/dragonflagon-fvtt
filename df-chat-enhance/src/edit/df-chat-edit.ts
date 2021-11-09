@@ -77,7 +77,7 @@ export default class DFChatEdit {
 	static editChatMessage(this: ChatMessage) {
 		// Double check permissions
 		if (!SETTINGS.get(PREF_EDIT_ALLOWED)) {
-			ui.notifications.warn(game.i18n.localize('DF_CHAT_EDIT.Error_NoPermission'));
+			ui.notifications.warn('DF_CHAT_EDIT.Error_NoPermission'.localize());
 			// // Try removing the edit buttons from everything
 			// DFChatEdit.processAllMessages();
 			return;

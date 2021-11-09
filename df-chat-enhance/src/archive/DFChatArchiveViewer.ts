@@ -41,12 +41,12 @@ export default class DFChatArchiveViewer extends Application {
 				html.find("#edit").on('click', async () => {
 					setTimeout(async () => {
 						const dialog = new Dialog({
-							title: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Title"),
+							title: "DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Title".localize(),
 							content: `<input id="name" type="text" value="${this.archive.name}"/>`,
 							buttons: {
 								save: {
 									icon: '<i class="fas fa-save"></i>',
-									label: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Save'),
+									label: 'DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Save'.localize(),
 									callback: async (html) => {
 										this.archive.name = $(html).find('#name').val() as string;
 										await dialog.close();
@@ -56,7 +56,7 @@ export default class DFChatArchiveViewer extends Application {
 								},
 								close: {
 									icon: '<i class="fas fa-times"></i>',
-									label: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Cancel'),
+									label: 'DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Cancel'.localize(),
 									callback: async () => {
 										await dialog.close();
 									}
@@ -80,11 +80,11 @@ export default class DFChatArchiveViewer extends Application {
 				});
 				html.find('#merge').on('click', async () => {
 					if (DFChatArchive.getLogs().length == 1) {
-						ui.notifications.info(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_Merge_OnlyOneArchive'));
+						ui.notifications.info('DF_CHAT_ARCHIVE.ArchiveViewer_Merge_OnlyOneArchive'.localize());
 						return;
 					}
 					const dialog: Dialog = new Dialog({
-						title: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Title'),
+						title: 'DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Title'.localize(),
 						default: 'merge',
 						content: await renderTemplate('modules/df-chat-enhance/templates/archive-merge.hbs', {
 							name: this.archive.name,
@@ -93,12 +93,12 @@ export default class DFChatArchiveViewer extends Application {
 						buttons: {
 							cancel: {
 								icon: '<i class="fas fa-times"></i>',
-								label: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Cancel'),
+								label: 'DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Cancel'.localize(),
 								callback: async () => await dialog.close()
 							},
 							merge: {
 								icon: '<i class="fas fa-sitemap"></i>',
-								label: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Merge'),
+								label: 'DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Merge'.localize(),
 								callback: async (html) => {
 									const val = $(html).find('#archive').val() as string;
 									if (isNaN(parseInt(val))) return;
@@ -164,12 +164,12 @@ export default class DFChatArchiveViewer extends Application {
 				deleteButton.on('click', async () => {
 					console.log(deletionList);
 					if (deletionList.length === currentChats.length) {
-						ui.notifications.warn(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_Error_Delete_All'));
+						ui.notifications.warn('DF_CHAT_ARCHIVE.ArchiveViewer_Error_Delete_All'.localize());
 						return;
 					}
 					Dialog.confirm({
-						title: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveViewer_DeleteTitle"),
-						content: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveViewer_DeleteContent"),
+						title: "DF_CHAT_ARCHIVE.ArchiveViewer_DeleteTitle".localize(),
+						content: "DF_CHAT_ARCHIVE.ArchiveViewer_DeleteContent".localize(),
 						defaultYes: false,
 						no: () => { },
 						yes: async () => {

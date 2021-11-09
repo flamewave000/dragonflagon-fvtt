@@ -49,7 +49,7 @@ Hooks.once('ready', function () {
 	if (!game.modules.get('lib-wrapper')?.active) {
 		console.error('Missing libWrapper module dependency');
 		if (game.user.isGM)
-			ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error.LibWrapperMissing'));
+			ui.notifications.error('DF_CHAT_LOG.Error.LibWrapperMissing'.localize());
 	}
 	DFAdventureLog.ready();
 	DFChatEdit.ready();

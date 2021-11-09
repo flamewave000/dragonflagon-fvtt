@@ -47,7 +47,7 @@ export default class ScrollManage {
 
 	private static _renderChatLog(app: ChatLog, html: JQuery<HTMLElement>, data: object) {
 		this._scrollToBottomButton = $(`<div id="scrollToBottom" style="display:none">
-	<span>${game.i18n.localize('DF_CHAT_SCROLL.NewMessage')}</span> ${game.i18n.localize('DF_CHAT_SCROLL.ScrollButton')}
+	<span>${'DF_CHAT_SCROLL.NewMessage'.localize()}</span> ${'DF_CHAT_SCROLL.ScrollButton'.localize()}
 </div>`);
 		this._scrollToBottomButton.on('click', () => {
 			const el = app.element;

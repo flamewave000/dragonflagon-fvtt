@@ -62,9 +62,9 @@ export default class ChatMerge {
 			default: 'rolls',
 			type: String,
 			choices: {
-				none: game.i18n.localize('DF_CHAT_MERGE.AllowRollsOptions.none'),
-				rolls: game.i18n.localize('DF_CHAT_MERGE.AllowRollsOptions.rolls'),
-				all: game.i18n.localize('DF_CHAT_MERGE.AllowRollsOptions.all')
+				none: 'DF_CHAT_MERGE.AllowRollsOptions.none'.localize(),
+				rolls: 'DF_CHAT_MERGE.AllowRollsOptions.rolls'.localize(),
+				all: 'DF_CHAT_MERGE.AllowRollsOptions.all'.localize()
 			},
 			onChange: () => this._processAllMessage()
 		});

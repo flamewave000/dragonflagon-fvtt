@@ -21,7 +21,7 @@ export function init() {
 		gmevent: (async function (message: string, postToChat: boolean = false) {
 			if (game.user.isGM)
 				DFAdventureLogProcessor.commandProcessor('event ' + message, true, !postToChat);
-			else ui.notifications.warn(game.i18n.localize("DF_CHAT_LOG.Error.ApiLog_NotGm"));
+			else ui.notifications.warn("DF_CHAT_LOG.Error.ApiLog_NotGm".localize());
 		}).bind(DFAdventureLogProcessor),
 
 		quote: (async function (speaker: string, message: string, postToChat: boolean = false) {
@@ -31,7 +31,7 @@ export function init() {
 		gmquote: (async function (speaker: string, message: string, postToChat: boolean = false) {
 			if (game.user.isGM)
 				DFAdventureLogProcessor.commandProcessor(`quote "${speaker}" ${message}`, true, !postToChat);
-			else ui.notifications.warn(game.i18n.localize("DF_CHAT_LOG.Error.ApiLog_NotGm"));
+			else ui.notifications.warn("DF_CHAT_LOG.Error.ApiLog_NotGm".localize());
 		}).bind(DFAdventureLogProcessor)
 	}
 	// @ts-expect-error

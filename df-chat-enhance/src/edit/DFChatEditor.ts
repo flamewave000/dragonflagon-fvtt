@@ -44,7 +44,7 @@ export default class DFChatEditor extends FormApplication {
 		var data = formData.content as string;
 		data = data.replace(/\r?\n/gm, '<br/>');
 		if (data.search(/\<p +class="df-edited"\>/) < 0) {
-			data += `<p class="df-edited">${game.i18n.localize('DF_CHAT_EDIT.EditedFlag')}</p>`;
+			data += `<p class="df-edited">${'DF_CHAT_EDIT.EditedFlag'.localize()}</p>`;
 		}
 		this.chatMessage.update({
 			content: data

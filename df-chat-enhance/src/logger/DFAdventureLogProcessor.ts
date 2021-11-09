@@ -245,7 +245,7 @@ export default class DFAdventureLogProcessor {
 			invokeOnCommand: async (_cl: any, msg: string, _cd: any) => await DFAdventureLogProcessor.commandProcessor(msg, false),
 			shouldDisplayToChat: false,
 			iconClass: "fa-edit",
-			description: game.i18n.localize("DF_CHAT_LOG.CommandDescription")
+			description: "DF_CHAT_LOG.CommandDescription".localize()
 		});
 		(game as GameExt).chatCommands.registerCommand(DFAdventureLogProcessor.logCommand);
 
@@ -257,7 +257,7 @@ export default class DFAdventureLogProcessor {
 			invokeOnCommand: async (_cl: any, msg: string, _cd: any) => await DFAdventureLogProcessor.commandProcessor(msg, true),
 			shouldDisplayToChat: false,
 			iconClass: "fa-edit",
-			description: game.i18n.localize("DF_CHAT_LOG.GMCommandDescription")
+			description: "DF_CHAT_LOG.GMCommandDescription".localize()
 		});
 		(game as GameExt).chatCommands.registerCommand(DFAdventureLogProcessor.gmlogCommand);
 	}
@@ -282,7 +282,7 @@ export default class DFAdventureLogProcessor {
 
 		if (!SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE)) {
 			(game as GameExt).chatCommands.deregisterCommand(DFAdventureLogProcessor.logCommand);
-			ui.notifications.warn(game.i18n.localize('DF_CHAT_LOG.Error.Disabled'));
+			ui.notifications.warn('DF_CHAT_LOG.Error.Disabled'.localize());
 			return;
 		}
 
@@ -290,10 +290,10 @@ export default class DFAdventureLogProcessor {
 		if (messageText.length == 0 || tokens.every(x => x.length == 0)) {
 			setTimeout(async () => {
 				await Dialog.prompt({
-					title: game.i18n.localize('DF_CHAT_LOG.HelpDialog_Title'),
+					title: 'DF_CHAT_LOG.HelpDialog_Title'.localize(),
 					label: 'OK',
 					callback: () => { },
-					content: await renderTemplate(`modules/df-chat-enhance/templates/lang/log-help.${game.i18n.localize('DF_CHAT_ENHANCE.LANG')}.hbs`, {
+					content: await renderTemplate(`modules/df-chat-enhance/templates/lang/log-help.${'DF_CHAT_ENHANCE.LANG'.localize()}.hbs`, {
 						isGM: game.user.isGM
 					}),
 					options: { width: 800 }
@@ -313,7 +313,7 @@ export default class DFAdventureLogProcessor {
 		switch (tokens[0].toLowerCase()) {
 			case 'config':
 				if (!game.user.isGM) {
-					ui.notifications.warn(game.i18n.localize('DF_CHAT_LOG.Error.ConfigGmOnly'));
+					ui.notifications.warn('DF_CHAT_LOG.Error.ConfigGmOnly'.localize());
 					return;
 				}
 				setTimeout(async () => {
@@ -340,7 +340,7 @@ export default class DFAdventureLogProcessor {
 						}
 					}
 					if (index < 0) {
-						ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error.MissingQuote').replace('{0}', tokens[1]));
+						ui.notifications.error('DF_CHAT_LOG.Error.MissingQuote'.localize().replace('{0}', tokens[1]));
 						setTimeout(() => $('#chat-message').val('/log q ' + messageText), 1);
 						return;
 					}
@@ -354,11 +354,11 @@ export default class DFAdventureLogProcessor {
 				messageData.flavor = `${game.user.name} quoted ${source}`;
 				messageData.content = `<span class="dfal-qu">${messageText}</span>`;
 				if (messageText.length == 0) {
-					ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error.MissingMessage'));
+					ui.notifications.error('DF_CHAT_LOG.Error.MissingMessage'.localize());
 					setTimeout(() => $('#chat-message').val(`/log q "${source}" ${messageText}`), 1);
 					return;
 				}
-				var line = game.i18n.localize('DF_CHAT_LOG.Log_Quote');
+				var line = 'DF_CHAT_LOG.Log_Quote'.localize();
 				line = line.replace('{0}', this._getTimestamp());
 				line = line.replace('{1}', game.user.name);
 				line = line.replace('{2}', source);
@@ -371,7 +371,7 @@ export default class DFAdventureLogProcessor {
 				messageText = messageText.trim();
 				messageData.flavor = 'Event Logged';
 				messageData.content = `<span class="dfal-ev">${messageText}</span>`;
-				var line = game.i18n.localize('DF_CHAT_LOG.Log_Event');
+				var line = 'DF_CHAT_LOG.Log_Event'.localize();
 				line = line.replace('{0}', this._getTimestamp());
 				line = line.replace('{1}', game.user.name);
 				messageText = line.replace('{2}', messageText);
@@ -382,9 +382,9 @@ export default class DFAdventureLogProcessor {
 		const journalId = SETTINGS.get(gmLog ? DFAdventureLogConfig.PREF_JOURNAL_GM : DFAdventureLogConfig.PREF_JOURNAL) as string;
 		if (!game.journal.has(journalId)) {
 			if (game.user.isGM)
-				ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error.NoJournalSetGM'), { permanent: true });
+				ui.notifications.error('DF_CHAT_LOG.Error.NoJournalSetGM'.localize(), { permanent: true });
 			else
-				ui.notifications.warn(game.i18n.localize('DF_CHAT_LOG.Error.NoJournalSet'));
+				ui.notifications.warn('DF_CHAT_LOG.Error.NoJournalSet'.localize());
 			return;
 		}
 		const journal = game.journal.get(journalId);

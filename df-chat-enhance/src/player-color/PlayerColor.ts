@@ -1,4 +1,3 @@
-import { ChatMessageData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import SETTINGS from "../../../common/Settings";
 
 export default class PlayerColor {

@@ -35,7 +35,7 @@ export function init() {
 	});
 
 	Hooks.on('renderChatLog', function (chatLog: ChatLog, html: JQuery<HTMLElement>, data: {}) {
-		const archiveButton = $(`<a class="button chat-archive" title="${game.i18n.localize('DF_CHAT_ARCHIVE.ExportButtonTitle')}">
+		const archiveButton = $(`<a class="button chat-archive" title="${'DF_CHAT_ARCHIVE.ExportButtonTitle'.localize()}">
 		<i class="fas fa-archive"></i></a>`)
 		archiveButton.on('click', () => {
 			if (archiveNew == null) {
@@ -55,8 +55,8 @@ export function init() {
 
 	Hooks.on('renderSettings', function (settings: Settings, html: JQuery<HTMLElement>, data: {}) {
 		const archiveManagerHtml = $(`<div id="df-chat-enhance-settings" style="margin:0">
-	<h4>${game.i18n.localize('DF_CHAT_ARCHIVE.ChatEnhanceSettingGroup')}</h4>
-	<button data-action="archive"><i class="fas fa-archive"></i>${game.i18n.localize('DF_CHAT_ARCHIVE.OpenChatArchive')}</button>
+	<h4>${'DF_CHAT_ARCHIVE.ChatEnhanceSettingGroup'.localize()}</h4>
+	<button data-action="archive"><i class="fas fa-archive"></i>${'DF_CHAT_ARCHIVE.OpenChatArchive'.localize()}</button>
 </div>`);
 		archiveManagerHtml.on('click', () => {
 			if (archiveManager == null) {

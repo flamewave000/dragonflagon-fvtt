@@ -70,7 +70,7 @@ export default class WhisperTruncation {
 	private static _formatTitle(names: string, count: number): string {
 		return count > 0
 			? TEMPLATE
-				.replace('$0', game.i18n.localize('CHAT.To'))
+				.replace('$0', 'CHAT.To'.localize())
 				.replace('$1', names)
 				.replace('$2', count.toString())
 			: names;

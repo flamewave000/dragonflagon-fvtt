@@ -13,7 +13,7 @@ export default class DFAdventureLogConfig extends FormApplication {
 			template: "modules/df-chat-enhance/templates/log-config.hbs",
 			resizable: false,
 			minimizable: false,
-			title: game.i18n.localize("DF_CHAT_LOG.Config_Title")
+			title: "DF_CHAT_LOG.Config_Title".localize()
 		}) as FormApplication.Options;
 	}
 

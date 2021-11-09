@@ -13,7 +13,7 @@ export default class DFChatArchiveManager extends Application {
 			minimizable: true,
 			width: 300,
 			height: 500,
-			title: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveManager_Title")
+			title: "DF_CHAT_ARCHIVE.ArchiveManager_Title".localize()
 		}) as Application.Options;
 	}
 
@@ -36,7 +36,7 @@ export default class DFChatArchiveManager extends Application {
 		element.on('click', function () {
 			const id = parseInt($(this).attr('data-id'));
 			if (isNaN(id) || !DFChatArchive.exists(id)) {
-				ui.notifications.error(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ErrorBadId'));
+				ui.notifications.error('DF_CHAT_ARCHIVE.ArchiveManager_ErrorBadId'.localize());
 				throw Error(`Invalid id for Chat Archive: '${$(this).attr('data-id')}'`);
 			}
 			if (DFChatArchiveManager.chatViewers.has(id)) {
@@ -53,13 +53,13 @@ export default class DFChatArchiveManager extends Application {
 		element.on('click', async function () {
 			const id = parseInt($(this).attr('data-id'));
 			if (isNaN(id) || !DFChatArchive.exists(id)) {
-				ui.notifications.error(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ErrorBadId'));
+				ui.notifications.error('DF_CHAT_ARCHIVE.ArchiveManager_ErrorBadId'.localize());
 				throw Error(`Invalid id for Chat Archive: '${$(this).attr('data-id')}'`);
 			}
 			const archive = DFChatArchive.getArchive(id);
 			await Dialog.confirm({
-				title: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveTitle'),
-				content: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveContent').replace('{name}', archive.name),
+				title: 'DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveTitle'.localize(),
+				content: 'DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveContent'.localize().replace('{name}', archive.name),
 				defaultYes: false,
 				yes: async () => await DFChatArchive.deleteChatArchive(id)
 			});
@@ -74,17 +74,17 @@ export default class DFChatArchiveManager extends Application {
 		html.find('a[data-type="delete"]').each((i, element) => { this._subscribeDelete($(element)) });
 		html.find('#dfca-delete-all').on('click', async function () {
 			await Dialog.confirm({
-				title: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllTitle'),
-				content: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllMessage1'),
+				title: 'DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllTitle'.localize(),
+				content: 'DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllMessage1'.localize(),
 				defaultYes: false,
 				yes: async () => {
 					await Dialog.confirm({
-						title: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllTitle'),
-						content: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllMessage2'),
+						title: 'DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllTitle'.localize(),
+						content: 'DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllMessage2'.localize(),
 						defaultYes: false,
 						yes: async () => {
 							await DFChatArchive.deleteAll();
-							ui.notifications.info(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllComplete'));
+							ui.notifications.info('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllComplete'.localize());
 						}
 					})
 				}
@@ -120,7 +120,7 @@ export default class DFChatArchiveManager extends Application {
 		// Add new items
 		for (let archive of logs) {
 			const visible = archive.visible === true
-				? `<i class="dfca-visible fas fa-users" title="${game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_VisibleToPlayers')}"></i>` : '';
+				? `<i class="dfca-visible fas fa-users" title="${'DF_CHAT_ARCHIVE.ArchiveManager_VisibleToPlayers'.localize()}"></i>` : '';
 			const html = $(`
 		<li class="dfca-archive-item" data-id="${archive.id}">
 			<div>

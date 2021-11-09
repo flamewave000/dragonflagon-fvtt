@@ -11,7 +11,7 @@ export default class DFChatArchiveNew extends FormApplication<FormApplication.Op
 			template: "modules/df-chat-enhance/templates/archive-new.hbs",
 			resizable: false,
 			minimizable: false,
-			title: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveNew_Title")
+			title: "DF_CHAT_ARCHIVE.ArchiveNew_Title".localize()
 		});
 	}
 
@@ -35,8 +35,8 @@ export default class DFChatArchiveNew extends FormApplication<FormApplication.Op
 
 		const name = formData.name;
 		if (!name) {
-			ui.notifications.warn(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveNew_ErrorNameMissing'));
-			throw Error(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveNew_ErrorNameMissing'));
+			ui.notifications.warn('DF_CHAT_ARCHIVE.ArchiveNew_ErrorNameMissing'.localize());
+			throw Error('DF_CHAT_ARCHIVE.ArchiveNew_ErrorNameMissing'.localize());
 		}
 
 		var chats = <ChatMessage[]>[...(ui.chat.collection.values())];
@@ -46,13 +46,13 @@ export default class DFChatArchiveNew extends FormApplication<FormApplication.Op
 			const fromDate = new Date(formData.from).getTime();
 			const toDate = new Date(formData.to).getTime();
 			if (isNaN(fromDate) || isNaN(toDate)) {
-				ui.notifications.warn(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveNew_ErrorDatesMissing'));
+				ui.notifications.warn('DF_CHAT_ARCHIVE.ArchiveNew_ErrorDatesMissing'.localize());
 				throw Error('Missing "from" and/or "to" dates');
 			}
 			chats = chats.filter((value) => value.data.timestamp >= fromDate && value.data.timestamp <= toDate);
 		}
 
-		ui.notifications.info(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveNew_NoticeSuccess').replace('{0}', name));
+		ui.notifications.info('DF_CHAT_ARCHIVE.ArchiveNew_NoticeSuccess'.localize().replace('{0}', name));
 		try {
 			await DFChatArchive.createChatArchive(name, chats, formData['visible']);
 		}
