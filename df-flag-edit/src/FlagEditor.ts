@@ -116,7 +116,7 @@ export default class FlagEditor extends Application {
 		const result = await super._render(force, options);
 		const editorOptions = {
 			// If the Ace Lib is installed and running
-			ace: ace ? ace : undefined,
+			ace: 'ace' in window ? ace : undefined,
 			limitDragging: false,
 			mode: 'tree',
 			modes: ['tree', 'code'],
@@ -160,10 +160,11 @@ export default class FlagEditor extends Application {
 				const script = document.createElement('script') as HTMLScriptElement;
 				script.async = true;
 				script.onload = () => res();
-				if (ace)
-					script.src = `/modules/${SETTINGS.MOD_NAME}/src/jsoneditor-minimalist.min.js`;
+				// If the Ace Lib is installed and running
+				if ('ace' in window)
+					script.src = `/modules/${SETTINGS.MOD_NAME}/libs/jsoneditor-minimalist.min.js`;
 				else
-					script.src = `/modules/${SETTINGS.MOD_NAME}/src/jsoneditor.min.js`;
+					script.src = `/modules/${SETTINGS.MOD_NAME}/libs/jsoneditor.min.js`;
 				document.body.append(script);
 			});
 			const stylePromise = new Promise<void>(res => {
@@ -171,7 +172,7 @@ export default class FlagEditor extends Application {
 				style.rel = 'stylesheet';
 				style.type = 'text/css';
 				style.onload = () => res();
-				style.href = `/modules/${SETTINGS.MOD_NAME}/src/jsoneditor.min.css`;
+				style.href = `/modules/${SETTINGS.MOD_NAME}/libs/jsoneditor.min.css`;
 				document.body.append(style);
 			});
 			this._loadEditorPromise = Promise.all([scriptPromise, stylePromise]);
