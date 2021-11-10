@@ -294,6 +294,7 @@ export default class DFAdventureLogProcessor {
 				await Dialog.prompt({
 					title: 'DF_CHAT_LOG.HelpDialog_Title'.localize(),
 					label: 'OK',
+					// eslint-disable-next-line @typescript-eslint/no-empty-function
 					callback: () => { },
 					content: await renderTemplate(`modules/df-chat-enhance/templates/lang/log-help.${'DF_CHAT_ENHANCE.LANG'.localize()}.hbs`, {
 						isGM: game.user.isGM

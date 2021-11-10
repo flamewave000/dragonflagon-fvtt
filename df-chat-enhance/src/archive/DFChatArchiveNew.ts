@@ -61,7 +61,7 @@ export default class DFChatArchiveNew extends FormApplication<FormApplication.Op
 		// If we don't want to delete the messages, return
 		if (!formData.delete) return;
 
-		for (let chat of chats) {
+		for (const chat of chats) {
 			chat.delete();
 		}
 	}
