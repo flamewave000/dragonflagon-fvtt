@@ -29,11 +29,13 @@ If enabled, you will now be able to lock individual tokens. This works the same 
 
 By default, GM users are still able to move locked tokens around the scene. This can be disabled in the Module's configuration. Great to help keep yourself from shifting tokens by accident as well.
 
+ You can also Lock or Unlock a selected group of tokens.
+
 ![Token Lock](../.assets/df-qol-token-lock.png)
 
 ## Quick Table Rolling
 
-This is a very feature that adds a "Roll on the table" option to the context menu of RollTable entities. This allows you to roll the table without opening the Roll Table sheet and clicking the Roll button there. You can also Lock or Unlock a selected group of tokens.
+This is a very feature that adds a "Roll on the table" option to the context menu of RollTable entities. This allows you to roll the table without opening the Roll Table sheet and clicking the Roll button there.
 
 ![Quick Roll Option](../.assets/df-qol-roll-table.png)
 
