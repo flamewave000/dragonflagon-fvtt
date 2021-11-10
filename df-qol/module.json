@@ -12,12 +12,12 @@
 		{ "lang": "en", "name": "English", "path": "lang/en.json" },
 		{ "lang": "ja", "name": "日本語", "path": "lang/ja.json" }
 	],
-	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}",
+	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-qol",
 	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/LICENSE",
-	"manifest":	"https://dragonflagon.cafe/mods/man/{{name}}",
-	"download":	"https://dragonflagon.cafe/mods/pak/{{name}}",
-	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/README.md",
-	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/{{name}}/CHANGELOG.md",
+	"manifest":	"https://dragonflagon.cafe/mods/man/df-qol",
+	"download":	"https://dragonflagon.cafe/mods/pak/df-qol",
+	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-qol/README.md",
+	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-qol/CHANGELOG.md",
 	"manifestPlusVersion": "1.0.0",
 	"authors": [ { "name": "flamewave000", "discord": "flamewave000#0001", "url": "https://github.com/flamewave000" } ],
 	"media": [
