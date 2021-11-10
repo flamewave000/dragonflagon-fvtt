@@ -25,11 +25,11 @@ Hooks.once('init', () => {
 
 	// Soft Dependency on `libwrapper`. Only use it if it already exists
 	if (game.modules.get('libWrapper')?.active) {
-		libWrapper.register(SETTINGS.MOD_NAME, 'Sidebar.prototype.expand', function (this: Sidebar, wrapped: Function) {
+		libWrapper.register(SETTINGS.MOD_NAME, 'Sidebar.prototype.expand', function (this: Sidebar, wrapped: AnyFunction) {
 			Hooks.callAll('collapseSidebarPre', this, !this._collapsed);
 			wrapped();
 		}, 'WRAPPER');
-		libWrapper.register(SETTINGS.MOD_NAME, 'Sidebar.prototype.collapse', function (this: Sidebar, wrapped: Function) {
+		libWrapper.register(SETTINGS.MOD_NAME, 'Sidebar.prototype.collapse', function (this: Sidebar, wrapped: AnyFunction) {
 			Hooks.callAll('collapseSidebarPre', this, !this._collapsed);
 			wrapped();
 		}, 'WRAPPER');
@@ -62,7 +62,7 @@ Hooks.on('getModuleToolGroups', (app: ControlManager, groups: ToolGroup[]) => {
 			console.log(`${this.name}: active=${active}`);
 		else
 			console.log(this.name);
-	}
+	};
 	groups.push({
 		name: 'radial1',
 		icon: '<i class="fas fa-dice-one"></i>',

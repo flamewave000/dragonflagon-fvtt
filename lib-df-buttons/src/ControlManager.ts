@@ -56,7 +56,7 @@ export default class ControlManager extends Application {
 		return groups;
 	}
 
-	getData(options?: Application.RenderOptions): CMData {
+	getData(_?: Application.RenderOptions): CMData {
 		if (this.groups.length == 0) return { groups: [] };
 		const visible = (x: Tool) => x.visible instanceof Function ? x.visible() : (x.visible === null || x.visible === undefined || !!x.visible);
 		const data = this.groups.filter(visible).map<ToolGroupUI>((group: ToolGroup) => {
@@ -133,8 +133,8 @@ export default class ControlManager extends Application {
 			if (tool.onClick instanceof Function) this._invokeHandler(tool.onClick, tool);
 		}
 		// Handle Tools
-		else {
-		}
+		else 
+			this.activateToolByName(this.activeGroupName, toolName, true);
 	}
 
 	async _render(force = false, options = {}): Promise<void> {
@@ -186,23 +186,24 @@ export default class ControlManager extends Application {
 	private static readonly CONTROL_SIZE = 46;
 	private _handleWindowResize() {
 		const self = <ControlManager>(<any>ui).moduleControls;
-
+		let max: number;
+		let cols: number;
 		switch (SETTINGS.get('position')) {
 			case 'top': {
 				const sceneTools = document.querySelector<HTMLElement>('#controls > li.scene-control.active > ol');
-				let max = Math.floor(sceneTools.offsetHeight / ControlManager.CONTROL_SIZE);
-				let cols = Math.ceil(sceneTools.childElementCount / max);
+				max = Math.floor(sceneTools.offsetHeight / ControlManager.CONTROL_SIZE);
+				cols = Math.ceil(sceneTools.childElementCount / max);
 				self.element[0].style.marginLeft = `${(cols - 1) * (ControlManager.CONTROL_SIZE - 2)}px`;
 				break;
 			}
 			case 'left': {
-				let max = Math.floor(self.element[0].offsetHeight / ControlManager.CONTROL_SIZE);
-				let cols = Math.ceil(self.groups.length / max);
+				max = Math.floor(self.element[0].offsetHeight / ControlManager.CONTROL_SIZE);
+				cols = Math.ceil(self.groups.length / max);
 				self.element.find('.group-tools').css('margin-left', `${(cols - 1) * (ControlManager.CONTROL_SIZE - 2)}px`);
 
 				const sceneTools = document.querySelector<HTMLElement>('#controls > li.scene-control.active > ol');
-				let max = Math.floor(sceneTools.offsetHeight / ControlManager.CONTROL_SIZE);
-				let cols = Math.ceil(sceneTools.childElementCount / max);
+				max = Math.floor(sceneTools.offsetHeight / ControlManager.CONTROL_SIZE);
+				cols = Math.ceil(sceneTools.childElementCount / max);
 				self.element[0].style.marginLeft = `${(cols - 1) * (ControlManager.CONTROL_SIZE - 2)}px`;
 				break;
 			}
@@ -210,8 +211,8 @@ export default class ControlManager extends Application {
 				break;
 			}
 			case 'right': default: {
-				const max = Math.floor(self.element[0].offsetHeight / ControlManager.CONTROL_SIZE);
-				const cols = Math.ceil(self.groups.length / max);
+				max = Math.floor(self.element[0].offsetHeight / ControlManager.CONTROL_SIZE);
+				cols = Math.ceil(self.groups.length / max);
 				self.element.find('.group-tools').css('margin-right', `${(cols - 1) * (ControlManager.CONTROL_SIZE - 2)}px`);
 				break;
 			}

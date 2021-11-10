@@ -1,5 +1,8 @@
 # DragonFlagon Module Buttons Library
 
+## Release 1.0.2 (2021-11-09)
+- FIX: Tool activation.
+
 ## Release 1.0.1 (2021-11-07)
 - FIX: Correct some behaviour with the group/tool activation.
 - NEW: Added a couple hooks calls that occur when a Tool or Group is activated.
