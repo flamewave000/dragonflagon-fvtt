@@ -90,7 +90,14 @@ launch_foundry() {
 
 run_linter() {
 	echo "Linting $MODULE"
-	npx eslint --color --ext .ts,.tsx "$@" "$SCRIPT_DIR/$MODULE/src" | sed 's|'"$SCRIPT_DIR"'/||g'
+	if [[ "$1" == "fix" ]]; then
+		ESLFIX="--fix"
+		JSLFIX="-i --enforce-double-quotes --trim-trailing-commas"
+	fi
+	npx eslint --color --ext .ts,.tsx $ESFIX "$SCRIPT_DIR/$MODULE/src" | sed 's|'"$SCRIPT_DIR"'/||g'
+	echo "$JSLFIX"
+	npx jsonlint -Dpq $JSLFIX -t $'\t' $(realpath "$SCRIPT_DIR/$MODULE/lang/*.json")
+
 }
 
 gulp_build() {
@@ -136,14 +143,14 @@ open_bundle() {
 COMMAND="$1"
 shift
 case $COMMAND in
-	"target") set_module "$@" ;;
-	"foundry") set_foundry "$@" ;;
-	"launch") launch_foundry "$@" ;;
-	"lint") run_linter "$@" ;;
-	"build") gulp_build "$@" ;;
-	"tag") git_tag ;;
-	"bundle") open_bundle ;;
-	*) echo "Unknown Command: $COMMAND" ;;
+"target") set_module "$@" ;;
+"foundry") set_foundry "$@" ;;
+"launch") launch_foundry "$@" ;;
+"lint") run_linter "$@" ;;
+"build") gulp_build "$@" ;;
+"tag") git_tag ;;
+"bundle") open_bundle ;;
+*) echo "Unknown Command: $COMMAND" ;;
 esac
 
 exit 0
