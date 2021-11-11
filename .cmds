@@ -140,6 +140,34 @@ open_bundle() {
 	return 0
 }
 
+build_shims() {
+	if [[ -d "$SCRIPT_DIR/bundle" ]]; then
+		rm -R "$SCRIPT_DIR/bundle"
+	fi
+	mkdir "$SCRIPT_DIR/bundle"
+
+	echo "Building Shims"
+
+	# copy the shim raw
+	for FILE in common/*.shim.ts; do
+		cp "$FILE" "$SCRIPT_DIR/bundle/"
+	done
+	# compile the shims to tabbed JS
+	tsc $SCRIPT_DIR/bundle/*.shim.ts --outDir "$SCRIPT_DIR/bundle" --target es6 --sourceMap &&
+		npx spaces-to-tabs -s 4 bundle/*.shim.js ||
+		return
+	# minify the shim JS files
+	for FILE in $SCRIPT_DIR/bundle/*.shim.js; do
+		[ -e "$FILE" ] || continue
+		MIN_FILE="$SCRIPT_DIR/bundle/$(basename "$FILE" .js).min.js"
+		# uglify the code to a *.min.js file
+		npx uglifyjs --mangle --keep-fnames "$FILE" --output "$MIN_FILE"
+		# append the source map link to the minified file
+		HEADER_LENGTH=$(cat $FILE | grep '*/' -n -m 1 | sed 's/\([0-9]*\).*/\1/')
+		echo -n -e "$(head -$HEADER_LENGTH "$FILE")\n$(cat "$MIN_FILE")\n$(tail -1 "$FILE")" > "$MIN_FILE"
+	done
+}
+
 COMMAND="$1"
 shift
 case $COMMAND in
@@ -150,6 +178,7 @@ case $COMMAND in
 "build") gulp_build "$@" ;;
 "tag") git_tag ;;
 "bundle") open_bundle ;;
+"shims") build_shims ;;
 *) echo "Unknown Command: $COMMAND" ;;
 esac
 
