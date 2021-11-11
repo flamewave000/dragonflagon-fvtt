@@ -139,9 +139,12 @@ class HooksExt {
 		return true;														// ┘
 	}
 
-	static allUniqueHooks(): string[] {
-		return [...this._hookRepo.values()];
-	}
+	/**
+	 * Retrieves all of the hook calls that have been made so far. This list will always be empty
+	 * unless `CONFIG.debug.hooks` is set to `true`.
+	 * @returns String array of all calls made so far.
+	 */
+	static allUniqueHooks(): string[] { return [...this._hookRepo.values()]; }
 }
 
 // If a HookExt has already been bound, do not execute the following
