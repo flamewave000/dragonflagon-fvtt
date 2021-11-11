@@ -46,7 +46,7 @@ declare interface FoundryDocument {
 //#endregion
 
 export default class FlagEditor extends Application {
-	private static readonly PREF_LAST_OBJ = 'FlagEditor.LastObject';
+	static readonly PREF_LAST_OBJ = 'FlagEditor.LastObject';
 
 	private static readonly IGNORED_COLLECTIONS = [
 		"FogExploration",
@@ -146,7 +146,7 @@ export default class FlagEditor extends Application {
 				return;
 			const flags = this.editor.get();
 			console.log(flags);
-			await this.document.update({ flags: this.editor.get() });
+			await this.document.update({ flags });
 		});
 		return result;
 	}

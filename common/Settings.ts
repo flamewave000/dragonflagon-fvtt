@@ -1,7 +1,25 @@
+
+declare global {
+	interface LenientGlobalVariableTypes {
+		game: never;
+		canvas: never;
+	}
+	interface String {
+		/** Localizes the string via the global `game.i18n.localize()` function. */
+		localize(): string
+	}
+	type AnyFunction = (...args: any) => any;
+}
+
 export default class SETTINGS {
 	static MOD_NAME: string;
 	static init(moduleName: string) {
 		this.MOD_NAME = moduleName;
+		if (!String.prototype.localize) {
+			String.prototype.localize = function () {
+				return game.i18n.localize(this.valueOf());
+			};
+		}
 	}
 	static register<T>(key: string, config: ClientSettings.PartialSetting<T>) { game.settings.register(SETTINGS.MOD_NAME, key, config); }
 	static registerMenu(key: string, config: ClientSettings.PartialMenuSetting) { game.settings.registerMenu(SETTINGS.MOD_NAME, key, config); }
