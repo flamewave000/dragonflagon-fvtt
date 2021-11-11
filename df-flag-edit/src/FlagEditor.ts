@@ -12,7 +12,7 @@ declare class JSONEditor {
 		},
 		setShowInvisibles: (show: boolean) => void
 	};
-	get: () => string;
+	get: () => Record<string, Record<string, any>>;
 	set: (e: any) => void;
 	setText: (e: string) => void;
 	updateText: (e: string) => void;
@@ -42,6 +42,7 @@ declare interface FoundryData {
 declare interface FoundryDocument {
 	data: FoundryData;
 	update: (data: any) => Promise<any>
+	unsetFlag(scope: string, key: string): Promise<unknown>
 }
 //#endregion
 
@@ -137,16 +138,40 @@ export default class FlagEditor extends Application {
 		input.on('input', () => input.trigger('change'));
 		input.on('change', async () => this._handlePathChange((input.val() as string).trim()));
 		this.element.find('#cancel').on('click', () => this.close());
-		this.element.find('#save').on('click', () => {
+		const applyButton = this.element.find('#apply');
+		const saveButton = this.element.find('#save');
+		saveButton.on('click', () => {
 			this.element.find('#apply').trigger('click');
 			this.close();
 		});
-		this.element.find('#apply').on('click', async () => {
+		applyButton.on('click', async () => {
 			if (this.document?.data?.flags === undefined || this.document?.data?.flags === null)
 				return;
+			saveButton.prop('disabled', true);
+			applyButton.prop('disabled', true);
 			const flags = this.editor.get();
 			console.log(flags);
+			const newKeys = Object.keys(flags).map(x => `${x}_____${Object.keys(flags[x])}`);
+			const oldKeys = Object.keys(this.document.data.flags)
+				.flatMap(x => Object.keys(this.document.data.flags[x]).map(y => `${x}_____${y}`))
+				.filter(x => !x.endsWith('_____'));
+			const deleted = oldKeys.filter(x => !newKeys.includes(x));
+			for (const flag of deleted) {
+				const scope = flag.split('_____')[0];
+				const key = flag.split('_____')[1];
+				try {
+					// await this.document.unsetFlag(scope, key);
+					const head = key.split('.');
+					const tail = `-=${head.pop()}`;
+					const t = [scope, ...head, tail].join('.');
+					flags[t] = null;
+				}
+				catch (err) { console.warn(err); }
+			}
 			await this.document.update({ flags });
+			this.editor.set(this._document?.data?.flags || '');
+			saveButton.prop('disabled', false);
+			applyButton.prop('disabled', false);
 		});
 		return result;
 	}

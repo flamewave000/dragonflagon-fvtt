@@ -7,15 +7,17 @@
  * This class manages the registration and execution of hooked callback functions.
  */
 class HooksExt {
+	/** Registry of RegExp based hooks */
 	static readonly _regex = new Map<string, { regex: RegExp, fns: number[] }>();
+	/** Repository of all hooks ever invoked. This is only ever used when `CONFIG.debug.hooks` is `true` */
 	static readonly _hookRepo = new Set<string>();
 
 	/**
 	 * Register a callback handler which should be triggered when a hook is triggered.
 	 *
-	 * @param {string} hook   The unique name of the hooked event
-	 * @param {Function} fn   The callback function which should be triggered when the hook event occurs
-	 * @return {number}       An ID number of the hooked function which can be used to turn off the hook later
+	 * @param {string | RegExp} hook	The unique name of the hooked event
+	 * @param {Function} fn				The callback function which should be triggered when the hook event occurs
+	 * @return {number}					An ID number of the hooked function which can be used to turn off the hook later
 	 */
 	static on(hook: string | RegExp, fn: (...args: any) => any): number {
 		console.debug(`${vtt} | Registered callback for ${hook} hook`);		// ┬ FoundryVTT Original
@@ -42,13 +44,11 @@ class HooksExt {
 		return id;															// ┘
 	}
 
-	/* -------------------------------------------- */
-
 	/**
 	 * Unregister a callback handler for a particular hook event
 	 *
-	 * @param {string} hook           The unique name of the hooked event
-	 * @param {Function|number} fn    The function, or ID number for the function, that should be turned off
+	 * @param {string | RegExp} hook	The unique name of the hooked event
+	 * @param {Function|number} fn		The function, or ID number for the function, that should be turned off
 	 */
 	static off(hook: string | RegExp, fn: ((...args: any) => any) | number) {
 		if (typeof fn === "number") {										// ┐
@@ -76,8 +76,6 @@ class HooksExt {
 		console.debug(`${vtt} | Unregistered callback for ${hook} hook`);	// ┘
 	}
 
-	/* -------------------------------------------- */
-
 	/**
 	 * Call all hook listeners in the order in which they were registered
 	 * Hooks called this way can not be handled by returning false and will always trigger every hook callback.
@@ -89,9 +87,9 @@ class HooksExt {
 	static callAll(hook: string, ...args: any) {
 		if (CONFIG.debug.hooks) {											// ┐
 			console.log(`DEBUG | Calling ${hook} hook with args:`);			// ├ FoundryVTT Original
-			console.log(args);												// │
-			this._hookRepo.add(hook);
-		}																	// ┘
+			console.log(args);												// ┘
+			this._hookRepo.add(hook);										// ─ HooksExt Customized
+		}																	// ─ FoundryVTT Original
 
 		for (const regex of this._regex) {									// ┐
 			if (!regex[1].regex.test(hook)) continue;						// │
@@ -106,8 +104,6 @@ class HooksExt {
 		}																	// │
 		return true;														// ┘
 	}
-
-	/* -------------------------------------------- */
 
 	/**
 	 * Call hook listeners in the order in which they were registered.

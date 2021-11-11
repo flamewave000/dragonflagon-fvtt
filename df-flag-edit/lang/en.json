@@ -9,6 +9,7 @@
 		"EditButtonPromptDesc": "You can enter an Object's ID (<code>jQFzSIMgxCXFvCyr</code>)<br>or an Object's Path (<code>game.scenes.viewed</code>)<br>If you use an Object Path, the path must be an avaluatable JavaScript expression that results in an ID, a Document, or a Data object.",
 		"EditButtonPromptPlaceholder": "ID or Object Path",
 		"ErrorObjectNotFound": "Object could not be found",
+		"DeletionNotice": "NOTICE: The root keys cannot be removed once added. Only their contents can be truly deleted. This is a flaw in the FoundryVTT Flag system.",
 		"PoweredBy": "Powered by <a href=\"https://github.com/josdejong/jsoneditor\">Json Editor</a> under <a href=\"https://raw.githubusercontent.com/josdejong/jsoneditor/master/LICENSE\">Apache 2.0 License</a>"
 	}
 }

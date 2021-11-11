@@ -114,6 +114,6 @@ npm run tag      # Tags the current commit with the target module's name and ver
 
 # Helpers
 npm run launch   # Launches the Foundry Server (requires install path to be set in .devenv)
-npm run release  # Executes `npm run tag && npm run prod`
+npm run release  # Executes `npm run lint && npm run tag && npm run prod`
 ```
 
