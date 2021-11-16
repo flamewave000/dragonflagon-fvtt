@@ -16,7 +16,7 @@ function launchFlagEditorForEvent(event: JQuery.ClickEvent) {
 }
 Hooks.once('ready', function () {
 	if (!game.user.isGM) return;
-	HooksExt.on(/get.*HeaderButtons/, (app: Application, buttons: Application.HeaderButton[]) => {
+	Hooks.on(<any>/get.*HeaderButtons/, (app: Application, buttons: Application.HeaderButton[]) => {
 		if (buttons.find(x => x.class === 'edit-flags')) return;
 		if (app instanceof DocumentSheet) {
 			buttons.unshift({

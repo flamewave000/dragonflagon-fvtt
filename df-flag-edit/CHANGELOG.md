@@ -1,4 +1,4 @@
-# DragonFlagon Quality of Life
+# DragonFlagon Flag Editor
 
 ## Release 1.1.0 (2021-11-11)
 - **NEW #200:** All config and document sheet windows will now have an "Edit Flags" button in the header. This will open the window's document in the Flags Editor for quick access.
