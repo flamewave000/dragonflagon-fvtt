@@ -1,4 +1,3 @@
-import __init from '../../common/global'; __init();
 import * as DFChatArchive from "./archive/df-chat-archive";
 import DFChatEdit from "./edit/df-chat-edit";
 import * as DFAdventureLog from "./logger/df-adventure-log";

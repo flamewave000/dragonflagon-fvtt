@@ -32,11 +32,6 @@ export default class DFChatEdit {
 			scope: 'world'
 		});
 
-		if (game.user.isGM || SETTINGS.get(PREF_EDIT_ALLOWED)) {
-			// Hooks.on('renderChatMessage', DFChatEdit.processChatMessage);
-			// DFChatEdit.processAllMessages();
-		}
-
 		libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype._onChatKeyDown', (wrapper: (..._: any) => void, ...args: any) => {
 			const event = args[0] as KeyboardEvent;
 			const code = game.keyboard.getKey(event);
@@ -88,18 +83,12 @@ export default class DFChatEdit {
 		}
 	}
 
-	// static processAllMessages() {
-	// 	let element: JQuery<HTMLLIElement>;
-	// 	ui.chat.element.find('li.chat-message').each(function () {
-	// 		element = $(this) as JQuery<HTMLLIElement>;
-	// 		const message = game.messages.get(element.attr('data-message-id'));
-	// 		DFChatEdit.processChatMessage(message, element);
-	// 	});
-	// }
-
 	static isHTML(str: string): boolean {
 		const doc = new DOMParser().parseFromString(str, "text/html");
-		return Array.from(doc.body.childNodes).some(node => node.nodeType === 1);
+		return Array.from(doc.body.childNodes).some(node => {
+			return (node instanceof HTMLElement && !node.classList.contains('df-edited'))
+				&& node.nodeType === 1;
+		});
 	}
 
 	static processChatMessage(chatMessage: ChatMessage/*, html: JQuery<HTMLElement>*/): boolean {
