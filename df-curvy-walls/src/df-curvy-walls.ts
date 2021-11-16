@@ -1,4 +1,3 @@
-import {} from '../../common/global';
 import { CurvyWallsToolBar } from './CurvyWallsToolBar';
 import { CurvyWallToolManager, Mode } from './CurvyWallToolManager';
 import SETTINGS from "../../common/Settings";
