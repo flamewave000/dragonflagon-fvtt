@@ -2,7 +2,7 @@
 	"name": "df-chat-enhance",
 	"title": "DF Chat Enhancements",
 	"description": "Various enhancements to the chat features.",
-	"version": "3.4.1",
+	"version": "3.5.0",
 	"author": "flamewave000#0001",
 	"minimumCoreVersion": "0.8.9",
 	"compatibleCoreVersion": "0.8.9",
@@ -10,6 +10,7 @@
 		{ "name": "_chatcommands" },
 		{ "name": "lib-wrapper" }
 	],
+	"scripts": [ "libs/marked.min.js" ],
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [

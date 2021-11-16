@@ -117,6 +117,8 @@
 		"Settings_GMEditAllHint": "Allow GMs to edit anyone's message instead of just their own",
 		"Settings_IgnoreHtmlName": "Chat Edit: Ignore Messages Containing HTML",
 		"Settings_IgnoreHtmlHint": "Do not allow messages containing HTML to be edited.",
+		"Settings_MarkdownName": "Chat Edit: Enable Markdown",
+		"Settings_MarkdownHint": "Enable Markdown styling in the Chat Log.",
 		"EditedFlag": "(edited)",
 		"Error_NoPermission": "The Gamemaster has disabled editing",
 		"ContextOption": "Edit Message"

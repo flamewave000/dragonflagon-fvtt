@@ -7,6 +7,14 @@ const PREF_IGNORE_HTML = 'edit-ignore-html';
 
 export default class DFChatEdit {
 	static ready() {
+		SETTINGS.register(DFChatEditor.PREF_MARKDOWN, {
+			name: 'DF_CHAT_EDIT.Settings_MarkdownName',
+			hint: 'DF_CHAT_EDIT.Settings_MarkdownHint',
+			type: Boolean,
+			default: true,
+			config: true,
+			scope: 'world'
+		});
 		SETTINGS.register(PREF_EDIT_ALLOWED, {
 			name: 'DF_CHAT_EDIT.Settings_AllowEditName',
 			hint: 'DF_CHAT_EDIT.Settings_AllowEditHint',
@@ -27,7 +35,7 @@ export default class DFChatEdit {
 			name: 'DF_CHAT_EDIT.Settings_IgnoreHtmlName',
 			hint: 'DF_CHAT_EDIT.Settings_IgnoreHtmlHint',
 			type: Boolean,
-			default: true,
+			default: false,
 			config: true,
 			scope: 'world'
 		});
@@ -36,7 +44,7 @@ export default class DFChatEdit {
 			const event = args[0] as KeyboardEvent;
 			const code = game.keyboard.getKey(event);
 			// We have used the Shift+Up combo to edit previously sent message
-			if (code === "ArrowUp" && event.shiftKey) {
+			if (code === "ArrowUp" && event.ctrlKey) {
 				event.preventDefault();
 				let messages = <ChatMessage[]>[...(ui.chat.collection.values())];
 				// Perform an inverted sort ( n<0 before, n=0 same, n>0 after )
@@ -48,6 +56,19 @@ export default class DFChatEdit {
 			else
 				wrapper(...args);
 		}, 'MIXED');
+
+		libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype.processMessage', function (this: ChatLog, wrapper: AnyFunction, message: string) {
+			let originalMessage: string = null;
+			if (SETTINGS.get(DFChatEditor.PREF_MARKDOWN) && !message.trim().startsWith('/')) {
+				[originalMessage, message] = DFChatEditor.processMarkdown(message);
+			}
+			const result = wrapper(message);
+			if (originalMessage) {
+				this._sentMessages.splice(0, 1);
+				this._sentMessages.unshift(originalMessage);
+			}
+			return result;
+		}, 'WRAPPER');
 	}
 
 	static appendChatContextMenuOptions(options: ContextMenu.Item[]) {
@@ -71,8 +92,6 @@ export default class DFChatEdit {
 		// Double check permissions
 		if (!SETTINGS.get(PREF_EDIT_ALLOWED)) {
 			ui.notifications.warn('DF_CHAT_EDIT.Error_NoPermission'.localize());
-			// // Try removing the edit buttons from everything
-			// DFChatEdit.processAllMessages();
 			return;
 		}
 		if ((<any>this).chatEditor) {
@@ -87,6 +106,7 @@ export default class DFChatEdit {
 		const doc = new DOMParser().parseFromString(str, "text/html");
 		return Array.from(doc.body.childNodes).some(node => {
 			return (node instanceof HTMLElement && !node.classList.contains('df-edited'))
+				&& !(node instanceof HTMLBRElement)
 				&& node.nodeType === 1;
 		});
 	}

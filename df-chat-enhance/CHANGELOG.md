@@ -1,5 +1,11 @@
 # DF Chat Enhancements
 
+## Release 3.5.0 (2021-11-15)
+- **NEW:** MarkDown features in the Chat Message box.
+- **NEW:** MarkDown features in the Edit Chat Message.
+- **FIX:** Chat Edit feature was failing after the first edit if "No HTML" option was on.
+- **UPDATE:** Changed the "Edit Last Message" feature shortcut from `Shift+Up` to `Ctrl+Up`.
+
 ## Release 3.4.1 (2021-11-09)
 - **FIX #203:** Custom Chat Colour crash due to unset flag.
 

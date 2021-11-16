@@ -38,6 +38,7 @@ Multiple improvements to the chat system feature set. Brings a new Chat Archive 
 	- [Hover Shadow](#Hover-Shadow)
 	- [Roll Merging](#Roll-Merging)
 - [Whisper Recipient List Truncation](#Whisper-Recipient-List-Truncation)
+- [Third-Party Libraries](#Third-Party-Libraries)
 
 **[![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!**
 
@@ -162,13 +163,19 @@ When viewing a Chat Archive, GMs will see a Merge button in the top right corner
 |:-:|:-:|:-:|:-:|
 |![Manage archives](../.assets/df-chat-enhance-archive-manage.png)|![View archive](../.assets/df-chat-enhance-archive-viewer.png)|![Edit archive](../.assets/df-chat-enhance-archive-edit.png)|![Merge archive](../.assets/df-chat-enhance-archive-merge.png)|
 
+## Chat Message Markdown
+
+You can now use all of your favourite Markdown in the Chat Log for formatting your messages in the way you want.
+
+![Chat Message Markdown](../.assets/df-chat-enhance-chat-edit-markdown.png)
+
 ## Edit Sent Messages
 
 You will now see a little edit button in the top right of messages you are allowed to edit. Clicking this will display a dialog that lets you change the contents of the message. It will also add the "(edited)" flavour to the message to show that it has been modified.
 
 ### Edit Last Message Keyboard Shortcut
 
-A keyboard shortcut has now been added to allow you to quickly edit your most recent message you sent. While in the chat box, simply press `[Shift]+[Up]` on the keyboard. An edit message dialog will immediately appear for the most recent message you sent.
+A keyboard shortcut has now been added to allow you to quickly edit your most recent message you sent. While in the chat box, simply press `[Ctrl]+[Up]` on the keyboard. An edit message dialog will immediately appear for the most recent message you sent.
 
 ![](../.assets/df-chat-enhance-edit-message.png)
 
@@ -225,3 +232,9 @@ Now when you whisper a message to a list of users, the Recipient List at the top
 ## Formatted Message Text Selectable
 
 Core Foundry prevents the selection of text in ANY part of Foundry. This means sections need to be re-enabled for user text selection. Messages currently allow it, but only for the plain text part. If you attempt to select "formatted" or stylized text such as this: `"Hello, my name is <b>Bob</b>"`. The `<b>` makes the text "Bob" bold, and cannot be selected. DF Chat Enhancements makes it possible to select any and all text within a regular message (any message that is not a Roll).
+
+## Third-Party Libraries
+
+- `marked.min.js` - a markdown parser
+	> Copyright (c) 2011-2021, Christopher Jeffrey. (MIT Licensed)
+	> https://github.com/markedjs/marked
