@@ -1,0 +1,12 @@
+name: ESLint
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install modules
+      run: npm i
+    - name: Run ESLint
+      run: npx eslint --ext .ts,.tsx '**/src/**/*.ts'
+#eslint . --ext .js,.jsx,.ts,.tsx

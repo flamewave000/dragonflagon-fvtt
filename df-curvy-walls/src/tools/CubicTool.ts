@@ -1,7 +1,7 @@
-import { CurvyWallControl } from '../CurvyWallsToolBar.js';
-import { Bezier } from '../lib/bezier.js';
-import { BezierTool, ToolMode } from './BezierTool.js';
-import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler, MagnetPointInputHandler } from "./ToolInputHandler.js";
+import { CurvyWallControl } from '../CurvyWallsToolBar';
+import { Bezier } from '../../libs/bezier';
+import { BezierTool, ToolMode } from './BezierTool';
+import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler, MagnetPointInputHandler } from "./ToolInputHandler";
 
 const pointNearPoint = BezierTool.pointNearPoint;
 declare type Point = PIXI.Point;
@@ -13,8 +13,8 @@ class InitializerIH extends InitializerInputHandler {
 	}
 	move(origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
 		super.move(origin, destination, event);
-		var dx = this.tool.lineB.x - this.tool.lineA.x;
-		var dy = this.tool.lineB.y - this.tool.lineA.y;
+		let dx = this.tool.lineB.x - this.tool.lineA.x;
+		let dy = this.tool.lineB.y - this.tool.lineA.y;
 		const length = Math.sqrt((dx * dx) + (dy * dy));
 		dx /= length;
 		dy /= length;

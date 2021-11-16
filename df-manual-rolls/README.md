@@ -1,5 +1,7 @@
 # Dragon Flagon Manual Rolls
 
+![Forge Installs](https://img.shields.io/badge/dynamic/json?color=red&label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-manual-rolls) ![Latest Version](https://img.shields.io/badge/dynamic/json?label=Latest%20Release&prefix=v&query=package.versions%5B0%5D&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-manual-rolls) [![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Fdf-manual-rolls%2Fshield%2Fendorsements)](https://www.foundryvtt-hub.com/package/df-manual-rolls/)
+
 Allows you to manually enter the individual dice results when making any kind of roll. This can be great for both testing your game (where you want to roll a specific number) or if you want to use real dice! and let Foundry figure out the math.
 
 Given the limitations of Foundry around Rolling (namely that rolls are not Asynchronous) it is difficult to really do any kind of overhaul of the roll system. But I've found a way using good ol' fashioned prompts!

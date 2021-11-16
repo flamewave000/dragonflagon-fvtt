@@ -1,5 +1,7 @@
 # DragonFlagon Hotkeys Library
 
+![Forge Installs](https://img.shields.io/badge/dynamic/json?color=red&label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Flib-df-hotkeys) ![Latest Version](https://img.shields.io/badge/dynamic/json?label=Latest%20Release&prefix=v&query=package.versions%5B0%5D&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Flib-df-hotkeys) [![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Flib-df-hotkeys%2Fshield%2Fendorsements)](https://www.foundryvtt-hub.com/package/lib-df-hotkeys/)
+
 Library for Foundry VTT module developers to use. It allows modules to register their own Keyboard Shortcuts and gives way for users to then customize those hotkey bindings.
 
 This module comes with a single hotkey pre-assigned for the Select Tool mapped to the `S` key.
@@ -141,16 +143,16 @@ To register a new Hotkey, simply add the following to your code. It must be duri
 // JavaScript Implementation
 Hooks.once('init', function() {
 	/* Hotkeys.registerShortcut(config: HotkeySetting): void */
-	hotkeys.registerShortcut({
+	Hotkeys.registerShortcut({
 		name: 'my-module.my-hotkey', // <- Must be unique
 		label: 'My Hotkey',
 		get: () => game.settings.get('my-module', 'my-hotkey'),
 		set: async value => await game.settings.set('my-module', 'my-hotkey', value),
-		default: () => { return { key: hotkeys.keys.KeyQ, alt: false, ctrl: false, shift: false }; },
+		default: () => { return { key: Hotkeys.keys.KeyQ, alt: false, ctrl: false, shift: false }; },
 		onKeyDown: self => { console.log('You hit my custom hotkey!') },
 	});
-    /* Hotkeys.registerShortcut(config: HotkeySetting, throwOnError?: boolean): boolean */
-    hotkeys.registerShortcut({...}, false);
+	/* Hotkeys.registerShortcut(config: HotkeySetting, throwOnError?: boolean): boolean */
+	Hotkeys.registerShortcut({...}, false);
 });
 ```
 
@@ -158,16 +160,16 @@ Hooks.once('init', function() {
 // TypeScript Implementation
 Hooks.once('init', function() {
 	/* Hotkeys.registerShortcut(config: HotkeySetting): void */
-	hotkeys.registerShortcut({
+	Hotkeys.registerShortcut({
 		name: 'my-module.my-hotkey', // <- Must be unique
 		label: 'My Hotkey',
 		get: () => game.settings.get('my-module', 'my-hotkey'),
 		set: async (value: KeyMap) => await game.settings.set('my-module', 'my-hotkey', value),
-		default: () => { return { key: hotkeys.keys.KeyQ, alt: false, ctrl: false, shift: false }; },
+		default: () => { return { key: Hotkeys.keys.KeyQ, alt: false, ctrl: false, shift: false }; },
 		onKeyDown: (self: HotkeySetting) => { console.log('You hit my custom hotkey!') },
 	});
-    /* Hotkeys.registerShortcut(config: HotkeySetting, throwOnError?: boolean): boolean */
-    hotkeys.registerShortcut({...}, false);
+	/* Hotkeys.registerShortcut(config: HotkeySetting, throwOnError?: boolean): boolean */
+	Hotkeys.registerShortcut({...}, false);
 });
 ```
 
@@ -184,22 +186,22 @@ This is only recommended if you have multiple hotkeys to group together. Otherwi
 Hooks.once('init', function() {
 	// You must register the group before adding hotkeys to it
 	/* Hotkeys.registerGroup(group: HotkeyGroup): void */
-	hotkeys.registerGroup({
+	Hotkeys.registerGroup({
 		name: 'my-module.my-group', // <- Must be unique
 		label: 'My Awesome Group',
 		description: 'Optional description goes here' // <-- Optional
 	});
 	/* Hotkeys.registerGroup(group: HotkeyGroup, throwOnError?: boolean): boolean */
-	hotkeys.registerGroup({...}, false);
+	Hotkeys.registerGroup({...}, false);
 
 	/* Hotkeys.registerShortcut(config: HotkeySetting, throwOnError?: boolean) */
-	hotkeys.registerShortcut({
+	Hotkeys.registerShortcut({
 		name: 'my-module.my-hotkey', // <- Must be unique
 		label: 'My Hotkey',
 		group: 'my-module.my-group', // <- target your custom group
 		get: () => game.settings.get('my-module', 'my-hotkey'),
 		set: async value => await game.settings.set('my-module', 'my-hotkey', value),
-		default: () => { return { key: hotkeys.keys.KeyQ, alt: false, ctrl: false, shift: false }; },
+		default: () => { return { key: Hotkeys.keys.KeyQ, alt: false, ctrl: false, shift: false }; },
 		onKeyDown: self => { console.log('You hit my custom hotkey!') },
 	});
 });
@@ -210,22 +212,22 @@ Hooks.once('init', function() {
 Hooks.once('init', function() {
 	// You must register the group before adding hotkeys to it
 	/* Hotkeys.registerGroup(group: HotkeyGroup): void */
-	hotkeys.registerGroup({
+	Hotkeys.registerGroup({
 		name: 'my-module.my-group', // <- Must be unique
 		label: 'My Awesome Group',
 		description: 'Optional description goes here' // <-- Optional
 	});
 	/* Hotkeys.registerGroup(group: HotkeyGroup, throwOnError?: boolean): boolean */
-	hotkeys.registerGroup({...}, false);
+	Hotkeys.registerGroup({...}, false);
 
 	/* Hotkeys.registerShortcut(config: HotkeySetting, throwOnError?: boolean) */
-	hotkeys.registerShortcut({
+	Hotkeys.registerShortcut({
 		name: 'my-module.my-hotkey', // <- Must be unique
 		label: 'My Hotkey',
 		group: 'my-module.my-group', // <- target your custom group
 		get: () => game.settings.get('my-module', 'my-hotkey'),
 		set: async (value: KeyMap) => await game.settings.set('my-module', 'my-hotkey', value),
-		default: () => { return { key: hotkeys.keys.KeyQ, alt: false, ctrl: false, shift: false }; },
+		default: () => { return { key: Hotkeys.keys.KeyQ, alt: false, ctrl: false, shift: false }; },
 		onKeyDown: (self: HotkeySetting) => { console.log('You hit my custom hotkey!') },
 	});
 });
@@ -269,9 +271,9 @@ You can do much more complex filtering with intermixed Regular Expressions, and 
 ```javascript
 await Hotkeys.showConfig('My Fancy Config',[
 	// You can mix exact group names with regex
-	'df-curvy-walls', // these will all match
-	'df-curvy.+',     // the same group
-	/df-cur.+/,       // RegExp objects are also allowed
+	'df-curvy-walls',	// these will all match
+	'df-curvy.+',		// the same group
+	/df-cur.+/,			// RegExp objects are also allowed
 	// You can also perform matches on the hotkeys within a group themselves
 	{
 		group: 'df-curvy-walls',
@@ -283,7 +285,7 @@ await Hotkeys.showConfig('My Fancy Config',[
 		// these hotkey names can also be regex strings or RegExp objects
 		hotkeys: [
 			/.+\.(in|de)crement/,
-            '.+\\.(in|de)crement'
+			'.+\\.(in|de)crement'
 		]
 	},
 	// You can also include options from the default "general" group
@@ -302,10 +304,6 @@ class Hotkeys {
 	static async showConfig(title: string, filters: (string | RegExp | GroupFilter)[])
 }
 ```
-
-
-
-
 
 ---
 
@@ -326,10 +324,10 @@ Next you will need to simply import the hotkeys shim in which ever JavaScript/Ty
 import { hotkeys } from './lib/lib-df-hotkeys.shim.js';
 
 Hooks.once('init', function() {
-	hotkeys.registerShortcut({
+	Hotkeys.registerShortcut({
 		name: 'my-module-name.my-shortcut',
 		label: 'MY_MODULE_NAME.MyShortcutLabel`,
-		default: { key: hotkeys.keys.KeyA, alt: false, ctrl: false, shift: false },
+		default: { key: Hotkeys.keys.KeyA, alt: false, ctrl: false, shift: false },
 		onKeyDown: () => console.log('Whoa! it worked without the library activated!')
 	});
 
@@ -338,7 +336,7 @@ Hooks.once('init', function() {
 	 * library module is activated. You can quickly
 	 * check using the following:
 	 */
-	if (hotkeys.isShim !== true) {
+	if (Hotkeys.isShim !== true) {
 		game.settings.registerMenu('my-module-name', {
 			name: 'My Hotkeys!'
 			type: Hotkeys.createConfig('My Title', ['my-module.my-group']),

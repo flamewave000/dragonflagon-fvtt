@@ -1,4 +1,4 @@
-import SETTINGS from './libs/Settings.js';
+import SETTINGS from "../../common/Settings";
 
 export default class TemplateTargeting {
 	static init() {
@@ -21,7 +21,7 @@ export default class TemplateTargeting {
 				always: 'Always'
 			},
 			default: 'toggle',
-			onChange: (newValue: String) => { ui.controls.initialize(); ui.controls.render(true); }
+			onChange: () => { ui.controls.initialize(); ui.controls.render(true); }
 		});
 		SETTINGS.register('template-targeting-patch5e', {
 			name: 'DF_QOL.TemplateTargeting.Patch5e_Name',
@@ -30,10 +30,10 @@ export default class TemplateTargeting {
 			type: Boolean,
 			default: false,
 			scope: 'world',
-			onChange: (newValue: Boolean) => {
+			onChange: (newValue: boolean) => {
 				libWrapper.unregister(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.highlightGrid', false);
 				libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.highlightGrid', this.UPDATE_TARGETS, newValue ? 'OVERRIDE' : 'WRAPPER');
-				canvas.templates?.placeables.forEach((t: MeasuredTemplate) => t.draw())
+				canvas.templates?.placeables.forEach((t: MeasuredTemplate) => t.draw());
 			}
 		});
 		SETTINGS.register('template-targeting-patch5e-circle', {
@@ -59,21 +59,22 @@ export default class TemplateTargeting {
 				visible: true,
 				toggle: true,
 				active: SETTINGS.get('template-targeting-toggle'),
-				onClick: (toggled: boolean) => { SETTINGS.set('template-targeting-toggle', toggled) }
+				onClick: (toggled: boolean) => { SETTINGS.set('template-targeting-toggle', toggled); }
 			});
 		});
 	}
 
-	static UPDATE_TARGETS(this: MeasuredTemplate, wrapped: Function) {
-		const mode = SETTINGS.get<String>('template-targeting');
-		const shouldAutoSelect = mode === 'always' || (mode === 'toggle' && SETTINGS.get<Boolean>('template-targeting-toggle'));
+	static UPDATE_TARGETS(this: MeasuredTemplate, wrapped: ()=>void) {
+		const mode = SETTINGS.get<string>('template-targeting');
+		const shouldAutoSelect = mode === 'always' || (mode === 'toggle' && SETTINGS.get<boolean>('template-targeting-toggle'));
 
 		// Release all previously targeted tokens
 		if (shouldAutoSelect && canvas.tokens.objects) {
-			for (let t of game.user.targets) {
+			for (const t of game.user.targets) {
 				t.setTarget(false, { releaseOthers: false, groupSelection: true });
 			}
 		}
+		// @ts-ignore
 		if (!game.dnd5e || !SETTINGS.get('template-targeting-patch5e')) {
 			// Call the original function
 			wrapped();
@@ -82,7 +83,7 @@ export default class TemplateTargeting {
 			const hx = canvas.grid.w / 2;
 			const hy = canvas.grid.h / 2;
 			// Iterate over all existing tokens and target the ones within the template area
-			for (let token of canvas.tokens.placeables) {
+			for (const token of canvas.tokens.placeables) {
 				if (this.shape.contains((token.x + hx) - this.data.x, (token.y + hy) - this.data.y)) {
 					token.setTarget(true, { user: game.user, releaseOthers: false, groupSelection: true });
 				}
@@ -91,7 +92,7 @@ export default class TemplateTargeting {
 			/************** THIS CODE IS DIRECTLY COPIED FROM 'MeasuredTemplate.prototype.highlightGrid' ****************/
 			const grid = canvas.grid;
 			const d = canvas.dimensions;
-			const border = this.borderColor;
+			const border = <number>this.borderColor;
 			const color = this.fillColor;
 
 			// Only highlight for objects which have a defined shape
@@ -138,10 +139,9 @@ export default class TemplateTargeting {
 			const isRound = game.settings.get("core", "coneTemplateType") === 'round';
 			const rayLength = isRound ? distance : (distance / Math.sin((Math.PI / 2) - (angle / 2))) * Math.sin(Math.PI / 2);
 
-			var [ax1, ay1, bx1, by1] = [0, 0, 0, 0];
-			var [ax2, ay2, bx2, by2] = [0, 0, 0, 0];
-			var coneInitialized = false;
-			var rayInitialized = false;
+			let [ax1, ay1, bx1, by1] = [0, 0, 0, 0];
+			let [ax2, ay2, bx2, by2] = [0, 0, 0, 0];
+			let coneInitialized = false;
 			const generateConeData = () => {
 				if (coneInitialized) return;
 				coneInitialized = true;
@@ -157,10 +157,9 @@ export default class TemplateTargeting {
 					this.data.x + (Math.cos(direction + (angle / 2)) * rayLength),
 					this.data.y + (Math.sin(direction + (angle / 2)) * rayLength)
 				];
-			}
+			};
 			const generateRayData = () => {
 				if (coneInitialized) return;
-				rayInitialized = true;
 				[ax1, ay1] = [
 					this.data.x + (Math.cos(direction - (Math.PI / 2)) * (width / 2)),
 					this.data.y + (Math.sin(direction - (Math.PI / 2)) * (width / 2))
@@ -177,15 +176,15 @@ export default class TemplateTargeting {
 					ax2 + (Math.cos(direction) * distance),
 					ay2 + (Math.sin(direction) * distance)
 				];
-			}
+			};
 			// Identify grid coordinates covered by the template Graphics
 			for (let r = -nr; r < nr; r++) {
 				for (let c = -nc; c < nc; c++) {
-					let [gx, gy] = canvas.grid.grid.getPixelsFromGridPosition(row0 + r, col0 + c);
+					const [gx, gy] = canvas.grid.grid.getPixelsFromGridPosition(row0 + r, col0 + c);
 					const testX = gx + hx;
 					const testY = gy + hy;
 					const testRect = new NormalizedRectangle(gx, gy, canvas.grid.w, canvas.grid.h);
-					var contains = false;
+					let contains = false;
 					switch (this.data.t) {
 						case "circle": {
 							// Calculate the vector from the PoI to the grid square center
@@ -195,9 +194,7 @@ export default class TemplateTargeting {
 							if (contains || !SETTINGS.get('template-targeting-patch5e-circle')) break;
 
 							const sqrDistance = distance * distance;
-							var [vx, vy] = [0, 0];
-							var mag = 0;
-							var vecAngle = 0;
+							let [vx, vy] = [0, 0];
 							const testPoint = (x: number, y: number) => {
 								[vx, vy] = [x - this.data.x, y - this.data.y];
 								return (vx * vx + vy * vy) < sqrDistance;
@@ -240,9 +237,9 @@ export default class TemplateTargeting {
 							// check the end-cap
 							if (isRound) {
 								const sqrDistance = distance * distance;
-								var [vx, vy] = [0, 0];
-								var mag = 0;
-								var vecAngle = 0;
+								let [vx, vy] = [0, 0];
+								let mag = 0;
+								let vecAngle = 0;
 								const testPoint = (x: number, y: number) => {
 									[vx, vy] = [x - this.data.x, y - this.data.y];
 									return (vx * vx + vy * vy) < sqrDistance;
@@ -255,8 +252,8 @@ export default class TemplateTargeting {
 									// Calculate the vector's angle, adjusting for bottom hemisphere if Y is negative
 									vecAngle = Math.acos(vx);
 									if (vy < 0) vecAngle = (Math.PI * 2) - vecAngle;
-									var minAngle = direction - (angle / 2);
-									var maxAngle = direction + (angle / 2);
+									const minAngle = direction - (angle / 2);
+									const maxAngle = direction + (angle / 2);
 									if (minAngle < 0)
 										return vecAngle <= maxAngle || vecAngle >= ((Math.PI * 2) + minAngle);
 									else if (maxAngle > Math.PI * 2)
@@ -313,7 +310,7 @@ export default class TemplateTargeting {
 
 					if (!shouldAutoSelect) continue;
 					// Iterate over all existing tokens and target the ones within the template area
-					for (let token of canvas.tokens.placeables) {
+					for (const token of canvas.tokens.placeables) {
 						if (!testRect.contains(token.x + hx, token.y + hy)) continue;
 						token.setTarget(true, { user: game.user, releaseOthers: false, groupSelection: true });
 					}
@@ -340,7 +337,7 @@ enum OutCode {
  */
 class LineToBoxCollision {
 	private static _computeOutCode(x: number, y: number, bounds: { xMin: number, xMax: number, yMin: number, yMax: number }): OutCode {
-		var code: OutCode;
+		let code: OutCode;
 		code = OutCode.INSIDE;          // initialised as being inside of [[clip window]]
 		if (x <= bounds.xMin)           // to the left of clip window
 			code |= OutCode.LEFT;
@@ -359,9 +356,9 @@ class LineToBoxCollision {
 	static cohenSutherlandLineClipAndDraw(x0: number, y0: number, x1: number, y1: number,
 		bounds: { xMin: number, xMax: number, yMin: number, yMax: number }): boolean {
 		// compute outcodes for P0, P1, and whatever point lies outside the clip rectangle
-		var outcode0: OutCode = this._computeOutCode(x0, y0, bounds);
-		var outcode1: OutCode = this._computeOutCode(x1, y1, bounds);
-		var accept = false;
+		let outcode0: OutCode = this._computeOutCode(x0, y0, bounds);
+		let outcode1: OutCode = this._computeOutCode(x1, y1, bounds);
+		let accept = false;
 
 		while (true) {
 			if (!(outcode0 | outcode1)) {
@@ -375,10 +372,10 @@ class LineToBoxCollision {
 			} else {
 				// failed both tests, so calculate the line segment to clip
 				// from an outside point to an intersection with clip edge
-				var [x, y] = [0, 0];
+				let [x, y] = [0, 0];
 
 				// At least one endpoint is outside the clip rectangle; pick it.
-				var outcodeOut: OutCode = outcode1 > outcode0 ? outcode1 : outcode0;
+				const outcodeOut: OutCode = outcode1 > outcode0 ? outcode1 : outcode0;
 
 				// Now find the intersection point;
 				// use formulas:

@@ -1,4 +1,5 @@
-import SETTINGS from "../SETTINGS.js";
+import { ChatMessageData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import SETTINGS from "../../../common/Settings";
 
 
 const TEMPLATE = "$0: $1 (+$2&nbsp;more)";
@@ -7,8 +8,8 @@ const LENGTH_ADJUST = '&nbsp;'.length - 1;
 
 export default class WhisperTruncation {
 
-	private static readonly PREF_ENABLED = 'whisper-trunc_enabled'
-	private static readonly PREF_CHAR_LIMIT = 'whisper-trunc_char-limit'
+	private static readonly PREF_ENABLED = 'whisper-trunc_enabled';
+	private static readonly PREF_CHAR_LIMIT = 'whisper-trunc_char-limit';
 
 	static init() {
 		Hooks.on('renderChatMessage', this._messageRender.bind(this));
@@ -40,12 +41,12 @@ export default class WhisperTruncation {
 		});
 	}
 
-	private static _messageRender(message: ChatMessage, html: JQuery<HTMLElement>, messageData: ChatMessage.Data) {
+	private static _messageRender(message: ChatMessage, html: JQuery<HTMLElement>, _cmd: ChatMessageData) {
 		// ignore regular messages, or whispers with only 1 recipient
 		if (!SETTINGS.get(this.PREF_ENABLED) || !(message.data.whisper) || message.data.whisper.length <= 1) return;
-		var users = message.data.whisper.map(x => game.users.get(x));
-		var accum = users[0].data.name;
-		var title = this._formatTitle(accum, users.length - 1);
+		const users = message.data.whisper.map(x => game.users.get(x));
+		let accum = users[0].data.name;
+		let title = this._formatTitle(accum, users.length - 1);
 		let c = 1;
 		const CHAR_LIMIT = SETTINGS.get<number>(this.PREF_CHAR_LIMIT);
 		for (; c < users.length; c++) {
@@ -69,7 +70,7 @@ export default class WhisperTruncation {
 	private static _formatTitle(names: string, count: number): string {
 		return count > 0
 			? TEMPLATE
-				.replace('$0', game.i18n.localize('CHAT.To'))
+				.replace('$0', 'CHAT.To'.localize())
 				.replace('$1', names)
 				.replace('$2', count.toString())
 			: names;

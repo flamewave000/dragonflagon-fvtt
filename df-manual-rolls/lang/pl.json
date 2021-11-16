@@ -1,0 +1,46 @@
+{
+	"I18N.LANGUAGE": "Polski",
+	"I18N.MAINTAINERS": [ "MichalGolaszewski" ],
+	"DF_MANUAL_ROLLS": {
+		"Error_libWrapper_Missing": "DF Manual Rolls wymaga modułu 'libWrapper'. Proszę go zainstalować i aktywować.",
+		"Settings": {
+			"GM_Name": "Dla wszystkich MG",
+			"GM_Hint": "Ustawienia rzutów ręcznych dla wszystkich ról MG.",
+			"PC_Name": "Dla wszystkich BG",
+			"PC_Hint": "Ustawienia rzutów ręcznych dla wszystkich ról BG.",
+			"Flagged_Name": "Oznaczaj rzuty ręczne",
+			"Flagged_Hint": "Dodaje znacznik na czacie do rzutów wykonanych ręcznie.",
+			"FocusInput_Name": "Automatycznie wybieraj pierwsze pole tekstowe",
+			"FocusInput_Hint": "Po wyświetleniu dialogu z prośbą o rzuty kursor automatycznie przeniesiony zostanie na pierwsze pole tekstowe."
+		},
+		"Setting_Options": {
+			"Disabled": "Wyłączone",
+			"Always": "Zawsze rzucaj ręcznie",
+			"Toggle": "Przełączane rzuty (opis w dokumentacji)"
+		},
+		"SceneControlTitle": "Przełącz Ręczne Rzuty",
+		"Reload_Title": "Przeładować stronę?",
+		"Reload_Content": "Zmieniłeś ustawienia rzutów ręcznych, co wymaga ponownego załadowania strony.",
+		"Flag": "(Rzut Ręczny)",
+		"Prompt": {
+			"DefaultTitle": "Żądanie Rzutu",
+			"Header_RollTerm": "Notacja Rzutu ",
+			"Header_Rolls": "Poszczególne Rzuty ",
+			"Header_Total": "Suma Rzutów",
+			"Legacy": "Wprowadź wartość z kości {0}k{1} od {0} do {2}",
+			"Legacy_Invalid": "(niepoprawne dane, spróbuj ponownie)"
+		},
+		"Tooltip": {
+			"RollTerm": "Notacja rzutów, które należy wykonać.",
+			"Rolls": "Wyniki poszczególnych żądanych rzutów.",
+			"Total": "Sumaryczna wartość wyrzucona na kościach. Jeśli chcesz pominąć wielokrotne prowadzanie."
+		},
+		"Submit": "Zatwierdź",
+		"Placeholder": {
+			"Roll": ", gdy puste losowo",
+			"Total_Pt1": "Suma od ",
+			"Total_Pt2": " do "
+		},
+		"InitiativeRollFlavour": "Rzut inicjatywy \"{{name}}\""
+	}
+}

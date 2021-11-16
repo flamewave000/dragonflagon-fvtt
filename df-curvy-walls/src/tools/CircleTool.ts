@@ -1,9 +1,9 @@
-import { BezierTool, ToolMode } from './BezierTool.js';
-import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler.js";
-import { CurvyWallControl } from '../CurvyWallsToolBar.js';
+import { BezierTool, ToolMode } from './BezierTool';
+import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler";
+import { CurvyWallControl } from '../CurvyWallsToolBar';
 
 const pointNearPoint = BezierTool.pointNearPoint;
-const PI2 = Math.PI * 2
+const PI2 = Math.PI * 2;
 declare type Point = PIXI.Point;
 
 // Helper function log outputs
@@ -11,7 +11,7 @@ declare type Point = PIXI.Point;
 
 class InitializerIH extends InitializerInputHandler {
 	constructor(tool: CircleTool, success: () => void, fail: () => void) {
-		super(tool, true, tool.lineA, tool.lineB, success, fail)
+		super(tool, true, tool.lineA, tool.lineB, success, fail);
 	}
 }
 
@@ -99,9 +99,9 @@ export default class CircleTool extends BezierTool {
 	getCenter(): PIXI.Point {
 		const bounds = this.bounds;
 		const rect = bounds.getRectangle(PIXI.Rectangle.EMPTY);
-		var halfWidth = rect.width / 2;
-		var halfHeight = rect.height / 2;
-		return new PIXI.Point(bounds.minX + halfWidth, bounds.minY + halfHeight)
+		const halfWidth = rect.width / 2;
+		const halfHeight = rect.height / 2;
+		return new PIXI.Point(bounds.minX + halfWidth, bounds.minY + halfHeight);
 	}
 
 	private createVector(theta: number, magnitude: Point, origin: Point): Point {
@@ -115,7 +115,7 @@ export default class CircleTool extends BezierTool {
 		if (this.mode == ToolMode.NotPlaced) return [];
 		const bounds = this.bounds;
 		const rect = bounds.getRectangle(PIXI.Rectangle.EMPTY);
-		var deltaTheta = Math.PI / count;
+		const deltaTheta = Math.PI / count;
 		// Calculate the magnitude per axis based on the scalar of the circle's x,y radius
 		const magnitude = new PIXI.Point(rect.width / 2, rect.height / 2);
 		// Find the exact middle point of the circle
@@ -123,8 +123,8 @@ export default class CircleTool extends BezierTool {
 		// initialize with the first point
 		const points: PIXI.Point[] = [];
 		// Start at full rotation and work our way back CCW
-		var angle = PI2;
-		var sliceAngle = this.sliceHandle.rawAngle != PI2 ? this.sliceHandle.rawAngle : 0.0;
+		let angle = PI2;
+		const sliceAngle = this.sliceHandle.rawAngle != PI2 ? this.sliceHandle.rawAngle : 0.0;
 		// console.log(`Slice: ${degrees(sliceAngle)}, Arc: ${degrees(this.arcHandle.rawAngle)}`);
 		while (angle >= sliceAngle) {
 			points.push(this.createVector(this.arcHandle.rawAngle + angle, magnitude, origin));
@@ -198,10 +198,10 @@ class RotatorHandle {
 	get rawAngle(): number { return this._angle; }
 	set rawAngle(value: number) { this._angle = value; }
 	get angle(): number {
-		return !!this.magnet ? this._angle + this.magnet._angle : this._angle;
+		return this.magnet ? this._angle + this.magnet._angle : this._angle;
 	}
 	set angle(value: number) {
-		this._angle = !!this.magnet ? value - this.magnet._angle : this._angle = value;
+		this._angle = this.magnet ? value - this.magnet._angle : this._angle = value;
 	}
 	private length: number = 0.0;
 	magnet: RotatorHandle;
@@ -210,7 +210,7 @@ class RotatorHandle {
 		this.magnet = magnet;
 	}
 	getHandlePoint(center: PIXI.Point): PIXI.Point {
-		const magnet = !!this.magnet ? this.magnet._angle : 0;
+		const magnet = this.magnet ? this.magnet._angle : 0;
 		const ax = Math.cos(magnet + this._angle) * this.length;
 		const ay = Math.sin(magnet + this._angle) * this.length;
 		return new PIXI.Point(center.x + ax, center.y + ay);
@@ -232,7 +232,7 @@ class PointRotationHandler extends InputHandler {
 		const vecX = to.x - this.center.x;
 		const vecY = to.y - this.center.y;
 		// calculate the reference angle theta bar (͞θ)
-		var angle = Math.atan(vecY / vecX);
+		let angle = Math.atan(vecY / vecX);
 		// If on the -X axis (2nd and 3rd quadrants)
 		if (vecX < 0) angle += Math.PI;
 		// Specifically the +X,-Y quadrant (4th quadrant)
@@ -247,7 +247,7 @@ class PointRotationHandler extends InputHandler {
 				? whole * snapAngle
 				: (whole + 1) * snapAngle;
 		}
-		const magnet = !!this.arcHandle.magnet ? (PI2 - this.arcHandle.magnet.rawAngle) : 0
+		const magnet = this.arcHandle.magnet ? (PI2 - this.arcHandle.magnet.rawAngle) : 0;
 		this.arcHandle.rawAngle = (magnet + angle) % PI2;
 	}
 

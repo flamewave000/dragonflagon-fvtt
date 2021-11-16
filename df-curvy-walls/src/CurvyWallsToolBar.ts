@@ -1,7 +1,7 @@
 
-import { CurvyWallToolManager, Mode } from './CurvyWallToolManager.js';
-import SETTINGS from './lib/Settings.js';
-import { ToolMode } from './tools/BezierTool.js';
+import { CurvyWallToolManager, Mode } from './CurvyWallToolManager';
+import SETTINGS from "../../common/Settings";
+import { ToolMode } from './tools/BezierTool';
 
 export interface CurvyWallControl {
 	title: string;
@@ -29,13 +29,10 @@ export class CurvyWallsToolBar extends Application {
 	static readonly PREF_PRESERVE = 'preserve-tool';
 
 	static get defaultOptions(): Application.Options {
-		return <Application.Options>mergeObject<Partial<Application.Options>>(
-			super.defaultOptions,
-			{
-				popOut: false,
-				template: 'modules/df-curvy-walls/templates/curvy-walls-controls.hbs'
-			}
-		);
+		return mergeObject(super.defaultOptions, {
+			popOut: false,
+			template: 'modules/df-curvy-walls/templates/curvy-walls-controls.hbs'
+		});
 	}
 
 	private _closing = false;
@@ -65,7 +62,7 @@ export class CurvyWallsToolBar extends Application {
 			isActive: function () { return CurvyWallToolManager.instance.mode == Mode.Rect; },
 			onClick: function () { return CurvyWallToolManager.instance.mode = this.isActive() ? Mode.None : Mode.Rect; }
 		}
-	}
+	};
 	private _generalControls: Record<string, CurvyWallControl> = {
 		increment: {
 			title: 'df-curvy-walls.increment',
@@ -89,7 +86,7 @@ export class CurvyWallsToolBar extends Application {
 			class: 'cancel',
 			onClick: CurvyWallToolManager.instance.clearTool.bind(CurvyWallToolManager.instance)
 		}
-	}
+	};
 	private _placementControls: Record<string, CurvyWallControl> = {
 		pointconstruct: {
 			title: 'df-curvy-walls.trace_curve_with_points',
@@ -107,7 +104,7 @@ export class CurvyWallsToolBar extends Application {
 			class: 'apply',
 			onClick: () => { CurvyWallToolManager.instance.applyPointMapping(); }
 		}
-	}
+	};
 
 	constructor(options?: Application.Options) {
 		super(options);
@@ -116,12 +113,12 @@ export class CurvyWallsToolBar extends Application {
 				this._closing = false;
 				return;
 			}
-			this.render(false)
+			this.render(false);
 		});
 	}
 
-	getData(options?: Application.RenderOptions): CurvyWallsToolsOptions {
-		const toolIsPlaced = CurvyWallToolManager.instance.mode != Mode.None && CurvyWallToolManager.instance.activeTool.mode != ToolMode.NotPlaced
+	getData(): CurvyWallsToolsOptions {
+		const toolIsPlaced = CurvyWallToolManager.instance.mode != Mode.None && CurvyWallToolManager.instance.activeTool.mode != ToolMode.NotPlaced;
 		const toolControls = CurvyWallToolManager.instance.activeTool?.getTools();
 		const placementControls: CurvyWallControlUI[] = [{
 			name: 'pointconstruct',
@@ -147,7 +144,7 @@ export class CurvyWallsToolBar extends Application {
 					icon: this._tools[it].icon,
 					toggleable: true,
 					isActive: this._tools[it].isActive()
-				}
+				};
 			}),
 			general: toolIsPlaced ? Object.keys(this._generalControls).map(it => {
 				return {
@@ -155,7 +152,7 @@ export class CurvyWallsToolBar extends Application {
 					title: this._generalControls[it].title,
 					icon: this._generalControls[it].icon,
 					class: this._generalControls[it].class
-				}
+				};
 			}) : [Mode.Quad, Mode.Circ, Mode.Rect].includes(CurvyWallToolManager.instance.mode) ? placementControls : [],
 			controls: toolIsPlaced && !!toolControls ? Object.keys(toolControls).map(it => {
 				return {
@@ -164,8 +161,8 @@ export class CurvyWallsToolBar extends Application {
 					icon: toolControls[it].icon,
 					class: toolControls[it].class,
 					toggleable: toolControls[it].toggleable,
-					isActive: !!toolControls[it].toggleable ? toolControls[it].isActive() : undefined
-				}
+					isActive: toolControls[it].toggleable ? toolControls[it].isActive() : undefined
+				};
 			}) : []
 		};
 
@@ -183,7 +180,7 @@ export class CurvyWallsToolBar extends Application {
 				const controls = Math.ceil((controlCount / controlsHeight) * 46) * 46;
 				// document.body.style.setProperty("--playerlist-offset", `${layers}px`);
 				html.css('left', `${layers + controls}px`);
-			}
+			};
 			window.addEventListener("resize", align);
 			align();
 		}
@@ -205,19 +202,19 @@ export class CurvyWallsToolBar extends Application {
 
 			const toolControl = CurvyWallToolManager.instance.activeTool?.getTools()[name];
 			if (toolControl !== undefined) {
-				if (!toolControl.toggleable) toolControl.onClick()
-				else toolControl.onClick(!toolControl.isActive())
+				if (!toolControl.toggleable) toolControl.onClick();
+				else toolControl.onClick(!toolControl.isActive());
 			}
 
 			this.render(false);
 		});
 	}
 
-	close(options?: Application.CloseOptions): Promise<unknown> {
+	close(options?: Application.CloseOptions): Promise<void> {
 		if (!SETTINGS.get(CurvyWallsToolBar.PREF_PRESERVE)) {
 			this._closing = true;
 			CurvyWallToolManager.instance.mode = Mode.None;
 		}
-		return super.close(options)
+		return super.close(options);
 	}
 }

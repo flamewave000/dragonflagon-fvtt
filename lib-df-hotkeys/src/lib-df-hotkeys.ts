@@ -1,8 +1,9 @@
 // Import and declare the classes/interfaces Global
-import GroupFilter from './GroupFilter.js';
-import { HotkeyConfig } from './HotkeyConfig.js';
-import { _Hotkeys } from './Hotkeys.js';
-import { KeyMap, HotkeySetting } from './Hotkeys.js';
+import {} from '../../common/global';
+import GroupFilter from './GroupFilter';
+import { HotkeyConfig } from './HotkeyConfig';
+import { _Hotkeys } from './Hotkeys';
+import { KeyMap, HotkeySetting } from './Hotkeys';
 
 // Initialize Hotkeys on the global scope
 export const Hotkeys: typeof _Hotkeys = _Hotkeys;
@@ -18,7 +19,7 @@ export const Hotkeys: typeof _Hotkeys = _Hotkeys;
 			throw new Error('You must provide at least one filter');
 		const config = new HotkeyConfig(title, filters);
 		await config.render(true);
-	}
+	};
 	Hotkeys.createConfig = function (title: string, filters: (string | RegExp | GroupFilter)[]) {
 		if (!title || title === '')
 			throw new Error('You must provide a title for the config menu');
@@ -29,13 +30,13 @@ export const Hotkeys: typeof _Hotkeys = _Hotkeys;
 				super(title, filters);
 			}
 		};
-	}
+	};
 }
 
 
-import SETTINGS from './Settings.js';
+import SETTINGS from "../../common/Settings";
 // Initializes the SETTINGS helper with the name of this module
-SETTINGS.init('lib-df-hotkeys')
+SETTINGS.init('lib-df-hotkeys');
 
 Hooks.once('init', function () {
 	HotkeyConfig.init();
@@ -57,7 +58,8 @@ Hooks.once('init', function () {
 		get: () => SETTINGS.get(PREF_SELECT),
 		set: async (value: KeyMap) => SETTINGS.set(PREF_SELECT, value),
 		default: () => SETTINGS.default(PREF_SELECT),
-		onKeyDown: (self: HotkeySetting) =>
+		onKeyDown: (_: HotkeySetting) =>
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
 			(<any>ui.controls)._onClickTool({ preventDefault: () => { }, currentTarget: { dataset: { tool: PREF_SELECT } } }),
 	});
 
@@ -119,7 +121,7 @@ Hooks.once('init', function () {
 	// 	default: () => SETTINGS.default('test2'),
 	// 	onKeyUp: (self: HotkeySetting) => { console.log('You released Alt + 2') },
 	// });
-	// var count = 0;
+	// let count = 0;
 	// Hotkeys.registerShortcut({
 	// 	name: 'test3',
 	// 	label: 'Example Custom Group Hotkey 1',

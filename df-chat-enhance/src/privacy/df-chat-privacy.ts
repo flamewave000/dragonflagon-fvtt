@@ -1,4 +1,5 @@
-import CONFIG from "../CONFIG.js";
+import SETTINGS from "../../../common/Settings";
+import CONFIG from "../CONFIG";
 
 
 const ICONS_FOR_KNOWN_ROLL_TYPES: {
@@ -20,9 +21,9 @@ function calcColour(current: number, count: number): string {
 
 interface ChatLogData {
 	user: User,
-	rollMode: String,
+	rollMode: string,
 	rollModes: any,
-	isStream: Boolean
+	isStream: boolean
 }
 
 async function handleChatLogRendering(chat: ChatLog, html: JQuery<HTMLElement>, data: ChatLogData) {
@@ -46,28 +47,28 @@ async function handleChatLogRendering(chat: ChatLog, html: JQuery<HTMLElement>, 
 	const buttonHtml = $(await renderTemplate('modules/df-chat-enhance/templates/privacy-button.hbs', { buttons }));
 	buttonHtml.find('button').on('click', function () {
 		const rollType = $(this).attr('data-id');
-		game.settings.set("core", "rollMode", rollType);
+		game.settings.set("core", "rollMode", <any>rollType);
 		buttonHtml.find('button.active').removeClass('active');
 		$(this).addClass('active');
 	});
-	html.find('select.roll-type-select').after(buttonHtml);
-	html.find('select.roll-type-select').remove();
+	html.find('select[name=rollMode]').after(buttonHtml);
+	html.find('select[name=rollMode]').remove();
 
-	if (!game.settings.get(CONFIG.MOD_NAME, 'replace-buttons'))
+	if (!SETTINGS.get('replace-buttons'))
 		return;
 
 	// Adjust the button container to remove the extra margin since those buttons are now moving in.
 	buttonHtml.attr('style', 'margin:0 0 0 0.5em');
 
 	// Convert the old <a> tag elements to <button> tags
-	var first = true;
-	html.find('#chat-controls div.control-buttons a').each(function (idx, element) {
-		let html = $(this).html();
-		let classes = $(this).attr('class');
-		let title = $(this).attr('title');
-		let style = $(this).attr('style');
-		let click = ($ as any)._data(this, 'events')['click'][0].handler;
-		let button = $(`<button class="${classes}" title="${title}" style="${style}">${html}</button>`);
+	let first = true;
+	html.find('#chat-controls div.control-buttons a').each(function() {
+		const html = $(this).html();
+		const classes = $(this).attr('class');
+		const title = $(this).attr('title');
+		const style = $(this).attr('style');
+		const click = ($ as any)._data(this, 'events')['click'][0].handler;
+		const button = $(`<button class="${classes}" title="${title}" style="${style}">${html}</button>`);
 		button.on('click', click);
 		// Add a small margin between the first button and the RollTypes
 		if (first) {
@@ -81,7 +82,7 @@ async function handleChatLogRendering(chat: ChatLog, html: JQuery<HTMLElement>, 
 }
 
 export default function initDFChatPrivacy() {
-	game.settings.register(CONFIG.MOD_NAME, 'enabled', {
+	SETTINGS.register('enabled', {
 		name: 'DF_CHAT_PRIVACY.Settings_EnableTitle',
 		hint: 'DF_CHAT_PRIVACY.Settings_EnableHint',
 		scope: 'client',
@@ -90,7 +91,7 @@ export default function initDFChatPrivacy() {
 		config: true,
 		onChange: CONFIG.requestReload
 	});
-	game.settings.register(CONFIG.MOD_NAME, 'replace-buttons', {
+	SETTINGS.register('replace-buttons', {
 		name: 'DF_CHAT_PRIVACY.Settings_ReplaceButtonsTitle',
 		hint: 'DF_CHAT_PRIVACY.Settings_ReplaceButtonsHint',
 		scope: 'client',
@@ -100,7 +101,7 @@ export default function initDFChatPrivacy() {
 		onChange: CONFIG.requestReload
 	});
 
-	if (game.settings.get(CONFIG.MOD_NAME, 'enabled') === false)
+	if (SETTINGS.get('enabled') === false)
 		return;
 
 	Hooks.on('renderChatLog', handleChatLogRendering);

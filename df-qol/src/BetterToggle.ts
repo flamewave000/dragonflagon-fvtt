@@ -1,4 +1,4 @@
-import SETTINGS from './libs/Settings.js';
+import SETTINGS from "../../common/Settings";
 
 export default class BetterToggle {
 	static init() {

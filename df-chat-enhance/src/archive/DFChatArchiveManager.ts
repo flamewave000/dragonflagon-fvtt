@@ -1,8 +1,10 @@
-import { DFChatArchive } from "./DFChatArchive.js";
-import DFChatArchiveViewer from "./DFChatArchiveViewer.js";
+import SETTINGS from "../../../common/Settings";
+import { DFChatArchive } from "./DFChatArchive";
+import DFChatArchiveViewer from "./DFChatArchiveViewer";
 
 export default class DFChatArchiveManager extends Application {
-	static chatViewers: Map<Number, DFChatArchiveViewer> = new Map();
+	static readonly PREF_REVERSE_SORT = 'dfca-manager-reverseSort';
+	static chatViewers: Map<number, DFChatArchiveViewer> = new Map();
 
 	static get defaultOptions() {
 		return mergeObject(Application.defaultOptions as Partial<Application.Options>, {
@@ -11,16 +13,22 @@ export default class DFChatArchiveManager extends Application {
 			minimizable: true,
 			width: 300,
 			height: 500,
-			title: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveManager_Title")
+			title: "DF_CHAT_ARCHIVE.ArchiveManager_Title".localize()
 		}) as Application.Options;
 	}
 
 	getData(options?: any) {
-		let data = super.getData(options);
-		var messages = DFChatArchive.getLogs();
+		const data = super.getData(options);
+		let messages = DFChatArchive.getLogs();
 		if (!game.user.isGM)
 			messages = messages.filter(x => x.visible);
-		mergeObject(data, { messages: messages, isGM: game.user.isGM });
+		messages = messages.sort((a, b) => a.name.localeCompare(b.name));
+		const reverseSort = SETTINGS.get<boolean>(DFChatArchiveManager.PREF_REVERSE_SORT);
+		mergeObject(data, {
+			messages: reverseSort ? messages.reverse() : messages,
+			isGM: game.user.isGM,
+			reverseSort
+		});
 		return data;
 	}
 
@@ -28,7 +36,7 @@ export default class DFChatArchiveManager extends Application {
 		element.on('click', function () {
 			const id = parseInt($(this).attr('data-id'));
 			if (isNaN(id) || !DFChatArchive.exists(id)) {
-				ui.notifications.error(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ErrorBadId'));
+				ui.notifications.error('DF_CHAT_ARCHIVE.ArchiveManager_ErrorBadId'.localize());
 				throw Error(`Invalid id for Chat Archive: '${$(this).attr('data-id')}'`);
 			}
 			if (DFChatArchiveManager.chatViewers.has(id)) {
@@ -45,13 +53,13 @@ export default class DFChatArchiveManager extends Application {
 		element.on('click', async function () {
 			const id = parseInt($(this).attr('data-id'));
 			if (isNaN(id) || !DFChatArchive.exists(id)) {
-				ui.notifications.error(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ErrorBadId'));
+				ui.notifications.error('DF_CHAT_ARCHIVE.ArchiveManager_ErrorBadId'.localize());
 				throw Error(`Invalid id for Chat Archive: '${$(this).attr('data-id')}'`);
 			}
 			const archive = DFChatArchive.getArchive(id);
 			await Dialog.confirm({
-				title: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveTitle'),
-				content: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveContent').replace('{name}', archive.name),
+				title: 'DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveTitle'.localize(),
+				content: 'DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteArchiveContent'.localize().replace('{name}', archive.name),
 				defaultYes: false,
 				yes: async () => await DFChatArchive.deleteChatArchive(id)
 			});
@@ -62,43 +70,57 @@ export default class DFChatArchiveManager extends Application {
 		DFChatArchive.setUpdateListener(this._archiveChanged.bind(this));
 		if (DFChatArchive.getLogs().length > 0)
 			html.find('p.dfca-no-items').hide();
-		html.find('a[data-type="view"]').each((i, element) => { this._subscribeView($(element)) });
-		html.find('a[data-type="delete"]').each((i, element) => { this._subscribeDelete($(element)) });
+		html.find('a[data-type="view"]').each((i, element) => { this._subscribeView($(element)); });
+		html.find('a[data-type="delete"]').each((i, element) => { this._subscribeDelete($(element)); });
 		html.find('#dfca-delete-all').on('click', async function () {
 			await Dialog.confirm({
-				title: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllTitle'),
-				content: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllMessage1'),
+				title: 'DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllTitle'.localize(),
+				content: 'DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllMessage1'.localize(),
 				defaultYes: false,
 				yes: async () => {
 					await Dialog.confirm({
-						title: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllTitle'),
-						content: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllMessage2'),
+						title: 'DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllTitle'.localize(),
+						content: 'DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllMessage2'.localize(),
 						defaultYes: false,
 						yes: async () => {
 							await DFChatArchive.deleteAll();
-							ui.notifications.info(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllComplete'));
+							ui.notifications.info('DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllComplete'.localize());
 						}
-					})
+					});
 				}
-			})
+			});
+		});
+		const asc = html.find('#dfca-sort-asc');
+		const dsc = html.find('#dfca-sort-dsc');
+		asc.on('click', async () => {
+			await SETTINGS.set(DFChatArchiveManager.PREF_REVERSE_SORT, true);
+			asc.hide();
+			dsc.show();
+			this.render();
+		});
+		dsc.on('click', async () => {
+			await SETTINGS.set(DFChatArchiveManager.PREF_REVERSE_SORT, false);
+			dsc.hide();
+			asc.show();
+			this.render();
 		});
 	}
 
-	close(options: {} = {}): Promise<unknown> {
+	close(options?: any): Promise<void> {
 		DFChatArchive.setUpdateListener(null);
 		return super.close(options);
 	}
 
 	private async _archiveChanged() {
-		var logs = DFChatArchive.getLogs();
+		let logs = DFChatArchive.getLogs();
 		if (!game.user.isGM)
 			logs = logs.filter(x => x.visible);
 		const archiveContainer = this.element.find('#dfca-archives');
 		archiveContainer.empty();
 		// Add new items
-		for (let archive of logs) {
+		for (const archive of logs) {
 			const visible = archive.visible === true
-				? `<i class="dfca-visible fas fa-users" title="${game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveManager_VisibleToPlayers')}"></i>` : '';
+				? `<i class="dfca-visible fas fa-users" title="${'DF_CHAT_ARCHIVE.ArchiveManager_VisibleToPlayers'.localize()}"></i>` : '';
 			const html = $(`
 		<li class="dfca-archive-item" data-id="${archive.id}">
 			<div>

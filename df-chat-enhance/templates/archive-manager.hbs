@@ -1,5 +1,9 @@
 <section id="dfca-manager">
 	<p class="dfca-no-items" style="text-align:center">{{localize "DF_CHAT_ARCHIVE.ArchiveManager_NotItems"}}</p>
+	<section>
+		<a id="dfca-sort-asc" class="button" {{#if reverseSort}}style="display:none"{{/if}}><i class="fas fa-sort-amount-down-alt"></i> A-Z</a>
+		<a id="dfca-sort-dsc" class="button" {{#unless reverseSort}}style="display:none"{{/unless}}><i class="fas fa-sort-amount-up"></i> Z-A</a>
+	</section>
 	<ol id="dfca-archives">
 		{{#each messages}}
 		<li class="dfca-archive-item" data-id="{{id}}">

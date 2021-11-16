@@ -1,5 +1,5 @@
-import CONFIG from "../CONFIG.js";
-import DFAdventureLogProcessor from "./DFAdventureLogProcessor.js";
+import SETTINGS from "../../../common/Settings";
+import DFAdventureLogProcessor from "./DFAdventureLogProcessor";
 
 
 export default class DFAdventureLogConfig extends FormApplication {
@@ -12,24 +12,24 @@ export default class DFAdventureLogConfig extends FormApplication {
 			template: "modules/df-chat-enhance/templates/log-config.hbs",
 			resizable: false,
 			minimizable: false,
-			title: game.i18n.localize("DF_CHAT_LOG.Config_Title")
+			title: "DF_CHAT_LOG.Config_Title".localize()
 		}) as FormApplication.Options;
 	}
 
 	static setupSettings() {
-		game.settings.register(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL, {
+		SETTINGS.register(DFAdventureLogConfig.PREF_JOURNAL, {
 			scope: 'world',
 			type: String,
 			default: '',
 			config: false
-		})
-		game.settings.register(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL_GM, {
+		});
+		SETTINGS.register(DFAdventureLogConfig.PREF_JOURNAL_GM, {
 			scope: 'world',
 			type: String,
 			default: '',
 			config: false
-		})
-		game.settings.registerMenu(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_CONFIG, {
+		});
+		SETTINGS.registerMenu(DFAdventureLogConfig.PREF_CONFIG, {
 			restricted: true,
 			type: DFAdventureLogConfig,
 			label: "DF_CHAT_LOG.Config_Title",
@@ -40,21 +40,21 @@ export default class DFAdventureLogConfig extends FormApplication {
 	getData(options?: any) {
 		const data = super.getData(options);
 		const keys = game.journal.keys();
-		const selectedLog = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL) as string;
-		const selectedGMLog = game.settings.get(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL_GM) as string;
-		var logJournals = [];
-		var gmlogJournals = [];
-		for (let key of keys) {
+		const selectedLog = SETTINGS.get(DFAdventureLogConfig.PREF_JOURNAL) as string;
+		const selectedGMLog = SETTINGS.get(DFAdventureLogConfig.PREF_JOURNAL_GM) as string;
+		let logJournals = [];
+		let gmlogJournals = [];
+		for (const key of keys) {
 			logJournals.push({
 				id: key,
 				name: game.journal.get(key).data.name,
 				selected: key === selectedLog
-			})
+			});
 			gmlogJournals.push({
 				id: key,
 				name: game.journal.get(key).data.name,
 				selected: key === selectedGMLog
-			})
+			});
 		}
 		logJournals = logJournals.sort((a, b) => a.name.localeCompare(b.name));
 		gmlogJournals = gmlogJournals.sort((a, b) => a.name.localeCompare(b.name));
@@ -71,13 +71,13 @@ export default class DFAdventureLogConfig extends FormApplication {
 		const gmlogJournal = formData['dfal-journal-gm'];
 		const clear = formData['dfal-clear'];
 		const gmClear = formData['dfal-clear-gm'];
-		game.settings.set(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL, logJournal);
-		game.settings.set(CONFIG.MOD_NAME, DFAdventureLogConfig.PREF_JOURNAL_GM, gmlogJournal);
+		SETTINGS.set(DFAdventureLogConfig.PREF_JOURNAL, logJournal);
+		SETTINGS.set(DFAdventureLogConfig.PREF_JOURNAL_GM, gmlogJournal);
 		await DFAdventureLogConfig.initializeJournal(logJournal, clear, false);
 		await DFAdventureLogConfig.initializeJournal(gmlogJournal, gmClear, true);
 	}
 
-	static async initializeJournal(id: string, clear: Boolean, isGMOnly: boolean) {
+	static async initializeJournal(id: string, clear: boolean, isGMOnly: boolean) {
 		if (!game.journal.has(id)) return;
 		const journal = game.journal.get(id);
 		if (clear || journal.data.content === null)

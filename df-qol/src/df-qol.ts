@@ -1,13 +1,14 @@
-import TableQuickRoll from './TableQuickRoll.js';
-import FolderColours from './FolderColours.js';
-import TextboxAutoFocus from './TextboxAutoFocus.js';
-import BetterToggle from './BetterToggle.js';
-import DayNightTransition from './DayNightTransition.js';
-import DnD5eVehicleCapacity from './DnD5eVehicleCapacity.js';
-import TemplateTargeting from './TemplateTargeting.js';
+import {} from '../../common/global';
+import TableQuickRoll from './TableQuickRoll';
+import FolderColours from './FolderColours';
+import TextboxAutoFocus from './TextboxAutoFocus';
+import BetterToggle from './BetterToggle';
+import DayNightTransition from './DayNightTransition';
+import DnD5eVehicleCapacity from './DnD5eVehicleCapacity';
+import TemplateTargeting from './TemplateTargeting';
 
-import SETTINGS from './libs/Settings.js';
-import TokenLock from './TokenLock.js';
+import SETTINGS from "../../common/Settings";
+import TokenLock from './TokenLock';
 SETTINGS.init('df-qol');
 
 

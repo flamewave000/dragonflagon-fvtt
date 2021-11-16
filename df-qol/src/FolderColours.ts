@@ -1,6 +1,7 @@
-import SETTINGS from './libs/Settings.js';
+import { FolderData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import SETTINGS from "../../common/Settings";
 
-function apply(shouldApply: Boolean, hookName: string, func: Hooks.General) {
+function apply(shouldApply: boolean, hookName: string, func: AnyFunction) {
 	if (shouldApply) Hooks.on(hookName, func);
 	else Hooks.off(hookName, func);
 }
@@ -14,7 +15,7 @@ export default class FolderColours {
 			type: Boolean,
 			default: true,
 			config: true,
-			onChange: newValue => {
+			onChange: (newValue: boolean) => {
 				apply(newValue, 'renderFolderConfig', FolderColours.DF_FOLDER_TEXT_COLOUR);
 				apply(newValue, 'renderSceneDirectory', FolderColours.DF_SCENE_DIRECTORY_RENDER);
 				ui.sidebar.render(false);
@@ -28,7 +29,7 @@ export default class FolderColours {
 		apply(SETTINGS.get('folder-colour'), 'renderRollTableDirectory', FolderColours.DF_SCENE_DIRECTORY_RENDER);
 	}
 
-	static DF_FOLDER_TEXT_COLOUR(app: FolderConfig, html: JQuery, data: { folder: Folder.Data, sortingModes: { a: string, m: string }, submitText: string }) {
+	static DF_FOLDER_TEXT_COLOUR(app: FolderConfig, html: JQuery, data: { folder: FolderData, sortingModes: { a: string, m: string }, submitText: string }) {
 		if (!data.folder.flags) {
 			data.folder.flags = {};
 		}
@@ -44,7 +45,7 @@ export default class FolderColours {
 			height: "auto"
 		});
 	}
-	static DF_SCENE_DIRECTORY_RENDER(app: SceneDirectory, html: JQuery<HTMLElement>, data: any) {
+	static DF_SCENE_DIRECTORY_RENDER(app: SceneDirectory, html: JQuery<HTMLElement>, _data: any) {
 		html.find('li[data-folder-id]').each((idx: number, element: HTMLElement) => {
 			const id = element.getAttribute('data-folder-id');
 			if (id === null || id === undefined) return;

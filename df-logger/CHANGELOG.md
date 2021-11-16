@@ -1,7 +1,13 @@
 # DF User Logger
 
-## Release 1.6.2 (2021-08-27)
+## Release 1.6.4 (2021-11-15)
+- Updated Spanish localization, courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
+
+## Release 1.6.3 (2021-08-27)
 - Minor fix for a conflict with one of my own modules. They both used the same ID for their windows.
+
+## Release 1.6.2 (2021-08-09)
+- License Migration.
 
 ## Release 1.6.1 (2021-06-29)
 - Added sounds directory back in. Was not included in the previous release due to a broken build script.

@@ -1,7 +1,8 @@
-import DFManualRolls from "./DFManualRolls.js";
-import DFManualRollsLegacy from "./DFManualRollsLegacy.js";
-import DFRollPrompt from "./DFRollPrompt.js";
-import SETTINGS from "./lib/Settings.js";
+import {} from '../../common/global';
+import DFManualRolls from "./DFManualRolls";
+import DFManualRollsLegacy from "./DFManualRollsLegacy";
+import DFRollPrompt from "./DFRollPrompt";
+import SETTINGS from "../../common/Settings";
 
 SETTINGS.init('df-manual-rolls');
 
@@ -10,45 +11,45 @@ Hooks.on('init', function () {
 	SETTINGS.register(DFManualRolls.PREF_GM_STATE, {
 		config: true,
 		scope: 'world',
-		name: 'DF_MANUAL_ROLLS.Settings_GM_Name',
-		hint: 'DF_MANUAL_ROLLS.Settings_GM_Hint',
+		name: 'DF_MANUAL_ROLLS.Settings.GM_Name',
+		hint: 'DF_MANUAL_ROLLS.Settings.GM_Hint',
 		type: String,
 		default: 'disabled',
 		choices: {
-			disabled: 'DF_MANUAL_ROLLS.Setting_Options_Disabled',
-			always: 'DF_MANUAL_ROLLS.Setting_Options_Always',
-			toggle: 'DF_MANUAL_ROLLS.Setting_Options_Toggle'
+			disabled: 'DF_MANUAL_ROLLS.Setting_Options.Disabled',
+			always: 'DF_MANUAL_ROLLS.Setting_Options.Always',
+			toggle: 'DF_MANUAL_ROLLS.Setting_Options.Toggle'
 		},
-		onChange: () => { ui.controls.initialize() }
+		onChange: () => { ui.controls.initialize(); }
 	});
 
 	SETTINGS.register(DFManualRolls.PREF_PC_STATE, {
 		config: true,
 		scope: 'world',
-		name: 'DF_MANUAL_ROLLS.Settings_PC_Name',
-		hint: 'DF_MANUAL_ROLLS.Settings_PC_Hint',
+		name: 'DF_MANUAL_ROLLS.Settings.PC_Name',
+		hint: 'DF_MANUAL_ROLLS.Settings.PC_Hint',
 		type: String,
 		default: 'disabled',
 		choices: {
-			disabled: 'DF_MANUAL_ROLLS.Setting_Options_Disabled',
-			always: 'DF_MANUAL_ROLLS.Setting_Options_Always',
-			toggle: 'DF_MANUAL_ROLLS.Setting_Options_Toggle'
+			disabled: 'DF_MANUAL_ROLLS.Setting_Options.Disabled',
+			always: 'DF_MANUAL_ROLLS.Setting_Options.Always',
+			toggle: 'DF_MANUAL_ROLLS.Setting_Options.Toggle'
 		},
-		onChange: () => { ui.controls.initialize() }
+		onChange: () => { ui.controls.initialize(); }
 	});
 
 	SETTINGS.register(DFRollPrompt.PREF_FOCUS_INPUT, {
 		config: true,
 		scope: 'client',
-		name: 'DF_MANUAL_ROLLS.Settings_FocusInput_Name',
-		hint: 'DF_MANUAL_ROLLS.Settings_FocusInput_Hint',
+		name: 'DF_MANUAL_ROLLS.Settings.FocusInput_Name',
+		hint: 'DF_MANUAL_ROLLS.Settings.FocusInput_Hint',
 		type: Boolean,
 		default: true
 	});
 
 	SETTINGS.register(DFManualRolls.PREF_FLAGGED, {
-		name: "DF_MANUAL_ROLLS.Settings_Flagged_Name",
-		hint: "DF_MANUAL_ROLLS.Settings_Flagged_Hint",
+		name: "DF_MANUAL_ROLLS.Settings.Flagged_Name",
+		hint: "DF_MANUAL_ROLLS.Settings.Flagged_Hint",
 		scope: 'world',
 		config: true,
 		type: Boolean,
@@ -60,7 +61,7 @@ Hooks.on('init', function () {
 		scope: 'client',
 		type: Boolean,
 		default: false,
-		onChange: (value: Boolean) => {
+		onChange: (value: boolean) => {
 			const button = $('ol#controls>li#df-manual-roll-toggle');
 			if (value) button.addClass('active');
 			else button.removeClass('active');
@@ -87,7 +88,7 @@ Hooks.on('init', function () {
 		scope: 'world',
 		type: Boolean,
 		default: false,
-		onChange: (value: Boolean) => {
+		onChange: (value: boolean) => {
 			if (value) DFManualRollsLegacy.patch();
 			else DFManualRollsLegacy.unpatch();
 		}
@@ -98,7 +99,7 @@ Hooks.on('ready', function () {
 		ui.notifications.error(game.i18n.localize("DF_MANUAL_ROLLS.Error_libWrapper_Missing"));
 		return;
 	}
-	Handlebars.registerHelper({ mul: (v1, v2) => v1 * v2 });
+	Handlebars.registerHelper({ dfmr_mul: (v1, v2) => v1 * v2 });
 	DFManualRolls.patch();
 	if (SETTINGS.get(DFManualRollsLegacy.PREF_USE_LEGACY))
 		DFManualRollsLegacy.patch();
@@ -108,11 +109,11 @@ Hooks.on('createChatMessage', async (chatMessage: ChatMessage) => {
 	if (chatMessage.user.id !== game.userId) return;
 	// Ignore non-roll, non-flagged, non-manual messages
 	if (!chatMessage.isRoll || !DFManualRolls.flagged || !DFManualRolls.shouldRollManually) return;
-	var flavor = game.i18n.localize("DF_MANUAL_ROLLS.Flag");
+	let flavor = game.i18n.localize("DF_MANUAL_ROLLS.Flag");
 	// If all of the manual rolls were cancelled, don't set the flag
 	if (!chatMessage.roll.terms.some((value: any) => value instanceof DiceTerm && (<any>value.options).isManualRoll))
 		return;
-	if (!!chatMessage.data.flavor)
+	if (chatMessage.data.flavor)
 		flavor += " " + chatMessage.data.flavor;
 	await chatMessage.update({ flavor: flavor });
 });

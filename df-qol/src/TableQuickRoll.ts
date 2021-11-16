@@ -1,4 +1,4 @@
-import SETTINGS from './libs/Settings.js';
+import SETTINGS from "../../common/Settings";
 
 
 async function requestReload() {
@@ -6,7 +6,7 @@ async function requestReload() {
 		title: game.i18n.localize("DF_QOL.ReloadGame.Title"),
 		content: game.i18n.localize("DF_QOL.ReloadGame.Content"),
 		defaultYes: true
-	} as any) as any as Boolean) {
+	} as any) as any as boolean) {
 		window.location.reload();
 	}
 }

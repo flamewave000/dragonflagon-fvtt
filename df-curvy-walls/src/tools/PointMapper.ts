@@ -1,8 +1,8 @@
-import { CurvyWallControl } from "../CurvyWallsToolBar.js";
-import { CurvyWallToolManager, Mode } from "../CurvyWallToolManager.js";
-import { Bezier } from "../lib/bezier.js";
-import { BezierTool } from "./BezierTool.js";
-import { InputHandler, PointInputHandler } from "./ToolInputHandler.js";
+import { CurvyWallControl } from "../CurvyWallsToolBar";
+import { CurvyWallToolManager, Mode } from "../CurvyWallToolManager";
+import { Bezier } from "../../libs/bezier";
+import { BezierTool } from "./BezierTool";
+import { InputHandler, PointInputHandler } from "./ToolInputHandler";
 
 const pointNearPoint = BezierTool.pointNearPoint;
 
@@ -24,7 +24,7 @@ export default class PointMapper extends BezierTool {
 		switch (CurvyWallToolManager.instance.mode) {
 			// case Mode.Cube:
 			// 	if (this.points.length < 3) break;
-			// 	var lines = Bezier.cubicFromPoints(this.points[0], this.points[1], this.points[2])
+			// 	let lines = Bezier.cubicFromPoints(this.points[0], this.points[1], this.points[2])
 			// 		.getLUT().map((p: { x: number, y: number }) => new PIXI.Point(p.x, p.y));
 			// 	context.beginFill(0, 0).lineStyle(6, 0xffaacc, 1, 0.5)
 			// 	context.moveTo(lines[0].x, lines[0].y)
@@ -34,12 +34,12 @@ export default class PointMapper extends BezierTool {
 			// 	break;
 			case Mode.Quad:
 				if (this.points.length < 3) break;
-				var lines = Bezier.quadraticFromPoints(this.points[0], this.points[1], this.points[2])
+				const lines = Bezier.quadraticFromPoints(this.points[0], this.points[1], this.points[2])
 					.getLUT().map((p: { x: number, y: number }) => new PIXI.Point(p.x, p.y));
-				context.beginFill(0, 0).lineStyle(6, 0xffaacc, 1, 0.5)
-				context.moveTo(lines[0].x, lines[0].y)
+				context.beginFill(0, 0).lineStyle(6, 0xffaacc, 1, 0.5);
+				context.moveTo(lines[0].x, lines[0].y);
 				for (let c = 1; c < lines.length; c++)
-					context.lineTo(lines[c].x, lines[c].y)
+					context.lineTo(lines[c].x, lines[c].y);
 				context.endFill();
 				break;
 			case Mode.Circ:
@@ -58,8 +58,8 @@ export default class PointMapper extends BezierTool {
 					.drawRect(bounds.minX, bounds.minY, bounds.maxX - bounds.minX, bounds.maxY - bounds.minY)
 					.endFill();
 				break;
-		};
-		var fill = [0x44ffaa, 0xff4444, 0x4444ff, 0xdd44dd, 0xdddd44];
+		}
+		const fill = [0x44ffaa, 0xff4444, 0x4444ff, 0xdd44dd, 0xdddd44];
 		this.points.forEach((x, idx) => this.drawHandle(context, fill[idx], x));
 	}
 	checkPointForClick(point: PIXI.Point, event: PIXI.InteractionEvent): boolean {
@@ -73,7 +73,7 @@ export default class PointMapper extends BezierTool {
 			return true;
 		}
 		// If we are clicking on an already existing point, or we have max points
-		if (!!this.points.find(e => pointNearPoint(point, e, BezierTool.HANDLE_RADIUS))) return false;
+		if (this.points.find(e => pointNearPoint(point, e, BezierTool.HANDLE_RADIUS))) return false;
 
 		switch (CurvyWallToolManager.instance.mode) {
 			// case Mode.Cube:
@@ -85,6 +85,7 @@ export default class PointMapper extends BezierTool {
 			// if (this.points.length == 4) return false;
 			// this.points.push(utility.getWallEndPoint(point, snap));
 			// return true;
+				// fallthrough
 			case Mode.Rect:
 				if (this.points.length == 4) return false;
 				this.points.push(utility.getWallEndPoint(point, snap));
@@ -152,7 +153,7 @@ export default class PointMapper extends BezierTool {
 		if (this.points.length == 2) {
 			result.x = this.points[0].x;
 			result.y = this.points[0].y;
-			const size = Math.sqrt(Math.pow(this.points[1].x - result.x, 2) + Math.pow(this.points[1].y - result.y, 2))
+			const size = Math.sqrt(Math.pow(this.points[1].x - result.x, 2) + Math.pow(this.points[1].y - result.y, 2));
 			result.w = size;
 			result.h = size;
 		} else if (this.points.length == 3) {
@@ -181,10 +182,10 @@ export default class PointMapper extends BezierTool {
 }
 
 function isPerpendicular(p1: Point, p2: Point, p3: Point): boolean {
-	var yDelta_a: number = p2.y - p1.y;
-	var xDelta_a: number = p2.x - p1.x;
-	var yDelta_b: number = p3.y - p2.y;
-	var xDelta_b: number = p3.x - p2.x;
+	const yDelta_a: number = p2.y - p1.y;
+	const xDelta_a: number = p2.x - p1.x;
+	const yDelta_b: number = p3.y - p2.y;
+	const xDelta_b: number = p3.x - p2.x;
 	// checking whether the line of the two pts are vertical
 	if (Math.abs(xDelta_a) <= 0.000000001 && Math.abs(yDelta_b) <= 0.000000001) {
 		return false;
@@ -196,12 +197,12 @@ function isPerpendicular(p1: Point, p2: Point, p3: Point): boolean {
 	else return false;
 }
 function calcCircle(pt1: Point, pt2: Point, pt3: Point): { center: Point, radius: number } {
-	var yDelta_a = pt2.y - pt1.y;
-	var xDelta_a = pt2.x - pt1.x;
-	var yDelta_b = pt3.y - pt2.y;
-	var xDelta_b = pt3.x - pt2.x;
-	var center = new PIXI.Point();
-	var radius = 0;
+	const yDelta_a = pt2.y - pt1.y;
+	const xDelta_a = pt2.x - pt1.x;
+	const yDelta_b = pt3.y - pt2.y;
+	const xDelta_b = pt3.x - pt2.x;
+	const center = new PIXI.Point();
+	let radius = 0;
 
 	if (Math.abs(xDelta_a) <= 0.000000001 && Math.abs(yDelta_b) <= 0.000000001) {
 		center.x = 0.5 * (pt2.x + pt3.x);
@@ -211,8 +212,8 @@ function calcCircle(pt1: Point, pt2: Point, pt3: Point): { center: Point, radius
 	}
 
 	// IsPerpendicular() assure that xDelta(s) are not zero
-	var aSlope = yDelta_a / xDelta_a;
-	var bSlope = yDelta_b / xDelta_b;
+	const aSlope = yDelta_a / xDelta_a;
+	const bSlope = yDelta_b / xDelta_b;
 	if (Math.abs(aSlope - bSlope) <= 0.000000001) {// checking whether the given points are colinear. 	
 		return { center, radius: -1 };
 	}

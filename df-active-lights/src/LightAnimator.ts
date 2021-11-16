@@ -1,7 +1,8 @@
-import EaseFunctions from "./EaseFunctions.js";
-import SETTINGS from "./libs/SETTINGS.js";
+import EaseFunctions from "./EaseFunctions";
+import SETTINGS from "../../common/Settings";
+import { AmbientLightData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 
-interface AmbientLightData extends Partial<AmbientLight.Data> {
+interface AmbientLightDataExt extends Partial<AmbientLightData> {
 	[key: string]: any;
 	animation?: any;
 	alpha?: number;
@@ -11,8 +12,8 @@ interface AmbientLightData extends Partial<AmbientLight.Data> {
 
 export declare class AmbientLightExt extends AmbientLight {
 	animator?: LightAnimator;
-	animData: AmbientLightData;
-	origData: AmbientLight.Data;
+	animData: AmbientLightDataExt;
+	origData: AmbientLightDataExt;
 }
 
 export interface KeyFrame {
@@ -51,13 +52,13 @@ export class LightAnimator {
 		libWrapper.register(SETTINGS.MOD_NAME, 'LightingLayer.prototype._animateSource', this._LightingLayer_animateSource, 'WRAPPER');
 	}
 	static ready() {
-		libWrapper.register(SETTINGS.MOD_NAME, 'AmbientLight.prototype._onUpdate', function (this: AmbientLight, wrapped: Function, ...args: any) {
+		libWrapper.register(SETTINGS.MOD_NAME, 'AmbientLight.prototype._onUpdate', function (this: AmbientLight, wrapped: (..._: any) => void, ...args: any) {
 			wrapped(...args);
 			delete (this as AmbientLightExt).animator;
 		}, 'WRAPPER');
 	}
 	private static _LightingLayer_animateSource(this: LightingLayer, wrapper: (dt: number) => void, dt: number) {
-		for (let source of this.sources) {
+		for (const source of this.sources) {
 			if (!(source.object instanceof AmbientLight) || !source.active) continue;
 			LightAnimator._PointSource_animate.bind(source)(<AmbientLightExt>source.object);
 		}
@@ -69,7 +70,7 @@ export class LightAnimator {
 			// If the light has not had an animator created for it yet
 			if (!light.animator) {
 				// Get the animation data
-				var animData: AnimatorData = (<any>this.object).document.getFlag(SETTINGS.MOD_NAME, LightAnimator.FLAG_ANIMS);
+				const animData: AnimatorData = (<any>this.object).document.getFlag(SETTINGS.MOD_NAME, LightAnimator.FLAG_ANIMS);
 				// Ignore any light that has no animations
 				if (!animData || animData.keys.length <= 1) return;
 				if (animData.keys[0].time !== 0) {
@@ -85,7 +86,7 @@ export class LightAnimator {
 			// hold onto the original data
 			const origData = light.data;
 			// Merge a duplicate of the original data with the modified animation data
-			light.data = <AmbientLight.Data>mergeObject(duplicate(light.data), light.animData);
+			light.data = <AmbientLightData>mergeObject(duplicate(light.data), light.animData);
 			// Update the light source with the new data
 			LightAnimator._updateSource.bind(light)();
 			// If we are on the LightingLayer, refresh the light's controls
@@ -144,7 +145,7 @@ export class LightAnimator {
 
 		for (let c = 0; c < keys.length; c++) {
 			const props = Object.keys(keys[c]).filter(x => x !== 'time');
-			for (let deltaName of props) {
+			for (const deltaName of props) {
 				// Ignore disabled property animators
 				if (!(<PropertyDelta>keys[c][deltaName]).enabled) continue;
 				// create the new head
@@ -158,7 +159,7 @@ export class LightAnimator {
 					next: this._props.get(deltaName),
 				};
 				// Link the old head to this new one
-				if (!!newProp.next)
+				if (newProp.next)
 					newProp.next.prev = newProp;
 				this._props.set(deltaName, newProp);
 			}
@@ -169,7 +170,7 @@ export class LightAnimator {
 		if (this._data.keys.length <= 1 || this._data.keys[0].time !== 0) return;
 		// Calculate the current time relative to the animation loop
 		const time = (game.time.serverTime + this.offset) % this.duration;
-		for (let value of this._props.values()) {
+		for (const value of this._props.values()) {
 			if (value.next === null) continue;
 			this._process(value, time);
 		}
@@ -180,7 +181,7 @@ export class LightAnimator {
 	}
 
 	private _process(prop: PropertyKeyFrame, time: number) {
-		var frame = prop;
+		let frame = prop;
 		// Find the frame we are currently in
 		while (!!frame.next && frame.next.time <= time) frame = frame.next;
 		// Skip if the time has gone past the last key frame containing something to change here
@@ -190,13 +191,13 @@ export class LightAnimator {
 		// Collect the end value
 		const endValue = frame.time > time ? this._convert(frame.value) : this._convert(frame.next.value);
 		// Calculate the time factor (0-1) to be passed into the easing function
-		var timeFactor = Math.clamped(frame.time > time ? (time / frame.time) : ((time - frame.time) / (frame.next.time - frame.time)), 0, 1);
+		let timeFactor = Math.clamped(frame.time > time ? (time / frame.time) : ((time - frame.time) / (frame.next.time - frame.time)), 0, 1);
 		if (this._data.bounce)
 			timeFactor = timeFactor <= 0.5
 				? timeFactor / 0.5
 				: (0.5 - (timeFactor - 0.5)) / 0.5;
 		// Calculate the value factor from the easing function
-		const valueFactor = (!!frame.func ? EaseFunctions[frame.func] : EaseFunctions['linear'])(timeFactor);
+		const valueFactor = (frame.func ? EaseFunctions[frame.func] : EaseFunctions['linear'])(timeFactor);
 		// Set the animation data for this property
 		if (prop.isColor) {
 			const r = ((startValue >> 16) & 0xff) + Math.round((((endValue >> 16) & 0xff) - ((startValue >> 16) & 0xff)) * valueFactor);

@@ -1,7 +1,6 @@
-
-import { CurvyWallsToolBar } from './CurvyWallsToolBar.js';
-import { CurvyWallToolManager, Mode } from './CurvyWallToolManager.js';
-import SETTINGS from './lib/Settings.js';
+import { CurvyWallsToolBar } from './CurvyWallsToolBar';
+import { CurvyWallToolManager, Mode } from './CurvyWallToolManager';
+import SETTINGS from "../../common/Settings";
 
 const curvyWallApp = new CurvyWallsToolBar();
 SETTINGS.init('df-curvy-walls');
@@ -36,7 +35,8 @@ Hooks.once("ready", function () {
 			ui.notifications.error(game.i18n.localize('df-curvy-walls.errorLibWrapperMissing'));
 		return;
 	}
-	(<Canvas>canvas).walls.bezier = CurvyWallToolManager.instance;
+	// @ts-ignore
+	canvas.walls.bezier = CurvyWallToolManager.instance;
 	CurvyWallToolManager.instance.patchWallsLayer();
 });
 

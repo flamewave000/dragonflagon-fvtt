@@ -1,0 +1,27 @@
+{
+	"name": "df-flag-edit",
+	"title": "DF Flags Editor",
+	"version": "1.1.1",
+	"description": "Foundry Document Flags Editor",
+	"author": "flamewave000#0001",
+	"minimumCoreVersion": "0.8.9",
+	"compatibleCoreVersion": "0.8.9",
+	"esmodules": "{{sources}}",
+	"styles": "{{css}}",
+	"languages": [
+		{ "lang": "en", "name": "English", "path": "lang/en.json" }
+	],
+	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-flag-edit",
+	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/LICENSE",
+	"manifest":	"https://dragonflagon.cafe/mods/man/df-flag-edit",
+	"download":	"https://dragonflagon.cafe/mods/pak/df-flag-edit",
+	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-flag-edit/README.md",
+	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-flag-edit/CHANGELOG.md",
+	"manifestPlusVersion": "1.0.0",
+	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues/new/choose",
+	"authors": [ { "name": "flamewave000", "discord": "flamewave000#0001", "url": "https://github.com/flamewave000" } ],
+	"media": [
+		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-flag-edit.png" },
+		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" }
+	]
+}

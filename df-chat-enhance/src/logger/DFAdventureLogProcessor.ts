@@ -1,7 +1,29 @@
 
-import CONFIG from '../CONFIG.js';
-import SETTINGS from '../SETTINGS.js';
-import DFAdventureLogConfig from './DFAdventureLogConfig.js';
+import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
+import SETTINGS from "../../../common/Settings";
+import DFAdventureLogConfig from './DFAdventureLogConfig';
+
+declare global {
+	namespace SimpleCalendar.api {
+		function formatDateTime(time: {
+			year: number,
+			month: number,
+			day: number,
+			hour: number,
+			minute: number,
+			second: number
+		}): { date: string, time: string }
+		function timestamp(): number
+		function timestampToDate(timestamp: number): {
+			year: number,
+			month: number,
+			day: number,
+			hour: number,
+			minute: number,
+			second: number
+		}
+	}
+}
 
 declare global {
 	interface String {
@@ -11,23 +33,23 @@ declare global {
 if (!String.prototype.trimStart) {
 	String.prototype.trimStart = function () {
 		const whitespace = [' ', '\n', '\r'];
-		var index = -1;
+		let index = -1;
 		for (let c = 0; c < this.length; c++) {
 			if (whitespace.every(x => x !== this[c])) break;
 			index = c;
 		}
 		return this.substr(index + 1);
-	}
+	};
 }
 
 declare interface ChatCommand {
-	commandKey: String;
-	shouldDisplayToChat: Boolean;
-	invokeOnCommand: Function;
-	createdMessageType: Number;
-	iconClass: String;
-	description: String;
-	gmOnly: Boolean;
+	commandKey: string;
+	shouldDisplayToChat: boolean;
+	invokeOnCommand: () => void;
+	createdMessageType: number;
+	iconClass: string;
+	description: string;
+	gmOnly: boolean;
 }
 
 declare class ChatCommands {
@@ -43,7 +65,7 @@ declare class ChatCommands {
 }
 
 declare class GameExt extends Game {
-	chatCommands: ChatCommands
+	chatCommands: ChatCommands;
 }
 
 export default class DFAdventureLogProcessor {
@@ -52,6 +74,8 @@ export default class DFAdventureLogProcessor {
 	static readonly PREF_GMONLY_WHISPER = 'df-log-gmonly-whisper';
 	static readonly PREF_MESSAGES = 'df-log-messages';
 	static readonly PREF_SORTDESC = 'df-log-sortdesc';
+	static readonly PREF_SIMPLE_CALENDAR = 'df-log-use-simple-calendar';
+	static readonly PREF_USE_TIME = 'df-log-use-time';
 	static logCommand: ChatCommand = null;
 	static gmlogCommand: ChatCommand = null;
 
@@ -66,7 +90,7 @@ export default class DFAdventureLogProcessor {
 				return enabled && (!gmOnly || isGM);
 			},
 			callback: (header) => {
-				const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+				const chatData = ui.chat.collection.get($(header).attr('data-message-id')).data;
 				DFAdventureLogProcessor.commandProcessor(chatData.content, false);
 				return {};
 			}
@@ -81,7 +105,7 @@ export default class DFAdventureLogProcessor {
 				return enabled && (!gmOnly || isGM);
 			},
 			callback: (header) => {
-				const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+				const chatData = ui.chat.collection.get($(header).attr('data-message-id')).data;
 				if (chatData.content.trimStart().startsWith('"'))
 					DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, false);
 				else
@@ -98,7 +122,7 @@ export default class DFAdventureLogProcessor {
 				return enabled && isGM;
 			},
 			callback: (header) => {
-				const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+				const chatData = ui.chat.collection.get($(header).attr('data-message-id')).data;
 				DFAdventureLogProcessor.commandProcessor(chatData.content, true);
 				return {};
 			}
@@ -112,7 +136,7 @@ export default class DFAdventureLogProcessor {
 				return enabled && isGM;
 			},
 			callback: (header) => {
-				const chatData = (ui.chat.collection as Map<String, ChatMessage>).get($(header).attr('data-message-id')).data;
+				const chatData = ui.chat.collection.get($(header).attr('data-message-id')).data;
 				if (chatData.content.trimStart().startsWith('"'))
 					DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, true);
 				else
@@ -125,12 +149,12 @@ export default class DFAdventureLogProcessor {
 	static setupSettings() {
 		SETTINGS.register(DFAdventureLogProcessor.PREF_ENABLE, {
 			scope: 'world',
-			name: 'DF_CHAT_LOG.Setting_EnableTitle',
-			hint: 'DF_CHAT_LOG.Setting_EnableHint',
+			name: 'DF_CHAT_LOG.Setting.EnableTitle',
+			hint: 'DF_CHAT_LOG.Setting.EnableHint',
 			config: true,
 			type: Boolean,
 			default: true,
-			onChange: (enabled: Boolean) => {
+			onChange: (enabled: boolean) => {
 				if (!enabled && !!DFAdventureLogProcessor.logCommand)
 					DFAdventureLogProcessor.deregisterCommand();
 				else
@@ -138,8 +162,8 @@ export default class DFAdventureLogProcessor {
 			}
 		});
 		SETTINGS.register(DFAdventureLogProcessor.PREF_GMONLY, {
-			name: 'DF_CHAT_LOG.Setting_GmOnlyTitle',
-			hint: 'DF_CHAT_LOG.Setting_GmOnlyHint',
+			name: 'DF_CHAT_LOG.Setting.GmOnlyTitle',
+			hint: 'DF_CHAT_LOG.Setting.GmOnlyHint',
 			scope: 'world',
 			type: Boolean,
 			default: false,
@@ -152,41 +176,60 @@ export default class DFAdventureLogProcessor {
 			}
 		});
 		SETTINGS.register(DFAdventureLogProcessor.PREF_GMONLY_WHISPER, {
-			name: 'DF_CHAT_LOG.Setting_GmOnlyWhisperName',
-			hint: 'DF_CHAT_LOG.Setting_GmOnlyWhisperHint',
+			name: 'DF_CHAT_LOG.Setting.GmOnlyWhisperName',
+			hint: 'DF_CHAT_LOG.Setting.GmOnlyWhisperHint',
 			scope: 'world',
 			type: Boolean,
 			default: false,
 			config: true
 		});
+		SETTINGS.register(DFAdventureLogProcessor.PREF_USE_TIME, {
+			scope: 'world',
+			type: Boolean,
+			name: "DF_CHAT_LOG.Setting.UseTimeName",
+			hint: "DF_CHAT_LOG.Setting.UseTimeHint",
+			default: true,
+			config: true
+		});
 		SETTINGS.register(DFAdventureLogProcessor.PREF_MESSAGES, {
-			name: 'DF_CHAT_LOG.Setting_PrintMessagesName',
-			hint: 'DF_CHAT_LOG.Setting_PrintMessagesHint',
+			name: 'DF_CHAT_LOG.Setting.PrintMessagesName',
+			hint: 'DF_CHAT_LOG.Setting.PrintMessagesHint',
 			scope: 'world',
 			type: Boolean,
 			default: true,
 			config: true
 		});
 		SETTINGS.register(DFAdventureLogProcessor.PREF_SORTDESC, {
-			name: 'DF_CHAT_LOG.Setting_SortDescendingName',
-			hint: 'DF_CHAT_LOG.Setting_SortDescendingHint',
+			name: 'DF_CHAT_LOG.Setting.SortDescendingName',
+			hint: 'DF_CHAT_LOG.Setting.SortDescendingHint',
 			scope: 'world',
 			type: Boolean,
 			default: false,
 			config: true,
 			onChange: () => this.resortLog()
-		})
+		});
+		// If Simple Calendar is enabled
+		if (game.modules.get('foundryvtt-simple-calendar')?.active) {
+			SETTINGS.register(DFAdventureLogProcessor.PREF_SIMPLE_CALENDAR, {
+				scope: 'world',
+				type: Boolean,
+				name: "DF_CHAT_LOG.Setting.SimpleCalendarName",
+				hint: "DF_CHAT_LOG.Setting.SimpleCalendarHint",
+				default: false,
+				config: true
+			});
+		}
 
 		Hooks.on('closeDFAdventureLogConfig', () => { DFAdventureLogProcessor.logConfig = null; });
-		if (!!(game as GameExt).chatCommands)
+		if ((game as GameExt).chatCommands)
 			DFAdventureLogProcessor.registerCommand();
 		else
-			Hooks.on('chatCommandsReady', function (chatCommands: ChatCommands) { DFAdventureLogProcessor.registerCommand(); });
+			Hooks.on('chatCommandsReady', function () { DFAdventureLogProcessor.registerCommand(); });
 	}
 
 	static deregisterCommand() {
 		(game as GameExt).chatCommands.deregisterCommand(DFAdventureLogProcessor.logCommand);
-		if (!!DFAdventureLogProcessor.gmlogCommand)
+		if (DFAdventureLogProcessor.gmlogCommand)
 			(game as GameExt).chatCommands.deregisterCommand(DFAdventureLogProcessor.gmlogCommand);
 		DFAdventureLogProcessor.logCommand = null;
 		DFAdventureLogProcessor.gmlogCommand = null;
@@ -196,7 +239,7 @@ export default class DFAdventureLogProcessor {
 			return;
 		if (SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY) && !game.user.isGM)
 			return;
-		if (!!DFAdventureLogProcessor.logCommand)
+		if (DFAdventureLogProcessor.logCommand)
 			return;
 
 		DFAdventureLogProcessor.logCommand = (game as GameExt).chatCommands.createCommandFromData({
@@ -204,7 +247,7 @@ export default class DFAdventureLogProcessor {
 			invokeOnCommand: async (_cl: any, msg: string, _cd: any) => await DFAdventureLogProcessor.commandProcessor(msg, false),
 			shouldDisplayToChat: false,
 			iconClass: "fa-edit",
-			description: game.i18n.localize("DF_CHAT_LOG.CommandDescription")
+			description: "DF_CHAT_LOG.CommandDescription".localize()
 		});
 		(game as GameExt).chatCommands.registerCommand(DFAdventureLogProcessor.logCommand);
 
@@ -216,19 +259,32 @@ export default class DFAdventureLogProcessor {
 			invokeOnCommand: async (_cl: any, msg: string, _cd: any) => await DFAdventureLogProcessor.commandProcessor(msg, true),
 			shouldDisplayToChat: false,
 			iconClass: "fa-edit",
-			description: game.i18n.localize("DF_CHAT_LOG.GMCommandDescription")
+			description: "DF_CHAT_LOG.GMCommandDescription".localize()
 		});
 		(game as GameExt).chatCommands.registerCommand(DFAdventureLogProcessor.gmlogCommand);
 	}
 
+	private static _getTimestamp() {
+		const useTime = SETTINGS.get(DFAdventureLogProcessor.PREF_USE_TIME);
+		if (game.modules.get('foundryvtt-simple-calendar')?.active && SETTINGS.get(DFAdventureLogProcessor.PREF_SIMPLE_CALENDAR)) {
+			const stamp = SimpleCalendar.api.formatDateTime(SimpleCalendar.api.timestampToDate(SimpleCalendar.api.timestamp()));
+			return useTime ? `${stamp.date} ${stamp.time}` : stamp.date;
+		}
+		else if (useTime)
+			return new Date().toLocaleString('sv').replace(',', '').replace(/ ([AP])/, '$1');
+		else {
+			return new Date().toLocaleString('sv').replace(',', '').replace(/ ([AP])/, '$1').split(' ')[0];
+		}
+	}
+
 	private static logConfig: DFAdventureLogConfig = null;
-	static async commandProcessor(messageText: string, gmLog: boolean, preventPostToChat: boolean = false): Promise<void> {
+	static async commandProcessor(messageText: string, gmLog: boolean, preventPostToChat = false): Promise<void> {
 		messageText = messageText.trim();
 		const tokens = messageText.split(' ');
 
 		if (!SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE)) {
 			(game as GameExt).chatCommands.deregisterCommand(DFAdventureLogProcessor.logCommand);
-			ui.notifications.warn(game.i18n.localize('DF_CHAT_LOG.Error_Disabled'));
+			ui.notifications.warn('DF_CHAT_LOG.Error.Disabled'.localize());
 			return;
 		}
 
@@ -236,10 +292,11 @@ export default class DFAdventureLogProcessor {
 		if (messageText.length == 0 || tokens.every(x => x.length == 0)) {
 			setTimeout(async () => {
 				await Dialog.prompt({
-					title: game.i18n.localize('DF_CHAT_LOG.HelpDialog_Title'),
+					title: 'DF_CHAT_LOG.HelpDialog_Title'.localize(),
 					label: 'OK',
+					// eslint-disable-next-line @typescript-eslint/no-empty-function
 					callback: () => { },
-					content: await renderTemplate(`modules/df-chat-enhance/templates/lang/log-help.${game.i18n.localize('DF_CHAT_ENHANCE.LANG')}.hbs`, {
+					content: await renderTemplate(`modules/df-chat-enhance/templates/lang/log-help.${'DF_CHAT_ENHANCE.LANG'.localize()}.hbs`, {
 						isGM: game.user.isGM
 					}),
 					options: { width: 800 }
@@ -248,25 +305,26 @@ export default class DFAdventureLogProcessor {
 			return;
 		}
 
-		const speaker = ChatMessage.getSpeaker({ user: game.user } as Partial<ChatMessage.SpeakerCreateData>);
-		const messageData: DeepPartial<ChatMessage.CreateData> = {
+		const speaker = ChatMessage.getSpeaker(<any>{ user: game.user });
+		const messageData: DeepPartial<ChatMessageDataConstructorData> = {
 			flavor: '',
 			user: game.user.id,
 			speaker: speaker,
 			type: CONST.CHAT_MESSAGE_TYPES.OOC,
 			content: '',
 		};
+		let line: string;
 		switch (tokens[0].toLowerCase()) {
 			case 'config':
 				if (!game.user.isGM) {
-					ui.notifications.warn(game.i18n.localize('DF_CHAT_LOG.Error_ConfigGmOnly'));
+					ui.notifications.warn('DF_CHAT_LOG.Error.ConfigGmOnly'.localize());
 					return;
 				}
 				setTimeout(async () => {
-					if (!!DFAdventureLogProcessor.logConfig)
+					if (DFAdventureLogProcessor.logConfig)
 						DFAdventureLogProcessor.logConfig.bringToTop();
 					else {
-						DFAdventureLogProcessor.logConfig = new DFAdventureLogConfig();
+						DFAdventureLogProcessor.logConfig = new DFAdventureLogConfig({});
 						DFAdventureLogProcessor.logConfig.render(true);
 					}
 				}, 1);
@@ -274,11 +332,11 @@ export default class DFAdventureLogProcessor {
 			case 'q':
 			case 'quote':
 				messageText = messageText.replace(tokens[0], '').trimStart();
-				var source: string;
+				let source: string;
 				// If the token starts with a quote, but does not end with one
 				if (tokens[1][0] === '"' && tokens[1][tokens[1].length - 1] !== '"') {
 					// Extract the quoted Source
-					var index = -1;
+					let index = -1;
 					for (let c = 1; c < messageText.length; c++) {
 						if (messageText[c] === '"') {
 							index = c;
@@ -286,7 +344,7 @@ export default class DFAdventureLogProcessor {
 						}
 					}
 					if (index < 0) {
-						ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error_MissingQuote').replace('{0}', tokens[1]));
+						ui.notifications.error('DF_CHAT_LOG.Error.MissingQuote'.localize().replace('{0}', tokens[1]));
 						setTimeout(() => $('#chat-message').val('/log q ' + messageText), 1);
 						return;
 					}
@@ -300,12 +358,12 @@ export default class DFAdventureLogProcessor {
 				messageData.flavor = `${game.user.name} quoted ${source}`;
 				messageData.content = `<span class="dfal-qu">${messageText}</span>`;
 				if (messageText.length == 0) {
-					ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error_MissingMessage'));
+					ui.notifications.error('DF_CHAT_LOG.Error.MissingMessage'.localize());
 					setTimeout(() => $('#chat-message').val(`/log q "${source}" ${messageText}`), 1);
 					return;
 				}
-				var line = game.i18n.localize('DF_CHAT_LOG.Log_Quote');
-				line = line.replace('{0}', new Date().toLocaleString('sv').replace(',', '').replace(/ ([AP])/, '$1'));
+				line = 'DF_CHAT_LOG.Log_Quote'.localize();
+				line = line.replace('{0}', this._getTimestamp());
 				line = line.replace('{1}', game.user.name);
 				line = line.replace('{2}', source);
 				messageText = line.replace('{3}', messageText);
@@ -313,12 +371,13 @@ export default class DFAdventureLogProcessor {
 			case 'e':
 			case 'event':
 				messageText = messageText.replace(tokens[0], '').trim();
+				// fallthrough
 			default:
 				messageText = messageText.trim();
 				messageData.flavor = 'Event Logged';
 				messageData.content = `<span class="dfal-ev">${messageText}</span>`;
-				var line = game.i18n.localize('DF_CHAT_LOG.Log_Event');
-				line = line.replace('{0}', new Date().toLocaleString('sv').replace(',', '').replace(/ ([AP])/, '$1'));
+				line = 'DF_CHAT_LOG.Log_Event'.localize();
+				line = line.replace('{0}', this._getTimestamp());
 				line = line.replace('{1}', game.user.name);
 				messageText = line.replace('{2}', messageText);
 				break;
@@ -328,15 +387,15 @@ export default class DFAdventureLogProcessor {
 		const journalId = SETTINGS.get(gmLog ? DFAdventureLogConfig.PREF_JOURNAL_GM : DFAdventureLogConfig.PREF_JOURNAL) as string;
 		if (!game.journal.has(journalId)) {
 			if (game.user.isGM)
-				ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error_NoJournalSetGM'), { permanent: true });
+				ui.notifications.error('DF_CHAT_LOG.Error.NoJournalSetGM'.localize(), { permanent: true });
 			else
-				ui.notifications.warn(game.i18n.localize('DF_CHAT_LOG.Error_NoJournalSet'));
+				ui.notifications.warn('DF_CHAT_LOG.Error.NoJournalSet'.localize());
 			return;
 		}
 		const journal = game.journal.get(journalId);
-		var html = $(journal.data.content);
-		var messageHtml = $(messageText);
-		var section = html.find('section.df-adventure-log');
+		let html = $(journal.data.content);
+		let messageHtml = $(messageText);
+		let section = html.find('section.df-adventure-log');
 		if (section.length == 0) {
 			await DFAdventureLogConfig.initializeJournal(journalId, false, gmLog);
 			html = $(journal.data.content);
@@ -374,17 +433,17 @@ export default class DFAdventureLogProcessor {
 		const journalGM = SETTINGS.get(DFAdventureLogConfig.PREF_JOURNAL_GM) as string;
 
 		const journalSort = async (journal: JournalEntry) => {
-			var html = $(journal.data.content);
+			const html = $(journal.data.content);
 			const article = html.find('article.df-adventure-log');
 			const result = (article.find('p') as any).sort(function (a: HTMLElement, b: HTMLElement) {
 				return descending ?
 					$(b).find('span.dfal-ts').text().localeCompare($(a).find('span.dfal-ts').text()) :
 					$(a).find('span.dfal-ts').text().localeCompare($(b).find('span.dfal-ts').text());
 
-			})
+			});
 			article.html(result);
 			await journal.update({ content: $('<div></div>').append(html).html() });
-		}
+		};
 
 		if (game.journal.has(journalAll))
 			await journalSort(game.journal.get(journalAll));

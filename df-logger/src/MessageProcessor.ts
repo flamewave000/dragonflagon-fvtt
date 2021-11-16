@@ -32,11 +32,11 @@ export class MessageProcessor {
 	}
 	static async saveMessages() {
 		// Create the File and contents
-		var file = new File([JSON.stringify({
+		const file = new File([JSON.stringify({
 			login: this.loginMessages,
 			logout: this.logoutMessages
 		})], 'user-logger-messages.json', { type: 'application/json' });
-		var response: { path?: string; message?: string } = <any>await FilePicker.upload('data', '', file);
+		const response: { path?: string; message?: string } = <any>await FilePicker.upload('data', '', file);
 		if (!response.path)
 			throw new Error('Could not upload the login.json to server');
 	}
