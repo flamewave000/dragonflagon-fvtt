@@ -45,6 +45,7 @@
 		"ArchiveViewer_Visible": "プレイヤーに見せる",
 		"ArchiveViewer_DeleteTitle": "アーカイブされたメッセージを削除する",
 		"ArchiveViewer_DeleteContent": "以前のすべての削除を適用してもよろしいですか？",
+		"ArchiveViewer_Html": "チャットログをhtmlで保存する",	
 		"ArchiveViewer_Print": "チャットアーカイブをプリントする",
 		"ArchiveViewer_Merge": "アーカイブを結合します",
 		"ArchiveViewer_Merge_Title": "Merge Chat Archive",
@@ -57,9 +58,9 @@
 	},
 	"DF_CHAT_PRIVACY": {
 		"Settings_EnableTitle": "ロールボタン：ロールタイプセレクターをボタンに置き換えます",
-		"Settings_EnableHint": "ロールタイプのドロップダウンメニューセレクターを4つのボタンのセットに置き換えます。（リロードが必要）",
+		"Settings_EnableHint": "ロールタイプのドロップダウンメニューセレクターを4つのボタンのセットに置き換えます（リロードが必要）。",
 		"Settings_ReplaceButtonsTitle": "ロールボタン：すべてのチャットボタンでボタンスタイルを使用します",
-		"Settings_ReplaceButtonsHint": "他のチャットボタンも新しいロールタイプボタンと同じスタイルに変更します。（リロードが必要）"
+		"Settings_ReplaceButtonsHint": "他のチャットボタンも新しいロールタイプボタンと同じスタイルに変更します（リロードが必要）。"
 	},
 	"DF_CHAT_LOG": {
 		"CommandDescription": "アドベンチャーログにイベントを送信する",
@@ -67,15 +68,19 @@
 		"HelpDialog_Title": "Adventure Journal Command Help",
 		"Setting": {
 			"EnableTitle": "アドベンチャーログ：有効にする",
-			"EnableHint": "チャットログから直接ジャーナルにイベントを記録するためのアドベンチャーログ機能を有効にします",
+			"EnableHint": "チャットログから直接ジャーナルにイベントを記録するためのアドベンチャーログ機能を有効にします。",
 			"GmOnlyTitle": "アドベンチャーログ：GMのみ",
 			"GmOnlyHint": "アドベンチャーログ機能をGMのみに設定します",
-			"GmOnlyWhisperName": "アドベンチャーログ：アドベンチャーログを記録した際のシステムメッセージを秘匿メッセージで確認する（GMのみ有効に設定した場合）",
+			"GmOnlyWhisperName": "アドベンチャーログ：アドベンチャーログを記録した際のシステムメッセージを秘匿メッセージで確認する（GMのみ有効に設定した場合）。",
 			"GmOnlyWhisperHint": "上記のGMのみの設定がオンの場合、これによりすべてのログエントリのチャットメッセージがささやかれます。",
+			"UseTimeName": "アドベンチャーログ: 現在時刻を挿入する",
+			"UseTimeHint": "タイムスタンプとして現在時刻（hh:mm:ss）を挿入します。",
 			"PrintMessagesName": "アドベンチャーログ：ログをチャットに投稿する",
 			"PrintMessagesHint": "新しいアドベンチャーログエントリについてチャットにメッセージを投稿する。",
 			"SortDescendingName": "アドベンチャーログ：最新のものを上に並べ替える",
-			"SortDescendingHint": "ログの上部に最新のメッセージが表示され、ログの下部に最も古いメッセージが表示されるように、アドベンチャーログを並べ替えます。"
+			"SortDescendingHint": "ログの上部に最新のメッセージが表示され、ログの下部に最も古いメッセージが表示されるように、アドベンチャーログを並べ替えます。",
+			"SimpleCalendarName": "アドベンチャーログ:'SimpleCalendar'のタイムスタンプを使用する",
+			"SimpleCalendarHint": "現実時間のタイムスタンプの代わりに、'SimpleCalendar'で生成されたタイムスタンプを使用する。"
 		},
 		"Error": {
 			"LibWrapperMissing": "libWrapperが有効になっていません。 アドベンチャーログはこのモジュールに依存しており、それなしでは動作しません。",
@@ -150,5 +155,10 @@
 		"SettingEnabledHint": "秘話メッセージの長い受信者名を切り捨てます。",
 		"SettingCharLimitName": "秘話メッセージ：文字制限",
 		"SettingCharLimitHint": "受信者名を切り捨てる前に表示する最大文字数。"
+	},
+	"DF_CHAT_PLAYER_COLOR": {
+		"Label": "プレイヤーチャットカラー",
+		"SettingTintBackgroundName": "チャットメッセージの背景色",
+		"SettingTintBackgroundHint": "チャットメッセージの背景色を、プレイヤーカラーに合わせて設定することができます。"
 	}
 }
