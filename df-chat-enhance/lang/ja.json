@@ -1,177 +1,4 @@
 {
-<<<<<<< HEAD
-    "DF_CHAT_ENHANCE":{
-            "LANG":"ja",
-            "ReloadGameTitle":"DF Chat Enhance",
-            "ReloadGameContent":"<p style=\"margin:1em 0\">変更はリロード時にのみ有効になります。 今すぐリロードしますか？</p>"
-    },
-
-    "DF_CHAT_ARCHIVE":{
-            "ChatEnhanceSettingGroup":"Chat Enhancement",
-            "ExportButtonTitle":"チャットログアーカイブ",
-            "OpenChatArchive":"チャットアーカイブ管理",
-
-       "Settings":{
-            "HideExport":"チャットアーカイブ：[チャットログのエクスポート]ボタンを非表示にする",
-            "ArchiveFolder_Name":"アーカイブフォルダ設定",
-            "ArchiveFolder_Hint":"チャットアーカイブを保存するディレクトリを指定する"
-        },
-
-            "ArchiveNew_Title":"DF Create Chat Archive",
-            "ArchiveNew_Name":"アーカイブ名:",
-            "ArchiveNew_NameHint":"名称を記入",
-            "ArchiveNew_All":"現在のチャットログをすべてアーカイブする",
-            "ArchiveNew_Date":"日付範囲を決めてアーカイブする",
-            "ArchiveNew_FromDate":"開始:",
-            "ArchiveNew_ToDate":"終了:",
-            "ArchiveNew_Delete":"保存後、チャットログを全削除しますか？",
-            "ArchiveNew_Visible":"プレイヤーに見えるようにしますか？",
-            "ArchiveNew_Submit":"アーカイブを保存する",
-            "ArchiveNew_ErrorNameMissing":"新しいアーカイブの名前を指定する必要があります！",
-            "ArchiveNew_ErrorDatesMissing":"日付範囲でアーカイブする場合は、「開始」と「終了」の両方の日付を指定する必要があります。",
-            "ArchiveNew_NoticeSuccess":"新しいアーカイブ \"{0}\" が生成されました",
-            "ArchiveManager_Title":"DF Chat Archive Manager",
-            "ArchiveManager_NotItems":"チャットアーカイブがありません",
-            "ArchiveManager_DeleteAll":"チャットアーカイブを全削除",
-            "ArchiveManager_ErrorBadId":"選択したチャットアーカイブのIDが存在しません。",
-            "ArchiveManager_ConfirmDeleteAllTitle":"チャットアーカイブを全削除しますか？",
-            "ArchiveManager_ConfirmDeleteAllMessage1":"<p style=\"margin:1em 0\">すべてのチャットアーカイブを削除してもよろしいですか？ <b>このアクションは元に戻せません！</b></p>",
-            "ArchiveManager_ConfirmDeleteAllMessage2":"<p style=\"margin:1em 0\"><b>最終確認!</b> すべて削除してもよろしいですか?</p>",
-            "ArchiveManager_ConfirmDeleteAllComplete":"すべてのチャットアーカイブが削除されました",
-            "ArchiveManager_ConfirmDeleteArchiveTitle":"チャットアーカイブを削除しますか?",
-            "ArchiveManager_ConfirmDeleteArchiveContent":"<p style=\"margin:1em 0\">'{name}'を削除してもよろしいですか?</p>",
-            "ArchiveManager_VisibleToPlayers":"プレイヤーに見せる",
-            
-            "ArchiveViewer_Title":"DF Chat Archive",
-            "ArchiveViewer_NameEdit_Title":"アーカイブの名前を編集する",
-            "ArchiveViewer_NameEdit_Save":"名前を保存",
-            "ArchiveViewer_NameEdit_Cancel":"キャンセル",
-            "ArchiveViewer_SaveChanges":"ログ削除を反映する",
-            "ArchiveViewer_Visible":"プレイヤーに見せる",
-            "ArchiveViewer_DeleteTitle":"アーカイブされたメッセージを削除する",
-            "ArchiveViewer_DeleteContent":"以前のすべての削除を適用してもよろしいですか？",
-            "ArchiveViewer_Print":"チャットアーカイブをプリントする",
-            "ArchiveViewer_Merge":"アーカイブを結合します",
-            "ArchiveViewer_Merge_Title":"Merge Chat Archive",
-            "ArchiveViewer_Merge_SelectArchive":"以下のアーカイブと結合するアーカイブを選択します：",
-            "ArchiveViewer_Merge_Delete":"結合したアーカイブを削除しますか？",
-            "ArchiveViewer_Merge_Cancel":"キャンセル",
-            "ArchiveViewer_Merge_Merge":"結合",
-            "ArchiveViewer_Merge_OnlyOneArchive":"マージに利用できる他のアーカイブがありません",
-            "ArchiveViewer_Error_Delete_All":"アーカイブ内のすべてのチャットを削除することはできません。 アーカイブを削除したい場合は、アーカイブマネージャから削除してください。"
-    },
-
-
-    "DF_CHAT_PRIVACY":{
-        "Settings_EnableTitle":"ロールボタン：ロールタイプセレクターをボタンに置き換えます",
-        "Settings_EnableHint":"ロールタイプのドロップダウンメニューセレクターを4つのボタンのセットに置き換えます。（リロードが必要）",
-        "Settings_ReplaceButtonsTitle":"ロールボタン：すべてのチャットボタンでボタンスタイルを使用します",
-        "Settings_ReplaceButtonsHint":"他のチャットボタンも新しいロールタイプボタンと同じスタイルに変更します。（リロードが必要）"
-    },
-
-    "DF_CHAT_LOG":{
-        "CommandDescription":"アドベンチャーログにイベントを送信する",
-        "GMCommandDescription":"GMアドベンチャーログにイベントを送信する",
-        "HelpDialog_Title":"Adventure Journal Command Help",
-        "Setting_EnableTitle":"アドベンチャーログ：有効にする",
-        "Setting_EnableHint":"チャットログから直接ジャーナルにイベントを記録するためのアドベンチャーログ機能を有効にします",
-        "Setting_GmOnlyTitle":"アドベンチャーログ：GMのみ",
-        "Setting_GmOnlyHint":"アドベンチャーログ機能をGMのみに設定します",
-        "Setting_GmOnlyWhisperName":"アドベンチャーログ：アドベンチャーログを記録した際のシステムメッセージを秘匿メッセージで確認する（GMのみ有効に設定した場合）",
-        "Setting_GmOnlyWhisperHint":"上記のGMのみの設定がオンの場合、これによりすべてのログエントリのチャットメッセージがささやかれます。",
-        "Setting_PrintMessagesName":"アドベンチャーログ：ログをチャットに投稿する",
-        "Setting_PrintMessagesHint":"新しいアドベンチャーログエントリについてチャットにメッセージを投稿する。",
-        "Setting_SortDescendingName":"アドベンチャーログ：最新のものを上に並べ替える",
-        "Setting_SortDescendingHint":"ログの上部に最新のメッセージが表示され、ログの下部に最も古いメッセージが表示されるように、アドベンチャーログを並べ替えます。",
-        "Error_LibWrapperMissing":"libWrapperが有効になっていません。 アドベンチャーログはこのモジュールに依存しており、それなしでは動作しません。",
-        "Error_ConfigGmOnly":"GMのみがアドベンチャーログを変更できます。",
-        "Error_Disabled":"ゲームマスターがアドベンチャーログを無効にしました。",
-        "Error_NoJournalSet":"ゲームマスターは、アドベンチャーログとして使用するためのジャーナルを設定していません。",
-        "Error_NoJournalSetGM":"アドベンチャーログとして使用するためのジャーナルセットがありません。\"<code>/log config</code>\"を参照して設定してください。",
-        "Error_MissingQuote":"{0}の終値がありません",
-        "Error_MissingMessage":"あなたはメッセージを提供しませんでした",
-        "Error_ApiLog_NotGm":"イベントをGMアドベンチャーログに記録するには、ゲームマスター権限が必要です。",
-        "Log_Header":"アドベンチャーログ",
-        "GMLog_Header":"GMアドベンチャーログ",
-        "Log_Event":"<p><code><span class=\"dfal-ts\">{0}</span></code>&nbsp;(<span class=\"dfal-na\">{1}</span>)&nbsp;<span class=\"dfal-ev\">{2}</span></p>",
-        "Log_Quote":"<p><code><span class=\"dfal-ts\">{0}</span></code>&nbsp;(<span class=\"dfal-na\">{1}</span>)&nbsp;<span class=\"dfal-qu-src\">{2} の発言:</span>&nbsp;<span class=\"dfal-qu\">\"{3}\"</span></p>",
-        "Config_Title":"アドベンチャーログの設定",
-        "Config_JournalSelect":"アドベンチャーログとして使用するジャーナル",
-        "Config_GMJournalSelect":"GM専用ログとして使用するジャーナル",
-        "Config_NoSelection":"---",
-        "Config_ClearContent":"ジャーナルのすべての内容をクリアする",
-        "Config_GmClearContent":"GM専用ジャーナルのすべての内容をクリアする",
-        "Config_JournalPermissions":"イベントをログに記録するプレイヤーは選択したジャーナルを編集するための権限が必要になります。",
-        "ContextMenu_AsEvent":"ログにイベントとして記録",
-        "ContextMenu_AsQuote":"ログに発言者を引用して記録",
-        "ContextMenu_AsGmEvent":"GMログにイベントとして記録",
-        "ContextMenu_AsGmQuote":"GMログに発言者を引用して記録"
-     },
-
-    "DF_CHAT_EDIT":{
-        "Editor_Title":"DF Chat Editor",
-        "Editor_Original":"Original Message",
-        "Settings_AllowEditName":"チャット編集：メッセージ編集を許可する",
-        "Settings_AllowEditHint":"プレーヤーが送信するメッセージを編集できるようにする",
-        "Settings_GMEditAllName":"チャット編集：ゲームマスターの全メッセージ編集を許可する",
-        "Settings_GMEditAllHint":"ゲームマスターが自分のメッセージだけでなく、参加プレイヤーのメッセージを編集できるようにする",
-        "Settings_IgnoreHtmlName":"チャット編集：HTMLを含むメッセージを無視する",
-        "Settings_IgnoreHtmlHint":"HTMLを含むメッセージの編集を許可しない。",
-        "EditedFlag":"(編集済)",
-		"Error_NoPermission":"ゲームマスターが編集を無効にしました",
-        "ContextOption":"チャットを編集する"
-    },
-
-    "DF_CHAT_MERGE":{
-        "EnableName":"チャットマージ：チャットメッセージの結合を有効にする",
-        "EnableHint":"同一ユーザーから時間内に連続で投稿されたメッセージを結合します。",
-        "ShowHeaderName":"チャットマージ：メッセージヘッダーを表示",
-        "ShowHeaderHint":"有効にした場合、結合された各メッセージのヘッダーが表示されます。",
-        "AllowRollsName":"チャットマージ：結合時にロールを処理する方法",
-        "AllowRollsHint":"ロールメッセージの処理方法を決定します。",
-        "SeparateName":"チャットマージ：メッセージディバイダーを表示",
-        "SeparateHint":"結合されたメッセージの間に薄い仕切りを表示します。",
-        "SplitSpeakerName":"話者毎によるグループ化",
-        "SplitSpeakerHint":"有効にすると、メッセージはアクターの発言に基づいてグループ化されます。 そうでない場合、ユーザーに基づいてメッセージがグループ化されます。",
-        "HoverName":"チャットマージ：マウスオーバー時にシャドウを表示",
-        "HoverHint":"結合されたチャットメッセージにマウスを合わせたとき、境界線の影を表示します。",
-        "EpochName":"チャットマージ：メッセージ結合の猶予時間",
-        "EpochHint":"メッセージを結合させる猶予時間を設定します。",
-        "AllowRollsOptions":{"none":"結合させない","rolls":"他のロール結果と結合させる","all":"全てのメッセージタイプと結合させる"
-     }
-},
-
-    "DF_CHAT_SCROLL":{
-       "EnableName":"チャットスクロールの改善を有効にする",
-       "EnableHint":"[下にスクロール]ボタンが表示されます。ログを上にスクロールしている場合、新しいメッセージが投稿されたときにチャットログが下にスクロールするのを防ぎます。 代わりに、新しいメッセージが投稿されたときに[下にスクロール]ボタンが強調表示されます。",
-       "ScrollIfYouName":"メッセージを送信するときに下にスクロールさせる",
-       "ScrollIfYouHint":"チャットログを上にスクロールしていた場合、メッセージを送信すると自動的に一番下にスクロールします。",
-       "ScrollButton":"一番下へスクロール",
-       "NewMessage":"新しいメッセージ!"
-    },
-
-    "DF_CHAT_WHISPER_TRUNC":{
-       "SettingEnabledName":"秘話リストの切り捨てを有効にする",
-       "SettingEnabledHint":"秘話メッセージの長い受信者名を切り捨てます。",
-       "SettingCharLimitName":"秘話メッセージ：文字制限",
-       "SettingCharLimitHint":"受信者名を切り捨てる前に表示する最大文字数。"
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
 	"DF_CHAT_ENHANCE": {
 		"LANG": "ja",
 		"ReloadGameTitle": "DF Chat Enhance",
@@ -218,6 +45,7 @@
 		"ArchiveViewer_Visible": "プレイヤーに見せる",
 		"ArchiveViewer_DeleteTitle": "アーカイブされたメッセージを削除する",
 		"ArchiveViewer_DeleteContent": "以前のすべての削除を適用してもよろしいですか？",
+		"ArchiveViewer_Html": "チャットログをhtmlで保存する",	
 		"ArchiveViewer_Print": "チャットアーカイブをプリントする",
 		"ArchiveViewer_Merge": "アーカイブを結合します",
 		"ArchiveViewer_Merge_Title": "Merge Chat Archive",
@@ -230,9 +58,9 @@
 	},
 	"DF_CHAT_PRIVACY": {
 		"Settings_EnableTitle": "ロールボタン：ロールタイプセレクターをボタンに置き換えます",
-		"Settings_EnableHint": "ロールタイプのドロップダウンメニューセレクターを4つのボタンのセットに置き換えます。（リロードが必要）",
+		"Settings_EnableHint": "ロールタイプのドロップダウンメニューセレクターを4つのボタンのセットに置き換えます（リロードが必要）。",
 		"Settings_ReplaceButtonsTitle": "ロールボタン：すべてのチャットボタンでボタンスタイルを使用します",
-		"Settings_ReplaceButtonsHint": "他のチャットボタンも新しいロールタイプボタンと同じスタイルに変更します。（リロードが必要）"
+		"Settings_ReplaceButtonsHint": "他のチャットボタンも新しいロールタイプボタンと同じスタイルに変更します（リロードが必要）。"
 	},
 	"DF_CHAT_LOG": {
 		"CommandDescription": "アドベンチャーログにイベントを送信する",
@@ -240,15 +68,19 @@
 		"HelpDialog_Title": "Adventure Journal Command Help",
 		"Setting": {
 			"EnableTitle": "アドベンチャーログ：有効にする",
-			"EnableHint": "チャットログから直接ジャーナルにイベントを記録するためのアドベンチャーログ機能を有効にします",
+			"EnableHint": "チャットログから直接ジャーナルにイベントを記録するためのアドベンチャーログ機能を有効にします。",
 			"GmOnlyTitle": "アドベンチャーログ：GMのみ",
 			"GmOnlyHint": "アドベンチャーログ機能をGMのみに設定します",
-			"GmOnlyWhisperName": "アドベンチャーログ：アドベンチャーログを記録した際のシステムメッセージを秘匿メッセージで確認する（GMのみ有効に設定した場合）",
+			"GmOnlyWhisperName": "アドベンチャーログ：アドベンチャーログを記録した際のシステムメッセージを秘匿メッセージで確認する（GMのみ有効に設定した場合）。",
 			"GmOnlyWhisperHint": "上記のGMのみの設定がオンの場合、これによりすべてのログエントリのチャットメッセージがささやかれます。",
+			"UseTimeName": "アドベンチャーログ: 現在時刻を挿入する",
+			"UseTimeHint": "タイムスタンプとして現在時刻（hh:mm:ss）を挿入します。",
 			"PrintMessagesName": "アドベンチャーログ：ログをチャットに投稿する",
 			"PrintMessagesHint": "新しいアドベンチャーログエントリについてチャットにメッセージを投稿する。",
 			"SortDescendingName": "アドベンチャーログ：最新のものを上に並べ替える",
-			"SortDescendingHint": "ログの上部に最新のメッセージが表示され、ログの下部に最も古いメッセージが表示されるように、アドベンチャーログを並べ替えます。"
+			"SortDescendingHint": "ログの上部に最新のメッセージが表示され、ログの下部に最も古いメッセージが表示されるように、アドベンチャーログを並べ替えます。",
+			"SimpleCalendarName": "アドベンチャーログ:'SimpleCalendar'のタイムスタンプを使用する",
+			"SimpleCalendarHint": "現実時間のタイムスタンプの代わりに、'SimpleCalendar'で生成されたタイムスタンプを使用する。"
 		},
 		"Error": {
 			"LibWrapperMissing": "libWrapperが有効になっていません。 アドベンチャーログはこのモジュールに依存しており、それなしでは動作しません。",
@@ -323,6 +155,10 @@
 		"SettingEnabledHint": "秘話メッセージの長い受信者名を切り捨てます。",
 		"SettingCharLimitName": "秘話メッセージ：文字制限",
 		"SettingCharLimitHint": "受信者名を切り捨てる前に表示する最大文字数。"
+	},
+	"DF_CHAT_PLAYER_COLOR": {
+		"Label": "プレイヤーチャットカラー",
+		"SettingTintBackgroundName": "チャットメッセージの背景色",
+		"SettingTintBackgroundHint": "チャットメッセージの背景色を、プレイヤーカラーに合わせて設定することができます。"
 	}
 }
->>>>>>> fe99a473472b9db3ee96916c6576dc12eee3967d

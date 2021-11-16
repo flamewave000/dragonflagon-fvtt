@@ -16,13 +16,8 @@
 	"df-curvy-walls.trace_curve_with_points": "ポイント配置による曲線生成",
 	"df-curvy-walls.SettingPreserve_Name": "編集ツールの状態を保持する",
 	"df-curvy-walls.SettingPreserve_Hint": "有効にするとウォール操作レイヤーから離れても編集ツールの状態が保持されます。戻ると保持された状態から作業を再開できます。",
-<<<<<<< HEAD
-	"df-curvy-walls.SettingDropKey_Name":"ツール再配置時に使用するキー",
-	"df-curvy-walls.SettingDropKey_Hint":"直前に構成したツールを複製し再配置するために、キャンバスをクリックするとき使用するキーを指定します。",
-=======
 	"df-curvy-walls.SettingDropKey_Name": "ツール再配置時に使用するキー",
 	"df-curvy-walls.SettingDropKey_Hint": "直前に構成したツールを複製し再配置するために、キャンバスをクリックするとき使用するキーを指定します。",
->>>>>>> fe99a473472b9db3ee96916c6576dc12eee3967d
 	"df-curvy-walls.SettingDropKey_OptionAlt": "Alt",
 	"df-curvy-walls.SettingDropKey_OptionCtrl": "Ctrl",
 	"df-curvy-walls.pointmapapply": "ポイントから編集ツールに変換",
