@@ -1,4 +1,3 @@
-CONFIG.debug.hooks = true;
 import '../../common/HooksExt.shim';
 import SETTINGS from "../../common/Settings";
 import FlagEditor from "./FlagEditor";
