@@ -1,5 +1,8 @@
 # DF Chat Enhancements
 
+## Release 3.5.1 (2021-11-16)
+- **FIX #215:** Last character of chat messages was getting accidentally eaten.
+
 ## Release 3.5.0 (2021-11-15)
 - **NEW:** MarkDown features in the Chat Message box.
 - **NEW:** MarkDown features in the Edit Chat Message.
