@@ -1,5 +1,9 @@
 # DF Curvy Walls
 
+## Release 3.2.3 (2021-11-16)
+- **NEW #190:** There is now an option to use smaller control handles.
+- **FIX #213:** Applying tool crashed and would not succeed.
+
 ## Release 3.2.2 (2021-11-15)
 - Updated Spanish localization, courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
 
