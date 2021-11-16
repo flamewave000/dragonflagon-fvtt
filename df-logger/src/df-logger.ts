@@ -1,4 +1,3 @@
-import {} from '../../common/global';
 import DFLogger from './DFLogger';
 import DFLoggerMenu from './DFLoggerMenu';
 import { MessageProcessor } from './MessageProcessor';

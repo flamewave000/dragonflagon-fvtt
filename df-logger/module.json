@@ -1,7 +1,7 @@
 {
 	"name": "df-logger",
 	"title": "DF User Logger",
-	"version": "1.6.3",
+	"version": "1.6.4",
 	"description": "Prints a simple message whenever a user logs-in/out of FoundryVTT",
 	"author": "flamewave000#0001",
 	"minimumCoreVersion": "0.8.8",
