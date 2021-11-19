@@ -64,12 +64,12 @@ export default class TemplateTargeting {
 		});
 	}
 
-	static UPDATE_TARGETS(this: MeasuredTemplate, wrapped: ()=>void) {
+	static UPDATE_TARGETS(this: MeasuredTemplate, wrapped: () => void) {
 		const mode = SETTINGS.get<string>('template-targeting');
 		const shouldAutoSelect = mode === 'always' || (mode === 'toggle' && SETTINGS.get<boolean>('template-targeting-toggle'));
 
 		// Release all previously targeted tokens
-		if (shouldAutoSelect && canvas.tokens.objects) {
+		if (this.document.author.id === game.userId && shouldAutoSelect && canvas.tokens.objects) {
 			for (const t of game.user.targets) {
 				t.setTarget(false, { releaseOthers: false, groupSelection: true });
 			}
@@ -78,7 +78,8 @@ export default class TemplateTargeting {
 		if (!game.dnd5e || !SETTINGS.get('template-targeting-patch5e')) {
 			// Call the original function
 			wrapped();
-			if (!shouldAutoSelect) return;
+			// Ignore changing the target selection if we don't own the template, or `shouldAutoSelect` is false
+			if (this.document.author.id !== game.userId || !shouldAutoSelect) return;
 			// Get the offset of the template origin relative to the top-left grid space
 			const hx = canvas.grid.w / 2;
 			const hy = canvas.grid.h / 2;
@@ -308,7 +309,8 @@ export default class TemplateTargeting {
 					if (!contains) continue;
 					grid.grid.highlightGridPosition(hl, { x: gx, y: gy, border, color: <any>color });
 
-					if (!shouldAutoSelect) continue;
+					// Ignore changing the target selection if we don't own the template, or `shouldAutoSelect` is false
+					if (this.document.author.id !== game.userId || !shouldAutoSelect) continue;
 					// Iterate over all existing tokens and target the ones within the template area
 					for (const token of canvas.tokens.placeables) {
 						if (!testRect.contains(token.x + hx, token.y + hy)) continue;

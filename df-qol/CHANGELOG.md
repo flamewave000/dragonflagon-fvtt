@@ -2,7 +2,7 @@
 
 ## Release 1.5.2 (2021-11-19)
 - **FIX #196:** Vehicle weight calculation has been fixed for D&D5e.
-- 
+- **FIX #168:** Correct auto-targeting with templates. Now only the owner's targetting changes instead of everyone's.
 
 ## Release 1.5.1 (2021-07-16)
 - Fixed Token Lock keyboard bypass issue. Token locks can no longer be bypassed via keyboard movement.
