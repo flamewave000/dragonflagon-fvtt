@@ -42,6 +42,8 @@
 		"TemplateTargeting": {
 			"SettingName": "Templates Auto-Target Tokens",
 			"SettingHint": "If enabled, will automatically target tokens that are hit by a Measure Template",
+			"PreviewName": "Preview Template Highlight/Targeting",
+			"PreviewHint": "Show the grid highlight and perform auto-targeting when moving or creating a template.",
 			"ToggleTitle": "Auto-Target Tokens",
 			"Patch5e_Name": "Use D&D 5e Style Templates",
 			"Patch5e_Hint": "Core Foundry requires a grid square's center to be inside a template to be affected. This adjusts templates to follow the D&D5e rules for targeting grid squares where any square TOUCHED by a template is hit (with the exception of circles).",

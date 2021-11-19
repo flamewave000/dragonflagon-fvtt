@@ -31,4 +31,5 @@ Hooks.once('ready', function () {
 	}
 	DnD5eVehicleCapacity.ready();
 	TokenLock.ready();
+	TemplateTargeting.ready();
 });

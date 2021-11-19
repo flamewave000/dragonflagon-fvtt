@@ -193,7 +193,7 @@ class Hooks {
 		try {
 			return fn(...args);
 		} catch(err) {
-			console.warn(`${vtt} | Error thrown in hooked function ${fn.name}`);
+			console.warn(`${vtt} | Error thrown in hooked function ${fn?.name}`);
 			console.error(err);
 		}
 	}
@@ -1469,6 +1469,13 @@ class GameTime {
 	onUpdateWorldTime(worldTime) {
 		const dt = worldTime - this._time.worldTime;
 		this._time.worldTime = worldTime;
+		/**
+		 * A hook event that fires when the World time has been updated.
+		 * @function updateWorldTime
+		 * @memberof hookEvents
+		 * @param {number} worldTime The new canonical World time
+		 * @param {number} delta     The time delta
+		 */
 		Hooks.callAll("updateWorldTime", worldTime, dt);
 		if ( CONFIG.debug.time ) console.log(`The world time advanced by ${dt} seconds, and is now ${worldTime}.`);
 	}
@@ -2932,6 +2939,7 @@ class FormApplication extends Application {
 		if ( !editor ) throw new Error(`${name} is not a registered editor name!`);
 		options = foundry.utils.mergeObject(editor.options, options);
 		options.height = options.target.offsetHeight;
+		if ( editor.hasButton ) editor.button.style.display = "none";
 		TextEditor.create(options, initialContent || editor.initial).then(mce => {
 			editor.mce = mce;
 			editor.changed = false;
@@ -3276,6 +3284,7 @@ class BaseEntitySheet extends DocumentSheet {
 		console.warn("You are extending the BaseEntitySheet class which is now renamed to DocumentSheet. Support for the old class name will be removed in 0.9.0")
 	}
 }
+
 /**
  * A helper class which assists with localization and string translation
  * @param {string} serverLanguage       The default language configuration setting for the server
@@ -3512,7 +3521,8 @@ class Localization {
 	 * @return {boolean}
 	 */
 	has(stringId, fallback=true) {
-		return hasProperty(this.translations, stringId) || hasProperty(this._fallback, stringId);
+		if ( fallback && hasProperty(this._fallback, stringId) ) return true;
+		return hasProperty(this.translations, stringId);
 	}
 
 	/* -------------------------------------------- */
@@ -3592,7 +3602,7 @@ async function getTemplate(path) {
 				resolve(compiled);
 			});
 		});
-	} 
+	}
 	return _templateCache[path];
 }
 
@@ -3681,6 +3691,9 @@ class HandlebarsHelpers {
 	 * @param {boolean} [options.owner]     Is the current user an owner of the data?
 	 * @param {boolean} [options.button]    Include a button used to activate the editor later?
 	 * @param {boolean} [options.editable]  Is the text editor area currently editable?
+	 * @param {boolean} [options.entities=true] Replace dynamic entity links?
+	 * @param {Object|Function} [options.rollData] The data object providing context for inline rolls
+	 * @param {string} [options.content=""]  The original HTML content as a string
 	 * @return {Handlebars.SafeString}
 	 */
 	static editor(options) {
@@ -3709,7 +3722,7 @@ class HandlebarsHelpers {
 	 * Render a file-picker button linked to an &lt;input> field
 	 * @param {object} options              Helper options
 	 * @param {string} [options.type]       The type of FilePicker instance to display
-	 * @param {boolean} [options.target]    The field name in the target data
+	 * @param {string} [options.target]     The field name in the target data
 	 * @return {Handlebars.SafeString|string}
 	 */
 	static filePicker(options) {
@@ -3755,6 +3768,28 @@ class HandlebarsHelpers {
 		value = parseFloat(value).toFixed(dec);
 		if (sign ) return ( value >= 0 ) ? "+"+value : value;
 		return value;
+	}
+
+	/* --------------------------------------------- */
+
+	/**
+	 * Render a form input field of type number with value appropriately rounded to step size.
+	 * @return {Handlebars.SafeString}
+	 */
+	static numberInput(value, options) {
+		const name = options.hash["name"] ?? "";
+		const step = options.hash["step"] ?? "any";
+		const disabled = options.hash["disabled"] ?? false;
+		const placeholder = game.i18n.localize(options.hash["placeholder"] ?? "");
+		const cls = options.hash["class"] ?? "";
+		const min = options.hash["min"] ?? false;
+		const max = options.hash["max"] ?? false;
+		let safeValue = value;
+		if (Number.isNumeric(value) && Number.isNumeric(step)) safeValue = Number(value).toNearest(Number(step));
+		return new Handlebars.SafeString(`
+			<input type="number" name="${name}" value="${safeValue}" placeholder="${placeholder}" class="${cls}"
+						 step="${step}" ${min ? `min="${min}"` : ""} ${max ? `max="${max}"` : ""} ${disabled ? "disabled" : ""}>
+		`);
 	}
 
 	/* -------------------------------------------- */
@@ -3835,13 +3870,19 @@ class HandlebarsHelpers {
 	/* -------------------------------------------- */
 
 	/**
-	 * A helper to create a set of <option> elements in a <select> block based on a provided dictionary.
+	 * A helper to create a set of &lt;option> elements in a &lt;select> block based on a provided dictionary.
 	 * The provided keys are the option values while the provided values are human readable labels.
 	 * This helper supports both single-select as well as multi-select input fields.
 	 *
-	 * @param {object} choices      A mapping of radio checkbox values to human readable labels
-	 * @param {string|string[]} options.selected    Which key or array of keys that are currently selected?
-	 * @param {boolean} options.localize  Pass each label through string localization?
+	 * @param {object} choices                     A mapping of radio checkbox values to human readable labels
+	 * @param {object} options                     Helper options
+	 * @param {string|string[]} [options.selected] Which key or array of keys that are currently selected?
+	 * @param {boolean} [options.localize=false]   Pass each label through string localization?
+	 * @param {string} [options.blank]             Add a blank option as the first option with this label
+	 * @param {string} [options.nameAttr]          Look up a property in the choice object values to use as the option value
+	 * @param {string} [options.labelAttr]         Look up a property in the choice object values to use as the option label
+	 * @param {boolean} [options.inverted=false]   Use the choice object value as the option value, and the key as the label
+	 *                                             instead of vice-versa
 	 * @return {Handlebars.SafeString}
 	 *
 	 * @example <caption>The provided input data</caption>
@@ -3851,6 +3892,39 @@ class HandlebarsHelpers {
 	 * @example <caption>The template HTML structure</caption>
 	 * <select name="importantChoice">
 	 *   {{selectOptions choices selected=value localize=true}}
+	 * </select>
+	 *
+	 * @example <caption>The resulting HTML</caption>
+	 * <select name="importantChoice">
+	 *   <option value="a" selected>Choice A</option>
+	 *   <option value="b">Choice B</option>
+	 * </select>
+	 *
+	 * @example <caption>Using inverted</caption>
+	 * let choices = {"Choice A": "a", "Choice B": "b"};
+	 * let value = "a";
+	 *
+	 * @example <caption>The template HTML structure</caption>
+	 * <select name="importantChoice">
+	 *   {{selectOptions choices selected=value inverted=true}}
+	 * </select>
+	 *
+	 * @example <caption>Using nameAttr and labelAttr with objects</caption>
+	 * let choices = {foo: {key: "a", label: "Choice A"}, bar: {key: "b", label: "Choice B"}};
+	 * let value = "b";
+	 *
+	 * @example <caption>The template HTML structure</caption>
+	 * <select name="importantChoice">
+	 *   {{selectOptions choices selected=value nameAttr="key" labelAttr="label"}}
+	 * </select>
+	 *
+	 * @example <caption>Using nameAttr and labelAttr with arrays</caption>
+	 * let choices = [{key: "a", label: "Choice A"}, {key: "b", label: "Choice B"}];
+	 * let value = "b";
+	 *
+	 * @example <caption>The template HTML structure</caption>
+	 * <select name="importantChoice">
+	 *   {{selectOptions choices selected=value nameAttr="key" labelAttr="label"}}
 	 * </select>
 	 */
 	static selectOptions(choices, options) {
@@ -3900,6 +3974,7 @@ Handlebars.registerHelper({
 	editor: HandlebarsHelpers.editor,
 	filePicker: HandlebarsHelpers.filePicker,
 	numberFormat: HandlebarsHelpers.numberFormat,
+	numberInput: HandlebarsHelpers.numberInput,
 	localize: HandlebarsHelpers.localize,
 	radioBoxes: HandlebarsHelpers.radioBoxes,
 	rangePicker: HandlebarsHelpers.rangePicker,
@@ -3912,9 +3987,11 @@ Handlebars.registerHelper({
 	gt: (v1, v2) => v1 > v2,
 	lte: (v1, v2) => v1 <= v2,
 	gte: (v1, v2) => v1 >= v2,
+	not: (pred) => !pred,
 	and() { return Array.prototype.every.call(arguments, Boolean) },
 	or() { return Array.prototype.slice.call(arguments, 0, -1).some(Boolean) }
 });
+
 /**
  * The core Game instance which encapsulates the data, settings, and states relevant for managing the game experience.
  * The singleton instance of the Game class is available as the global variable game.
@@ -4187,6 +4264,13 @@ class Game {
 	async initialize() {
 		console.log(`${vtt} | Initializing Foundry Virtual Tabletop Game`);
 		this.ready = false;
+
+		/**
+		 * A hook event that fires as Foundry is initializing, right before any
+		 * initialization tasks have begun.
+		 * @function init
+		 * @memberof hookEvents
+		 */
 		Hooks.callAll("init");
 
 		// Register game settings
@@ -4253,7 +4337,7 @@ class Game {
 
 	/**
 	 * Shut down the currently active Game. Requires GameMaster user permission.
-	 * @return {Promise<Object>}    A Promise which resolves to the response object from the server
+	 * @return {Promise<void>}
 	 */
 	async shutDown() {
 		if ( !game.ready || !game.user.isGM ) {
@@ -4278,6 +4362,13 @@ class Game {
 	 * @returns {Promise<void>}
 	 */
 	async setupGame() {
+		/**
+		 * A hook event that fires when Foundry has finished initializing but
+		 * before the game state has been set up. Fires before any Documents, UI
+		 * applications, or the Canvas have been initialized.
+		 * @function setup
+		 * @memberof hookEvents
+		 */
 		Hooks.callAll('setup');
 
 		// Store permission settings
@@ -4304,6 +4395,11 @@ class Game {
 
 		// Call all game ready hooks
 		this.ready = true;
+		/**
+		 * A hook event that fires when the game is fully ready.
+		 * @function ready
+		 * @memberof hookEvents
+		 */
 		Hooks.callAll("ready");
 	}
 
@@ -5560,7 +5656,7 @@ class Roll {
 		simplified = simplified.map(term => {
 			if ( !(term instanceof StringTerm) ) return term;
 			const t = this._classifyStringTerm(term.formula, {intermediate: false});
-			t.options = term.options;
+			t.options = foundry.utils.mergeObject(term.options, t.options, {inplace: false});
 			return t;
 		});
 
@@ -5924,7 +6020,7 @@ class Roll {
 	 * Classify a remaining string term into a recognized RollTerm class
 	 * @param {string} term         A remaining un-classified string
 	 * @param {object} [options={}] Options which customize classification
-	 * @param {boolean} [options.intermediate=false]  Allow intermediate terms
+	 * @param {boolean} [options.intermediate=true]  Allow intermediate terms
 	 * @param {RollTerm|string} [options.prior]       The prior classified term
 	 * @param {RollTerm|string} [options.next]        The next term to classify
 	 * @returns {RollTerm}          A classified RollTerm instance
@@ -6029,7 +6125,7 @@ class Roll {
 		if ( rollMode ) msg.applyRollMode(rollMode);
 
 		// Either create or return the data
-		if ( create ) return cls.create(msg.data);
+		if ( create ) return cls.create(msg.data, { rollMode });
 		else return msg.data;
 	}
 
@@ -9663,8 +9759,8 @@ const ClientDocumentMixin = Base => class extends Base {
 	 */
 	async importFromJSON(json) {
 		const data = JSON.parse(json);
-		this.data.update(data, {recursive: false});
-		return this.update(this.toJSON(), {diff: false, recursive: false});
+		this.data.update(this.collection.prepareForImport(data), {recursive: false});
+		return this.update(this.toObject(), {diff: false, recursive: false});
 	}
 
 	/* -------------------------------------------- */
@@ -9834,6 +9930,7 @@ const ClientDocumentMixin = Base => class extends Base {
 		return this.deleteEmbeddedDocuments(documentName, ids, options);
 	}
 };
+
 /**
  * An abstract subclass of the Collection container which defines a collection of Document instances.
  * @extends {Collection}
@@ -10166,6 +10263,17 @@ class WorldCollection extends DocumentCollection {
 			if ( !data.flags.core?.sourceId ) foundry.utils.setProperty(data, "flags.core.sourceId", document.uuid);
 		}
 
+		return this.prepareForImport(data);
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Prepare a document from an outside source for import into this collection.
+	 * @param {object} data The data to be prepared.
+	 * @return {object}     The prepared data.
+	 */
+	prepareForImport(data) {
 		// Eliminate some fields that should never be preserved
 		const deleteKeys = ["_id", "folder"];
 		for ( let k of deleteKeys ) {
@@ -10241,15 +10349,18 @@ class WorldCollection extends DocumentCollection {
  * let actor = game.actors.get(actorId);
  */
 class Actors extends WorldCollection {
-	constructor(...args) {
-		super(...args);
-
-		/**
-		 * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
-		 * Each Actor is referenced by the Token.id.
-		 * @type {Object}
-		 */
-		this.tokens = {};
+	/**
+	 * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
+	 * Each Actor is referenced by the Token.id.
+	 * @type {Object<string, Actor>}
+	 */
+	get tokens() {
+		if ( !canvas.ready || !canvas.scene ) return {};
+		return canvas.scene.tokens.reduce((obj, t) => {
+			if ( t.data.actorLink ) return obj;
+			obj[t.id] = t.actor;
+			return obj;
+		}, []);
 	}
 
 	/* -------------------------------------------- */
@@ -11267,22 +11378,16 @@ class Playlists extends WorldCollection {
 	 */
 	async _onChangeScene(scene, data) {
 		const currentScene = game.scenes.active;
-
-		// Deactivate the current scene
-		if (currentScene) {
-			const p0 = currentScene.playlist;
-			const s0 = currentScene.playlistSound;
-			if (s0) await s0.update({playing: false});
-			else if (p0) await p0.stopAll();
-		}
-
-		// Activate a new Scene
-		if (data.active !== false) {
-			const p1 = ("playlist" in data) ? game.playlists.get(data.playlist) : scene.playlist;
-			if (!p1) return;
-			const s1 = p1.sounds.get("playlistSound" in data ? data.playlistSound : scene.data.playlistSound);
-			if (s1) await s1.update({playing: true});
-			else if (p1) await p1.playAll();
+		const p0 = currentScene?.playlist;
+		const s0 = currentScene?.playlistSound;
+		const p1 = ("playlist" in data) ? game.playlists.get(data.playlist) : scene.playlist;
+		const s1 = p1?.sounds.get("playlistSound" in data ? data.playlistSound : scene.data.playlistSound);
+		const soundChange = (p0 !== p1) || (s0 !== s1);
+		if ( soundChange ) {
+			if ( s0 ) await s0.update({playing: false});
+			else if ( p0 ) await p0.stopAll();
+			if ( s1 ) await s1.update({playing: true});
+			else if ( p1 ) await p1.playAll();
 		}
 	}
 }
@@ -11412,11 +11517,10 @@ class Scenes extends WorldCollection {
 }
 /**
  * The Collection of Setting documents which exist within the active World.
- * This collection is accessible as game.settings.storages.get("world")
+ * This collection is accessible as game.settings.storage.get("world")
  * @extends {WorldCollection}
  *
  * @see {@link Setting} The Setting document
- * @see {@link RollTableDirectory} The RollTableDirectory sidebar directory
  */
 class WorldSettings extends WorldCollection {
 
@@ -11435,9 +11539,9 @@ class WorldSettings extends WorldCollection {
 	/* -------------------------------------------- */
 
 	/**
-	 * Return the serialized value of the world setting as a string
-	 * @param {string} key    The setting key
-	 * @return {string}       The serialized setting string
+	 * Return the Setting document with the given key.
+	 * @param {string} key         The setting key
+	 * @return {Setting|undefined} The Setting.
 	 */
 	getSetting(key) {
 		return this.find(s => s.key === key);
@@ -11446,7 +11550,7 @@ class WorldSettings extends WorldCollection {
 	/**
 	 * Return the serialized value of the world setting as a string
 	 * @param {string} key    The setting key
-	 * @return {string}       The serialized setting string
+	 * @return {string|null}  The serialized setting string
 	 */
 	getItem(key) {
 		const setting = this.getSetting(key);
@@ -11503,7 +11607,6 @@ class RollTables extends WorldCollection {
  * @extends {WorldCollection}
  *
  * @see {@link User} The User entity
- * @see {@link UserDirectory} The UserDirectory sidebar directory
  */
 class Users extends WorldCollection {
 	constructor(...args) {
@@ -11520,11 +11623,11 @@ class Users extends WorldCollection {
 
 	/**
 	 * Initialize the Map object and all its contained entities
-	 * @param {Object[]} data
 	 * @private
+	 * @override
 	 */
-	_initialize(data) {
-		super._initialize(data);
+	_initialize() {
+		super._initialize();
 
 		// Flag the current user
 		this.current = this.get(game.data.userId) || null;
@@ -11555,7 +11658,6 @@ class Users extends WorldCollection {
 	/*  Socket Listeners and Handlers               */
 	/* -------------------------------------------- */
 
-	/** @override */
 	static _activateSocketListeners(socket) {
 		socket.on('userActivity', this._handleUserActivity)
 	}
@@ -11936,6 +12038,13 @@ class ActiveEffect extends ClientDocumentMixin(foundry.documents.BaseActiveEffec
 	 */
 	_applyCustom(actor, change) {
 		const preHook = foundry.utils.getProperty(actor.data, change.key);
+		/**
+		 * A hook event that fires when a custom active effect is applied.
+		 * @function applyActiveEffect
+		 * @memberof hookEvents
+		 * @param {Actor} actor                  The actor the active effect is being applied to
+		 * @param {data.EffectChangeData} change The change data being applied
+		 */
 		Hooks.call("applyActiveEffect", actor, change);
 		const postHook = foundry.utils.getProperty(actor.data, change.key);
 		return postHook !== preHook ? postHook : null;
@@ -12265,7 +12374,17 @@ class Actor extends ClientDocumentMixin(foundry.documents.BaseActor) {
 			updates = {[`data.${attribute}`]: value};
 		}
 
-		// Call a hook to handle token resource bar updates
+		/**
+		 * A hook event that fires when a token's resource bar attribute has been modified.
+		 * @function modifyTokenAttribute
+		 * @memberof hookEvents
+		 * @param {object} data           An object describing the modification
+		 * @param {string} data.attribute The attribute path
+		 * @param {number} data.value     The target attribute value
+		 * @param {boolean} data.isDelta  Whether the number represents a relative change (true) or an absolute change (false)
+		 * @param {boolean} data.isBar    Whether the new value is part of an attribute bar, or just a direct value
+		 * @param {objects} updates       The update delta that will be applied to the Token's actor
+		 */
 		const allowed = Hooks.call("modifyTokenAttribute", {attribute, value, isDelta, isBar}, updates);
 		return allowed !== false ? this.update(updates) : this;
 	}
@@ -12599,8 +12718,8 @@ class ChatMessage extends ClientDocumentMixin(foundry.documents.BaseChatMessage)
 	get alias() {
 		const speaker = this.data.speaker;
 		if ( speaker.alias ) return speaker.alias;
-		else if ( speaker.actor ) return game.actors.get(speaker.actor).name;
-		else return this.user ? this.user.name : "";
+		else if ( game.actors.has(speaker.actor) ) return game.actors.get(speaker.actor).name;
+		else return this.user?.name ?? "";
 	}
 
 	/* -------------------------------------------- */
@@ -12735,17 +12854,18 @@ class ChatMessage extends ClientDocumentMixin(foundry.documents.BaseChatMessage)
 	 * Attempt to determine who is the speaking character (and token) for a certain Chat Message
 	 * First assume that the currently controlled Token is the speaker
 	 *
-	 * @param {Scene} [scene]     The Scene in which the speaker resides
-	 * @param {Actor} [actor]     The Actor whom is speaking
-	 * @param {Token} [token]     The Token whom is speaking
-	 * @param {string} [alias]     The name of the speaker to display
+	 * @param {Scene} [scene]         The Scene in which the speaker resides
+	 * @param {Actor} [actor]         The Actor whom is speaking
+	 * @param {TokenDocument} [token] The Token whom is speaking
+	 * @param {string} [alias]        The name of the speaker to display
 	 *
 	 * @returns {Object}  The identified speaker data
 	 */
 	static getSpeaker({scene, actor, token, alias}={}) {
 
 		// CASE 1 - A Token is explicitly provided
-		if ( token instanceof Token ) return this._getSpeakerFromToken({token, alias});
+		const hasToken = (token instanceof Token) || (token instanceof TokenDocument);
+		if ( hasToken ) return this._getSpeakerFromToken({token, alias});
 		const hasActor = actor instanceof Actor;
 		if ( hasActor && actor.isToken ) return this._getSpeakerFromToken({token: actor.token, alias});
 
@@ -13209,16 +13329,17 @@ class Combat extends ClientDocumentMixin(foundry.documents.BaseCombat) {
 	/**
 	 * Set the current Combat encounter as active within the Scene.
 	 * Deactivate all other Combat encounters within the viewed Scene and set this one as active
+	 * @param {object} [options] Additional context to customize the update workflow
 	 * @return {Promise<Combat>}
 	 */
-	async activate() {
+	async activate(options) {
 		const currentScene = game.scenes.current?.id;
 		const updates = this.collection.reduce((arr, c) => {
 			if ( (c.data.scene === currentScene) && c.data.active ) arr.push({_id: c.data._id, active: false});
 			return arr;
 		}, []);
 		updates.push({_id: this.id, active: true});
-		return this.constructor.updateDocuments(updates);
+		return this.constructor.updateDocuments(updates, options);
 	}
 
 	/* -------------------------------------------- */
@@ -13516,7 +13637,7 @@ class Combat extends ClientDocumentMixin(foundry.documents.BaseCombat) {
 	/** @inheritdoc */
 	_onCreate(data, options, userId) {
 		super._onCreate(data, options, userId);
-		if ( !this.collection.viewed ) ui.combat.initialize({combat: this});
+		if ( !this.collection.viewed ) ui.combat.initialize({combat: this, render: false});
 	}
 
 	/* -------------------------------------------- */
@@ -13550,7 +13671,8 @@ class Combat extends ClientDocumentMixin(foundry.documents.BaseCombat) {
 	/** @inheritdoc */
 	_onDelete(options, userId) {
 		super._onDelete(options, userId);
-		if ( this.collection.viewed === this ) ui.combat.initialize();
+		if ( this.collection.viewed === this ) ui.combat.initialize({render: false});
+		this.collection.viewed?.activate();
 	}
 
 	/* -------------------------------------------- */
@@ -13708,6 +13830,16 @@ class Combatant extends ClientDocumentMixin(foundry.documents.BaseCombatant) {
 	/* -------------------------------------------- */
 
 	/**
+	 * A convenience alias of Combatant#parent which is more semantically intuitive
+	 * @type {Combat|null}
+	 */
+	get combat() {
+		return this.parent;
+	}
+
+	/* -------------------------------------------- */
+
+	/**
 	 * Determine the image icon path that should be used to portray this Combatant in the combat tracker or elsewhere
 	 * @type {string}
 	 */
@@ -13759,7 +13891,7 @@ class Combatant extends ClientDocumentMixin(foundry.documents.BaseCombatant) {
 	 * @type {boolean}
 	 */
 	get hidden() {
-		return this.data.hidden || this.token?.hidden || false;
+		return this.data.hidden;
 	}
 
 	/* -------------------------------------------- */
@@ -14423,16 +14555,21 @@ class Item extends ClientDocumentMixin(foundry.documents.BaseItem) {
 		return cls.createDocuments(toCreate, context);
 	}
 
-
 	/* -------------------------------------------- */
 
 	/** @inheritdoc */
 	static async _onDeleteDocuments(items, context) {
 		if ( !(context.parent instanceof Actor) ) return;
-		const deletedUUIDs = new Set(items.map(i => i.uuid));
+		const actor = context.parent;
+		const deletedUUIDs = new Set(items.map(i => {
+			if ( actor.isToken ) return i.uuid.split(".").slice(-2).join(".");
+			return i.uuid;
+		}));
 		const toDelete = [];
-		for ( let e of context.parent.effects ) {
-			if ( deletedUUIDs.has(e.data.origin) )  toDelete.push(e.id);
+		for ( const e of actor.effects ) {
+			let origin = e.data.origin || "";
+			if ( actor.isToken ) origin = origin.split(".").slice(-2).join(".");
+			if ( deletedUUIDs.has(origin) ) toDelete.push(e.id);
 		}
 		if ( !toDelete.length ) return [];
 		const cls = getDocumentClass("ActiveEffect");
@@ -14572,7 +14709,7 @@ class JournalEntry extends ClientDocumentMixin(foundry.documents.BaseJournalEntr
 		if ( !canvas.ready ) return;
 		for ( let n of canvas.notes.placeables ) {
 			if ( n.data.entryId === this.id ) {
-				n.entry = null;
+				n.draw();
 			}
 		}
 	}
@@ -14835,6 +14972,7 @@ class PlaylistSound extends ClientDocumentMixin(foundry.documents.BasePlaylistSo
 	 * @type {number}
 	 */
 	get fadeDuration() {
+		if ( this.sound.failed ) return 0;
 		const halfDuration = Math.ceil(this.sound.duration / 2) * 1000;
 		return Math.clamped(this.data.fade ?? this.parent.data.fade ?? 0, 0, halfDuration);
 	}
@@ -14981,8 +15119,8 @@ class Playlist extends ClientDocumentMixin(foundry.documents.BasePlaylist) {
 		super(data, context);
 
 		/**
-		 * Each sound which is played within the Playlist has a created Howl instance.
-		 * The keys of this object are the sound IDs and the values are the Howl instances.
+		 * Each sound which is played within the Playlist has a created Sound instance.
+		 * The keys of this object are the sound IDs and the values are the Sound instances.
 		 * @type {Object}
 		 */
 		this.audio = this.audio || {};
@@ -15436,7 +15574,7 @@ class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
 
 	/**
 	 * A reference to the PlaylistSound document which should automatically play for this Scene, if any
-	 * @type {Playlist|null}
+	 * @type {PlaylistSound|null}
 	 */
 	get playlistSound() {
 		const playlist = this.playlist;
@@ -15493,7 +15631,12 @@ class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
 	clone(createData={}, options={}) {
 		createData["active"] = false;
 		createData["navigation"] = false;
-		return super.clone(createData, options);
+		if ( !foundry.data.validators.isBase64Image(createData.thumb) ) delete createData.thumb;
+		if ( !options.save ) return super.clone(createData, options);
+		return this.createThumbnail().then(data => {
+			createData.thumb = data.thumb;
+			return super.clone(createData, options);
+		});
 	}
 
 	/* -------------------------------------------- */
@@ -15516,7 +15659,7 @@ class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
 		if ( !("active" in data) && !game.scenes.active ) this.data.update({active: true});
 
 		// Base64 the thumbnail for compendium Scenes
-		if ( canvas.ready && this.compendium && data.img ) {
+		if ( canvas.ready && this.compendium ) {
 			const t = await this.createThumbnail({img: data.img});
 			this.data.update({thumb: t.thumb});
 		}
@@ -15620,7 +15763,7 @@ class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
 	/** @inheritdoc */
 	_preCreateEmbeddedDocuments(embeddedName, result, options, userId) {
 		super._preCreateEmbeddedDocuments(embeddedName, result, options, userId);
-		if ( this.isView && !options.isUndo ) {
+		if ( (userId === game.userId) && this.isView && !options.isUndo ) {
 			const layer = canvas.getLayerByEmbeddedName(embeddedName);
 			layer.storeHistory("create", result);
 		}
@@ -15639,7 +15782,7 @@ class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
 	/** @inheritdoc */
 	_preUpdateEmbeddedDocuments(embeddedName, result, options, userId) {
 		super._preUpdateEmbeddedDocuments(embeddedName, result, options, userId);
-		if ( this.isView && !options.isUndo ) {
+		if ( (userId === game.userId) && this.isView && !options.isUndo ) {
 			const layer = canvas.getLayerByEmbeddedName(embeddedName);
 			const updatedIds = new Set(result.map(r => r._id));
 			const originals = this.getEmbeddedCollection(embeddedName).reduce((arr, d) => {
@@ -15663,7 +15806,7 @@ class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
 	/** @inheritdoc */
 	_preDeleteEmbeddedDocuments(embeddedName, result, options, userId) {
 		super._preDeleteEmbeddedDocuments(embeddedName, result, options, userId);
-		if ( this.isView && !options.isUndo ) {
+		if ( (userId === game.userId) && this.isView && !options.isUndo ) {
 			const layer = canvas.getLayerByEmbeddedName(embeddedName);
 			const originals = this.getEmbeddedCollection(embeddedName).reduce((arr, d) => {
 				if ( result.includes(d.id) ) arr.push(d.toJSON());
@@ -15718,7 +15861,7 @@ class Scene extends ClientDocumentMixin(foundry.documents.BaseScene) {
 		// First load the background texture to get dimensions
 		const dims = this.toObject();
 		const backgroundTexture = img ? getTexture(img) : null;
-		if ( newImage ) {
+		if ( newImage && backgroundTexture ) {
 			dims.width = backgroundTexture.width;
 			dims.height = backgroundTexture.height;
 		}
@@ -15919,7 +16062,7 @@ class RollTable extends ClientDocumentMixin(foundry.documents.BaseRollTable) {
 			flavor: `Draws ${nr} from the ${this.name} table.`,
 			user: game.user.id,
 			speaker: speaker,
-			type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+			type: roll ? CONST.CHAT_MESSAGE_TYPES.ROLL : CONST.CHAT_MESSAGE_TYPES.OTHER,
 			roll: roll,
 			sound: roll ? CONFIG.sounds.dice : null,
 			flags: {"core.RollTable": this.id}
@@ -15932,7 +16075,7 @@ class RollTable extends ClientDocumentMixin(foundry.documents.BaseRollTable) {
 				r.text = r.getChatText();
 				return r;
 			}),
-			rollHTML: this.data.displayRoll ? await roll.render() : null,
+			rollHTML: this.data.displayRoll && roll ? await roll.render() : null,
 			table: this
 		});
 
@@ -16139,10 +16282,18 @@ class RollTable extends ClientDocumentMixin(foundry.documents.BaseRollTable) {
 		if ( recursive ) {
 			let inner = [];
 			for ( let result of results ) {
-				if ((result.data.type === CONST.TABLE_RESULT_TYPES.ENTITY) && (result.data.collection === "RollTable")) {
-					const innerTable = game.tables.get(result.data.resultId);
+				let pack;
+				let documentName;
+				if ( result.data.type === CONST.TABLE_RESULT_TYPES.ENTITY ) documentName = result.data.collection;
+				else if ( result.data.type === CONST.TABLE_RESULT_TYPES.COMPENDIUM ) {
+					pack = game.packs.get(result.data.collection);
+					documentName = pack?.documentName;
+				}
+				if ( documentName === "RollTable" ) {
+					const id = result.data.resultId;
+					const innerTable = pack ? await pack.getDocument(id) : game.tables.get(id);
 					if (innerTable) {
-						let innerRoll = await innerTable.roll({_depth: _depth + 1});
+						const innerRoll = await innerTable.roll({_depth: _depth + 1});
 						inner = inner.concat(innerRoll.results);
 					}
 				}
@@ -16371,7 +16522,7 @@ class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
 
 	/** @inheritdoc */
 	clone(data={}, options={}) {
-		const cloned = super.clone();
+		const cloned = super.clone(data, options);
 		cloned._actor = this._actor;
 		return cloned;
 	}
@@ -16390,10 +16541,9 @@ class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
 		if ( !this.id || this.isLinked ) return baseActor;
 
 		// Create a synthetic token Actor
-		const overrideData = foundry.utils.mergeObject(baseActor.toJSON(), this.data.actorData);
+		const overrideData = foundry.utils.mergeObject(baseActor.toObject(), this.data.actorData);
 		const cls = getDocumentClass("Actor");
-		const tokenActor = new cls(overrideData, {parent: this});
-		return game.actors.tokens[this.id] = tokenActor;
+		return new cls(overrideData, {parent: this});
 	}
 
 	/* -------------------------------------------- */
@@ -16480,22 +16630,24 @@ class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
 	async createActorEmbeddedDocuments(embeddedName, data, options) {
 		const cls = getDocumentClass(embeddedName);
 		const collection = this.actor.getEmbeddedCollection(embeddedName);
-		const ids = [];
+		const hookData = {};
 		const toCreate = data.map(d => {
+			if ( d instanceof foundry.abstract.DocumentData ) d = d.toObject();
+			const createData = foundry.utils.deepClone(d);
 			d = foundry.utils.expandObject(d);
 			d._id = foundry.utils.randomID(16);
 			const doc = new cls(d, {parent: this.actor});
-			ids.push(doc.id);
+			hookData[doc.id] = createData;
 			return doc.toJSON();
-		})
-		options.embedded = [embeddedName, ids];
+		});
+		options.embedded = {embeddedName, hookData};
 		options.action = "create";
 		await this.update({
 			actorData: {
 				[cls.metadata.collection]: collection.toJSON().concat(toCreate)
 			}
 		}, options);
-		return ids.map(id => this.actor.getEmbeddedDocument(embeddedName, id));
+		return Object.keys(hookData).map(id => this.actor.getEmbeddedDocument(embeddedName, id));
 	}
 
 	/* -------------------------------------------- */
@@ -16510,21 +16662,26 @@ class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
 	async updateActorEmbeddedDocuments(embeddedName, updates, options) {
 		const cls = getDocumentClass(embeddedName);
 		const collection = this.actor.getEmbeddedCollection(embeddedName);
-		const ids = [];
+		const hookData = {};
 		for ( let u of updates ) {
 			const doc = collection.get(u._id);
 			if ( !doc ) continue;
-			ids.push(doc.id);
+			if ( options.diff ) {
+				u = foundry.utils.diffObject(doc.data._source, foundry.utils.expandObject(u));
+				if ( foundry.utils.isObjectEmpty(u) ) continue;
+				u._id = doc.id;
+			}
+			hookData[doc.id] = {doc: doc.clone({keepId: true}), updateData: u};
 			doc.data.update(u);
 		}
-		options.embedded = [embeddedName, ids];
+		options.embedded = {embeddedName, hookData};
 		options.action = "update";
 		await this.update({
 			actorData: {
 				[cls.metadata.collection]: collection.toJSON()
 			}
 		}, options);
-		return ids.map(id => this.actor.getEmbeddedDocument(embeddedName, id));
+		return Object.keys(hookData).map(id => this.actor.getEmbeddedDocument(embeddedName, id));
 	}
 
 	/* -------------------------------------------- */
@@ -16547,7 +16704,7 @@ class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
 			data.findSplice(d => d._id === id);
 			return true;
 		})
-		options.embedded = [embeddedName, ids];
+		options.embedded = {embeddedName, hookData: ids};
 		options.action = "delete";
 		await this.update({
 			actorData: {
@@ -16581,7 +16738,7 @@ class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
 
 		// Simulate modification of embedded documents
 		if ( options.embedded ) {
-			const [embeddedName, modifiedIds] = options.embedded;
+			const {embeddedName, hookData} = options.embedded;
 			const cls = getDocumentClass(embeddedName);
 			const documents = data[cls.metadata.collection];
 			embeddedKeys.add(cls.metadata.collection);
@@ -16591,33 +16748,35 @@ class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
 			switch (options.action) {
 				case "create":
 					for (let d of documents) {
-						if (!modifiedIds.includes(d._id)) continue;
+						const createData = hookData[d._id];
+						if ( !createData ) continue;
 						result.push(d);
 						const doc = new cls(d, {parent: this.actor});
 						await doc._preCreate(d, options, user);
-						Hooks.callAll(`preCreate${embeddedName}`, doc, d, options, user.id);
+						Hooks.callAll(`preCreate${embeddedName}`, doc, createData, options, user.id);
 					}
 					this.actor._preCreateEmbeddedDocuments(embeddedName, result, options, user.id);
 					break;
 
 				case "update":
 					for ( let d of documents ) {
-						if (!modifiedIds.includes(d._id)) continue;
-						result.push(d);
+						const update = hookData[d._id];
+						if ( !update ) continue;
+						result.push(update.updateData);
 						const doc = this.actor.getEmbeddedDocument(embeddedName, d._id);
-						await doc._preUpdate(d, options, user);
-						Hooks.callAll(`preUpdate${embeddedName}`, doc, d, options, user.id);
+						await doc._preUpdate(update.updateData, options, user);
+						Hooks.callAll(`preUpdate${embeddedName}`, update.doc, update.updateData, options, user.id);
 					}
 					this.actor._preUpdateEmbeddedDocuments(embeddedName, result, options, user.id);
 					break;
 
 				case "delete":
-					for ( let id of modifiedIds ) {
+					for ( let id of hookData ) {
 						const doc = this.actor.getEmbeddedDocument(embeddedName, id);
 						await doc._preDelete(options, user);
 						Hooks.callAll(`preDelete${embeddedName}`, doc, options, user.id);
 					}
-					this.actor._preDeleteEmbeddedDocuments(embeddedName, modifiedIds, options, user.id);
+					this.actor._preDeleteEmbeddedDocuments(embeddedName, hookData, options, user.id);
 					break;
 			}
 		}
@@ -16691,9 +16850,9 @@ class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
 		// Obtain references to any embedded documents which will be deleted
 		let deletedDocuments = [];
 		if ( options.embedded && (options.action === "delete") ) {
-			const [embeddedName, modifiedIds] = options.embedded;
+			const {embeddedName, hookData} = options.embedded;
 			const collection = this.actor.getEmbeddedCollection(embeddedName);
-			deletedDocuments = modifiedIds.map(id => collection.get(id));
+			deletedDocuments = hookData.map(id => collection.get(id));
 		}
 
 		// Update the Token Actor data
@@ -16702,8 +16861,7 @@ class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
 
 		// Simulate modification of embedded documents
 		if ( options.embedded ) {
-			const [embeddedName, modifiedIds] = options.embedded;
-			const ids = new Set(modifiedIds);
+			const {embeddedName, hookData} = options.embedded;
 			const cls = Actor.metadata.embedded[embeddedName];
 			const changes = data[cls.metadata.collection];
 			const collection = this.actor.getEmbeddedCollection(embeddedName);
@@ -16714,7 +16872,8 @@ class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
 				case "create":
 					const created = [];
 					for ( let d of changes ) {
-						if ( !ids.has(d._id) ) continue;
+						const createData = hookData[d._id];
+						if ( !createData ) continue;
 						result.push(d);
 						const doc = collection.get(d._id);
 						created.push(doc);
@@ -16726,11 +16885,12 @@ class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
 
 				case "update":
 					for ( let d of changes ) {
-						if ( !ids.has(d._id) ) continue;
+						const update = hookData[d._id];
+						if ( !update ) continue;
 						result.push(d);
 						const doc = collection.get(d._id);
 						doc._onUpdate(d, options, userId);
-						Hooks.callAll(`update${embeddedName}`, doc, d, options, userId);
+						Hooks.callAll(`update${embeddedName}`, doc, update.updateData, options, userId);
 					}
 					this.actor._onUpdateEmbeddedDocuments(embeddedName, result, options, userId);
 					break;
@@ -16740,7 +16900,7 @@ class TokenDocument extends CanvasDocumentMixin(foundry.documents.BaseToken) {
 						doc._onDelete(options, userId);
 						Hooks.callAll(`delete${embeddedName}`, doc, options, userId);
 					}
-					this.actor._onDeleteEmbeddedDocuments(embeddedName, deletedDocuments, modifiedIds, options, userId);
+					this.actor._onDeleteEmbeddedDocuments(embeddedName, deletedDocuments, hookData, options, userId);
 					break;
 			}
 		}
@@ -17226,6 +17386,12 @@ class Canvas {
 		this.ready = false;
 
 		/**
+		 * A flag to indicate whether a new Scene is currently being drawn.
+		 * @type {boolean}
+		 */
+		this.loading = false;
+
+		/**
 		 * A flag for whether the game Canvas is initialized and ready for drawing.
 		 * @type {boolean}
 		 */
@@ -17449,80 +17615,96 @@ class Canvas {
 		const wasReady = this.ready;
 		this.ready = false;
 		this.stage.visible = false;
+		this.loading = true;
 
-		// Tear down any existing scene
-		if ( wasReady ) await this.tearDown();
+		try {
+			// Tear down any existing scene
+			if ( wasReady ) await this.tearDown();
 
-		// Confirm there is an active scene
-		this.scene = scene;
-		if ( this.scene === null ) {
-			console.log(`${vtt} | Skipping game canvas - no active scene.`);
-			canvas.app.view.style.display = "none";
-			ui.controls.render();
-			return this;
-		}
-		else if ( !(scene instanceof Scene) ) {
-			throw new Error("You must provide a Scene entity to draw the VTT canvas.")
-		}
-
-		// Configure Scene variables
-		this.dimensions = this.constructor.getDimensions(scene.data);
-		canvas.app.view.style.display = "block";
-		document.documentElement.style.setProperty("--gridSize", this.dimensions.size+"px");
-		this.blurDistance = game.settings.get("core", "softShadows") ? CONFIG.Canvas.blurStrength : 0;
-
-		// Configure rendering settings
-		PIXI.settings.MIPMAP_TEXTURES = PIXI.MIPMAP_MODES[game.settings.get("core", "mipmap") ? "ON" : "OFF"];
-		const maxFPS = game.settings.get("core", "maxFPS");
-		this.app.ticker.maxFPS = maxFPS.between(0, 60) ? maxFPS : 0;
-
-		// Call initialization hooks
-		console.log(`${vtt} | Drawing game canvas for scene ${this.scene.name}`);
-		Hooks.callAll('canvasInit', this);
-
-		// Configure primary canvas stage
-		this.stage.position.set(window.innerWidth/2, window.innerHeight/2);
-		this.stage.hitArea = new PIXI.Rectangle(0, 0, this.dimensions.width, this.dimensions.height);
-		this.stage.interactive = true;
-		this.stage.sortableChildren = true;
-
-		// Scene background color
-		this.backgroundColor = scene.data.backgroundColor ? colorStringToHex(scene.data.backgroundColor) : 0x666666;
-		this.app.renderer.backgroundColor = this.backgroundColor;
-
-		// Temporary workaround until "Scene Levels" are developed
-		this.background.bgPath = this.scene.data.img;
-		this.foreground.bgPath = this.scene.data.foreground;
-
-		// Load required textures
-		await TextureLoader.loadSceneTextures(this.scene);
-
-		// Draw layers
-		for ( let l of this.layers ) {
-			try {
-				await l.draw();
-			} catch(err) {
-				ui.notifications.error(`Canvas drawing failed for the ${l.name}, see the console for more details.`);
-				console.error(err);
+			// Confirm there is an active scene
+			this.scene = scene;
+			if ( this.scene === null ) {
+				console.log(`${vtt} | Skipping game canvas - no active scene.`);
+				canvas.app.view.style.display = "none";
+				ui.controls.render();
+				return this;
+			} else if ( !(scene instanceof Scene) ) {
+				throw new Error("You must provide a Scene entity to draw the VTT canvas.")
 			}
+
+			// Configure Scene variables
+			this.dimensions = this.constructor.getDimensions(scene.data);
+			canvas.app.view.style.display = "block";
+			document.documentElement.style.setProperty("--gridSize", this.dimensions.size + "px");
+			this.blurDistance = game.settings.get("core", "softShadows") ? CONFIG.Canvas.blurStrength : 0;
+
+			// Configure rendering settings
+			PIXI.settings.MIPMAP_TEXTURES = PIXI.MIPMAP_MODES[game.settings.get("core", "mipmap") ? "ON" : "OFF"];
+			const maxFPS = game.settings.get("core", "maxFPS");
+			this.app.ticker.maxFPS = maxFPS.between(0, 60) ? maxFPS : 0;
+
+			// Call initialization hooks
+			console.log(`${vtt} | Drawing game canvas for scene ${this.scene.name}`);
+			/**
+			 * A hook event that fires when the Canvas is initialized.
+			 * @function canvasInit
+			 * @memberof hookEvents
+			 * @param {Canvas} canvas The canvas
+			 */
+			Hooks.callAll('canvasInit', this);
+
+			// Configure primary canvas stage
+			this.stage.position.set(window.innerWidth / 2, window.innerHeight / 2);
+			this.stage.hitArea = new PIXI.Rectangle(0, 0, this.dimensions.width, this.dimensions.height);
+			this.stage.interactive = true;
+			this.stage.sortableChildren = true;
+
+			// Scene background color
+			this.backgroundColor = scene.data.backgroundColor ? colorStringToHex(scene.data.backgroundColor) : 0x666666;
+			this.app.renderer.backgroundColor = this.backgroundColor;
+
+			// Temporary workaround until "Scene Levels" are developed
+			this.background.bgPath = this.scene.data.img;
+			this.foreground.bgPath = this.scene.data.foreground;
+
+			// Load required textures
+			await TextureLoader.loadSceneTextures(this.scene);
+
+			// Draw layers
+			for ( let l of this.layers ) {
+				try {
+					await l.draw();
+				} catch (err) {
+					ui.notifications.error(`Canvas drawing failed for the ${l.name}, see the console for more details.`);
+					console.error(err);
+				}
+			}
+
+			// Draw masking rectangle
+			this.msk.clear().beginFill(0xFFFFFF, 1.0).drawShape(this.dimensions.rect).endFill();
+			this.stage.mask = this.msk;
+
+			// Initialize starting conditions
+			this.ready = true;
+			await this._initialize();
+			this._addListeners();
+
+			/**
+			 * A hook event that fires when the Canvas is ready.
+			 * @function canvasReady
+			 * @memberof hookEvents
+			 * @param {Canvas} canvas The canvas
+			 */
+			Hooks.call("canvasReady", this);
+			this._reload = {};
+
+			// Perform a final resize to ensure the rendered dimensions are correct
+			this._onResize();
+			this.stage.visible = true;
+		} finally {
+			this.loading = false;
 		}
 
-		// Draw masking rectangle
-		this.msk.clear().beginFill(0xFFFFFF, 1.0).drawShape(this.dimensions.rect).endFill();
-		this.stage.mask = this.msk;
-
-		// Initialize starting conditions
-		this.ready = true;
-		await this._initialize();
-		this._addListeners();
-
-		// Mark the canvas as ready and call hooks
-		Hooks.call("canvasReady", this);
-		this._reload = {};
-
-		// Perform a final resize to ensure the rendered dimensions are correct
-		this._onResize();
-		this.stage.visible = true;
 		return this;
 	}
 
@@ -17734,7 +17916,16 @@ class Canvas {
 		// Update the scene tracked position
 		canvas.scene._viewPosition = constrained;
 
-		// Call canvasPan Hook
+		/**
+		 * A hook event that fires when the Canvas is panned.
+		 * @function canvasPan
+		 * @memberof hookEvents
+		 * @param {Canvas} canvas          The canvas
+		 * @param {object} transform       The applied translate/transform
+		 * @param {number} transform.x     The constrained x-coordinate of the pan
+		 * @param {number} transform.y     The constrained y-coordinate of the pan
+		 * @param {number} transform.scale The constrained zoom level of the pan
+		 */
 		Hooks.callAll("canvasPan", this, constrained);
 
 		// Align the HUD
@@ -18265,7 +18456,14 @@ class Canvas {
 		data.x = (x - t.tx) / canvas.stage.scale.x;
 		data.y = (y - t.ty) / canvas.stage.scale.y;
 
-		// Handle the drop with a Hooked function
+		/**
+		 * A hook event that fires when some useful data is dropped onto the
+		 * Canvas.
+		 * @function dropCanvasData
+		 * @memberof hookEvents
+		 * @param {Canvas} canvas The Canvas
+		 * @param {object} data   The data that has been dropped onto the Canvas
+		 */
 		const allowed = Hooks.call("dropCanvasData", this, data);
 		if ( allowed === false ) return;
 
@@ -18871,6 +19069,15 @@ class PlaceableObject extends PIXI.Container {
 
 		// Trigger follow-up events and fire an on-control Hook
 		this._onControl(options);
+		/**
+		 * A hook event that fires when any PlaceableObject is selected or
+		 * deselected. Substitute the PlaceableObject name in the hook event to
+		 * target a specific PlaceableObject type, for example "controlToken".
+		 * @function controlPlaceableObject
+		 * @memberof hookEvents
+		 * @param {PlaceableObject} object The PlaceableObject
+		 * @param {boolean} controlled     Whether the PlaceableObject is selected or not
+		 */
 		Hooks.callAll("control"+this.constructor.embeddedName, this, this._controlled);
 		canvas.triggerPendingOperations();
 		return true;
@@ -19049,6 +19256,15 @@ class PlaceableObject extends PIXI.Container {
 
 		// Refresh the object display
 		this.refresh();
+		/**
+		 * A hook event that fires when any PlaceableObject is hovered over or out.
+		 * Substitute the PlaceableObject name in the hook event to target a specific
+		 * PlaceableObject type, for example "hoverToken".
+		 * @function hoverPlaceableObject
+		 * @memberof hookEvents
+		 * @param {PlaceableObject} object The PlaceableObject
+		 * @param {boolean} hovered        Whether the PlaceableObject is hovered over or not
+		 */
 		Hooks.callAll("hover"+this.constructor.embeddedName, this, this._hover);
 	}
 
@@ -19827,7 +20043,15 @@ class PlaceablesLayer extends CanvasLayer {
 			}));
 		}
 
-		// Call paste hooks
+		/**
+		 * A hook event that fires when any PlaceableObject is pasted onto the
+		 * Scene. Substitute the PlaceableObject name in the hook event to target a
+		 * specific PlaceableObject type, for example "pasteToken".
+		 * @function pastePlaceableObject
+		 * @memberof hookEvents
+		 * @param {PlaceableObject[]} copied The PlaceableObjects that were copied
+		 * @param {object[]} createData      The new objects that will be added to the Scene
+		 */
 		Hooks.call(`paste${cls.name}`, this._copy, toCreate);
 
 		// Create all objects
@@ -21029,8 +21253,48 @@ class TextEditor {
 	static previewHTML(content, length=250) {
 		const div = document.createElement("div");
 		div.innerHTML = content;
-		div.innerText = this.truncateText(div.innerText, {maxLength: length});
-		return div.innerHTML;
+		return this.truncateHTML(div, {maxLength: length}).innerHTML;
+	}
+
+	/* --------------------------------------------- */
+
+	/**
+	 * Truncate an HTML fragment to a maximum number of text content characters, removing any unused elements.
+	 * @param {HTMLElement} html       The root HTML element.
+	 * @param {number} [maxLength=50]  The maximum allowed length of the text content.
+	 * @param {boolean} [splitWords]   Whether to truncate by splitting on white space (if true) or breaking words.
+	 * @param {string} [suffix="…"]    A suffix string to append to denote that the text was truncated.
+	 * @return {HTMLElement}
+	 */
+	static truncateHTML(html, {maxLength=50, splitWords=true, suffix="…"}={}) {
+		let textLength = 0;
+		const truncate = (root, removeNodes=false) => {
+			for ( const node of root.childNodes ) {
+				if ( node.nodeType === Node.COMMENT_NODE ) continue;
+				if ( node.nodeType === Node.TEXT_NODE ) {
+					let contents = node.nodeValue;
+					if ( textLength >= maxLength ) contents = "";
+					else if ( textLength + contents.length > maxLength ) {
+						const diff = (textLength + contents.length) - maxLength;
+						contents = this.truncateText(contents, {
+							maxLength: Math.max(0, contents.length - diff),
+							splitWords, suffix
+						});
+						textLength = maxLength;
+					}
+					else textLength += contents.length;
+					node.nodeValue = contents;
+				}
+				if ( node.nodeType === Node.ELEMENT_NODE ) {
+					if ( (textLength >= maxLength) && removeNodes ) node.remove();
+					else truncate(node);
+				}
+			}
+		};
+
+		const clone = html.cloneNode(true);
+		truncate(clone, true);
+		return clone;
 	}
 
 	/* -------------------------------------------- */
@@ -21263,14 +21527,14 @@ class TextEditor {
 			data.dataset.mode = parsedCommand[0];
 			data.dataset.flavor = flavor ? flavor.trim() : (label || "");
 			data.dataset.formula = formula;
-			data.label = label ?? formula;
+			data.label = label ?? Roll.replaceFormulaData(formula, rollData || {});
 			data.title = data.dataset.flavor || data.dataset.formula;
 		}
 
 		// Perform the roll immediately
 		else {
 			try {
-				roll = Roll.create(formula, rollData).roll();
+				roll = Roll.create(formula, rollData).roll({async: false});
 				data.cls.push("inline-result");
 				data.label = label ? `${label}: ${roll.total}` : roll.total;
 				data.title = formula;
@@ -21332,6 +21596,7 @@ class TextEditor {
 		else {
 			const collection = game.collections.get(a.dataset.entity);
 			document = collection.get(id);
+			if ( !document ) return;
 			if ( (document.documentName === "Scene") && document.journal ) document = document.journal;
 			if ( !document.testUserPermission(game.user, "LIMITED") ) {
 				return ui.notifications.warn(`You do not have permission to view this ${document.documentName} sheet.`);
@@ -23073,6 +23338,13 @@ class Sidebar extends Application {
 			tab.fadeIn(250, () => tab.css("display", ""));
 			this._collapsed = false;
 			sidebar.removeClass("collapsed");
+			/**
+			 * A hook event that fires when the Sidebar is collapsed or expanded.
+			 * @function collapseSidebar
+			 * @memberof hookEvents
+			 * @param {Sidebar} sidebar   The Sidebar application
+			 * @param {boolean} collapsed Whether the Sidebar is now collapsed or not
+			 */
 			Hooks.callAll("collapseSidebar", this, this._collapsed);
 		})
 	}
@@ -23210,32 +23482,32 @@ class SidebarTab extends Application {
 	}
 
 	/* -------------------------------------------- */
-		/*  Rendering                                   */
+	/*  Rendering                                   */
 	/* -------------------------------------------- */
 
-		/** @override */
-		async _renderInner(data) {
-			let html = await super._renderInner(data);
-			if ( ui.sidebar?.activeTab === this.options.id ) html.addClass('active');
-			if ( this.popOut ) html.removeClass("tab");
-			return html;
-		}
+	/** @override */
+	async _renderInner(data) {
+		let html = await super._renderInner(data);
+		if ( ui.sidebar?.activeTab === this.options.id ) html.addClass('active');
+		if ( this.popOut ) html.removeClass("tab");
+		return html;
+	}
+
+/* -------------------------------------------- */
+
+	/** @override */
+	async _render(force=false, options={}) {
+		await super._render(force, options);
+		if ( this._popout ) await this._popout._render(force, options);
+	}
 
 	/* -------------------------------------------- */
 
-		/** @override */
-		async _render(force=false, options={}) {
-				await super._render(force, options);
-				if ( this._popout ) await this._popout._render(force, options);
-		}
-
-		/* -------------------------------------------- */
-
-		/** @override */
-		async render(force=false, options={}) {
-				await super.render(force, options);
-				if ( this._popout ) await this._popout.render(force, options);
-		}
+	/** @override */
+	async render(force=false, options={}) {
+		await super.render(force, options);
+		if ( this._popout ) await this._popout.render(force, options);
+	}
 
 	/* -------------------------------------------- */
 	/*  Methods                                     */
@@ -23883,6 +24155,14 @@ class SidebarDirectory extends SidebarTab {
 	/* -------------------------------------------- */
 
 	/**
+	 * @typedef {object} ContextMenuEntry
+	 * @property {string} name               The context menu label. Can be localized.
+	 * @property {string} icon               A string containing an HTML icon element for the menu item
+	 * @property {function(jQuery)} callback The function to call when the menu item is clicked. Receives the HTML element of the SidebarTab entry that this context menu is for.
+	 * @property {function(jQuery):boolean} [condition] A function to call to determine if this item appears in the menu. Receives the HTML element of the SidebarTab entry that this context menu is for.
+	 */
+
+	/**
 	 * Default folder context actions
 	 * @param {jQuery} html     The context menu HTML being rendered for the directory
 	 * @protected
@@ -23897,7 +24177,25 @@ class SidebarDirectory extends SidebarTab {
 
 		// Dispatch Hooks down the chain
 		for ( let cls of this.constructor._getInheritanceChain() ) {
+			/**
+			 * A hook event that fires when the context menu for folders in a SidebarTab
+			 * is constructed. Substitute the SidebarTab name in the hook event to target
+			 * a specific SidebarTab, for example "getActorDirectoryFolderContext".
+			 * @function getSidebarTabFolderContext
+			 * @memberof hookEvents
+			 * @param {jQuery} html                     The HTML element to which the context options are attached
+			 * @param {ContextMenuEntry[]} entryOptions The context menu entries
+			 */
 			Hooks.call(`get${cls.name}FolderContext`, html, folderOptions);
+			/**
+			 * A hook event that fires when the context menu for entries in a SidebarTab
+			 * is constructed. Substitute the SidebarTab name in the hook event to target
+			 * a specific SidebarTab, for example "getActorDirectoryEntryContext".
+			 * @function getSidebarTabEntryContext
+			 * @memberof hookEvents
+			 * @param {jQuery} html                     The HTML element to which the context options are attached
+			 * @param {ContextMenuEntry[]} entryOptions The context menu entries
+			 */
 			Hooks.call(`get${cls.name}EntryContext`, html, entryOptions);
 		}
 
@@ -24257,7 +24555,7 @@ class ActorSheet extends DocumentSheet {
 	 */
 	_onConfigureToken(event) {
 		event.preventDefault();
-		new TokenConfig(this.token ?? this.actor, {
+		new CONFIG.Token.sheetClass(this.token ?? this.actor, {
 			left: Math.max(this.position.left - 560 - 10, 10),
 			top: this.position.top
 		}).render(true);
@@ -24361,7 +24659,14 @@ class ActorSheet extends DocumentSheet {
 		}
 		const actor = this.actor;
 
-		// Handle the drop with a Hooked function
+		/**
+		 * A hook event that fires when some useful data is dropped onto an ActorSheet.
+		 * @function dropActorSheetData
+		 * @memberof hookEvents
+		 * @param {Actor} actor      The Actor
+		 * @param {ActorSheet} sheet The ActorSheet application
+		 * @param {object} data      The data that has been dropped onto the sheet
+		 */
 		const allowed = Hooks.call("dropActorSheetData", actor, this, data);
 		if ( allowed === false ) return;
 
@@ -26059,7 +26364,7 @@ class RollTableConfig extends DocumentSheet {
 		// Determine new starting range
 		const spread = maxRoll - minRoll + 1;
 		const perW = Math.round(spread / totalWeight);
-		const range = [maxRoll + 1, maxRoll + (weight * perW)];
+		const range = [maxRoll + 1, maxRoll + Math.max(1, weight * perW)];
 
 		// Create the new Result
 		resultData = foundry.utils.mergeObject({
@@ -26121,7 +26426,14 @@ class RollTableConfig extends DocumentSheet {
 			return false;
 		}
 
-		// Handle the drop with a Hooked function
+		/**
+		 * A hook event that fires when some useful data is dropped onto a RollTableConfig.
+		 * @function dropRollTableSheetData
+		 * @memberof hookEvents
+		 * @param {RollTable} table       The RollTable
+		 * @param {RollTableConfig} sheet The RollTableConfig application
+		 * @param {object} data           The data dropped onto the RollTableConfig
+		 */
 		const allowed = Hooks.call("dropRollTableSheetData", this.document, this, data);
 		if (allowed === false) return;
 
@@ -26584,6 +26896,9 @@ class SceneConfig extends DocumentSheet {
 
 		// Toggle global illumination threshold
 		if ( formData.hasGlobalThreshold === false ) formData.globalLightThreshold = null;
+		// SceneData.img is nullable in the schema, causing an empty string to be initialised to null. We need to match that
+		// logic here to ensure that comparisons to the existing scene image are accurate.
+		if ( formData.img === "" ) formData.img = null;
 
 		// Determine what type of change has occurred
 		const hasDefaultDims = (scene.data.width === 4000 ) && ( scene.data.height === 3000 );
@@ -26999,6 +27314,16 @@ class ChatBubbles {
 
 		// Create the HTML and call the chatBubble hook
 		let html = $(await this._renderHTML({token, message, emote}));
+		/**
+		 * A hook event that fires when a chat bubble is rendered.
+		 * @function chatBubble
+		 * @memberof hookEvents
+		 * @param {Token} token           The speaking token
+		 * @param {jQuery} html           The HTML of the chat bubble
+		 * @param {string} message        The spoken message text
+		 * @param {object} options
+		 * @param {boolean} options.emote Whether to style the speech bubble as an emote
+		 */
 		const allowed = Hooks.call("chatBubble", token, html, message, {emote});
 		if ( allowed === false ) return;
 
@@ -27211,6 +27536,8 @@ class HeadsUpDisplay extends Application {
  * @property {boolean} visible
  * @property {boolean} toggle
  * @property {boolean} active
+ * @property {boolean} button
+ * @property {function} onClick
  */
 
 /**
@@ -27809,6 +28136,12 @@ class SceneControls extends Application {
 		});
 
 		// Pass the Scene Controls to a hook function to allow overrides or changes
+		/**
+		 * A hook event that fires when the Scene controls are initialized.
+		 * @function getSceneControlButtons
+		 * @memberof hookEvents
+		 * @param {SceneControl[]} controls The SceneControl configurations
+		 */
 		Hooks.callAll(`getSceneControlButtons`, controls);
 		return controls;
 	}
@@ -28571,6 +28904,16 @@ class SceneNavigation extends Application {
 	/* -------------------------------------------- */
 
 	/**
+	 * A hook event that fires when the SceneNavigation menu is expanded or collapsed.
+	 * @function collapseSceneNavigation
+	 * @memberof hookEvents
+	 * @param {SceneNavigation} sceneNavigation The SceneNavigation application
+	 * @param {boolean} collapsed               Whether the SceneNavigation is now collapsed or not
+	 */
+
+	/* -------------------------------------------- */
+
+	/**
 	 * Expand the SceneNavigation menu, sliding it down if it is currently collapsed
 	 */
 	expand() {
@@ -28626,6 +28969,14 @@ class SceneNavigation extends Application {
 
 		// Activate Context Menu
 		const contextOptions = this._getContextMenuOptions();
+		/**
+		 * A hook event that fires when the context menu for a SceneNavigation
+		 * entry is constructed.
+		 * @function getSceneNavigationContext
+		 * @memberof hookEvents
+		 * @param {jQuery} html                     The HTML element to which the context options are attached
+		 * @param {ContextMenuEntry[]} entryOptions The context menu entries
+		 */
 		Hooks.call("getSceneNavigationContext", html, contextOptions);
 		if ( contextOptions ) new ContextMenu(html, ".scene", contextOptions);
 	}
@@ -28888,6 +29239,14 @@ class PlayerList extends Application {
 
 		// Context menu
 		const contextOptions = this._getUserContextOptions();
+		/**
+		 * A hook event that fires when the context menu for a PlayersList
+		 * entry is constructed.
+		 * @function getUserContextOptions
+		 * @memberof hookEvents
+		 * @param {jQuery} html                     The HTML element to which the context options are attached
+		 * @param {ContextMenuEntry[]} entryOptions The context menu entries
+		 */
 		Hooks.call(`getUserContextOptions`, html, contextOptions);
 		new ContextMenu(html, ".player", contextOptions);
 	}
@@ -29156,7 +29515,7 @@ class AVConfig extends FormApplication {
 		event.preventDefault();
 		event.target.value = event.originalEvent.key.toUpperCase();
 		const form = event.target.form;
-		form["client.voice.pttKey"].value = event.originalEvent.keyCode;
+		form["client.voice.pttKey"].value = event.originalEvent.key;
 		form["client.voice.pttMouse"].value = false;
 	}
 
@@ -29239,6 +29598,8 @@ class CameraPopoutAppWrapper {
 	/** @override */
 	setPosition(options={}) {
 		const position = Application.prototype.setPosition.call(this, options);
+		// Let the HTML renderer figure out the height based on width.
+		this.element[0].style.height = "";
 		if ( !foundry.utils.isObjectEmpty(position) ) {
 			const current = game.webrtc.settings.client.users[this.userId] || {};
 			const update = foundry.utils.mergeObject(current, position);
@@ -30741,7 +31102,7 @@ class TokenHUD extends BasePlaceableHUD {
 		html.find(".attribute input")
 			.click(this._onAttributeClick)
 			.keydown(this._onAttributeKeydown.bind(this))
-			.change(this._onAttributeUpdate.bind(this))
+			.focusout(this._onAttributeUpdate.bind(this))
 
 		// Status Effects Controls
 		this._toggleStatusEffects(this._statusEffects);
@@ -30789,7 +31150,7 @@ class TokenHUD extends BasePlaceableHUD {
 	 */
 	_onAttributeKeydown(event) {
 		const code = game.keyboard.getKey(event);
-		if ( code === "Enter" ) return this._onAttributeUpdate(event);
+		if ( code === "Enter" ) event.currentTarget.blur();
 	}
 
 	/* -------------------------------------------- */
@@ -30814,17 +31175,18 @@ class TokenHUD extends BasePlaceableHUD {
 		const actor = this.object?.actor;
 		if ( bar && actor ) {
 			const attr = this.object.document.getBarAttribute(bar);
-			actor.modifyTokenAttribute(attr.attribute, value, isDelta, attr.type === "bar");
+			if ( isDelta || (attr.attribute !== value) ) {
+				actor.modifyTokenAttribute(attr.attribute, value, isDelta, attr.type === "bar");
+			}
 		}
 
 		// Otherwise update the Token directly
 		else {
-			const current = this.object.data[input.name];
+			const current = foundry.utils.getProperty(this.object.data, input.name);
 			this.object.document.update({[input.name]: isDelta ? current + value : value});
 		}
 
-		// Un-focus the input field and clear the HUD
-		input.blur();
+		// Clear the HUD
 		this.clear();
 	}
 
@@ -32377,12 +32739,15 @@ class ChatLog extends SidebarTab {
 
 	/**
 	 * Scroll the chat log to the bottom
+	 * @param {object} options
+	 * @param {boolean} options.popout If a popout exists, scroll it too
 	 * @private
 	 */
-	scrollBottom() {
+	scrollBottom({popout}={}) {
 		const el = this.element;
 		const log = el.length ? el[0].querySelector("#chat-log") : null;
 		if ( log ) log.scrollTop = log.scrollHeight;
+		if ( popout ) this._popout?.scrollBottom();
 	}
 
 	/* -------------------------------------------- */
@@ -32476,6 +32841,16 @@ class ChatLog extends SidebarTab {
 		};
 
 		// Allow for handling of the entered message to be intercepted by a hook
+		/**
+		 * A hook event that fires when a user sends a message through the ChatLog.
+		 * @function chatMessage
+		 * @memberof hookEvents
+		 * @param {ChatLog} chatLog         The ChatLog instance
+		 * @param {string} message          The trimmed message content
+		 * @param {object} chatData         Some basic chat data
+		 * @param {User} chatData.user      The User sending the message
+		 * @param {object} chatData.speaker The identified speaker data, see {@link ChatMessage.getSpeaker}
+		 */
 		if ( Hooks.call("chatMessage", this, message, chatData) === false ) return;
 
 		// Alter the message content, if needed
@@ -33118,8 +33493,8 @@ class CombatTracker extends SidebarTab {
 		let scene = game.scenes.current;
 		const cls = getDocumentClass("Combat");
 		const combat = await cls.create({scene: scene?.id});
-		await combat.activate();
-		this.initialize(combat);
+		await combat.activate({render: false});
+		this.initialize({combat});
 	}
 
 	/* -------------------------------------------- */
@@ -33149,7 +33524,7 @@ class CombatTracker extends SidebarTab {
 		const btn = event.currentTarget;
 		const combat = game.combats.get(btn.dataset.combatId);
 		if ( !combat ) return;
-		await combat.activate();
+		await combat.activate({render: false});
 		this.initialize({combat});
 	}
 
@@ -33818,17 +34193,10 @@ class PlaylistDirectory extends SidebarDirectory {
 	/* -------------------------------------------- */
 
 	/** @inheritdoc */
-	async _render(force, options) {
+	getData(options) {
 		this._playingPlaylists = [];
 		this._playingSounds = [];
 		this._playingSoundsData = [];
-		return super._render(force, options);
-	}
-
-	/* -------------------------------------------- */
-
-	/** @inheritdoc */
-	getData(options) {
 		this._prepareTreeData(this.tree);
 		return foundry.utils.mergeObject(super.getData(options), {
 			playingSounds: this._playingSoundsData,
@@ -33889,7 +34257,7 @@ class PlaylistDirectory extends SidebarDirectory {
 			s.playTitle = s.pausedTime ? "PLAYLIST.SoundResume" : "PLAYLIST.SoundPlay";
 
 			// Playing sounds
-			if ( sound.playing || s.pausedTime ) {
+			if ( sound.sound && !sound.sound.failed && (sound.playing || s.pausedTime) ) {
 				s.isPaused = !sound.playing && s.pausedTime;
 				s.pauseIcon = this._getPauseIcon(sound);
 				s.lvolume = AudioHelper.volumeToInput(s.volume);
@@ -34342,6 +34710,13 @@ class PlaylistDirectory extends SidebarDirectory {
 
 		// Dispatch Hooks down the chain
 		for ( let cls of this.constructor._getInheritanceChain() ) {
+			/**
+			 * A hook event that fires when the context menu for a Sound in the PlaylistDirectory is constructed.
+			 * @function getPlaylistDirectorySoundContext
+			 * @memberof hookEvents
+			 * @param {jQuery} html                     The HTML element to which the context options are attached
+			 * @param {ContextMenuEntry[]} entryOptions The context menu entries
+			 */
 			Hooks.call(`get${cls.name}SoundContext`, html, entryOptions);
 		}
 		new ContextMenu(html, ".playlist .sound", entryOptions);
@@ -37156,6 +37531,13 @@ class PointSource {
 		}
 
 		// Dispatch a hook which allows for modules to apply fine-grained customization to the source
+		/**
+		 * A hook event that fires after PointSource shaders have initialized.
+		 * @function initializePointSourceShaders
+		 * @memberof hookEvents
+		 * @param {PointSource} source   The PointSource
+		 * @param {string} animationType The animation type
+		 */
 		Hooks.callAll("initializePointSourceShaders", this, this.animation.type);
 	}
 
@@ -37428,9 +37810,18 @@ class UserTargets extends Set {
 	 * @private
 	 */
 	_hook(token, targeted) {
+		/**
+		 * A hook event that fires when a token is targeted or un-targeted.
+		 * @function targetToken
+		 * @memberof hookEvents
+		 * @param {User} user        The User doing the targeting
+		 * @param {Token} token      The targeted Token
+		 * @param {boolean} targeted Whether the Token has been targeted or untargeted
+		 */
 		Hooks.callAll("targetToken", this.user, token, targeted);
 	}
 }
+
 /**
  * An extension of the default PIXI.Text object which forces double resolution.
  * At default resolution Text often looks blurry or fuzzy.
@@ -38096,7 +38487,12 @@ class LightingLayer extends PlaceablesLayer {
 			canvas.sounds._onDarknessChange(darkness, priorLevel);
 		}
 
-		// Dispatch a hook that modules can use
+		/**
+		 * A hook event that fires when the LightingLayer is refreshed.
+		 * @function lightingRefresh
+		 * @memberof hookEvents
+		 * @param {LightingLayer} light The LightingLayer
+		 */
 		Hooks.callAll("lightingRefresh", this);
 	}
 
@@ -38878,7 +39274,11 @@ class NotesLayer extends PlaceablesLayer {
 	async _onDropData(event, data) {
 
 		// Acquire Journal entry
-		const entry = await JournalEntry.fromDropData(data);
+		let entry = await JournalEntry.fromDropData(data);
+		if ( entry.compendium ) {
+			const journalData = game.journal.fromCompendium(entry);
+			entry = await JournalEntry.implementation.create(journalData);
+		}
 
 		// Get the world-transformed drop position
 		let t = this.worldTransform;
@@ -38886,7 +39286,7 @@ class NotesLayer extends PlaceablesLayer {
 		const ty = (event.clientY - t.ty) / canvas.stage.scale.y;
 		const [x, y] = canvas.grid.getCenter(tx, ty);
 		if ( !canvas.grid.hitArea.contains(x, y) ) return false;
-		const noteData = {entryId: entry.data._id, x: x, y: y}
+		const noteData = {entryId: entry.id, x: x, y: y}
 
 		// Create a NoteConfig sheet instance to finalize the creation
 		const cls = getDocumentClass("Note")
@@ -39242,7 +39642,7 @@ class SightLayer extends CanvasLayer {
 		// Otherwise provided minimum visibility for each vision source
 		else {
 			for ( let source of this.sources ) {
-				vision.fov.beginFill(exc, 1.0).drawCircle(source.x, source.y, d.size / 2);
+				vision.fov.beginFill(0xFFFFFF, 1.0).drawCircle(source.x, source.y, d.size / 2);
 			}
 		}
 
@@ -39318,7 +39718,12 @@ class SightLayer extends CanvasLayer {
 			d.visible = !this.tokenVision || d.isVisible;
 		}
 
-		// Dispatch a hook that modules can use
+		/**
+		 * A hook event that fires when the SightLayer has been refreshed.
+		 * @function sightRefresh
+		 * @memberof hookEvents
+		 * @param {SightLayer} sight The SightLayer
+		 */
 		Hooks.callAll("sightRefresh", this);
 	}
 
@@ -40053,9 +40458,6 @@ class TokenLayer extends PlaceablesLayer {
 		// Conclude token animation
 		this.concludeAnimation();
 
-		// Reset the synthetic token collection
-		game.actors.tokens = {};
-
 		// Release tokens and destroy the layer
 		return super.tearDown();
 	}
@@ -40187,20 +40589,19 @@ class TokenLayer extends PlaceablesLayer {
 	 * @return {Promise<Combat>}      The updated Combat encounter
 	 */
 	async toggleCombat(state=true, combat=null, {token=null}={}) {
+		// Process each controlled token, as well as the reference token
+		const tokens = this.controlled.filter(t => t.inCombat !== state);
+		if ( token && !token._controlled && (token.inCombat !== state) ) tokens.push(token);
 
 		// Reference the combat encounter displayed in the Sidebar if none was provided
 		combat = combat ?? game.combats.viewed;
 		if ( !combat ) {
 			if ( game.user.isGM ) {
 				const cls = getDocumentClass("Combat")
-				combat = await cls.create({scene: canvas.scene.id, active: true});
+				combat = await cls.create({scene: canvas.scene.id, active: true}, {render: !state || !tokens.length});
 			}
 			else return ui.notifications.warn("COMBAT.NoneActive", {localize: true});
 		}
-
-		// Process each controlled token, as well as the reference token
-		const tokens = this.controlled.filter(t => t.inCombat !== state);
-		if ( token && !token._controlled && (token.inCombat !== state) ) tokens.push(token);
 
 		// Add tokens to the Combat encounter
 		if ( state ) {
@@ -40677,20 +41078,6 @@ class WallsLayer extends PlaceablesLayer {
 
 	/* -------------------------------------------- */
 	/*  Event Listeners and Handlers                */
-	/* -------------------------------------------- */
-
-	/** @inheritdoc */
-	_onClickLeft(event) {
-		const {createState} = event.data;
-
-		// Conclude a chained wall creation
-		if ( this._chain && (createState === 2) ) return this._onDragLeftDrop(event);
-		this._chain = game.keyboard.isCtrl(event);
-
-		// Begin a new wall creation
-		super._onClickLeft(event);
-	}
-
 	/* -------------------------------------------- */
 
 	/** @inheritdoc */
@@ -41368,7 +41755,8 @@ class Drawing extends PlaceableObject {
 		this.shape = this.drawing.addChild(new PIXI.Graphics());
 
 		// Overlay Text
-		const hasText = this.data.type === CONST.DRAWING_TYPES.TEXT || this.data.text;
+		let hasText = (this.data.type === CONST.DRAWING_TYPES.TEXT) || this.data.text;
+		hasText &&= (this.data.fontSize || 0) > 0;
 		this.text = hasText ? this.drawing.addChild(this._createText()) : null;
 	}
 
@@ -42402,7 +42790,7 @@ class AmbientLight extends PlaceableObject {
 			rotation: this.data.rotation,
 			color: this.data.tintColor,
 			alpha: this.data.tintAlpha,
-			animation: this.data.lightAnimation,
+			animation: this.data.lightAnimation.toObject(false),
 			seed: this.document.getFlag("core", "animationSeed"),
 			darkness: this.data.darkness,
 			type: this.data.t
@@ -42414,7 +42802,13 @@ class AmbientLight extends PlaceableObject {
 		else this.layer.sources.delete(this.sourceId);
 
 		// Refresh the layer, unless we are deferring that update
-		if ( !defer ) canvas.perception.schedule({lighting: {refresh: true}, sight: {refresh: true}});
+		if ( !defer ) canvas.perception.schedule({
+			lighting: {refresh: true},
+			sight: {
+				refresh: true,
+				forceUpdateFog: true // Update exploration even if the token hasn't moved
+			}
+		});
 	}
 
 	/* -------------------------------------------- */
@@ -43998,6 +44392,14 @@ class Tile extends PlaceableObject {
 	_onDelete(options, userId){
 		super._onDelete(options, userId);
 		if ( this.isVideo ) this.play(false);
+		if ( this.data.overhead && (this.data.occlusion.mode === CONST.TILE_OCCLUSION_MODES.ROOF) ) {
+			canvas.walls.identifyInteriorWalls();
+			canvas.perception.schedule({
+				lighting: {initialize: true, refresh: true},
+				sight: {initialize: true, refresh: true, forceUpdateFog: true},
+				foreground: {refresh: true}
+			});
+		}
 	}
 
 	/* -------------------------------------------- */
@@ -44978,7 +45380,7 @@ class Token extends PlaceableObject {
 	 */
 	async _drawOverlay({src, tint}={}) {
 		if ( !src ) return;
-		const tex = await loadTexture(src);
+		const tex = await loadTexture(src, {fallback: 'icons/svg/hazard.svg'});
 		const icon = new PIXI.Sprite(tex);
 		const size = Math.min(this.w * 0.6, this.h * 0.6);
 		icon.width = icon.height = size;
@@ -44996,7 +45398,7 @@ class Token extends PlaceableObject {
 	 * @private
 	 */
 	async _drawEffect(src, i, bg, w, tint) {
-		let tex = await loadTexture(src);
+		let tex = await loadTexture(src, {fallback: 'icons/svg/hazard.svg'});
 		let icon = this.effects.addChild(new PIXI.Sprite(tex));
 		icon.width = icon.height = w;
 		const nr = Math.floor(this.data.height * 5);
@@ -45155,7 +45557,11 @@ class Token extends PlaceableObject {
 		this.refresh();
 		if ( pan ) canvas.addPendingOperation("Canvas.animatePan", canvas.animatePan, canvas, [{x: this.x, y: this.y}]);
 		canvas.perception.schedule({
-			sight: {initialize: true, refresh: true},
+			sight: {
+				initialize: true,
+				refresh: true,
+				forceUpdateFog: true // Update exploration even if the token hasn't moved
+			},
 			lighting: {refresh: true},
 			sounds: {refresh: true},
 			foreground: {refresh: true}
@@ -46215,8 +46621,8 @@ class Wall extends PlaceableObject {
 	_onUpdate(data, ...args) {
 		super._onUpdate(data, ...args);
 
-		// Re-draw if the direction changed
-		if ( data.hasOwnProperty("dir") ) this.draw();
+		// Re-draw if we have a direction marker
+		if ( ("dir" in data) || this.data.dir ) this.draw();
 
 		// If the wall is controlled, update the highlighted segments
 		if ( this._controlled ) {
@@ -47849,7 +48255,7 @@ class DoorControl extends PIXI.Container {
 		this.on("mouseover", this._onMouseOver)
 				.on("mouseout", this._onMouseOut)
 				.on("mousedown", this._onMouseDown)
-				.on('rightdown', this._onRightDown);
+				.on("rightdown", this._onRightDown);
 
 		// Return the control icon
 		return this;
@@ -47954,6 +48360,7 @@ class DoorControl extends PIXI.Container {
 	 * @protected
 	 */
 	_onMouseDown(event) {
+		if ( event.data.originalEvent.button !== 0 ) return; // Only support standard left-click
 		event.stopPropagation();
 		const state = this.wall.data.ds;
 		const states = CONST.WALL_DOOR_STATES;
@@ -48056,7 +48463,10 @@ class ControlsLayer extends CanvasLayer {
 
 	/** @override */
 	static get layerOptions() {
-		return mergeObject(super.layerOptions, { zIndex: 1000 });
+		return mergeObject(super.layerOptions, {
+			name: "controls",
+			zIndex: 1000
+		});
 	}
 
 	/* -------------------------------------------- */
@@ -50723,14 +51133,15 @@ class AVMaster {
 		}, [0, 0, 0]);
 
 		// The user is classified as currently speaking if they exceed a certain threshold of speaking events
-		let isSpeaking = (count > (wasSpeaking ? 0 : CONFIG.WebRTC.speakingThresholdEvents)) && !this.client.isMuted;
+		const isSelf = userId === game.user.id;
+		let isSpeaking = count > (wasSpeaking ? 0 : CONFIG.WebRTC.speakingThresholdEvents);
+		isSpeaking &&= !isSelf || !this.client.isMuted;
 		speakingData.speaking = isSpeaking;
 
 		// Take further action when a change in the speaking state has occurred
 		if ( isSpeaking === wasSpeaking ) return;
-		const isSelf = userId === game.user.id;
 		if ( isSelf && this.client.isVoiceActivated ) return this.broadcast(isSpeaking); // Declare broadcast intent
-		else return ui.webrtc.setUserIsSpeaking(userId, this.broadcasting && isSpeaking); // Display as currently speaking
+		else return ui.webrtc.setUserIsSpeaking(userId, isSpeaking); // Display as currently speaking
 	}
 
 	/* -------------------------------------------- */
@@ -50748,10 +51159,13 @@ class AVMaster {
 			window.removeEventListener(event, handler, {capture: true});
 		}
 
+		const voice = this.settings.client.voice;
+		if ( typeof voice.pttKey === "number" ) ui.notifications.warn("WEBRTC.PTTKeyWarn", { localize: true });
+
 		// Configure handling
 		const start = this._onPTTStart.bind(this);
 		const end = this._onPTTEnd.bind(this);
-		this._pttHandlers = this.settings.client.voice.pttMouse ? {
+		this._pttHandlers = voice.pttMouse ? {
 			mousedown: start,
 			mouseup: end
 		} : {
@@ -50785,8 +51199,7 @@ class AVMaster {
 	 */
 	_onPTTStart(event) {
 		const voice = this.settings.client.voice;
-		const pressed = voice.pttMouse ? event.button : event.keyCode;
-		if (pressed !== voice.pttKey) return;
+		if ( !this._isPTTKey(event) ) return;
 		event.preventDefault();
 		if ( event.repeat ) return;
 
@@ -50809,8 +51222,7 @@ class AVMaster {
 	 */
 	_onPTTEnd(event) {
 		const voice = this.settings.client.voice;
-		const pressed = voice.pttMouse ? event.button : event.keyCode;
-		if (pressed !== voice.pttKey) return;
+		if ( !this._isPTTKey(event) ) return;
 		event.preventDefault();
 		if ( event.repeat ) return;
 
@@ -50825,6 +51237,20 @@ class AVMaster {
 			this._pttMuteTimeout = 0;
 			this.broadcast(true);
 		}
+	}
+
+	/* --------------------------------------------- */
+
+	/**
+	 * Handle matching old and new PTT configurations against the mouse or keyboard event.
+	 * @param {KeyboardEvent|MouseEvent} event   The original event
+	 * @private
+	 */
+	_isPTTKey(event) {
+		const voice = this.settings.client.voice;
+		if ( voice.pttMouse ) return Number(voice.pttKey) === event.button;
+		if ( typeof voice.pttKey === "number" ) return voice.pttKey === event.keyCode;
+		return voice.pttKey === event.key;
 	}
 
 	/* -------------------------------------------- */
@@ -50893,6 +51319,7 @@ class AVMaster {
 	}
 }
 
+
 class AVSettings {
 	constructor() {
 		this.initialize();
@@ -50927,7 +51354,7 @@ class AVSettings {
 		muteAll: false,
 		voice: {
 			mode: AVSettings.VOICE_MODES.PTT,
-			pttKey: 192, // Tilde
+			pttKey: "`",
 			pttName: "`",
 			pttMouse: false,
 			pttDelay: 100,
@@ -51043,6 +51470,13 @@ class AVSettings {
 		this.initialize();
 		const changed = diffObject(original, this._original);
 		game.webrtc.onSettingsChanged(changed);
+		/**
+		 * A hook event that fires when the AV settings are changed.
+		 * @function rtcSettingsChanged
+		 * @memberof hookEvents
+		 * @param {AVSettings} settings The AVSettings manager
+		 * @param {object} changed      The delta of the settings that have been changed
+		 */
 		Hooks.callAll("rtcSettingsChanged", this, changed);
 	}
 }
@@ -52516,8 +52950,7 @@ const CONFIG = window.CONFIG = {
 	User: {
 		documentClass: User,
 		collection: Users,
-		sheetClass: UserConfig,
-		permissions: Users.permissions
+		sheetClass: UserConfig
 	},
 
 	/* -------------------------------------------- */
@@ -53212,16 +53645,17 @@ class AudioHelper {
 		this.sounds = new Map();
 
 		/**
-		 * Get an array of the Sound objects which are currently playing.
+		 * Get a map of the Sound objects which are currently playing.
 		 * @type {Map<number,Sound>}
 		 */
 		this.playing = new Map();
 
 		/**
 		 * A user gesture must be registered before audio can be played.
-		 * This Array contains the Howl instances which are requested for playback prior to a gesture.
+		 * This Array contains the Sound instances which are requested for playback prior to a gesture.
 		 * Once a gesture is observed, we begin playing all elements of this Array.
 		 * @type {Function[]}
+		 * @see Sound
 		 */
 		this.pending = [];
 
@@ -53396,7 +53830,7 @@ class AudioHelper {
 	/**
 	 * Play a single Sound by providing its source.
 	 * @param {string} src            The file path to the audio source being played
-	 * @param {object} options]       Additional options passed to Sound#play
+	 * @param {object} [options]       Additional options passed to Sound#play
 	 * @returns {Promise<Sound>}      The created Sound which is now playing
 	 */
 	async play(src, options) {
@@ -53461,7 +53895,7 @@ class AudioHelper {
 	 * @param {boolean} data.loop     Loop the audio effect and continue playing it until it is manually stopped.
 	 * @param {boolean} [push]        Push the audio sound effect to other connected clients?
 	 *
-	 * @return {Object}               A Howl instance which controls audio playback.
+	 * @return {Sound}               A Sound instance which controls audio playback.
 	 *
 	 * @example
 	 * // Play the sound of a locked door for all players
@@ -53619,7 +54053,7 @@ class AudioHelper {
 
 	/**
 	 * Ensures the global analyser timer is started
-	 * 
+	 *
 	 * We create only one timer that runs every 50ms and only create it if needed, this is meant to optimize things
 	 * and avoid having multiple timers running if we want to analyse multiple streams at the same time.
 	 * I don't know if it actually helps much with performance but it's expected that limiting the number of timers
@@ -53752,6 +54186,12 @@ class AudioContainer {
 	loaded = false;
 
 	/**
+	 * Did the audio source fail to load (a 404 or some other reason).
+	 * @type {boolean}
+	 */
+	failed = false;
+
+	/**
 	 * Is the audio source currently playing?
 	 * @type {boolean}
 	 */
@@ -53809,7 +54249,7 @@ class AudioContainer {
 	 * @type {number}
 	 */
 	get duration() {
-		if ( !this.loaded ) return undefined;
+		if ( !this.loaded || this.failed ) return undefined;
 		if ( this.isBuffer ) return this.buffer.duration;
 		else return this.element.duration;
 	}
@@ -53854,7 +54294,14 @@ class AudioContainer {
 		if (buffer) return this._createAudioBufferSourceNode(buffer);
 
 		// Otherwise check the element duration using HTML5 audio
-		const element = await this._createAudioElement();
+		let element;
+		try {
+			element = await this._createAudioElement();
+		} catch (err) {
+			console.error(`${vtt} | Failed to load audio node:`, err);
+			this.failed = true;
+			return;
+		}
 		const isShort = element.duration && (element.duration <= this.constructor.MAX_BUFFER_DURATION);
 
 		// For short sounds create and cache the audio buffer and use an AudioBufferSourceNode
@@ -53967,13 +54414,10 @@ class AudioContainer {
 	 */
 	stop() {
 		this.playing = false;
+		this._unloadMediaNode();
 		if ( this.isBuffer ) {
 			this.sourceNode.onended = undefined;
 			this.sourceNode.stop(0);
-		}
-		else {
-			this.element.onended = undefined;
-			this.element.pause();
 		}
 	}
 
@@ -53990,6 +54434,25 @@ class AudioContainer {
 		if ( !this.isBuffer && this._loop ) return this.play(0, onended);
 		this.playing = false;
 		onended();
+	}
+
+	/* -------------------------------------------- */
+
+	/**
+	 * Unload the MediaElementAudioSourceNode to terminate any ongoing
+	 * connections.
+	 * @private
+	 */
+	_unloadMediaNode() {
+		if ( this.isBuffer ) return;
+		console.debug(`${vtt} | Unloading audio element - ${this.src}`);
+		this.sourceNode.disconnect(this.gainNode);
+		this.gainNode.disconnect(this.context.destination);
+		this.element.onended = undefined;
+		this.element.pause();
+		this.element.src = "";
+		this.element.remove();
+		this.loaded = false;
 	}
 }
 
@@ -54127,6 +54590,14 @@ class Sound {
 	}
 
 	/**
+	 * Did the contained audio node fail to load?
+	 * @returns {boolean}
+	 */
+	get failed() {
+		return this.container.failed;
+	}
+
+	/**
 	 * Is the audio source currently playing?
 	 * @type {boolean}
 	 */
@@ -54231,6 +54702,11 @@ class Sound {
 	play({loop=false, offset, volume, fade=0}={}) {
 		if ( !this.loaded ) {
 			return console.warn(`You cannot play Sound ${this.src} before it has loaded`);
+		}
+
+		if ( this.failed ) {
+			this._onEnd();
+			return;
 		}
 
 		// If we are still awaiting the first user interaction, add this playback to a pending queue
