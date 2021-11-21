@@ -1,8 +1,8 @@
 
-import { BezierTool, ToolMode } from './BezierTool.js';
-import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler.js";
-import { CurvyWallControl } from '../CurvyWallsToolBar.js';
-import { Bezier } from '../lib/bezier.js';
+import { BezierTool, ToolMode } from './BezierTool';
+import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler";
+import { CurvyWallControl } from '../CurvyWallsToolBar';
+import { Bezier } from '../../libs/bezier';
 
 const pointNearPoint = BezierTool.pointNearPoint;
 declare type Point = PIXI.Point;
@@ -10,14 +10,14 @@ declare type Point = PIXI.Point;
 class InitializerIH extends InitializerInputHandler {
 	private get quadTool(): QuadTool { return this.tool as QuadTool; }
 	constructor(tool: QuadTool, success: () => void, fail: () => void) {
-		super(tool, false, tool.lineA, tool.lineB, success, fail)
+		super(tool, false, tool.lineA, tool.lineB, success, fail);
 	}
 	move(origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
 		super.move(origin, destination, event);
 		const cX = (this.tool.lineB.x + this.tool.lineA.x) / 2;
 		const cY = (this.tool.lineB.y + this.tool.lineA.y) / 2;
-		var nY = -(this.tool.lineB.x - this.tool.lineA.x);
-		var nX = this.tool.lineB.y - this.tool.lineA.y;
+		let nY = -(this.tool.lineB.x - this.tool.lineA.x);
+		let nX = this.tool.lineB.y - this.tool.lineA.y;
 		// const length = Math.sqrt((nX * nX) + (nY * nY));
 		nX *= 0.25;
 		nY *= 0.25;

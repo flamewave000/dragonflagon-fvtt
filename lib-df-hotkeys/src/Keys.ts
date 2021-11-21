@@ -160,4 +160,4 @@ export class Keys {
 	get Comma() { return this._data.Comma.key; }
 	get Period() { return this._data.Period.key; }
 	get Backquote() { return this._data.Backquote.key; }
-};
+}

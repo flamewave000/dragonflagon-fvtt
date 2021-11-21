@@ -1,0 +1,14 @@
+{
+	"files.exclude": {
+		"**/node_modules": true,
+		"**/package-lock.json": true,
+		"**/.devenv": true,
+		"**/.editorconfig": true
+	},
+	"cSpell.words": [
+		"beziercirc",
+		"unpatch",
+		"unsetters"
+	],
+	"TARGET": ""
+}

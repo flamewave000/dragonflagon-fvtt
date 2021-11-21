@@ -1,11 +1,13 @@
-import * as DFChatArchive from "./archive/df-chat-archive.js";
-import DFChatEdit from "./edit/df-chat-edit.js";
-import initDFChatEdit from "./edit/df-chat-edit.js";
-import * as DFAdventureLog from "./logger/df-adventure-log.js";
-import ChatMerge from "./merge/chat-merge.js";
-import initDFChatPrivacy from "./privacy/df-chat-privacy.js";
-import ScrollManage from "./scroll-manage/scroll-manage.js";
-import SETTINGS from "./SETTINGS.js";
+import * as DFChatArchive from "./archive/df-chat-archive";
+import DFChatEdit from "./edit/df-chat-edit";
+import * as DFAdventureLog from "./logger/df-adventure-log";
+import DFAdventureLogProcessor from "./logger/DFAdventureLogProcessor";
+import ChatMerge from "./merge/chat-merge";
+import initDFChatPrivacy from "./privacy/df-chat-privacy";
+import ScrollManage from "./scroll-manage/scroll-manage";
+import SETTINGS from "../../common/Settings";
+import WhisperTruncation from "./whisper-trunc/whisper-trunc";
+import PlayerColor from './player-color/PlayerColor';
 SETTINGS.init('df-chat-enhance');
 
 declare global {
@@ -18,7 +20,7 @@ declare global {
 	this.element[0].style.height = '';
 	this.element[0].style.width = '';
 	this.setPosition({});
-}
+};
 
 Hooks.once('init', function () {
 	/**
@@ -31,17 +33,25 @@ Hooks.once('init', function () {
 	DFAdventureLog.init();
 	ChatMerge.init();
 	ScrollManage.init();
+	WhisperTruncation.init();
+	PlayerColor.init();
+
+	libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype._getEntryContextOptions', function (wrapped: (...args: any) => ContextMenu.Item[], ...args: any) {
+		const options = wrapped(...args);
+		DFChatEdit.appendChatContextMenuOptions(options);
+		DFAdventureLogProcessor.appendChatContextMenuOptions(options);
+		return options;
+	}, 'WRAPPER');
 });
 
 Hooks.once('ready', function () {
-	DFChatArchive.ready();
 	if (!game.modules.get('lib-wrapper')?.active) {
 		console.error('Missing libWrapper module dependency');
 		if (game.user.isGM)
-			ui.notifications.error(game.i18n.localize('DF_CHAT_LOG.Error_LibWrapperMissing'));
+			ui.notifications.error('DF_CHAT_LOG.Error.LibWrapperMissing'.localize());
 	}
 	DFAdventureLog.ready();
-	DFChatEdit.initDFChatEdit();
+	DFChatEdit.ready();
 	ChatMerge.ready();
 	ScrollManage.ready();
 });

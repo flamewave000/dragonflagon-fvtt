@@ -1,7 +1,9 @@
-import { DFChatArchive, DFChatArchiveEntry } from './DFChatArchive.js';
+import { ChatMessageData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs';
+import { DFChatArchive, DFChatArchiveEntry } from './DFChatArchive';
 
 export default class DFChatArchiveViewer extends Application {
 	archive: DFChatArchiveEntry;
+	messages: (ChatMessage | ChatMessageData)[];
 	onCloseCallBack: (view: DFChatArchiveViewer) => void;
 	constructor(archive: DFChatArchiveEntry, onCloseCallBack: (view: DFChatArchiveViewer) => void) {
 		super();
@@ -30,22 +32,22 @@ export default class DFChatArchiveViewer extends Application {
 		};
 	}
 
-	_renderInner(data: {}, options?: any): Promise<JQuery> {
-		return (super._renderInner(data, options) as Promise<JQuery>)
+	_renderInner(data: any): Promise<JQuery> {
+		return (super._renderInner(data) as Promise<JQuery>)
 			.then(async (html: JQuery<HTMLElement>) => {
-				html.find("#visible").on('change', async (element) => {
+				html.find("#visible-df-chat-log-" + this.archive.id).on('change', async (element) => {
 					this.archive.visible = (element.target as HTMLInputElement).checked;
 					await DFChatArchive.updateChatArchive(this.archive);
 				});
 				html.find("#edit").on('click', async () => {
 					setTimeout(async () => {
 						const dialog = new Dialog({
-							title: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Title"),
+							title: "DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Title".localize(),
 							content: `<input id="name" type="text" value="${this.archive.name}"/>`,
 							buttons: {
 								save: {
 									icon: '<i class="fas fa-save"></i>',
-									label: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Save'),
+									label: 'DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Save'.localize(),
 									callback: async (html) => {
 										this.archive.name = $(html).find('#name').val() as string;
 										await dialog.close();
@@ -55,7 +57,7 @@ export default class DFChatArchiveViewer extends Application {
 								},
 								close: {
 									icon: '<i class="fas fa-times"></i>',
-									label: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Cancel'),
+									label: 'DF_CHAT_ARCHIVE.ArchiveViewer_NameEdit_Cancel'.localize(),
 									callback: async () => {
 										await dialog.close();
 									}
@@ -79,11 +81,11 @@ export default class DFChatArchiveViewer extends Application {
 				});
 				html.find('#merge').on('click', async () => {
 					if (DFChatArchive.getLogs().length == 1) {
-						ui.notifications.info(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_Merge_OnlyOneArchive'));
+						ui.notifications.info('DF_CHAT_ARCHIVE.ArchiveViewer_Merge_OnlyOneArchive'.localize());
 						return;
 					}
 					const dialog: Dialog = new Dialog({
-						title: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Title'),
+						title: 'DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Title'.localize(),
 						default: 'merge',
 						content: await renderTemplate('modules/df-chat-enhance/templates/archive-merge.hbs', {
 							name: this.archive.name,
@@ -92,12 +94,12 @@ export default class DFChatArchiveViewer extends Application {
 						buttons: {
 							cancel: {
 								icon: '<i class="fas fa-times"></i>',
-								label: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Cancel'),
+								label: 'DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Cancel'.localize(),
 								callback: async () => await dialog.close()
 							},
 							merge: {
 								icon: '<i class="fas fa-sitemap"></i>',
-								label: game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Merge'),
+								label: 'DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Merge'.localize(),
 								callback: async (html) => {
 									const val = $(html).find('#archive').val() as string;
 									if (isNaN(parseInt(val))) return;
@@ -105,8 +107,8 @@ export default class DFChatArchiveViewer extends Application {
 									const source = DFChatArchive.getLogs().find(x => x.id == id);
 									const currentChats = await DFChatArchive.getArchiveContents(this.archive);
 									const sourceChats = await DFChatArchive.getArchiveContents(source);
-									const mergedChats = (currentChats as ChatMessage.Data[])
-										.concat(sourceChats as ChatMessage.Data[])
+									const mergedChats = (currentChats as ChatMessageData[])
+										.concat(sourceChats as ChatMessageData[])
 										.sort((a, b) => a.timestamp - b.timestamp);
 									DFChatArchive.updateChatArchive(this.archive, mergedChats);
 									this.render(false);
@@ -120,18 +122,26 @@ export default class DFChatArchiveViewer extends Application {
 					await dialog.render(true);
 				});
 
+				html.find('#html').on('click', () => {
+					const data = $('<div></div>').append(html.find('#df-chat-log').clone()).html();
+					const anchor = document.createElement('a');
+					anchor.download = encodeURI(this.archive.name) + '.html';
+					anchor.href = "data:text/html;base64," + btoa(data);
+					anchor.click();
+				});
+
 				const log = html.find('#df-chat-log');
 				const messageHtml = [];
-				var currentChats = await DFChatArchive.getArchiveContents(this.archive);
+				this.messages = await DFChatArchive.getArchiveContents(this.archive);
 				const deletionList: string[] = [];
 				const deleteButton = html.find('#dfal-save-changes');
-				for (let value of currentChats as ChatMessage.Data[]) {
+				for (const value of this.messages as ChatMessageData[]) {
 					const chatMessage = value instanceof ChatMessage ? value : new ChatMessage(value);
 					try {
 						// @ts-ignore
 						const html = await chatMessage.getHTML();
 						// if we only have 1 message, don't allow it to be deleted. They might as well just delete the archive
-						if (currentChats.length == 1)
+						if (this.messages.length == 1)
 							html.find('a.message-delete').hide();
 						html.find('a.message-delete').on('click', (event: JQuery.ClickEvent) => {
 							const messageHtml = $(event.target.parentElement?.parentElement?.parentElement?.parentElement);
@@ -162,22 +172,21 @@ export default class DFChatArchiveViewer extends Application {
 				deleteButton.hide();
 				deleteButton.on('click', async () => {
 					console.log(deletionList);
-					if (deletionList.length === currentChats.length) {
-						ui.notifications.warn(game.i18n.localize('DF_CHAT_ARCHIVE.ArchiveViewer_Error_Delete_All'));
+					if (deletionList.length === this.messages.length) {
+						ui.notifications.warn('DF_CHAT_ARCHIVE.ArchiveViewer_Error_Delete_All'.localize());
 						return;
 					}
 					Dialog.confirm({
-						title: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveViewer_DeleteTitle"),
-						content: game.i18n.localize("DF_CHAT_ARCHIVE.ArchiveViewer_DeleteContent"),
+						title: "DF_CHAT_ARCHIVE.ArchiveViewer_DeleteTitle".localize(),
+						content: "DF_CHAT_ARCHIVE.ArchiveViewer_DeleteContent".localize(),
 						defaultYes: false,
-						no: () => { },
 						yes: async () => {
-							for (let id of deletionList) {
+							for (const id of deletionList) {
 								const message = html.find(`li[data-message-id="${id}"]`);
 								message.hide(500, () => message.remove());
 							}
-							currentChats = currentChats.filter((x: any) => !deletionList.includes(x._id));
-							await DFChatArchive.updateChatArchive(this.archive, currentChats);
+							this.messages = this.messages.filter((x: any) => !deletionList.includes(x._id));
+							await DFChatArchive.updateChatArchive(this.archive, this.messages);
 						}
 					});
 				});
@@ -185,7 +194,7 @@ export default class DFChatArchiveViewer extends Application {
 				return html;
 			});
 	}
-	close(options: Application.CloseOptions = {}): Promise<unknown> {
+	close(options?: Application.CloseOptions): Promise<void> {
 		this.onCloseCallBack(this);
 		return super.close(options);
 	}

@@ -1,6 +1,18 @@
 # DragonFlagon Chat Enhancements
 
+![Forge Installs](https://img.shields.io/badge/dynamic/json?color=red&label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-chat-enhance) ![Latest Version](https://img.shields.io/badge/dynamic/json?label=Latest%20Release&prefix=v&query=package.versions%5B0%5D&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-chat-enhance) [![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Fdf-chat-enhance%2Fshield%2Fendorsements)](https://www.foundryvtt-hub.com/package/df-chat-enhance/)
+
 Multiple improvements to the chat system feature set. Brings a new Chat Archive that lets you save your current chat log to an archive and keep the chat clean between sessions. Gives an option to replace the Roll Type dropdown menu with a set of 4 buttons. This makes switching rolls much more efficient and provides a better visual indicator for what roll you're in.
+
+## Contributers
+
+- Code Contributions: [zeteticl](https://github.com/zeteticl).
+- Code Contributions: [hmqgg](https://github.com/hmqgg)
+- Japanese Localization: [BrotherSharper](https://github.com/BrotherSharper)
+- Korean Localization: [drdwing](https://github.com/drdwing)
+- Portuguese (Brazil) Localization: [Brn086](https://github.com/Brn086) and [Matheus Clemente](https://github.com/mclemente)
+
+## Table of Contents
 
 - [Adventure Log](#Adventure-Log)
 	- [Config](#Config)
@@ -25,6 +37,8 @@ Multiple improvements to the chat system feature set. Brings a new Chat Archive 
 	- [Message Divider](#Message-Divider)
 	- [Hover Shadow](#Hover-Shadow)
 	- [Roll Merging](#Roll-Merging)
+- [Whisper Recipient List Truncation](#Whisper-Recipient-List-Truncation)
+- [Third-Party Libraries](#Third-Party-Libraries)
 
 **[![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!**
 
@@ -149,13 +163,19 @@ When viewing a Chat Archive, GMs will see a Merge button in the top right corner
 |:-:|:-:|:-:|:-:|
 |![Manage archives](../.assets/df-chat-enhance-archive-manage.png)|![View archive](../.assets/df-chat-enhance-archive-viewer.png)|![Edit archive](../.assets/df-chat-enhance-archive-edit.png)|![Merge archive](../.assets/df-chat-enhance-archive-merge.png)|
 
+## Chat Message Markdown
+
+You can now use all of your favourite Markdown in the Chat Log for formatting your messages in the way you want.
+
+![Chat Message Markdown](../.assets/df-chat-enhance-chat-edit-markdown.png)
+
 ## Edit Sent Messages
 
 You will now see a little edit button in the top right of messages you are allowed to edit. Clicking this will display a dialog that lets you change the contents of the message. It will also add the "(edited)" flavour to the message to show that it has been modified.
 
 ### Edit Last Message Keyboard Shortcut
 
-A keyboard shortcut has now been added to allow you to quickly edit your most recent message you sent. While in the chat box, simply press `[Shift]+[Up]` on the keyboard. An edit message dialog will immediately appear for the most recent message you sent.
+A keyboard shortcut has now been added to allow you to quickly edit your most recent message you sent. While in the chat box, simply press `[Ctrl]+[Up]` on the keyboard. An edit message dialog will immediately appear for the most recent message you sent.
 
 ![](../.assets/df-chat-enhance-edit-message.png)
 
@@ -202,3 +222,19 @@ Rolls can be merged in an independent way. You have three choices, No Merging, M
 |No Merging|Merge with other Rolls|Merge With Any|
 |:-:|:-:|:-:|
 |![No Merging](../.assets/df-chat-enhance-chat-merge-roll-none.png)|![Merge with other Rolls](../.assets/df-chat-enhance-chat-merge-roll-rolls.png)|![Merge With Any](../.assets/df-chat-enhance-chat-merge-roll-all.png)|
+
+## Whisper Recipient List Truncation
+
+Now when you whisper a message to a list of users, the Recipient List at the top of the message is truncated if it is too long. There are some games that have many GM users and hitting up `/w gm ...` can make a very massive chat message. Instead it will truncate the list and say how many more names there are. You simply have to hover your mouse over the visible names and the rest will show in the mouse-over hint bubble.
+
+![Whisper Recipient List Truncation](../.assets/df-chat-enhance-whisper-trunc.png)
+
+## Formatted Message Text Selectable
+
+Core Foundry prevents the selection of text in ANY part of Foundry. This means sections need to be re-enabled for user text selection. Messages currently allow it, but only for the plain text part. If you attempt to select "formatted" or stylized text such as this: `"Hello, my name is <b>Bob</b>"`. The `<b>` makes the text "Bob" bold, and cannot be selected. DF Chat Enhancements makes it possible to select any and all text within a regular message (any message that is not a Roll).
+
+## Third-Party Libraries
+
+- `marked.min.js` - a markdown parser
+	> Copyright (c) 2011-2021, Christopher Jeffrey. (MIT Licensed)
+	> https://github.com/markedjs/marked

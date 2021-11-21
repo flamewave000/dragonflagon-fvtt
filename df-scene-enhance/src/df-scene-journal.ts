@@ -1,25 +1,9 @@
-import SETTINGS from "./lib/Settings.js";
-
+import SETTINGS from "../../common/Settings";
 
 interface Button {
 	icon: string,
 	label: string,
-	callback: Function
-}
-declare interface DataSet {
-	entity?: string;
-	pack?: string;
-	lookup?: string;
-	id: string;
-}
-
-declare global {
-	interface Scene {
-		testUserPermission(user: User, permission: string, { exact }?: { exact: boolean | false }): boolean;
-	}
-	interface JournalEntry {
-		testUserPermission(user: User, permission: string, { exact }?: { exact: boolean | false }): boolean;
-	}
+	callback: AnyFunction
 }
 
 export default class DFSceneJournal {
@@ -41,7 +25,7 @@ export default class DFSceneJournal {
 				icon: '<i class="fas fa-cog"></i>',
 				label: game.i18n.localize('DF-SCENE-ENHANCE.Dialog_JournalConfig'),
 				callback: async () => { return scene.sheet.render(true); }
-			}
+			};
 		}
 		if (hasJournal) {
 			defaultButton = 'journal';
@@ -49,7 +33,7 @@ export default class DFSceneJournal {
 				icon: '<i class="fas fa-book-open"></i>',
 				label: game.i18n.localize('DF-SCENE-ENHANCE.Dialog_JournalJournal'),
 				callback: async () => { return scene.journal.sheet.render(true); }
-			}
+			};
 		}
 		if (permScene) {
 			defaultButton = 'navigate';
@@ -57,7 +41,7 @@ export default class DFSceneJournal {
 				icon: '<i class="fas fa-directions"></i>',
 				label: game.i18n.localize('DF-SCENE-ENHANCE.Dialog_JournalNavigate'),
 				callback: async () => { return scene.view(); }
-			}
+			};
 		}
 
 		// if there is only one option, execute it and return
@@ -80,7 +64,7 @@ export default class DFSceneJournal {
 	static async _onClickContentLink(event: JQuery.ClickEvent) {
 		const a = event.currentTarget;
 		let document = null;
-		let id = a.dataset.id;
+		const id = a.dataset.id;
 		if (!a.dataset.pack) {
 			const collection = game.collections.get(a.dataset.entity);
 			document = collection.get(id);
@@ -92,8 +76,8 @@ export default class DFSceneJournal {
 		return TextEditor._onClickContentLink(event);
 	}
 
-	static patchTextEditor(newValue?: Boolean) {
-		var journalClick = SETTINGS.get(DFSceneJournal.ON_CLICK_JOURNAL);
+	static patchTextEditor(newValue?: boolean) {
+		let journalClick = SETTINGS.get(DFSceneJournal.ON_CLICK_JOURNAL);
 		if (newValue !== undefined) {
 			journalClick = newValue;
 		}
@@ -116,7 +100,7 @@ export default class DFSceneJournal {
 			config: true,
 			type: Boolean,
 			default: true,
-			onChange: value => DFSceneJournal.patchTextEditor(value)
+			onChange: (value: boolean) => DFSceneJournal.patchTextEditor(value)
 		});
 		SETTINGS.register(DFSceneJournal.ON_CLICK_JOURNAL_ONLY_ONE, {
 			name: "DF-SCENE-ENHANCE.Nav_SettingOnClickJournalOnlyOne",
