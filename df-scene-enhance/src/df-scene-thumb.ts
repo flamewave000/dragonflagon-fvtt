@@ -1,39 +1,24 @@
-import DFSceneRatio from "./df-scene-ratio.js";
-import SETTINGS from "./lib/Settings.js";
-
-declare global {
-	interface Scene {
-		dfThumb_update(data: Scene.Data, options: any): Promise<Scene>;
-		width: number
-		height: number
-	}
-	interface SceneConfig extends FormApplication {
-		entity: Scene;
-		ratioScaler: DFSceneRatio;
-	}
-	namespace SceneConfig {
-		interface Options {}
-	}
-}
+import DFSceneRatio from "./df-scene-ratio";
+import SETTINGS from "../../common/Settings";
 
 export default class DFSceneThumb {
 	static MODULE = 'df-scene-enhance';
 	static THUMBS = 'thumbs';
 	static purge() {
 		if (!game.user.isGM) return;
-		let ids = []
-		for (var scene of game.scenes.values() as any as Entity[]) {
+		const ids: string[] = [];
+		for (const scene of game.scenes.values() as any as Scene[]) {
 			ids.push(scene.id);
 		}
-		let config = JSON.parse(SETTINGS.get(DFSceneThumb.THUMBS));
-		for (var id in config) {
+		const config = JSON.parse(SETTINGS.get(DFSceneThumb.THUMBS));
+		for (const id in config) {
 			if (!ids.includes(id))
 				delete config[id];
 		}
 		SETTINGS.set(DFSceneThumb.THUMBS, JSON.stringify(config));
 	}
 	static updateThumb(sceneId: string, value?: string, generated: boolean = false) {
-		let config = JSON.parse(SETTINGS.get(DFSceneThumb.THUMBS));
+		const config = JSON.parse(SETTINGS.get(DFSceneThumb.THUMBS));
 		if (!value) delete config[sceneId];
 		else config[sceneId] = { url: value, thumb: generated };
 		SETTINGS.set(DFSceneThumb.THUMBS, JSON.stringify(config));
@@ -49,38 +34,40 @@ export default class DFSceneThumb {
 			type: String,
 			default: "{}"
 		});
-		Hooks.on('renderSceneConfig', async (app: SceneConfig, html: JQuery<HTMLElement>, data: RenderData) => {
+		Hooks.on('renderSceneConfig', async (app: SceneConfig, html: JQuery<HTMLElement>, data: SceneConfig.Data) => {
 			const imgInput = html.find('input[name ="img"]')[0];
 			if (!imgInput || !imgInput.parentElement || !imgInput.parentElement.parentElement) return;
 			const sceneId = data.document.id;
 			const thumbConfig = DFSceneThumb.getThumb(sceneId);
 			const injection = $(await renderTemplate(`modules/${DFSceneThumb.MODULE}/templates/scene-thumb.hbs`, { thumbPath: (thumbConfig && thumbConfig.url) || "" }));
 			const target = imgInput.parentElement.parentElement;
-			for (var c = 0; c < injection.length; c++) {
+			for (let c = 0; c < injection.length; c++) {
 				if (injection[c].nodeType != 1) continue;
 				target.after(injection[c]);
 			}
 			html.find('#df-thumb-btn').on('click', () => {
-				let fp = FilePicker.fromButton(html.find('#df-thumb-btn')[0] as HTMLButtonElement);
+				const fp = FilePicker.fromButton(html.find('#df-thumb-btn')[0] as HTMLButtonElement);
 				app.filepickers.push(fp);
 				fp.browse();
 			});
 			html.find('#df-thumb-img').on('change', () => DFSceneThumb.updateThumb(sceneId, html.find('#df-thumb-img').val() as string));
+			// @ts-ignore
 			app.ratioScaler = new DFSceneRatio();
-			await app.ratioScaler.render(app, html, data);
+			// @ts-ignore
+			await (<DFSceneRatio>app.ratioScaler).render(app, html, data);
 		});
-		Hooks.on('closeSceneConfig', async (app: SceneConfig, html: JQuery<HTMLElement>) => {
-			const dfSceneConfig = DFSceneThumb.getThumb(app.entity.id);
+		Hooks.on('closeSceneConfig', async (app: SceneConfig, _: JQuery<HTMLElement>) => {
+			const dfSceneConfig = DFSceneThumb.getThumb(app.document.id);
 			const scene: Scene = app.entity;
 			if (!dfSceneConfig || !dfSceneConfig.url) return;
 			// Update thumbnail and image dimensions
 			try {
-				let img = (dfSceneConfig && dfSceneConfig.url) ?? scene.data.img;
+				const img = (dfSceneConfig && dfSceneConfig.url) ?? scene.data.img;
 				const td = await ImageHelper.createThumbnail(img, { width: 300, height: 100 });
 				dfSceneConfig.thumb = true;
 				DFSceneThumb.updateThumb(scene.id, img, true);
 				await scene.update({ thumb: td.thumb } as any, {});
-			} catch (err) {
+			} catch (err: any) {
 				ui.notifications.error("Thumbnail Override generation for Scene failed: " + err.message);
 			}
 		});

@@ -1,21 +1,91 @@
-import DFManualRolls from "./DFManualRolls.js";
-import DFRollPrompt from "./DFRollPrompt.js";
-import SETTINGS from "./lib/Settings.js";
+import DFManualRolls from "./DFManualRolls";
+import DFRollPrompt from "./DFRollPrompt";
+import SETTINGS from "../../common/Settings";
 
+/***** Pathfinder1 Roller Declaration *****/
+declare class RollPF {
+	static safeRoll(p1: any, p2: any): any;
+}
 
 export default class DFManualRollsLegacy {
 	static PREF_USE_LEGACY = 'use-legacy';
 
 	static get useLegacy(): boolean { return SETTINGS.get(DFManualRollsLegacy.PREF_USE_LEGACY); }
 
+	private static pf1HelpersPatched = false;
+
 	static patch() {
 		libWrapper.register(SETTINGS.MOD_NAME, 'DiceTerm.prototype._evaluateSync', this._DiceTerm_evaluateSync, 'MIXED');
+
+		if (this.pf1HelpersPatched) return;
+		this.pf1HelpersPatched = true;
+		
+		/*******************************************************/
+		/************** This Code Copied From PF1 **************/
+		/*******************************************************/
+		Handlebars.registerHelper("itemDamage", (item, rollData) => {
+			if (!item.hasDamage) return null; // It was a mistake to call this
+
+			const actorData = item.document.parentActor.data.data,
+				itemData = item.data;
+
+			const rv = [];
+
+			const reduceFormula = (formula: any) => {
+				/******** MODIFIED PORTION START ********/
+				let roll: any;
+				try {
+					DFManualRolls.tempDisable = true;
+					roll = RollPF.safeRoll(formula, rollData);
+				} finally {
+					DFManualRolls.tempDisable = false;
+				}
+				/******** MODIFIED PORTION END ********/
+				formula = roll.formula.replace(/\[[^\]]+\]/g, ""); // remove flairs
+				return [roll, formula];
+			};
+
+			const handleParts = (parts: any) => {
+				for (const [formula, _] of parts) {
+					const [roll, newformula] = reduceFormula(formula);
+					if (roll.total == 0) continue;
+					rv.push(newformula);
+				}
+			};
+
+			// Normal damage parts
+			handleParts(itemData.damage.parts);
+
+			// Include ability score only if the string isn't too long yet
+			const dmgAbl = itemData.ability.damage;
+			const dmgAblMod = Math.floor((actorData.abilities[dmgAbl]?.mod ?? 0) * (itemData.ability.damageMult || 1));
+			if (dmgAblMod != 0) rv.push(dmgAblMod);
+
+			// Include damage parts that don't happen on crits
+			handleParts(itemData.damage.nonCritParts);
+
+			// Include general sources. Item enhancement bonus is among these.
+			const sources = item.document.allDamageSources;
+			for (const s of sources) rv.push(s.formula);
+
+			if (rv.length === 0) rv.push("NaN"); // Something probably went wrong
+
+			return rv
+				.join("+")
+				.replace(/\s+/g, "") // remove whitespaces
+				.replace(/\+-/, "-") // simplify math logic pt.1
+				.replace(/--/g, "+") // simplify math logic pt.2
+				.replace(/\+\++/, "+"); // simplify math logic pt.3
+		});
+		/********************************************************/
+		/**************** END OF COPIED PF1 CODE ****************/
+		/********************************************************/
 	}
 	static unpatch() {
 		libWrapper.unregister(SETTINGS.MOD_NAME, 'DiceTerm.prototype.roll', false);
 	}
 
-	static _DiceTerm_evaluateSync(this: DiceTerm, wrapper: Function, { minimize = false, maximize = false } = {}) {
+	static _DiceTerm_evaluateSync(this: DiceTerm, wrapper: AnyFunction, { minimize = false, maximize = false } = {}) {
 		if ((this.number > 999)) {
 			throw new Error(`You may not evaluate a DiceTerm with more than 999 requested results`);
 		}
@@ -28,7 +98,7 @@ export default class DFManualRollsLegacy {
 		if (this.modifiers.length == 0) {
 			const total = DFManualRollsLegacy.prompt(this.number, this.faces, this.flavor);
 			const results = DFRollPrompt.distributeRoll(total[0], this.number);
-			this.results = results.map(x => { return { result: x, active: true } });
+			this.results = results.map(x => { return { result: x, active: true }; });
 			if (DFManualRolls.flagged && total[1]) {
 				this.options.flavor = (this.options.flavor || '') + '[MRT]';
 				(<any>this.options).isManualRoll = true;
@@ -47,7 +117,7 @@ export default class DFManualRollsLegacy {
 					flags.push('RN');
 				}
 				else {
-					const result = DFManualRollsLegacy.prompt(1, this.faces, this.flavor)
+					const result = DFManualRollsLegacy.prompt(1, this.faces, this.flavor);
 					roll.result = result[0];
 					flags.push(result[1] ? 'MR' : 'RN');
 				}
@@ -63,16 +133,16 @@ export default class DFManualRollsLegacy {
 	}
 
 	static prompt(number: number, faces: number, flavour: string): [number, boolean] {
-		var failed = false;
-		var result: [number, boolean] = [0, false];
-		const promptText = game.i18n.localize('DF_MANUAL_ROLLS.Prompt_Legacy')
-			.replaceAll('{0}', number.toString())
-			.replaceAll('{1}', faces.toString())
-			.replaceAll('{2}', (number * faces).toString());
-		const invalidText = game.i18n.localize('DF_MANUAL_ROLLS.Prompt_Legacy_Invalid');
+		let failed = false;
+		let result: [number, boolean] = [0, false];
+		const promptText = game.i18n.localize('DF_MANUAL_ROLLS.Prompt.Legacy')
+			.dfmr_replaceAll('{0}', number.toString())
+			.dfmr_replaceAll('{1}', faces.toString())
+			.dfmr_replaceAll('{2}', (number * faces).toString());
+		const invalidText = game.i18n.localize('DF_MANUAL_ROLLS.Prompt.Legacy_Invalid');
 		while (true) {
-			var value: string | number =
-				prompt(promptText + (!!flavour ? `\n${flavour}` : '') + (failed ? '\n' + invalidText : ''), '');
+			let value: string | number =
+				prompt(promptText + (flavour ? `\n${flavour}` : '') + (failed ? '\n' + invalidText : ''), '');
 			if (value === '' || value === null)
 				result = [Math.ceil(CONFIG.Dice.randomUniform() * faces), false];
 			else {

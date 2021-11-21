@@ -1,5 +1,5 @@
-import { Message, MessageProcessor } from "./MessageProcessor.js";
-import SETTINGS from "./Settings.js";
+import { Message, MessageProcessor } from "./MessageProcessor";
+import SETTINGS from "../../common/Settings";
 
 interface Payload {
 	type: string,
@@ -25,8 +25,8 @@ export default class DFLogger {
 	}
 
 	static async displayMessage(user: User, alias: any, msg: string) {
-		let chatMsg = await ChatMessage.create({
-			sound: SETTINGS.get(DFLogger.SETTING_SOUND),
+		const chatMsg = await ChatMessage.create({
+			sound: SETTINGS.get<string>(DFLogger.SETTING_SOUND),
 			content: msg.replace(/\{\{username\}\}/g, user.name),
 			speaker: {
 				scene: null,
@@ -41,13 +41,13 @@ export default class DFLogger {
 		if (!DFLogger.Persist) {
 			setTimeout(async () => {
 				await chatMsg.delete();
-			}, Math.round(game.settings.get(SETTINGS.MOD_NAME, 'delay') * 1000));
+			}, Math.round(SETTINGS.get<number>('delay') * 1000));
 		}
 	}
 
 	static onEvent(data: Payload) {
 		// ignore message if GM-Only and we are not a GM
-		if (game.settings.get(SETTINGS.MOD_NAME, DFLogger.SETTING_GM_ONLY) && !game.user.isGM) return;
+		if (SETTINGS.get(DFLogger.SETTING_GM_ONLY) && !game.user.isGM) return;
 		if (data.type === DFLogger.EV_LOGIN) DFLogger.onLogin(data);
 		else if (data.type === DFLogger.EV_LOGOUT) DFLogger.onLogout(data);
 	}
@@ -61,13 +61,13 @@ export default class DFLogger {
 	}
 
 	static performLogin() {
-		let payload: Payload = {
+		const payload: Payload = {
 			type: DFLogger.EV_LOGIN,
 			id: game.user.id,
 			msg: DFLogger.getMessageText(MessageProcessor.loginMessages)
-		}
+		};
 		game.socket.emit(`module.${SETTINGS.MOD_NAME}`, payload);
-		if (!game.settings.get(SETTINGS.MOD_NAME, DFLogger.SETTING_NOT_ME))
+		if (!SETTINGS.get(DFLogger.SETTING_NOT_ME))
 			DFLogger.onEvent(payload);
 	}
 
@@ -85,8 +85,8 @@ export default class DFLogger {
 		if (DFLogger.Persist) return;
 		game.messages.forEach(async it => {
 			if (!it.isAuthor) return;
-			let alias = it.data.speaker.alias;
-			if (alias !== DFLogger.LoginContent && alias !== DFLogger.LogoutContent) return
+			const alias = it.data.speaker.alias;
+			if (alias !== DFLogger.LoginContent && alias !== DFLogger.LogoutContent) return;
 			await it.delete();
 		});
 	}

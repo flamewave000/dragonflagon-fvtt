@@ -4,12 +4,6 @@
 	overflow-y: scroll;
 }
 
-#df-chat-log .message {
-	border: 2px solid #6f6c66;
-	border-radius: 5px;
-	margin: 3px;
-}
-
 .df-chat-log-window .window-content {
 	background: none;
 }

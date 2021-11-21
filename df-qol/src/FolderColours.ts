@@ -1,6 +1,7 @@
-import SETTINGS from './libs/Settings.js';
+import { FolderData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import SETTINGS from "../../common/Settings";
 
-function apply(shouldApply: Boolean, hookName: string, func: Hooks.General) {
+function apply(shouldApply: boolean, hookName: string, func: AnyFunction) {
 	if (shouldApply) Hooks.on(hookName, func);
 	else Hooks.off(hookName, func);
 }
@@ -14,7 +15,7 @@ export default class FolderColours {
 			type: Boolean,
 			default: true,
 			config: true,
-			onChange: newValue => {
+			onChange: (newValue: boolean) => {
 				apply(newValue, 'renderFolderConfig', FolderColours.DF_FOLDER_TEXT_COLOUR);
 				apply(newValue, 'renderSceneDirectory', FolderColours.DF_SCENE_DIRECTORY_RENDER);
 				ui.sidebar.render(false);
@@ -26,9 +27,11 @@ export default class FolderColours {
 		apply(SETTINGS.get('folder-colour'), 'renderItemDirectory', FolderColours.DF_SCENE_DIRECTORY_RENDER);
 		apply(SETTINGS.get('folder-colour'), 'renderJournalDirectory', FolderColours.DF_SCENE_DIRECTORY_RENDER);
 		apply(SETTINGS.get('folder-colour'), 'renderRollTableDirectory', FolderColours.DF_SCENE_DIRECTORY_RENDER);
+		// Special hook just for Monk's Enhanced Journal
+		apply(SETTINGS.get('folder-colour'), 'renderEnhancedJournal', FolderColours.DF_SCENE_DIRECTORY_RENDER);
 	}
 
-	static DF_FOLDER_TEXT_COLOUR(app: FolderConfig, html: JQuery, data: { folder: Folder.Data, sortingModes: { a: string, m: string }, submitText: string }) {
+	static DF_FOLDER_TEXT_COLOUR(app: FolderConfig, html: JQuery, data: { folder: FolderData, sortingModes: { a: string, m: string }, submitText: string }) {
 		if (!data.folder.flags) {
 			data.folder.flags = {};
 		}
@@ -44,13 +47,18 @@ export default class FolderColours {
 			height: "auto"
 		});
 	}
-	static DF_SCENE_DIRECTORY_RENDER(app: SceneDirectory, html: JQuery<HTMLElement>, data: any) {
-		html.find('li[data-folder-id]').each((idx: number, element: HTMLElement) => {
-			const id = element.getAttribute('data-folder-id');
+	static DF_SCENE_DIRECTORY_RENDER(app: Application, html: JQuery<HTMLElement>, _data: any) {
+		const colorize = (element: JQuery<HTMLElement>) => {
+			const id = element[0].getAttribute('data-folder-id');
 			if (id === null || id === undefined) return;
 			const folder = game.folders.get(id);
 			if (folder === null || folder === undefined) return;
-			$(element).find('header *').css('color', (<any>folder.data.flags).textColour);
-		});
+			element.find('header *').css('color', (<any>folder.data.flags).textColour);
+		};
+		// If the app is Monk's Enhanced Journal, let it render first before we apply our colour
+		if (app.constructor.name === 'EnhancedJournal')
+			setTimeout(() => html.find('li[data-folder-id]').each((_: any, element: HTMLElement) => colorize($(element))), 10);
+		else
+			html.find('li[data-folder-id]').each((_: any, element: HTMLElement) => colorize($(element)));
 	}
 }

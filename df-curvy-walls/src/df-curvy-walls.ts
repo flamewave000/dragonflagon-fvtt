@@ -1,7 +1,7 @@
-
-import { CurvyWallsToolBar } from './CurvyWallsToolBar.js';
-import { CurvyWallToolManager, Mode } from './CurvyWallToolManager.js';
-import SETTINGS from './lib/Settings.js';
+import { CurvyWallsToolBar } from './CurvyWallsToolBar';
+import { CurvyWallToolManager, Mode } from './CurvyWallToolManager';
+import SETTINGS from "../../common/Settings";
+import { BezierTool } from './tools/BezierTool';
 
 const curvyWallApp = new CurvyWallsToolBar();
 SETTINGS.init('df-curvy-walls');
@@ -27,6 +27,14 @@ Hooks.once('init', function() {
 		default: 'alt',
 		type: String
 	});
+	SETTINGS.register(BezierTool.PREF_SMALL_HANDLES, {
+		name: 'df-curvy-walls.SettingSmallHandlesName',
+		hint: 'df-curvy-walls.SettingSmallHandlesHint',
+		config: true,
+		scope: 'world',
+		type: Boolean,
+		default: false,
+	});
 });
 
 Hooks.once("ready", function () {
@@ -36,7 +44,8 @@ Hooks.once("ready", function () {
 			ui.notifications.error(game.i18n.localize('df-curvy-walls.errorLibWrapperMissing'));
 		return;
 	}
-	(<Canvas>canvas).walls.bezier = CurvyWallToolManager.instance;
+	// @ts-ignore
+	canvas.walls.bezier = CurvyWallToolManager.instance;
 	CurvyWallToolManager.instance.patchWallsLayer();
 });
 

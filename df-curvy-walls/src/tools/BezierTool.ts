@@ -1,5 +1,6 @@
-import { InputHandler } from "./ToolInputHandler.js";
-import { CurvyWallControl } from '../CurvyWallsToolBar.js';
+import { InputHandler } from "./ToolInputHandler";
+import { CurvyWallControl } from '../CurvyWallsToolBar';
+import SETTINGS from "../../../common/Settings";
 
 export enum ToolMode {
 	NotPlaced,
@@ -8,10 +9,12 @@ export enum ToolMode {
 }
 
 export abstract class BezierTool {
-	public static readonly HANDLE_RADIUS: number = 10;
+	public static readonly PREF_SMALL_HANDLES = "BezierTool.SmallHandles";
+	public static get HANDLE_RADIUS(): number {
+		return SETTINGS.get(this.PREF_SMALL_HANDLES) ? 5 : 10;
+	}
 	public static readonly LINE_SIZE: number = 2;
-	// Define the text style
-	public static readonly TEXT_STYLE = new PIXI.TextStyle({
+	private static readonly TEXT_STYLE_BASE = new PIXI.TextStyle({
 		fontFamily: CONFIG.defaultFontFamily,
 		fontSize: 24,
 		fill: "#BBBBBB",
@@ -24,6 +27,11 @@ export abstract class BezierTool {
 		dropShadowDistance: 0,
 		padding: 1
 	});
+	// Define the text style
+	public static get TEXT_STYLE(): PIXI.TextStyle {
+		this.TEXT_STYLE_BASE.fontSize = SETTINGS.get(this.PREF_SMALL_HANDLES) ? 18 : 24;
+		return this.TEXT_STYLE_BASE;
+	}
 
 	private _mode: ToolMode = ToolMode.NotPlaced;
 	protected lastSegmentFetch: PIXI.Point[] | PIXI.Point[][] = [];
@@ -41,13 +49,13 @@ export abstract class BezierTool {
 	}
 
 	private _modeListener: (mode: ToolMode) => void = null;
-	get mode(): ToolMode { return this._mode; };
+	get mode(): ToolMode { return this._mode; }
 	protected setMode(value: ToolMode) {
 		if (this._mode === value) return;
 		this._mode = value;
 		if (this._modeListener !== null)
 			this._modeListener(value);
-	};
+	}
 
 	startedWithCtrlHeld: boolean = false;
 
@@ -62,8 +70,9 @@ export abstract class BezierTool {
 	abstract getData(): object;
 	abstract getTools(): Record<string, CurvyWallControl>
 
-	checkPointForClick(point: PIXI.Point, event: PIXI.InteractionEvent): boolean { return false; }
-	clearContext(context: PIXI.Graphics): void { }
+	checkPointForClick(_point: PIXI.Point, _event: PIXI.InteractionEvent): boolean { return false; }
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	clearContext(_context: PIXI.Graphics): void { }
 	clearTool() {
 		this.setMode(ToolMode.NotPlaced);
 	}
@@ -86,7 +95,7 @@ export abstract class BezierTool {
 		context.beginFill(0, 0)
 			.lineStyle(BezierTool.LINE_SIZE, 0xE88D2D, 1, 0.5)
 			.drawRoundedRect(bounds.left - 20, bounds.top - 20, bounds.width + 40, bounds.height + 40, 20)
-			.endFill()
+			.endFill();
 	}
 	protected drawHandle(context: PIXI.Graphics, fill: number, point: PIXI.Point): PIXI.Graphics {
 		return context.beginFill(fill, 1)
@@ -96,8 +105,8 @@ export abstract class BezierTool {
 	}
 
 	static pointNearPoint(a: { x: number, y: number }, b: { x: number, y: number }, threshold: number): boolean {
-		var x = a.x - b.x;
-		var y = a.y - b.y;
+		const x = a.x - b.x;
+		const y = a.y - b.y;
 		return ((x * x) + (y * y)) <= (threshold * threshold); // super simple and efficient Squared Length circle collision
 	}
 }

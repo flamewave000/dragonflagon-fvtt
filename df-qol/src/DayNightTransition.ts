@@ -1,4 +1,4 @@
-import SETTINGS from './libs/Settings.js';
+import SETTINGS from "../../common/Settings";
 
 export default class DayNightTransition {
 	static init() {
@@ -9,14 +9,14 @@ export default class DayNightTransition {
 			default: true,
 			name: 'DF_QOL.DayNight.ProgressSettingName',
 			hint: 'DF_QOL.DayNight.ProgressSettingHint',
-			onChange: newValue => {
+			onChange: () => {
 				libWrapper.unregister(SETTINGS.MOD_NAME, 'LightingLayer.prototype.animateDarkness');
 			}
 		});
 		if (SETTINGS.get('day-night-progress')) {
 			libWrapper.register(SETTINGS.MOD_NAME, 'LightingLayer.prototype.animateDarkness', DayNightTransition.DF_DAY_NIGHT_PROGRESS, 'OVERRIDE');
 		}
-		SETTINGS.register('day-night-duration', {
+		SETTINGS.register<number>('day-night-duration', {
 			scope: 'world',
 			config: true,
 			type: Number,

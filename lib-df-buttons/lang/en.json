@@ -1,0 +1,12 @@
+{
+	"LIB_DF_BUTTONS": {
+		"name": "Toolbar Position",
+		"hint": "The location on the screen where the toolbar resides",
+		"choices": {
+			"right": "Right (beside Sidebar)",
+			"left": "Left (beside scene controls)",
+			"top": "Top (Below scene navigation)",
+			"bottom": "Bottom (Above Macro Hotbar)"
+		}
+	}
+}

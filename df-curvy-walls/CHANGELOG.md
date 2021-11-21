@@ -1,5 +1,15 @@
 # DF Curvy Walls
 
+## Release 3.2.3 (2021-11-16)
+- **NEW #190:** There is now an option to use smaller control handles.
+- **FIX #213:** Applying tool crashed and would not succeed.
+
+## Release 3.2.2 (2021-11-15)
+- Updated Spanish localization, courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
+
+## Release 3.2.1 (2021-08-09)
+- License Migration.
+
 ## Release 3.2.0 (2021-06-27)
 - Added settings option for the key held for doing quick tool placement.
 - Changed the quick tool placement key to Alt by default instead of Ctrl.

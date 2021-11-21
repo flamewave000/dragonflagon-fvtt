@@ -1,3 +1,4 @@
+/* eslint-disable semi */
 
 /** Filter for a given hotkey group */
 export default interface GroupFilter {

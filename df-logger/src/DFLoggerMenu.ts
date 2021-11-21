@@ -1,4 +1,4 @@
-import { Message, MessageProcessor } from "./MessageProcessor.js";
+import { Message, MessageProcessor } from "./MessageProcessor";
 
 
 export default class DFLoggerMenu extends FormApplication {
@@ -11,14 +11,13 @@ export default class DFLoggerMenu extends FormApplication {
 			closeOnSubmit: true,
 			width: 600,
 			height: 500,
-			id: 'DFHotkeyConfig',
 			title: 'DF-LOGGER.ManageMenu.Title',
 			tabs: [{ navSelector: ".tabs", contentSelector: "main", initial: "login" }],
 			template: 'modules/df-logger/templates/message-manage.hbs'
 		});
 	}
 
-	async _updateObject(event: Event, formData?: object) {
+	async _updateObject(_event: Event, _formData?: object) {
 		const loginEntryElements = this.element.find('div[data-tab="login"]>div.message-entry');
 		const loginEntries: Message[] = [];
 		loginEntryElements.each((_, elem) => {
@@ -40,11 +39,11 @@ export default class DFLoggerMenu extends FormApplication {
 		await MessageProcessor.saveMessages();
 	}
 
-	getData(options?: Application.RenderOptions): any {
+	getData(_options?: Application.RenderOptions): any {
 		return {
 			login: MessageProcessor.loginMessages,
 			logout: MessageProcessor.logoutMessages
-		}
+		};
 	}
 
 	/** @override */

@@ -1,12 +1,12 @@
-import DFRollPrompt from "./DFRollPrompt.js";
-import SETTINGS from "./lib/Settings.js";
+import DFRollPrompt from "./DFRollPrompt";
+import SETTINGS from "../../common/Settings";
 
 declare global {
 	interface String {
-		replaceAll(token: string, replacement: string): string;
+		dfmr_replaceAll(token: string, replacement: string): string;
 	}
 }
-String.prototype.replaceAll = function (token: string, replacement: string) { return this.split(token).join(replacement); };
+String.prototype.dfmr_replaceAll = function (token: string, replacement: string) { return this.split(token).join(replacement); };
 
 export default class DFManualRolls {
 	static PREF_GM_STATE = 'gm';
@@ -20,9 +20,10 @@ export default class DFManualRolls {
 	static get toggleable() {
 		return SETTINGS.get(game.user.isGM ? DFManualRolls.PREF_GM_STATE : DFManualRolls.PREF_PC_STATE) === 'toggle';
 	}
+	static tempDisable = false;
 	static get shouldRollManually() {
 		const state = SETTINGS.get(game.user.isGM ? DFManualRolls.PREF_GM_STATE : DFManualRolls.PREF_PC_STATE);
-		return state === 'always' || (state === 'toggle' && this.toggled);
+		return !this.tempDisable && (state === 'always' || (state === 'toggle' && this.toggled));
 	}
 
 	static patch() {
@@ -36,7 +37,7 @@ export default class DFManualRolls {
 		libWrapper.unregister(SETTINGS.MOD_NAME, 'DiceTerm.prototype.roll', false);
 	}
 
-	private static async _Roll_evaluate(this: Roll, wrapper: Function, { minimize = false, maximize = false } = {}): Promise<Roll> {
+	private static async _Roll_evaluate(this: Roll, wrapper: (arg: any) => any, { minimize = false, maximize = false } = {}): Promise<Roll> {
 		// Ignore Min/Max requests and if we are disabled
 		if (!DFManualRolls.shouldRollManually || minimize || maximize) {
 			return wrapper({ minimize, maximize });
@@ -45,15 +46,15 @@ export default class DFManualRolls {
 		/****** THIS IS CAPTURED DIRECTLY FROM Roll.prototype._evaluate ******/
 		// Step 1 - Replace intermediate terms with evaluated numbers
 		const intermediate = [];
-		for (let element of this.terms) {
-			var term: any = element;
+		for (const element of this.terms) {
+			let term: any = element;
 			if (!(term instanceof RollTerm)) {
 				throw new Error("Roll evaluation encountered an invalid term which was not a RollTerm instance");
 			}
 			if (term.isIntermediate) {
 				await term.evaluate({ minimize, maximize, async: true });
 				this._dice = this._dice.concat((<any>term).dice);
-				term = new NumericTerm({ number: term.total, options: (<any>term).options });
+				term = new NumericTerm({ number: <number>term.total, options: (<any>term).options });
 			}
 			intermediate.push(term);
 		}
@@ -63,16 +64,18 @@ export default class DFManualRolls {
 		this.terms = Roll.simplifyTerms(this.terms);
 
 		/****** DF MANUAL ROLLS MODIFICATION ******/
-		const rollPrompt = new DFRollPrompt({}, !!this.options.flavor ? { title: this.options.flavor } : {});
+		// @ts-ignore
+		const rollPrompt = new DFRollPrompt({}, this.options.flavor ? { title: this.options.flavor } : {});
 
-		for (let term of this.terms) {
+		for (const term of this.terms) {
 			if (!(term instanceof DiceTerm)) continue;
 			(<any>term).rollPrompt = rollPrompt;
 		}
 
 		// Step 3 - Evaluate remaining terms
 		const promises: Promise<RollTerm>[] = [];
-		for (let term of this.terms) {
+		for (const term of this.terms) {
+			// @ts-ignore
 			if (term._evaluated) continue;
 			promises.push(term.evaluate({ minimize, maximize, async: true }));
 		}
@@ -86,18 +89,18 @@ export default class DFManualRolls {
 		/****** END OF CAPTURE ******/
 	}
 
-	private static async _DiceTerm_evaluate(this: DiceTerm, wrapper: Function, { minimize = false, maximize = false } = {}): Promise<DiceTerm> {
+	private static async _DiceTerm_evaluate(this: DiceTerm, wrapper: AnyFunction, { minimize = false, maximize = false } = {}): Promise<DiceTerm> {
 		const rollPrompt: DFRollPrompt = (<any>this).rollPrompt;
 		// Ignore Min/Max requests, if we are disabled, or if this dice term does not have a bound DFRollPrompt
 		if (!DFManualRolls.shouldRollManually || !rollPrompt || minimize || maximize)
 			return wrapper(minimize, maximize);
 		const results = await rollPrompt.requestResult(this);
-		for (let x of results) this.results.push({ result: x, active: true })
+		for (const x of results) this.results.push({ result: x, active: true });
 		this._evaluateModifiers();
 		return this;
 	}
 
-	private static async _Combat_rollInitiative(this: Combat, wrapper: Function, ids: string | string[],
+	private static async _Combat_rollInitiative(this: Combat, wrapper: AnyFunction, ids: string | string[],
 		{ formula = null, updateTurn = true, messageOptions = {} }: { formula?: string | null, updateTurn?: boolean, messageOptions?: any } = {}): Promise<Combat> {
 		// Ignore if we are disabled
 		if (!DFManualRolls.shouldRollManually) {
@@ -114,7 +117,7 @@ export default class DFManualRolls {
 		// Iterate over Combatants, performing an initiative roll for each
 		const updates = [];
 		const messages = [];
-		for (let [i, id] of ids.entries()) {
+		for (const [i, id] of ids.entries()) {
 
 			// Get Combatant data (non-strictly)
 			const combatant = (<any>this.combatants).get(id);
@@ -131,7 +134,7 @@ export default class DFManualRolls {
 			updates.push({ _id: id, initiative: roll.total });
 
 			// Construct chat message data
-			let messageData = foundry.utils.mergeObject({
+			const messageData = foundry.utils.mergeObject({
 				speaker: {
 					scene: this.scene.id,
 					actor: combatant.actor?.id,
@@ -173,6 +176,7 @@ export default class DFManualRolls {
 		const roll: Roll = Roll.create(formula, rollData);
 		/****** DF MANUAL ROLLS MODIFICATION ******/
 		// Added flavour that can be displayed in the title
+		// @ts-ignore
 		roll.options.flavor = game.i18n.localize('DF_MANUAL_ROLLS.InitiativeRollFlavour').replace('{{name}}', this.name);
 		return roll.evaluate({ async: DFManualRolls.shouldRollManually }); // used to be: return roll.evaluate({ async: false });
 		/************ END MODIFICATION ************/

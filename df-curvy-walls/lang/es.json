@@ -1,7 +1,6 @@
 {
 	"I18N.LANGUAGE": "Español",
 	"I18N.MAINTAINERS": "@Viriato139ac#0342",
-
 	"df-curvy-walls.errorLibWrapperMissing": "'DF Curvy Walls' requiere el módulo 'libWrapper'. Por favor, instale y active 'libWrapper'",
 	"df-curvy-walls.cubic": "Curva cúbica Bézier",
 	"df-curvy-walls.quadratic": "Curva cuadrática Bézier",

@@ -1,0 +1,11 @@
+li.chat-message.message .message-content * {
+	user-select: text !important;
+}
+
+li.chat-message.message .message-content>.dice-roll {
+	user-select: none !important;
+}
+
+li.chat-message.message .message-content>.dice-roll * {
+	user-select: none !important;
+}

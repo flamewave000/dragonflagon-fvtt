@@ -1,9 +1,9 @@
-import DFManualRolls from "./DFManualRolls.js";
-import SETTINGS from "./lib/Settings.js";
+import DFManualRolls from "./DFManualRolls";
+import SETTINGS from "../../common/Settings";
 
 interface RollPromptData {
 	id: number;
-	res: Function;
+	res: AnyFunction;
 	term: DiceTerm;
 }
 interface RenderData {
@@ -14,7 +14,7 @@ interface RenderData {
 	term: DiceTerm
 }
 
-export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] }> {
+export default class DFRollPrompt extends FormApplication<FormApplication.Options, { terms: RenderData[] }> {
 
 	static readonly PREF_FOCUS_INPUT = 'focus-input';
 
@@ -28,16 +28,16 @@ export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] 
 		return <FormApplication.Options>mergeObject(
 			<DeepPartial<FormApplication.Options>>FormApplication.defaultOptions,
 			{
-				title: game.i18n.localize("DF_MANUAL_ROLLS.Prompt_DefaultTitle"),
+				title: game.i18n.localize("DF_MANUAL_ROLLS.Prompt.DefaultTitle"),
 				template: `modules/${SETTINGS.MOD_NAME}/templates/roll-prompt.hbs`,
 				width: 400,
 
 			});
 	}
 
-	getData(options?: Application.RenderOptions): { terms: RenderData[] } {
+	getData(_options?: Application.RenderOptions): { terms: RenderData[] } {
 		const data: RenderData[] = [];
-		for (let term of this._terms) {
+		for (const term of this._terms) {
 			const die = term.term;
 			for (let c = 0; c < die.number; c++) {
 				data.push({
@@ -55,7 +55,7 @@ export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] 
 		// If we have not actually rolled anything yet, we need to resolve these with RNG values
 		if (!this._rolled) {
 			this._rolled = true;
-			for (let x of this._terms) {
+			for (const x of this._terms) {
 				const results: number[] = [];
 				for (let c = 0; c < x.term.number; c++) {
 					results.push(Math.ceil(CONFIG.Dice.randomUniform() * x.term.faces));
@@ -72,15 +72,15 @@ export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] 
 	async _render(force?: boolean, options?: Application.RenderOptions) {
 		await super._render(force, options);
 		if (DFRollPrompt.focusInput)
-			this.element.find('input').trigger('focus');
+			this.element.find('input')[0].focus();
 	}
 	protected _updateObject(_: Event, formData?: { [key: string]: string | null }): Promise<unknown> {
-		for (let x of this._terms) {
+		for (const x of this._terms) {
 			const results: number[] = [];
 			const total = formData[`${x.id}-total`];
 			// If a total input was defined and given, it overrides everything else.
 			if (total !== undefined && total !== null) {
-				var value = parseInt(total);
+				const value = parseInt(total);
 				results.push(...DFRollPrompt.distributeRoll(value, x.term.number));
 				if (DFManualRolls.flagged)
 					x.term.options.flavor = (x.term.options.flavor || '') + '[MRT]';
@@ -88,7 +88,7 @@ export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] 
 				const flags = [];
 				for (let c = 0; c < x.term.number; c++) {
 					const roll = formData[`${x.id}-${c}`];
-					var value = parseInt(roll);
+					let value = parseInt(roll);
 					if (isNaN(value)) {
 						value = Math.ceil(CONFIG.Dice.randomUniform() * x.term.faces);
 						flags.push('RN');
@@ -116,7 +116,7 @@ export default class DFRollPrompt extends FormApplication<{ terms: RenderData[] 
 	static distributeRoll(total: number, count: number): number[] {
 		const results: number[] = [];
 		// If a total input was defined and given, it overrides everything else.
-		var base = 0;
+		let base = 0;
 		// Append dice with the base average of the total.
 		for (let c = 0; c < count - 1; c++) {
 			base = Math.ceil(total / (count - results.length));

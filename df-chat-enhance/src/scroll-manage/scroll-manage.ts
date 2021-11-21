@@ -1,4 +1,4 @@
-import SETTINGS from "../SETTINGS.js";
+import SETTINGS from "../../../common/Settings";
 
 
 export default class ScrollManage {
@@ -8,8 +8,8 @@ export default class ScrollManage {
 	private static _scrollToBottomButton: JQuery<HTMLElement>;
 
 
-	static get enabled(): Boolean { return SETTINGS.get(this.PREF_ENABLED); }
-	static get scrollToBottomIfYouSendMessage(): Boolean { return SETTINGS.get(this.PREF_SCROLL_IF_YOU); }
+	static get enabled(): boolean { return SETTINGS.get(this.PREF_ENABLED); }
+	static get scrollToBottomIfYouSendMessage(): boolean { return SETTINGS.get(this.PREF_SCROLL_IF_YOU); }
 
 	static init() {
 		Hooks.on('renderChatLog', this._renderChatLog.bind(this));
@@ -45,9 +45,9 @@ export default class ScrollManage {
 			libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype.postOne', this._ChatLog_postOne, 'OVERRIDE');
 	}
 
-	private static _renderChatLog(app: ChatLog, html: JQuery<HTMLElement>, data: object) {
+	private static _renderChatLog(app: ChatLog, html: JQuery<HTMLElement>) {
 		this._scrollToBottomButton = $(`<div id="scrollToBottom" style="display:none">
-	<span>${game.i18n.localize('DF_CHAT_SCROLL.NewMessage')}</span> ${game.i18n.localize('DF_CHAT_SCROLL.ScrollButton')}
+	<span>${'DF_CHAT_SCROLL.NewMessage'.localize()}</span> ${'DF_CHAT_SCROLL.ScrollButton'.localize()}
 </div>`);
 		this._scrollToBottomButton.on('click', () => {
 			const el = app.element;

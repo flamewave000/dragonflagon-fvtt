@@ -1,0 +1,25 @@
+{{#*inline "control"}}
+<li class="control-tool{{#if c.active}} active{{/if}}{{#if c.button}} button{{/if}}{{#if c.toggle}} toggle{{/if}}"
+	data-{{d}}="{{c.name}}" title="{{localize c.title}}">
+	{{{c.icon}}}
+</li>
+{{/inline}}
+
+<div id="moduleControls" class="app">
+	<ol class="controls active">
+		{{#each groups as |g|}}
+		{{> control c=g d='group'}}
+		{{/each}}
+	</ol>
+	<div class="group-tools">
+		{{#each groups as |g|}}
+		{{#if g.tools.length}}
+		<ol class="controls{{#if g.active}} active{{/if}}">
+			{{#each g.tools as |t|}}
+			{{> control c=t d='tool'}}
+			{{/each}}
+		</ol>
+		{{/if}}
+		{{/each}}
+	</div>
+</div>

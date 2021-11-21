@@ -1,0 +1,30 @@
+{
+	"DF-SCENE-ENHANCE.errorLibWrapperMissing": "「DF Scene Enhancements」には「libWrapper」モジュールが必要です。libWrapperをインストールして有効化してください。",
+	"DF-SCENE-ENHANCE.Thumbnail_Label": "プレビュー画像の上書き",
+	"DF-SCENE-ENHANCE.Thumbnail_Hint": "サムネイルのパス",
+	"DF-SCENE-ENHANCE.Thumbnail_Button": "ファイルを参照",
+
+	"DF-SCENE-ENHANCE.Nav_NavigateMenuItem": "シーン移動",
+	"DF-SCENE-ENHANCE.Nav_SettingOnClick": "シーンをクリックしたときの挙動",
+	"DF-SCENE-ENHANCE.Nav_SettingOnClickHint": "サイドバーでシーンがクリックされたとき、そのシーンに移動します（プレイヤーの場合は常に有効）。次のシーン変更時に更新されます。",
+	"DF-SCENE-ENHANCE.Nav_SettingOnClickPC": "プレイヤーのシーンタブを有効にする",
+	"DF-SCENE-ENHANCE.Nav_SettingOnClickPCHint": "（要再読込）プレイヤーがシーンタブを使って移動を行えるようになります。",
+	"DF-SCENE-ENHANCE.Nav_SettingOnClickJournal": "資料のシーン参照クリック時の挙動",
+	"DF-SCENE-ENHANCE.Nav_SettingOnClickJournalHint": "資料内のシーンリンクをクリックしたとき、そのシーンに移動できるようになります。",
+	"DF-SCENE-ENHANCE.Nav_SettingOnClickJournalOnlyOne": "選択肢が一つの場合、すぐにシーンリンクを実行する",
+	"DF-SCENE-ENHANCE.Nav_SettingOnClickJournalOnlyOneHint": "選択肢が一つしかない場合はダイアログを表示せず、すぐにアクションを実行します。",
+
+	"DF-SCENE-ENHANCE.Dialog_JournalTitle": "シーン遷移：",
+	"DF-SCENE-ENHANCE.Dialog_JournalMessage": "このシーンをどのように開きますか？",
+	"DF-SCENE-ENHANCE.Dialog_JournalNavigate": "移動",
+	"DF-SCENE-ENHANCE.Dialog_JournalJournal": "資料",
+	"DF-SCENE-ENHANCE.Dialog_JournalConfig": "設定",
+
+	"DF-SCENE-ENHANCE.Ratio_Denominator": "分母",
+	"DF-SCENE-ENHANCE.Ratio_Numerator": "分子",
+	"DF-SCENE-ENHANCE.Ratio_LockRatio": "アスペクト比を固定",
+	"DF-SCENE-ENHANCE.Ratio_SizeRatio": "アスペクト比",
+	"DF-SCENE-ENHANCE.Ratio_ApplyRatio": "幅/高さにカスタム比率を適用",
+	"DF-SCENE-ENHANCE.Ratio_Scale": "倍率",
+	"DF-SCENE-ENHANCE.Ratio_ApplyScale": "幅/高さに倍率を適用"
+}

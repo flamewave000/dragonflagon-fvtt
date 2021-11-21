@@ -1,10 +1,9 @@
-import { hotkeys } from './lib/lib-df-hotkeys.shim.js';
-import { BezierTool, ToolMode } from './tools/BezierTool.js';
-import CircleTool from './tools/CircleTool.js';
-import RectangleTool from './tools/RectangleTool.js';
-import CubicTool from './tools/CubicTool.js';
-import QuadTool from './tools/QuadTool.js';
-import { InputHandler } from './tools/ToolInputHandler.js';
+import { BezierTool, ToolMode } from './tools/BezierTool';
+import CircleTool from './tools/CircleTool';
+import RectangleTool from './tools/RectangleTool';
+import CubicTool from './tools/CubicTool';
+import QuadTool from './tools/QuadTool';
+import { WallData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs';
 
 declare global {
 	namespace PIXI {
@@ -31,8 +30,8 @@ MODE_NAMES[Mode.Circ] = 'beziercirc';
 MODE_NAMES[Mode.Rect] = 'bezierrect';
 class WallPool {
 	static readonly walls: Wall[] = [];
-	static acquire(wallData: Wall.Data): Wall {
-		const result = this.walls.pop() ?? new Wall(wallData);
+	static acquire(wallData: WallData): Wall {
+		const result = this.walls.pop() ?? new Wall(new WallDocument(wallData));
 		result.data = wallData;
 		return result;
 	}
@@ -56,7 +55,8 @@ export class CurvyWallToolManager {
 	}
 	get activeTool(): BezierTool | null { return this._activeTool; }
 
-	private constructor() { }
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	private constructor() {}
 	public static get instance(): CurvyWallToolManager {
 		return this._instance || (this._instance = new this());
 	}
@@ -101,7 +101,7 @@ export class CurvyWallToolManager {
 
 	async apply() {
 		if (!this.activeTool || this.activeTool.mode != ToolMode.Placed) return;
-		await Wall.create(this.walls.map(e => e.data), {});
+		await WallDocument.createDocuments(this.walls.map(e => e.data));
 		this.clearTool();
 	}
 
@@ -115,12 +115,12 @@ export class CurvyWallToolManager {
 
 	private graphicsContext = new PIXI.Graphics(null);
 	render() {
-		this.wallsLayer.preview.removeChildren()
+		this.wallsLayer.preview.removeChildren();
 		if (this.activeTool == null) return;
 		const pointData = this.activeTool?.getSegments(this.segments);
 		if (pointData.length == 0) return;
-		this.walls.length
-		const wallData = (<any>this.wallsLayer)._getWallDataFromActiveTool(game.activeTool) as Wall.Data;
+		this.walls.length;
+		const wallData = (<any>this.wallsLayer)._getWallDataFromActiveTool(game.activeTool) as WallData;
 
 		while (this.walls.length > pointData.length - 1) {
 			const wall = this.walls.pop();
@@ -129,9 +129,9 @@ export class CurvyWallToolManager {
 		}
 		if ((<PIXI.Point>pointData[0]).x !== undefined) {
 			const points = pointData as PIXI.Point[];
-			for (var c = 0; c < points.length - 1; c++) {
-				const data = duplicate(wallData) as Wall.Data;
-				data.c = [points[c].x, points[c].y, points[c + 1].x, points[c + 1].y]
+			for (let c = 0; c < points.length - 1; c++) {
+				const data = duplicate(wallData) as WallData;
+				data.c = [points[c].x, points[c].y, points[c + 1].x, points[c + 1].y];
 				if (c == this.walls.length) {
 					this.walls.push(WallPool.acquire(data));
 					this.wallsLayer.preview.addChild(this.walls[c]);
@@ -150,9 +150,9 @@ export class CurvyWallToolManager {
 				WallPool.release(wall);
 				this.wallsLayer.preview.removeChild(wall);
 			}
-			for (var c = 0; c < points.length; c++) {
-				const data = duplicate(wallData) as Wall.Data;
-				data.c = [points[c][0].x, points[c][0].y, points[c][1].x, points[c][1].y]
+			for (let c = 0; c < points.length; c++) {
+				const data = duplicate(wallData) as WallData;
+				data.c = [points[c][0].x, points[c][0].y, points[c][1].x, points[c][1].y];
 				if (c == this.walls.length) {
 					this.walls.push(WallPool.acquire(data));
 					this.wallsLayer.preview.addChild(this.walls[c]);
