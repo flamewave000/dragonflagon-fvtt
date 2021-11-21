@@ -88,7 +88,7 @@ export default class DFChatEdit {
 	}
 
 	// Will be bound to the instance of ChatMessage we are observing
-	static editChatMessage(this: ChatMessage) {
+	static async editChatMessage(this: ChatMessage) {
 		// Double check permissions
 		if (!SETTINGS.get(PREF_EDIT_ALLOWED)) {
 			ui.notifications.warn('DF_CHAT_EDIT.Error_NoPermission'.localize());
@@ -98,8 +98,9 @@ export default class DFChatEdit {
 			(<any>this).chatEditor.bringToTop();
 		} else {
 			(<any>this).chatEditor = new DFChatEditor(this);
-			(<any>this).chatEditor.render(true);
+			await (<any>this).chatEditor._render(true);
 		}
+		(<any>this).chatEditor.element.find('textarea').focus();
 	}
 
 	static isHTML(str: string): boolean {
