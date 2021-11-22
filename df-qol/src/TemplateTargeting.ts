@@ -114,6 +114,7 @@ export default class TemplateTargeting {
 		});
 		// When dragging a template, we need to catch the cancellation in order for us to refresh the template to draw back in its original position.
 		libWrapper.register(SETTINGS.MOD_NAME, 'PlaceableObject.prototype._createInteractionManager', function (this: PlaceableObject, wrapper: () => MouseInteractionManager) {
+			if (!(this instanceof MeasuredTemplate)) return wrapper();
 			// We wrap the interaction manager construction method
 			const manager = wrapper();
 			// Replacing the `dragLeftCancel` with our own wrapper function

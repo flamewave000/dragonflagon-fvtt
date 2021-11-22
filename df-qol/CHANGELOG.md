@@ -2,6 +2,7 @@
 
 ## Release 1.6.1 (2021-11-22)
 - **FIX #221:** Fix error in console for libWrapper registration.
+- **FIX #224:** Fix issue with tiles caused by recent template feature changes.
 
 ## Release 1.6.0 (2021-11-19)
 - **NEW #193:** Template preview now has an option to perform active highlighting and auto-targeting while creating or moving the template.
