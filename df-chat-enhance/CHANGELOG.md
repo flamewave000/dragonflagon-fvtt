@@ -1,6 +1,7 @@
 # DF Chat Enhancements
 
 ## Release 3.5.2 (2021-11-22)
+- **FIX #219:** Markdown now works as exepcted with appropriate Chat Commands.
 - **FIX #220:** Chat borders are no longer coloured non-owned messages.
 - **FIX:** Hover shadow was not working.
 
