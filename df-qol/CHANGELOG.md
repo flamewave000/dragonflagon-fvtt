@@ -1,5 +1,8 @@
 # DragonFlagon Quality of Life
 
+## Release 1.6.1 (2021-11-22)
+- **FIX #221:** Fix error in console for libWrapper registration.
+
 ## Release 1.6.0 (2021-11-19)
 - **NEW #193:** Template preview now has an option to perform active highlighting and auto-targeting while creating or moving the template.
 - **FIX #174:** Fixed and integrated folder colours into Monk's Enhanced Journal.

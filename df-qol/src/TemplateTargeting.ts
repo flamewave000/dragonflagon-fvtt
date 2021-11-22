@@ -134,7 +134,7 @@ export default class TemplateTargeting {
 
 		// Register for the D&D5e Ability Template preview
 		// @ts-ignore
-		if (!game.dnd5e) {
+		if (game.dnd5e) {
 			libWrapper.register(SETTINGS.MOD_NAME, 'game.dnd5e.canvas.AbilityTemplate.prototype.refresh', function (this: MeasuredTemplate, wrapper: AnyFunction, ...args: any) {
 				ThrottledTemplateRefresh.apply(this);
 				return wrapper(...args);
