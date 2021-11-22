@@ -1,5 +1,9 @@
 # DF Chat Enhancements
 
+## Release 3.5.2 (2021-11-22)
+- **FIX #220:** Chat borders are no longer coloured non-owned messages.
+- **FIX:** Hover shadow was not working.
+
 ## Release 3.5.1 (2021-11-16)
 - **FIX #215:** Last character of chat messages was getting accidentally eaten.
 
