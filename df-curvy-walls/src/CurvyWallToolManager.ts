@@ -122,7 +122,7 @@ export class CurvyWallToolManager {
 
 	async apply() {
 		if (!this.activeTool || this.activeTool.mode != ToolMode.Placed) return;
-		await WallDocument.createDocuments(this.walls.map(e => e.data), {});
+		await game.scenes.viewed.createEmbeddedDocuments("Wall", <any>this.walls.map(e => e.data));
 		this.clearTool();
 	}
 

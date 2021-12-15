@@ -1,5 +1,6 @@
 import { InputHandler } from "./ToolInputHandler";
 import { CurvyWallControl } from '../CurvyWallsToolBar';
+import SETTINGS from "../../../common/Settings";
 
 export enum ToolMode {
 	NotPlaced,
@@ -8,10 +9,12 @@ export enum ToolMode {
 }
 
 export abstract class BezierTool {
-	public static readonly HANDLE_RADIUS: number = 10;
+	public static readonly PREF_SMALL_HANDLES = "BezierTool.SmallHandles";
+	public static get HANDLE_RADIUS(): number {
+		return SETTINGS.get(this.PREF_SMALL_HANDLES) ? 5 : 10;
+	}
 	public static readonly LINE_SIZE: number = 2;
-	// Define the text style
-	public static readonly TEXT_STYLE = new PIXI.TextStyle({
+	private static readonly TEXT_STYLE_BASE = new PIXI.TextStyle({
 		fontFamily: CONFIG.defaultFontFamily,
 		fontSize: 24,
 		fill: "#BBBBBB",
@@ -24,6 +27,11 @@ export abstract class BezierTool {
 		dropShadowDistance: 0,
 		padding: 1
 	});
+	// Define the text style
+	public static get TEXT_STYLE(): PIXI.TextStyle {
+		this.TEXT_STYLE_BASE.fontSize = SETTINGS.get(this.PREF_SMALL_HANDLES) ? 18 : 24;
+		return this.TEXT_STYLE_BASE;
+	}
 
 	private _mode: ToolMode = ToolMode.NotPlaced;
 	protected lastSegmentFetch: PIXI.Point[] | PIXI.Point[][] = [];

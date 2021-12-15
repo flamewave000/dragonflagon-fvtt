@@ -42,9 +42,11 @@
 		"TemplateTargeting": {
 			"SettingName": "Templates Auto-Target Tokens",
 			"SettingHint": "If enabled, will automatically target tokens that are hit by a Measure Template",
+			"PreviewName": "Preview Template Highlight/Targeting",
+			"PreviewHint": "Show the grid highlight and perform auto-targeting when moving or creating a template.",
 			"ToggleTitle": "Auto-Target Tokens",
 			"Patch5e_Name": "Use D&D 5e Style Templates",
-			"Patch5e_Hint": "Core Foundry uses requires a grid square's center to be inside a template to be affected. This adjusts templates to follow the D&D5e rules for targeting grid squares where any square TOUCHED by a template is hit (with the exception of circles).",
+			"Patch5e_Hint": "Core Foundry requires a grid square's center to be inside a template to be affected. This adjusts templates to follow the D&D5e rules for targeting grid squares where any square TOUCHED by a template is hit (with the exception of circles).",
 			"Patch5e_Circle_Name": "Make Circle Templates Greedy (Requires D&D 5e Style Templates)",
 			"Patch5e_Circle_Hint": "If you want circle templates to not be an exception to the above D&D 5e style rules, enable this and any square touched by a circle will be hit."
 		},

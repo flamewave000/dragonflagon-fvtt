@@ -59,8 +59,31 @@ export default class DFChatEdit {
 
 		libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype.processMessage', function (this: ChatLog, wrapper: AnyFunction, message: string) {
 			let originalMessage: string = null;
-			if (SETTINGS.get(DFChatEditor.PREF_MARKDOWN) && !message.trim().startsWith('/')) {
-				[originalMessage, message] = DFChatEditor.processMarkdown(message);
+			if (SETTINGS.get(DFChatEditor.PREF_MARKDOWN)) {
+				if (message.trim().startsWith('/')) {
+					const token = message.split(' ')[0].trim();
+					switch (token) {
+						case '/ooc': /* fall-through */
+						case '/ic': /* fall-through */
+						case '/emote': /* fall-through */
+						case '/whisper': /* fall-through */
+						case '/w':
+							[originalMessage, message] = DFChatEditor.processMarkdown(message.substr(token.length));
+							originalMessage = `${token} ${originalMessage.trimStart()}`;
+							message = `${token} ${message.trimStart()}`;
+							break;
+						case 'log': /* fall-through */
+						case 'gmlog': /* fall-through */
+						case '/gmroll': /* fall-through */
+						case '/blindroll': /* fall-through */
+						case '/selfroll': /* fall-through */
+						case '/r': /* fall-through */
+						case '/roll': /* fall-through */
+						default: break;
+					}
+				} else {
+					[originalMessage, message] = DFChatEditor.processMarkdown(message);
+				}
 			}
 			const result = wrapper(message);
 			if (originalMessage) {

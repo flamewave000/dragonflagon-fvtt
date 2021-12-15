@@ -1,6 +1,7 @@
 import { CurvyWallsToolBar } from './CurvyWallsToolBar';
 import { CurvyWallToolManager, Mode } from './CurvyWallToolManager';
 import SETTINGS from "../../common/Settings";
+import { BezierTool } from './tools/BezierTool';
 
 const curvyWallApp = new CurvyWallsToolBar();
 SETTINGS.init('df-curvy-walls');
@@ -25,6 +26,14 @@ Hooks.once('init', function() {
 		},
 		default: 'alt',
 		type: String
+	});
+	SETTINGS.register(BezierTool.PREF_SMALL_HANDLES, {
+		name: 'df-curvy-walls.SettingSmallHandlesName',
+		hint: 'df-curvy-walls.SettingSmallHandlesHint',
+		config: true,
+		scope: 'world',
+		type: Boolean,
+		default: false,
 	});
 });
 

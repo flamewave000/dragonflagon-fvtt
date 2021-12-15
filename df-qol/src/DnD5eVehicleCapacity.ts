@@ -3,8 +3,8 @@ import SETTINGS from "../../common/Settings";
 
 interface DND5E {
 	encumbrance: {
-		currencyPerWeight: number;
-		vehicleWeightMultiplier: number;
+		currencyPerWeight: { imperial: number, metric: number };
+		vehicleWeightMultiplier: { imperial: number, metric: number };
 	}
 }
 
@@ -64,11 +64,11 @@ export default class DnD5eVehicleCapacity {
 		// Compute currency weight
 		// @ts-ignore
 		const totalCoins = Object.values((<Record<string, number>>actorData.data.currency)).reduce((acc, denom) => acc + denom, 0);
-		totalWeight += totalCoins / DND5E.encumbrance.currencyPerWeight;
+		totalWeight += totalCoins / DND5E.encumbrance.currencyPerWeight.imperial;
 
 		// Vehicle weights are an order of magnitude greater.
 		// @ts-ignore
-		totalWeight /= <number>this.document.getFlag(SETTINGS.MOD_NAME, 'unit') || DND5E.encumbrance.vehicleWeightMultiplier;
+		totalWeight /= <number>this.document.getFlag(SETTINGS.MOD_NAME, 'unit') || DND5E.encumbrance.vehicleWeightMultiplier.imperial;
 
 		// Compute overall encumbrance
 		// @ts-ignore
@@ -78,7 +78,7 @@ export default class DnD5eVehicleCapacity {
 	}
 	static renderActorSheet5eVehicle(app: ActorSheet, html: JQuery<HTMLElement>, _data: any) {
 		// @ts-ignore
-		let unit: any = app.object.getFlag(SETTINGS.MOD_NAME, 'unit') || (<DND5E>CONFIG.DND5E).encumbrance.vehicleWeightMultiplier;
+		let unit: any = app.object.getFlag(SETTINGS.MOD_NAME, 'unit') || (<DND5E>CONFIG.DND5E).encumbrance.vehicleWeightMultiplier.imperial;
 		switch (unit) {
 			case 2240: unit = ['L.Ton', 'DF_QOL.VehicleUnit.Units_LongTon']; break;
 			case 2000: unit = ['S.Ton', 'DF_QOL.VehicleUnit.Units_ShortTon']; break;
@@ -92,7 +92,7 @@ export default class DnD5eVehicleCapacity {
 		const submitButton = html.find('section > form > button');
 		let current = !!data.object.flags && !!(<any>data.object.flags[SETTINGS.MOD_NAME]) ? (<any>data.object.flags[SETTINGS.MOD_NAME]).unit : null;
 		// @ts-ignore
-		if (!current) current = (<DND5E>CONFIG.DND5E).encumbrance.vehicleWeightMultiplier;
+		if (!current) current = (<DND5E>CONFIG.DND5E).encumbrance.vehicleWeightMultiplier.imperial;
 
 		const unitSelector = $(`<div class="form-group">
 	<label>${game.i18n.localize('DF_QOL.VehicleUnit.ConfigName')}</label>
@@ -111,7 +111,7 @@ export default class DnD5eVehicleCapacity {
 		// @ts-ignore
 		app._updateObject = async function (event?: Event, formData?: any) {
 			// @ts-ignore
-			const current = <number>(<Actor>this.object).getFlag(SETTINGS.MOD_NAME, 'unit') || (<DND5E>CONFIG.DND5E).encumbrance.vehicleWeightMultiplier;
+			const current = <number>(<Actor>this.object).getFlag(SETTINGS.MOD_NAME, 'unit') || (<DND5E>CONFIG.DND5E).encumbrance.vehicleWeightMultiplier.imperial;
 			let unit = 0;
 			let newLabel = '';
 			switch (formData.units) {

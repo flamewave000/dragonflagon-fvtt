@@ -1,4 +1,3 @@
-import {} from '../../common/global';
 import TableQuickRoll from './TableQuickRoll';
 import FolderColours from './FolderColours';
 import TextboxAutoFocus from './TextboxAutoFocus';
@@ -32,4 +31,5 @@ Hooks.once('ready', function () {
 	}
 	DnD5eVehicleCapacity.ready();
 	TokenLock.ready();
+	TemplateTargeting.ready();
 });

@@ -77,7 +77,7 @@ export default class DFChatEditor extends FormApplication {
 		if (message.startsWith('<p>'))
 			message = message.substr(3);
 		if (message.endsWith('</p>'))
-			message = message.substr(0, message.length - 5);
+			message = message.substr(0, message.length - 4);
 		const newLine = /(<\/?[ a-z]+>)\n(<\/?[ a-z]+>?)/;
 		while (newLine.test(message))
 			message = message.replace(newLine, '$1$2');
