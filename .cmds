@@ -68,6 +68,11 @@ set_module() {
 }
 
 set_foundry() {
+	# If there is no target passed, then print the current target
+	if [[ $# == 0 ]]; then
+		printf "Current Environment\n\tFoundry Path: %s\n\tFoundry Data: %s\n" $FPATH $FDATA
+		return
+	fi
 	if [[ ! "$1" = "" ]]; then
 		if [[ ! -d "$1" ]]; then
 			printf 'The FoundryVTT Program directory does not exist at\n\t%s\n' $1
@@ -97,7 +102,6 @@ run_linter() {
 	npx eslint --color --ext .ts,.tsx $ESFIX "$SCRIPT_DIR/$MODULE/src" | sed 's|'"$SCRIPT_DIR"'/||g'
 	echo "$JSLFIX"
 	npx jsonlint -Dpq $JSLFIX -t $'\t' $(realpath "$SCRIPT_DIR/$MODULE/lang/*.json")
-
 }
 
 gulp_build() {
@@ -168,6 +172,23 @@ build_shims() {
 	done
 }
 
+swap_env() {
+	if [[ -e "$DEV_ENV-swap" ]] ; then
+		echo "Swapping dev environment but preserving module target."
+	else
+		echo "There is no swap environment available.\nPlease create a .devenv-swap file."
+		exit
+	fi
+	TARGET_MODULE=$(npx json "module" <"$DEV_ENV")
+	NEWP=$(npx json "foundry.path" <"$DEV_ENV-swap")
+	NEWD=$(npx json "foundry.data" <"$DEV_ENV-swap")
+	OLDP=$(npx json "foundry.path" <"$DEV_ENV")
+	OLDD=$(npx json "foundry.data" <"$DEV_ENV")
+	rm "$DEV_ENV-swap" && cp "$DEV_ENV" "$DEV_ENV-swap"
+	set_dev_env "$TARGET_MODULE" "$NEWP" "$NEWD"
+	printf "Environment Swapped\n\t%s -> %s\n\t%s -> %s\n" $OLDP $NEWP $OLDD $NEWD
+}
+
 COMMAND="$1"
 shift
 case $COMMAND in
@@ -179,6 +200,7 @@ case $COMMAND in
 "tag") git_tag ;;
 "bundle") open_bundle ;;
 "shims") build_shims ;;
+"swap") swap_env ;;
 *) echo "Unknown Command: $COMMAND" ;;
 esac
 
