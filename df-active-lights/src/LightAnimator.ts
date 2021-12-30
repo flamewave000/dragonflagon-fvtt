@@ -107,20 +107,19 @@ export class LightAnimator {
 	 */
 	private static _updateSource(this: AmbientLight) {
 		// Update source data
-		this.source.initialize(<any>{
+		this.source.initialize(<PointSource.Data>{
 			x: this.data.x,
 			y: this.data.y,
 			z: (<any>this).document.getFlag("core", "priority") || null,
 			dim: this.dimRadius,
 			bright: this.brightRadius,
-			angle: this.data.angle,
+			angle: this.data.config.angle,
 			rotation: this.data.rotation,
-			color: this.data.tintColor,
-			alpha: this.data.tintAlpha,
-			animation: this.data.lightAnimation,
+			color: this.data.config.color,
+			alpha: this.data.config.alpha,
+			animation: this.data.config.animation,
 			seed: (<any>this).document.getFlag("core", "animationSeed"),
-			darkness: (<any>this).data.darkness,
-			type: this.data.t
+			darkness: (<any>this).data.darkness
 		});
 		// Update the lighting layer sources
 		if (!this.data.hidden) (<any>this).layer.sources.set(this.sourceId, this.source);
