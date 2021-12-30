@@ -141,7 +141,7 @@ export default class FlagEditor extends Application {
 		const applyButton = this.element.find('#apply');
 		const saveButton = this.element.find('#save');
 		saveButton.on('click', () => {
-			this.element.find('#apply').trigger('click');
+			applyButton.trigger('click');
 			this.close();
 		});
 		applyButton.on('click', async () => {
@@ -150,8 +150,9 @@ export default class FlagEditor extends Application {
 			saveButton.prop('disabled', true);
 			applyButton.prop('disabled', true);
 			const flags = this.editor.get();
-			console.log(flags);
-			const newKeys = Object.keys(flags).map(x => `${x}_____${Object.keys(flags[x])}`);
+			const newKeys = Object.keys(flags)
+				.flatMap(x => Object.keys(flags[x]).map(y => `${x}_____${y}`))
+				.filter(x => !x.endsWith('_____'));
 			const oldKeys = Object.keys(this.document.data.flags)
 				.flatMap(x => Object.keys(this.document.data.flags[x]).map(y => `${x}_____${y}`))
 				.filter(x => !x.endsWith('_____'));

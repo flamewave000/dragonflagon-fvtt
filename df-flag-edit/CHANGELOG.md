@@ -1,5 +1,9 @@
 # DragonFlagon Flag Editor
 
+## Release 1.1.2 (2021-12-30)
+- **FIX #244:** Modifying values would delete everything instead of properly updating them.
+- **UPDATE:** Updated FoundryVTT support to V9.
+
 ## Release 1.1.1 (2021-11-15)
 - **FIX:** Forgot to remove a debug flag.
 
