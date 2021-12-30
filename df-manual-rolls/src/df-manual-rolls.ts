@@ -1,4 +1,3 @@
-import {} from '../../common/global';
 import DFManualRolls from "./DFManualRolls";
 import DFManualRollsLegacy from "./DFManualRollsLegacy";
 import DFRollPrompt from "./DFRollPrompt";
