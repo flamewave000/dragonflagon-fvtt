@@ -9,10 +9,10 @@ declare class LightConfigExt extends LightConfig {
 export default class ActiveLightConfig extends Application {
 	static ready() {
 		if (game.user.isGM)
-			Hooks.on('renderLightConfig', this._renderLightConfig);
+			Hooks.on('renderAmbientLightConfig', this._renderAmbientLightConfig);
 	}
 
-	private static _renderLightConfig(app: LightConfig, html: JQuery<HTMLElement>) {
+	private static _renderAmbientLightConfig(app: AmbientLightConfig, html: JQuery<HTMLElement>) {
 		if (!(app.object instanceof AmbientLightDocument)) return;
 		const config = app as LightConfigExt;
 		if (!config.anims) {
@@ -68,7 +68,7 @@ export default class ActiveLightConfig extends Application {
 			else
 				this.render(true);
 		});
-		html.find('button').before(animConfigButton);
+		html.find('div[data-tab="animation"]').append(animConfigButton);
 	}
 
 	private static _createKeyFrame(time: number, data?: Partial<AmbientLightData>): KeyFrame {

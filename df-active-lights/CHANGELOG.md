@@ -1,7 +1,9 @@
 # DragonFlagon Active Lights
 
 ## Release 1.2.0 (2021-12-30)
+- **UPDATE:** Migrated to FoundryVTT V9.
 - **FIX #267:** Active Lights are now animating again.
+- **FIX #268:** Active Light Config can now be opened from the "Light Animation" tab in the Ambient Light Config.
 
 ## Release 1.1.3 (2021-10-15)
 - **FIX:** Wrong word in a label.
