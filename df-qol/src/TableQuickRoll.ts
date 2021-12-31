@@ -32,7 +32,7 @@ export default class TableQuickRoll {
 			icon: '<i class="fas fa-dice-d20"></i>',
 			condition: () => true,
 			callback: async (header: any) => {
-				const table = game.tables.get(header.data('entityId'));
+				const table = game.tables.get(header.data('documentId'));
 				if (table.data.description === undefined)
 					table.data.description = '';
 				await table.draw();
