@@ -4,6 +4,7 @@
 - **UPDATE:** Migrated to FoundryVTT V9.
 - **FIX #256:** Vehicle weight options now displays in the sheet config.
 - **FIX #245:** Fix quick roll table context option.
+- **FIX #257:** Fix Day/Night cycle animation.
 
 ## Release 1.6.1 (2021-11-22)
 - **FIX #221:** Fix error in console for libWrapper registration.
