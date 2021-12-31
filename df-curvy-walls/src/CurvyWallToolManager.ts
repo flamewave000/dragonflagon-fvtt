@@ -303,8 +303,7 @@ export class CurvyWallToolManager {
 	}
 
 	patchWallsLayer() {
-		const layer = (<Canvas>canvas).getLayer("WallsLayer");
-		this.wallsLayer = layer as WallsLayer;
+		this.wallsLayer = canvas.walls;
 		const MOD_NAME = 'df-curvy-walls';
 		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onClickLeft', CurvyWallToolManager._onClickLeft, 'MIXED');
 		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftStart', CurvyWallToolManager._onDragLeftStart, 'MIXED');
