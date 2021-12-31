@@ -4,7 +4,7 @@
 		"QuickRoll": {
 			"Title": "Enable Roll Table menu option to quick roll",
 			"Hint": "(Requires reload) Adds a menu option to Roll Tables in the Roll Table sidebar to roll on the table without having to open the table window.",
-			"MenuItem": "Roll on the table"
+			"MenuItem": "Quick Roll"
 		},
 		"AutoFocus": {
 			"Title": "Enable Auto-Focusing text field in Entity dialogs",
