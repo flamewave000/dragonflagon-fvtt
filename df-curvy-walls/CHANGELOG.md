@@ -1,5 +1,10 @@
 # DF Curvy Walls
 
+## Release 3.3.0 (2021-12-30)
+- **UPDATED:** Migrated to FoundryVTT V9
+- **NEW #272:** Migrated to new FVTTv9 Core Keyboard Shortcuts.
+- **Fixed #259 & #260:** Rendering issues in V9.
+
 ## Release 3.2.4 (2021-11-22)
 - **UPDATED:** French Localization.
 - **UPDATED:** Spanish Localization, courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)

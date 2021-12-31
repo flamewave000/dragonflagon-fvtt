@@ -35,6 +35,29 @@ Hooks.once('init', function() {
 		type: Boolean,
 		default: false,
 	});
+	
+	game.keybindings.register(SETTINGS.MOD_NAME, 'applyTool', {
+		name: 'df-curvy-walls.apply',
+		editable: [{ key: "Enter" }],
+		onDown: () => { CurvyWallToolManager.instance.apply(); }
+	});
+	game.keybindings.register(SETTINGS.MOD_NAME, 'cancelTool', {
+		name: 'df-curvy-walls.cancel',
+		editable: [{ key: 'Delete' }],
+		onDown: () => CurvyWallToolManager.instance.clearTool()
+	});
+	game.keybindings.register(SETTINGS.MOD_NAME, 'incrementSegments', {
+		name: 'df-curvy-walls.increment',
+		editable: [{ key: 'Equal' }],
+		repeat: true,
+		onDown: () => { CurvyWallToolManager.instance.segments++; }
+	});
+	game.keybindings.register(SETTINGS.MOD_NAME, 'decrementSegments', {
+		name: 'df-curvy-walls.decrement',
+		editable: [{ key: 'Minus' }],
+		repeat: true,
+		onDown: () => { CurvyWallToolManager.instance.segments--; }
+	});
 });
 
 Hooks.once("ready", function () {
