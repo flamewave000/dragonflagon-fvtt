@@ -42,9 +42,8 @@ export default class DFChatEdit {
 
 		libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype._onChatKeyDown', (wrapper: (..._: any) => void, ...args: any) => {
 			const event = args[0] as KeyboardEvent;
-			const code = game.keyboard.getKey(event);
 			// We have used the Shift+Up combo to edit previously sent message
-			if (code === "ArrowUp" && event.ctrlKey) {
+			if (event.code === "ArrowUp" && event.ctrlKey) {
 				event.preventDefault();
 				let messages = <ChatMessage[]>[...(ui.chat.collection.values())];
 				// Perform an inverted sort ( n<0 before, n=0 same, n>0 after )

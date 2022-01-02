@@ -409,7 +409,7 @@ export default class DFAdventureLogProcessor {
 		if (game.user.isGM) {
 			if (
 				// If the roll type is anything but Public
-				rollType !== 'roll'
+				rollType !== 'publicroll'
 				// If logs are GM Only and the Whisper All settings is true
 				|| (SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY) &&
 					SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY_WHISPER))

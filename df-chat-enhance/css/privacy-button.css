@@ -21,7 +21,7 @@
 	color: #000;
 }
 
-#dfcp-rt-buttons button[data-id="roll"].active {
+#dfcp-rt-buttons button[data-id="publicroll"].active {
 	background-color: #26C281;
 }
 

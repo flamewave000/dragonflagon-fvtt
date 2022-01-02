@@ -4,12 +4,12 @@ import CONFIG from "../CONFIG";
 
 const ICONS_FOR_KNOWN_ROLL_TYPES: {
 	[key: string]: string;
-	roll: string;
+	publicroll: string;
 	gmroll: string;
 	blindroll: string;
 	selfroll: string;
 } = {
-	roll: 'fas fa-dice-d20',
+	publicroll: 'fas fa-dice-d20',
 	gmroll: 'fas fa-user-secret',
 	blindroll: 'fas fa-user-ninja',
 	selfroll: 'fas fa-ghost'

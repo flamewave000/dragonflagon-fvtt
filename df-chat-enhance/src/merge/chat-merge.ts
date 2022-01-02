@@ -241,8 +241,10 @@ export default class ChatMerge {
 			const logId = parseInt(/df-chat-log-(\d+)/.exec(currElem.parentElement.parentElement.id)[1]);
 			if (isNaN(logId)) return;
 			const chatLog = DFChatArchiveManager.chatViewers.get(logId);
-			curr = <ChatMessage>chatLog.messages.find(x => x._id == currElem.dataset.messageId);
-			prev = <ChatMessage>chatLog.messages.find(x => x._id == prevElem.dataset.messageId);
+			curr = <ChatMessage>chatLog.messages.find(x =>
+				((x as ChatMessageData)._id ? (x as ChatMessageData)._id : (x as ChatMessage).id) == currElem.dataset.messageId);
+			prev = <ChatMessage>chatLog.messages.find(x =>
+				((x as ChatMessageData)._id ? (x as ChatMessageData)._id : (x as ChatMessage).id) == prevElem.dataset.messageId);
 		}
 		if (!ChatMerge._isValidMessage(curr, prev)) return;
 		if (prevElem.classList.contains('dfce-cm-bottom')) {
