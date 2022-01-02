@@ -10,7 +10,8 @@
 	"styles": "{{css}}",
 	"languages": [
 		{ "lang": "en", "name": "English", "path": "lang/en.json" },
-		{ "lang": "es", "name": "Español", "path": "lang/es.json" }
+		{ "lang": "es", "name": "Español", "path": "lang/es.json" },
+		{ "lang": "ja", "name": "日本語", "path": "lang/ja.json" }
 	],
 	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-logger",
 	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/LICENSE",
