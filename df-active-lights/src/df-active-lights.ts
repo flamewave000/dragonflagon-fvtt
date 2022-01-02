@@ -1,4 +1,3 @@
-import {} from '../../common/global';
 import ActiveLightConfig from "./ActiveLightConfig";
 import { LightAnimator } from "./LightAnimator";
 import SETTINGS from "../../common/Settings";

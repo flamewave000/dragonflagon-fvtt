@@ -1,11 +1,11 @@
 {
 	"name": "df-qol",
-	"version": "1.6.1",
+	"version": "1.7.0",
 	"title": "DF Quality of Life",
 	"description": "A set of various small Quality of Life changes that don't quite fit in my other larger modules.",
 	"author": "flamewave000#0001",
-	"minimumCoreVersion": "0.8.9",
-	"compatibleCoreVersion": "0.8.9",
+	"minimumCoreVersion": "9",
+	"compatibleCoreVersion": "9",
 	"dependencies": [ { "name": "lib-wrapper" } ],
 	"esmodules": "{{sources}}",
 	"languages": [

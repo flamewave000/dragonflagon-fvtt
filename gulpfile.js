@@ -25,9 +25,10 @@ const PACKS = 'packs/';
 const TEMPLATES = 'templates/';
 const CSS = 'css/';
 const LICENSE = '../LICENSE';
+const DEV_ENV = '../.devenv';
 
 var PACKAGE = JSON.parse(fs.readFileSync('module.json'));
-var DEV_DIR = fs.existsSync('../.devenv') ? JSON.parse(fs.readFileSync('../.devenv').toString())?.foundry?.data?.trim() + '/Data/modules/' : '';
+var DEV_DIR = fs.existsSync(DEV_ENV) ? JSON.parse(fs.readFileSync(DEV_ENV).toString())?.foundry?.data?.trim() + '/Data/modules/' : '';
 
 function reloadPackage(cb) { PACKAGE = JSON.parse(fs.readFileSync('module.json')); cb(); }
 function DEV_DIST() { return DEV_DIR + PACKAGE.name + '/'; }

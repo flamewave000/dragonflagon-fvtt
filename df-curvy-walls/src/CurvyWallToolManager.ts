@@ -1,4 +1,3 @@
-import { hotkeys } from '../libs/lib-df-hotkeys.shim';
 import { BezierTool, ToolMode } from './tools/BezierTool';
 import CircleTool from './tools/CircleTool';
 import RectangleTool from './tools/RectangleTool';
@@ -303,8 +302,7 @@ export class CurvyWallToolManager {
 	}
 
 	patchWallsLayer() {
-		const layer = (<Canvas>canvas).getLayer("WallsLayer");
-		this.wallsLayer = layer as WallsLayer;
+		this.wallsLayer = canvas.walls;
 		const MOD_NAME = 'df-curvy-walls';
 		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onClickLeft', CurvyWallToolManager._onClickLeft, 'MIXED');
 		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftStart', CurvyWallToolManager._onDragLeftStart, 'MIXED');
@@ -312,45 +310,6 @@ export class CurvyWallToolManager {
 		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftDrop', CurvyWallToolManager._onDragLeftDrop, 'MIXED');
 		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftCancel', CurvyWallToolManager._onDragLeftCancel, 'MIXED');
 		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onClickRight', CurvyWallToolManager._onClickRight, 'MIXED');
-
-		if (!game.modules.get('lib-df-hotkeys')?.active) {
-			console.error('Missing lib-df-hotkeys module dependency');
-			if (game.user.isGM)
-				ui.notifications.notify("DF Curvy Walls recommends you install the 'Library: DF Hotkeys' module");
-		}
-
-		hotkeys.registerGroup({
-			name: MOD_NAME,
-			label: 'DF Curvy Walls'
-		});
-		hotkeys.registerShortcut({
-			name: `${MOD_NAME}.apply`,
-			label: 'df-curvy-walls.apply',
-			group: MOD_NAME,
-			default: { key: hotkeys.keys.Enter, alt: false, ctrl: false, shift: false },
-			onKeyDown: () => CurvyWallToolManager.instance.apply()
-		});
-		hotkeys.registerShortcut({
-			name: `${MOD_NAME}.cancel`,
-			label: 'df-curvy-walls.cancel',
-			group: MOD_NAME,
-			default: { key: hotkeys.keys.Delete, alt: false, ctrl: false, shift: false },
-			onKeyDown: () => CurvyWallToolManager.instance.clearTool()
-		});
-		hotkeys.registerShortcut({
-			name: `${MOD_NAME}.increment`,
-			label: 'df-curvy-walls.increment',
-			group: MOD_NAME,
-			default: { key: hotkeys.keys.Equal, alt: false, ctrl: false, shift: false },
-			onKeyDown: () => CurvyWallToolManager.instance.segments++
-		});
-		hotkeys.registerShortcut({
-			name: `${MOD_NAME}.decrement`,
-			label: 'df-curvy-walls.decrement',
-			group: MOD_NAME,
-			default: { key: hotkeys.keys.Minus, alt: false, ctrl: false, shift: false },
-			onKeyDown: () => CurvyWallToolManager.instance.segments--
-		});
 		Hooks.on('requestCurvyWallsRedraw', () => this.render());
 	}
 }

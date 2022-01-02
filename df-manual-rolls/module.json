@@ -1,11 +1,11 @@
 {
 	"name": "df-manual-rolls",
 	"title": "DF Manual Rolls",
-	"version": "2.2.4",
+	"version": "2.3.0",
 	"description": "Provides a way for a user to enter a custom value for rolls. This is to facilitate rolling real dice and then providing the values to Foundry to use.",
 	"author": "flamewave000#0001",
-	"minimumCoreVersion": "0.8.6",
-	"compatibleCoreVersion": "0.8.9",
+	"minimumCoreVersion": "9",
+	"compatibleCoreVersion": "9",
 	"esmodules": "{{sources}}",
 	"dependencies": [ { "name": "lib-wrapper" } ],
 	"languages": [

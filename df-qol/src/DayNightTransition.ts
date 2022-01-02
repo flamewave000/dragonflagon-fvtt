@@ -14,7 +14,7 @@ export default class DayNightTransition {
 			}
 		});
 		if (SETTINGS.get('day-night-progress')) {
-			libWrapper.register(SETTINGS.MOD_NAME, 'LightingLayer.prototype.animateDarkness', DayNightTransition.DF_DAY_NIGHT_PROGRESS, 'OVERRIDE');
+			libWrapper.register(SETTINGS.MOD_NAME, 'LightingLayer.prototype.animateDarkness', DayNightTransition._animateDarkness, 'OVERRIDE');
 		}
 		SETTINGS.register<number>('day-night-duration', {
 			scope: 'world',
@@ -26,31 +26,43 @@ export default class DayNightTransition {
 			hint: 'DF_QOL.DayNight.DurationSettingHint'
 		});
 	}
-	static async DF_DAY_NIGHT_PROGRESS(this: LightingLayer, target = 1.0, { duration = 10000 } = {}) {
+	static async _animateDarkness(this: LightingLayer, target = 1.0, { duration = 10000 } = {}) {
+		/***************************************************************************************/
+		/** COPYRIGHT START FoundryVTT : foundry.js > LightingLayer.prototype.animateDarkness **/
+		/***************************************************************************************/
 		const animationName = "lighting.animateDarkness";
 		CanvasAnimation.terminateAnimation(animationName);
 		if (target === this.darknessLevel) return false;
-		if (duration <= 0) return this.refresh(target);
-
-		if (duration === 10000)
-			duration = SETTINGS.get('day-night-duration') as number * 1000;
+		if (duration <= 0) return this.refresh({ darkness: target });
 		// Prepare the animation data object
-		this._animating = true;
 		const animationData = [{
 			parent: { darkness: this.darknessLevel },
 			attribute: "darkness",
 			to: Math.clamped(target, 0, 1)
 		}];
 
+		/***************************/
+		/** DF QOL ADDITION START **/
+		/***************************/
+		if (duration === 10000)
+			duration = SETTINGS.get('day-night-duration') as number * 1000;
 		// Trigger the animation function
 		let elapsed = 0.0;
 		let last = new Date().getTime();
+		/*************************/
+		/** DF QOL ADDITION END **/
+		/*************************/
+
+		// Trigger the animation function
 		return CanvasAnimation.animateLinear(animationData, {
 			name: animationName,
 			duration: duration,
-			context: undefined,
 			ontick: (dt, attributes) => {
-				this.refresh(attributes[0].parent.darkness);
+				this.refresh(attributes[0].parent);
+
+				/***************************/
+				/** DF QOL ADDITION START **/
+				/***************************/
 				// do not display the transition progress to the PCs, only to GMs
 				if (!game.user.isGM) return;
 				// show progress here
@@ -64,7 +76,13 @@ export default class DayNightTransition {
 				loader.querySelector("#progress").textContent = `${Math.round(elapsed / 1000)}/${Math.ceil(duration / 1000)} sec`;
 				loader.style.display = "block";
 				if ((duration - elapsed < 500) && !loader.hidden) $(loader).fadeOut(2000);
+				/*************************/
+				/** DF QOL ADDITION END **/
+				/*************************/
 			}
 		});
+		/*************************************************************************************/
+		/** COPYRIGHT END FoundryVTT : foundry.js > LightingLayer.prototype.animateDarkness **/
+		/*************************************************************************************/
 	}
 }

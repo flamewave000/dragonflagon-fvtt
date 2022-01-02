@@ -2,7 +2,7 @@
 	"files.exclude": {
 		"**/node_modules": true,
 		"**/package-lock.json": true,
-		"**/.devenv": true,
+		"**/.devenv*": true,
 		"**/.editorconfig": true,
 		"**/.cmds": true,
 		"**/.gitignore": true,

@@ -2,7 +2,7 @@
 
 ![Forge Installs](https://img.shields.io/badge/dynamic/json?color=red&label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-active-lights) ![Latest Version](https://img.shields.io/badge/dynamic/json?label=Latest%20Release&prefix=v&query=package.versions%5B0%5D&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-active-lights) [![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Fdf-active-lights%2Fshield%2Fendorsements)](https://www.foundryvtt-hub.com/package/df-active-lights/)
 
-This module provides a way to animate all the various configurations of a light. This animation will be synchronized with the server so that all players should see the same animation states. A simple example for this would be for creating a simple Light House where the light's direction would animate all the way around a 180° rotation.
+This module provides a way to animate all the various configurations of a light. This animation will be synchronized with the server so that all players should see the same animation states. A simple example for this would be for creating a simple Light House where the light's direction would animate all the way around a 180° rotation. The configuration window for Active Lights can be opened from the Light Animation tab in any Ambient Light config window.
 
 ![Light House](../.assets/df-active-lights/df-active-lights.gif)
 ![Energy Dome](../.assets/df-active-lights/df-active-lights2.gif)
