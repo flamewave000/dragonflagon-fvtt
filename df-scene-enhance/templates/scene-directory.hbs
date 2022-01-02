@@ -1,62 +1,64 @@
 {{#*inline "folderPartial"}}
-<li class="directory-item folder flexcol {{#unless folder.expanded}}collapsed{{/unless}}" data-folder-id="{{folder.id}}"
-	data-folder-depth="{{folder.depth}}">
-	<header class="folder-header flexrow" style="background-color: {{folder.data.color}}">
-		<h3><i class="fas fa-folder-open fa-fw"></i>{{folder.name}}</h3>
-		{{#if user.isGM}}
-		<a class="create-folder" title="{{localize 'FOLDER.Create'}}" data-parent-folder="{{folder.id}}">
-			<i class="fas fa-folder-plus fa-fw"></i>
-		</a>
-		<a class="create-entity" title="{{localize 'SIDEBAR.SceneCreate'}}" data-folder="{{folder.id}}">
-			<i class="{{icon}}"></i>
-		</a>
+<li class="directory-item folder flexcol {{#unless this.expanded}}collapsed{{/unless}}" data-folder-id="{{this.id}}"
+	data-folder-depth="{{this.depth}}">
+	<header class="folder-header flexrow" style="background-color: {{this.data.color}}">
+		<h3><i class="fas fa-folder-open fa-fw"></i>{{this.name}}</h3>
+		{{#if @root.user.isGM}}
+		<a class="create-folder" data-parent-folder="{{this.id}}"><i class="fas fa-folder-plus fa-fw"></i></a>
+		<a class="create-document" data-folder="{{this.id}}"><i class="fas fa-user-plus fa-fw"></i></a>
 		{{/if}}
 	</header>
 
 	<ol class="subdirectory">
-		{{~#each folder.children as |child i|}}
-		{{> folderPartial folder=child user=../user icon=../icon}}
+		{{~#each this.children as |child|}}
+		{{> (lookup @root "folderPartial")}}
 		{{/each}}
-		{{#each folder.content}}
-		{{> entityPartial}}
+		{{#each this.content}}
+		{{> (lookup @root "documentPartial")}}
 		{{/each~}}
 	</ol>
 </li>
 {{/inline}}
 
-{{#*inline "entityPartial"}}
-<li class="directory-item entity scene flexrow" data-entity-id="{{this.id}}" data-background-image="{{this.data.thumb}}">
-	<h3 class="entity-name"><a>{{dfCheck this}}</a></h3>
+{{#*inline "documentPartial"}}
+<li class="directory-item document {{@root.documentCls}} flexrow" data-document-id="{{this.id}}">
+	{{#if this.thumbnail}}
+	<img class="thumbnail" title="{{dfCheck this}}" data-src="{{this.thumbnail}}" />
+	{{/if}}
+	<h4 class="document-name"><a>{{dfCheck this}}</a></h4>
 </li>
 {{/inline}}
 
-<section class="tab sidebar-tab directory flexcol" id="scenes" data-tab="scenes">
-
+<section class="tab sidebar-tab directory flexcol" id="{{tabName}}" data-tab="{{tabName}}">
 	<!-- Directory Header -->
 	<header class="directory-header">
 		{{#if user.isGM}}
 		<div class="header-actions action-buttons flexrow">
-			<button class="create-entity"><i class="{{ sidebarIcon }}"></i> {{localize 'SIDEBAR.SceneCreate'}}</button>
+			{{#if canCreate}}
+			<button class="create-document"><i class="fas fa-user"></i> {{localize 'SIDEBAR.Create' type=label}}</button>
+			{{/if}}
+			{{#if user.isGM }}
 			<button class="create-folder"><i class="fas fa-folder"></i> {{localize 'FOLDER.Create'}}</button>
+			{{/if}}
 		</div>
 		{{/if}}
 		<div class="header-search flexrow">
 			<i class="fas fa-search"></i>
-			<input type="text" name="search" value="" placeholder="{{localize 'SIDEBAR.SceneSearch'}}" autocomplete="off" />
+			<input type="text" name="search" value="" placeholder="{{localize 'SIDEBAR.Search' types=labelPlural}}" autocomplete="off" />
 			<a class="header-control collapse-all" title="{{localize 'FOLDER.Collapse'}}"><i class="fas fa-sort-amount-up fa-fw"></i></a>
 		</div>
 	</header>
 
 	<!-- Directories List -->
 	<ol class="directory-list">
-		{{~#each tree.children as |f fi|}}
-			{{> folderPartial folder=f user=../user icon=../sidebarIcon}}
+		{{~#each tree.children}}
+		{{> (lookup @root "folderPartial")}}
 		{{/each}}
 		{{#each tree.content}}
-			{{> entityPartial}}
+		{{> (lookup @root "documentPartial")}}
 		{{/each~}}
 	</ol>
 
 	<!-- Directory Footer -->
-	<footer class="directory-footer"></footer>
+	<footer class="directory-footer action-buttons"></footer>
 </section>

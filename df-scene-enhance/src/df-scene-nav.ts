@@ -15,23 +15,23 @@ export default class DFSceneNav {
 		// Determine our enabled state
 		const enabled = (game.user.isGM && gmClick) || (!game.user.isGM && pcClick);
 		if (enabled) {
-			libWrapper.register(SETTINGS.MOD_NAME, 'SceneDirectory.prototype._onClickEntityName', this._onClickEntityName, 'MIXED');
+			libWrapper.register(SETTINGS.MOD_NAME, 'SceneDirectory.prototype._onClickDocumentName', this._onClickDocumentName, 'MIXED');
 			libWrapper.register(SETTINGS.MOD_NAME, 'SceneDirectory.prototype._getEntryContextOptions', this._getEntryContextOptions, 'MIXED');
 		} else {
-			libWrapper.unregister(SETTINGS.MOD_NAME, 'SceneDirectory.prototype._onClickEntityName', false);
+			libWrapper.unregister(SETTINGS.MOD_NAME, 'SceneDirectory.prototype._onClickDocumentName', false);
 			libWrapper.unregister(SETTINGS.MOD_NAME, 'SceneDirectory.prototype._getEntryContextOptions', false);
 		}
 	}
 
-	private static _onClickEntityName(this: SceneDirectory, wrapper: AnyFunction, event: JQuery.ClickEvent) {
+	private static _onClickDocumentName(this: SceneDirectory, wrapper: AnyFunction, event: JQuery.ClickEvent) {
 		event.preventDefault();
-		const entity = SceneDirectory.collection.get(event.currentTarget.parentElement.dataset.entityId);
+		const entity = SceneDirectory.collection.get(event.currentTarget.parentElement.dataset.documentId);
 		if (entity instanceof Scene) entity.view();
 		else wrapper(event);
 	}
 
-	private static _getEntryContextOptions(wrapper: AnyFunction, event: JQuery.ClickEvent) {
-		if (game.user.isGM) return wrapper(event);
+	private static _getEntryContextOptions(wrapper: AnyFunction, ...args: any) {
+		if (game.user.isGM) return wrapper(...args);
 		else return [{
 			name: "SCENES.View",
 			icon: '<i class="fas fa-eye"></i>',
@@ -44,10 +44,11 @@ export default class DFSceneNav {
 	}
 
 	static patchSceneDirectory() {
-		const sidebarDirDefOpts = Object.getOwnPropertyDescriptor(SidebarDirectory, 'defaultOptions');
+		// const sidebarDirDefOpts = Object.getOwnPropertyDescriptor(SidebarDirectory, 'defaultOptions');
+		const defaultOptions = duplicate(SceneDirectory.defaultOptions);
 		Object.defineProperty(SceneDirectory, 'defaultOptions', {
 			get: function () {
-				const options = mergeObject(sidebarDirDefOpts.get.bind(SceneDirectory)(), {
+				const options = mergeObject(defaultOptions, {
 					template: `modules/${SETTINGS.MOD_NAME}/templates/scene-directory.hbs`,
 				});
 				return options;

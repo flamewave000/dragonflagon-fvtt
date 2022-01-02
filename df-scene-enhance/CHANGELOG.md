@@ -1,7 +1,11 @@
 # DF Scene Enhancement Changes
 
 ## Release 3.5.0 (2022-01-02)
+- **UPDATED:** Migrated to FoundryVTT V9.
 - **UPDATED #274:** Japanese Localization: Courtesy of touge and [BrotherSharper](https://github.com/BrotherSharper).
+- **FIX #264:** libWrapper errors.
+- **FIX #263:** Scenes Context menu now works correctly.
+- **FIX #353:** Sidebar no longer shifted left.
 
 ## Release 3.4.1 (2021-07-02)
 - Fixed some issues with the scenes directory.
