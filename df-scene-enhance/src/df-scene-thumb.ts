@@ -48,7 +48,7 @@ export default class DFSceneThumb {
 			html.find('#df-thumb-btn').on('click', () => {
 				const fp = FilePicker.fromButton(html.find('#df-thumb-btn')[0] as HTMLButtonElement);
 				app.filepickers.push(fp);
-				fp.browse();
+				fp.browse('');
 			});
 			html.find('#df-thumb-img').on('change', () => DFSceneThumb.updateThumb(sceneId, html.find('#df-thumb-img').val() as string));
 			// @ts-ignore

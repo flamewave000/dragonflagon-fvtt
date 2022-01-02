@@ -1,5 +1,8 @@
 # DF Scene Enhancement Changes
 
+## Release 3.5.0 (2022-01-02)
+- **UPDATED #274:** Japanese Localization: Courtesy of touge and [BrotherSharper](https://github.com/BrotherSharper).
+
 ## Release 3.4.1 (2021-07-02)
 - Fixed some issues with the scenes directory.
 	- Fixed issue where the Create Scene/Folder buttons are missing when there are no scenes in the world yet.

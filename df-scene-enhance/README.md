@@ -52,6 +52,7 @@ This feature provides a Scene Thumbnail override. This is very useful if you wis
 - [Renato Innocenti](https://github.com/rinnocenti): Brazil Portuguese localization
 - [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo): Spanish localization
 - @Damocles#7837: Scene Dimension Ratio Suggestion
+- Touge & [BrotherSharper](https://github.com/BrotherSharper): Japanese Localization
 
 ## Changelog
 

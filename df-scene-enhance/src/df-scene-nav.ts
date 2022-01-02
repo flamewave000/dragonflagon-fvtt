@@ -35,7 +35,7 @@ export default class DFSceneNav {
 		else return [{
 			name: "SCENES.View",
 			icon: '<i class="fas fa-eye"></i>',
-			condition: (li: JQuery<HTMLLIElement>) => !canvas.ready || (li.data("entityId") !== (canvas as Canvas).scene._id),
+			condition: (li: JQuery<HTMLLIElement>) => !canvas.ready || (li.data("entityId") !== (canvas as Canvas).scene.id),
 			callback: (li: JQuery<HTMLLIElement>) => {
 				const scene = game.scenes.get(li.data("entityId"));
 				scene.view();

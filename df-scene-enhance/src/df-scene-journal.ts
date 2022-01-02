@@ -15,7 +15,7 @@ export default class DFSceneJournal {
 		const hasConfig = game.user.isGM;
 		const hasJournal = !!scene.journal && scene.journal.testUserPermission(game.user, "OBSERVER");
 		if (!permScene && !hasConfig && !hasJournal)
-			return ui.notifications.warn(`You do not have permission to view this ${scene.entity}.`);
+			return ui.notifications.warn(`You do not have permission to view this ${scene.documentName}.`);
 
 		const buttons: Record<string, Button> = {};
 		let defaultButton = '';
