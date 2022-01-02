@@ -1,4 +1,5 @@
 {
+	"Localization Provided By": "touge",
 	"DF-SCENE-ENHANCE.errorLibWrapperMissing": "「DF Scene Enhancements」には「libWrapper」モジュールが必要です。libWrapperをインストールして有効化してください。",
 	"DF-SCENE-ENHANCE.Thumbnail_Label": "プレビュー画像の上書き",
 	"DF-SCENE-ENHANCE.Thumbnail_Hint": "サムネイルのパス",
