@@ -69,6 +69,7 @@ export default class DFSceneJournal {
 			const collection = game.collections.get(a.dataset.entity);
 			document = collection.get(id);
 			if ((document.documentName === "Scene")) {
+				event.preventDefault();
 				return DFSceneJournal.displayDialog(document);
 			}
 		}
@@ -83,12 +84,12 @@ export default class DFSceneJournal {
 		}
 		const body = $("body");
 		if (journalClick) {
-			body.off("click", "a.entity-link", (TextEditor as any)._onClickContentLink);
-			body.on("click", "a.entity-link", DFSceneJournal._onClickContentLink);
+			body.off("click", "a.content-link", (TextEditor as any)._onClickContentLink);
+			body.on("click", "a.content-link", DFSceneJournal._onClickContentLink);
 		}
 		else {
-			body.off("click", "a.entity-link", DFSceneJournal._onClickContentLink);
-			body.on("click", "a.entity-link", (TextEditor as any)._onClickContentLink);
+			body.off("click", "a.content-link", DFSceneJournal._onClickContentLink);
+			body.on("click", "a.content-link", (TextEditor as any)._onClickContentLink);
 		}
 	}
 

@@ -7,6 +7,7 @@
 - **FIX #263:** Scenes Context menu now works correctly.
 - **FIX #242:** Sidebar no longer shifted left.
 - **FIX #266:** Thumbnail overrides now generate properly.
+- **FIX #265:** Scene links in journals will properly stop the scene config from opening alongside the regular prompt.
 
 ## Release 3.4.1 (2021-07-02)
 - Fixed some issues with the scenes directory.
