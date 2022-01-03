@@ -5,7 +5,8 @@
 - **UPDATED #274:** Japanese Localization: Courtesy of touge and [BrotherSharper](https://github.com/BrotherSharper).
 - **FIX #264:** libWrapper errors.
 - **FIX #263:** Scenes Context menu now works correctly.
-- **FIX #353:** Sidebar no longer shifted left.
+- **FIX #242:** Sidebar no longer shifted left.
+- **FIX #266:** Thumbnail overrides now generate properly.
 
 ## Release 3.4.1 (2021-07-02)
 - Fixed some issues with the scenes directory.

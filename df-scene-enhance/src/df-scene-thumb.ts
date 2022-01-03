@@ -58,7 +58,7 @@ export default class DFSceneThumb {
 		});
 		Hooks.on('closeSceneConfig', async (app: SceneConfig, _: JQuery<HTMLElement>) => {
 			const dfSceneConfig = DFSceneThumb.getThumb(app.document.id);
-			const scene: Scene = app.entity;
+			const scene: Scene = app.object;
 			if (!dfSceneConfig || !dfSceneConfig.url) return;
 			// Update thumbnail and image dimensions
 			try {
@@ -68,6 +68,7 @@ export default class DFSceneThumb {
 				DFSceneThumb.updateThumb(scene.id, img, true);
 				await scene.update({ thumb: td.thumb } as any, {});
 			} catch (err: any) {
+				console.error("Thumbnail Override generation for Scene failed", err);
 				ui.notifications.error("Thumbnail Override generation for Scene failed: " + err.message);
 			}
 		});
