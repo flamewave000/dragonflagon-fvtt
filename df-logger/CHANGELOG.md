@@ -1,5 +1,8 @@
 # DF User Logger
 
+## Release 1.6.5 (2022-01-02)
+- **NEW #274:** Japanese Localization: Courtesy of [BrotherSharper](https://github.com/BrotherSharper).
+
 ## Release 1.6.4 (2021-11-15)
 - Updated Spanish localization, courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
 
