@@ -7,6 +7,10 @@ Each feature is not only self-contained, but when disabled will completely and c
 
 ##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
 
+## Contributers
+
+- Touge & [BrotherSharper](https://github.com/BrotherSharper): Japanese Localization
+
 ## Auto-Target Tokens with Template
 
 If enabled, templates will automatically mark tokens that are inside the template area of effect as "Targetted". This is very useful for quickly placing spell templates and be able to apply the spells affect to the targeted tokens.

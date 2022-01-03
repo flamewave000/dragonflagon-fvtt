@@ -1,5 +1,8 @@
 # DragonFlagon Quality of Life
 
+## Release 1.7.1 (2022-01-02)
+- **NEW #274:** Japanese Localization: Courtesy of touge and [BrotherSharper](https://github.com/BrotherSharper).
+
 ## Release 1.7.0 (2021-12-30)
 - **UPDATE:** Migrated to FoundryVTT V9.
 - **FIX #256:** Vehicle weight options now displays in the sheet config.
