@@ -42,17 +42,12 @@ export class MessageProcessor {
 	}
 
 	static async initializeMessages() {
-		for (let c = 0; c < 38; c++) {
-			this.loginMessages.push({
-				tog: true,
-				msg: game.i18n.localize(`DF-LOGGER.LoginMsg.${c}`)
-			});
+		const i18n: { LoginMsg: string[], LogoutMsg: string[] } = <any>game.i18n.translations['DF-LOGGER'];
+		for (const msg of i18n.LoginMsg) {
+			this.loginMessages.push({ tog: true, msg });
 		}
-		for (let c = 0; c < 1; c++) {
-			this.logoutMessages.push({
-				tog: true,
-				msg: game.i18n.localize(`DF-LOGGER.LogoutMsg.${c}`)
-			});
+		for (const msg of i18n.LogoutMsg) {
+			this.logoutMessages.push({ tog: true, msg });
 		}
 	}
 }

@@ -11,7 +11,7 @@ export default class DFLoggerMenu extends FormApplication {
 			closeOnSubmit: true,
 			width: 600,
 			height: 500,
-			title: 'DF-LOGGER.ManageMenu.Title',
+			title: 'DF-LOGGER.ManageMenu.Title'.localize(),
 			tabs: [{ navSelector: ".tabs", contentSelector: "main", initial: "login" }],
 			template: 'modules/df-logger/templates/message-manage.hbs'
 		});
@@ -56,8 +56,8 @@ export default class DFLoggerMenu extends FormApplication {
 		});
 		html.find('button[name="reset"]').on('click', async () => {
 			Dialog.confirm({
-				title: 'DF-LOGGER.ManageMenu.Confirm.Title',
-				content: 'DF-LOGGER.ManageMenu.Confirm.Content',
+				title: 'DF-LOGGER.ManageMenu.Confirm.Title'.localize(),
+				content: 'DF-LOGGER.ManageMenu.Confirm.Content'.localize(),
 				defaultYes: false,
 				yes: async () => {
 					MessageProcessor.loginMessages = [];
