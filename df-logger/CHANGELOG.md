@@ -1,7 +1,10 @@
 # DF User Logger
 
+## Release 1.6.7 (2022-01-04)
+- **NEW #279:** Italian Localization: Courtesy of [smoothingplane](https://github.com/smoothingplane).
+
 ## Release 1.6.6 (2022-01-04)
-- **NEW::** Better default message management for any number of localized messages.
+- **NEW:** Better default message management for any number of localized messages.
 - **FIX #281:** Sounds folder was missing for previous release.
 
 ## Release 1.6.5 (2022-01-02)
