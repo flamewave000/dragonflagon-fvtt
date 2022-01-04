@@ -1,5 +1,8 @@
 # DF User Logger
 
+## Release 1.6.6 (2022-01-04)
+- **FIX #281:** Sounds folder was missing for previous release.
+
 ## Release 1.6.5 (2022-01-02)
 - **NEW #274:** Japanese Localization: Courtesy of [BrotherSharper](https://github.com/BrotherSharper).
 
