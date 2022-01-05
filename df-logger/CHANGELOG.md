@@ -1,5 +1,8 @@
 # DF User Logger
 
+## Release 1.6.8 (2022-01-04)
+- **FIX #283:** Localisation bugs.
+
 ## Release 1.6.7 (2022-01-04)
 - **NEW #279:** Italian Localization: Courtesy of [smoothingplane](https://github.com/smoothingplane).
 

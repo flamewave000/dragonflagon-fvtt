@@ -1,18 +1,18 @@
 {
 	"I18N.LANGUAGE": "Italiano",
 	"I18N.MAINTAINERS": "smoothingplane",
-	"DRAGON_FLAGON": {
+	"DF-LOGGER": {
 		"Settings": {
 			"ManageMessages": "Modifica i Messaggi",
 			"Sound_Name": "Suono per i Messaggi",
 			"Sound_Hint": "Il suono che viene riprodotto quando un messaggio di accesso/uscita viene visualizzato nella chat",
-			"GmOnly_Title": "Mostra il messaggio solo al GM",
+			"GmOnly_Name": "Mostra il messaggio solo al GM",
 			"GmOnly_Hint": "Mostra il messaggio di connessione/disconnessione dei giocatori solo al GM",
-			"NotMe_Title": "Non mostrarmi il mio messaggio",
+			"NotMe_Name": "Non mostrarmi il mio messaggio",
 			"NotMe_Hint": "Mostra il messaggio di connessione/disconnessione solo agli altri giocatori",
-			"Delay_Title": "Tempo di rimozione automatica",
+			"Delay_Name": "Tempo di rimozione automatica",
 			"Delay_Hint": "Quanti secondi vuoi che rimanga il messaggio nella chat?",
-			"SelfDestruct_Title": "Rimozione automatica messaggi",
+			"SelfDestruct_Name": "Rimozione automatica messaggi",
 			"SelfDestruct_Hint": "I messaggi di connessione/disconnessione verranno automaticamente rimossi dopo un po' di tempo"
 		},
 		"Content": {
