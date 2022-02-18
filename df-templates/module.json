@@ -1,0 +1,28 @@
+{
+	"name": "df-templates",
+	"version": "1.0.0",
+	"title": "DF Template Enhancements",
+	"description": "Enhanced templates for different types of grid targetting.",
+	"author": "flamewave000#0001",
+	"minimumCoreVersion": "9",
+	"compatibleCoreVersion": "9",
+	"dependencies": [ { "name": "lib-wrapper" } ],
+	"esmodules": "{{sources}}",
+	"languages": [
+		{ "lang": "en", "path": "lang/en.json", "name": "English" },
+		{ "lang": "fr", "path": "lang/fr.json", "name": "Française" },
+		{ "lang": "ja", "path": "lang/ja.json", "name": "日本語" }
+	],
+	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-templates",
+	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/LICENSE",
+	"manifest":	"https://dragonflagon.cafe/mods/man/df-templates",
+	"download":	"https://dragonflagon.cafe/mods/pak/df-templates",
+	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-templates/README.md",
+	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-templates/CHANGELOG.md",
+	"manifestPlusVersion": "1.0.0",
+	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues",
+	"authors": [ { "name": "flamewave000", "discord": "flamewave000#0001", "url": "https://github.com/flamewave000" } ],
+	"media": [
+		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" }
+	]
+}
