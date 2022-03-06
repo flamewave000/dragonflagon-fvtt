@@ -1,4 +1,5 @@
 import SETTINGS from "../../common/Settings";
+import DnD5eAbilityTemplateHandlers from "./DnD5eAbilityTemplateHandlers";
 
 export default class AngleSnaps {
 	static init() {
@@ -50,8 +51,8 @@ export default class AngleSnaps {
 		}, 'OVERRIDE');
 	}
 
-	static handleDnD5eAbilityTemplate(abilityTemplate: any) {
-		canvas.app.view.onwheel = event => {
+	static handleDnD5eAbilityTemplate(abilityTemplate: any, handlers: DnD5eAbilityTemplateHandlers) {
+		handlers.mw = event => {
 			if (event.ctrlKey) event.preventDefault(); // Avoid zooming the browser window
 			event.stopPropagation();
 			const snapCount = SETTINGS.get<number>('angle-snap-macro');

@@ -177,10 +177,6 @@ export default class TemplateTargeting {
 		canvas.controls.addChild(TemplateTargeting.PointGraphContainer);
 	}
 
-	static handleDnD5eAbilityTemplate(abilityTemplate: any) {
-		
-	}
-
 	private static _MeasuredTemplate_highlightGrid(this: MeasuredTemplate, wrapped?: () => void) {
 		const mode = SETTINGS.get<string>('template-targeting');
 		const shouldAutoSelect = mode === 'always' || (mode === 'toggle' && SETTINGS.get<boolean>('template-targeting-toggle'));
