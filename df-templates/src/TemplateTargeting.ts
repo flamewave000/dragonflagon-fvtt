@@ -114,14 +114,6 @@ export default class TemplateTargeting {
 		});
 		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.highlightGrid', this._MeasuredTemplate_highlightGrid,
 			SETTINGS.get('template-targeting-patch5e') || SETTINGS.get('template-preview') ? 'OVERRIDE' : 'WRAPPER');
-		SETTINGS.register('template-debug', {
-			config: true,
-			scope: 'client',
-			name: 'DF_TEMPLATES.DebugName',
-			hint: 'DF_TEMPLATES.DebugHint',
-			type: Boolean,
-			default: false
-		});
 
 		Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
 			if (SETTINGS.get('template-targeting') !== 'toggle') return;
@@ -529,61 +521,51 @@ export default class TemplateTargeting {
 			pointGraphics = new PIXI.Graphics();
 			TemplateTargeting.PointGraphContainer.addChild(pointGraphics);
 		}
+		// If we are multi-point grab the gridless resolution, otherwise we test for each grid square center
+		const pointResolution = useMultiPointTest ? SETTINGS.get<number>('template-gridless-resolution') : 1;
 		// Iterate over all existing tokens and target the ones within the template area
-		const pointResolution = SETTINGS.get<number>('template-gridless-resolution');
 		for (const token of canvas.tokens.placeables) {
 			// Get the center offset of the token
 			const hx = token.w / 2;
 			const hy = token.h / 2;
 			// Adjust the token position to be relative to the template
 			const [tokenX, tokenY] = [token.x - data.x, token.y - data.y];
-			if (useMultiPointTest) {
-				// Calculate how many points there should be along the X and Y axes
-				let horPoints = pointResolution > 1 ? Math.roundDecimals(token.w / canvas.grid.w, 1) * (pointResolution - 1) + 1 : Math.ceil(token.w / canvas.grid.w);
-				let verPoints = pointResolution > 1 ? Math.roundDecimals(token.h / canvas.grid.h, 1) * (pointResolution - 1) + 1 : Math.ceil(token.h / canvas.grid.h);
-				// Make a small adjustment for tokens smaller than 1x1
-				if (token.w / canvas.grid.w < 1) horPoints = Math.floor(horPoints);
-				if (token.h / canvas.grid.h < 1) verPoints = Math.floor(verPoints);
-				// Calculate the distance between each point on the vertical and horizontal
-				const horStep = horPoints > 1 ? token.w / (horPoints - 1) : token.w;
-				const verStep = verPoints > 1 ? token.h / (verPoints - 1) : token.h;
-				// Generate the points relative to the token position
-				let x = 0;
-				let y = 0;
-				let pointFound = false;
-				if (DebugMode) pointGraphics.beginFill(0xFF0000);
-				for (let row = 0; !pointFound && row < verPoints; row++) {
-					for (let col = 0; col < horPoints; col++) {
-						if (pointResolution > 1) {
-							x = horPoints > 1 ? tokenX + (horStep * col) : tokenX + hx;
-							y = verPoints > 1 ? tokenY + (verStep * row) : tokenY + hy;
-						}
-						else {
-							x = horPoints > 1 ? tokenX + (canvas.grid.w * col) + (canvas.grid.w / 2) : tokenX + hx;
-							y = verPoints > 1 ? tokenY + (canvas.grid.h * row) + (canvas.grid.h / 2) : tokenY + hy;
-						}
-						if (DebugMode) pointGraphics.drawCircle(x + data.x, y + data.y, 3);
-						// If the point is not contained in the shape, ignore it
-						if (!shape.contains(x, y)) continue;
-						// Otherwise, mark the token as selected
-						token.setTarget(true, { user: game.user, releaseOthers: false, groupSelection: true });
-						if (!DebugMode) {
-							pointFound = true;
-							break;
-						}
+			// Calculate how many points there should be along the X and Y axes
+			let horPoints = pointResolution > 1 ? Math.roundDecimals(token.w / canvas.grid.w, 1) * (pointResolution - 1) + 1 : Math.ceil(token.w / canvas.grid.w);
+			let verPoints = pointResolution > 1 ? Math.roundDecimals(token.h / canvas.grid.h, 1) * (pointResolution - 1) + 1 : Math.ceil(token.h / canvas.grid.h);
+			// Make a small adjustment for tokens smaller than 1x1
+			if (token.w / canvas.grid.w < 1) horPoints = Math.floor(horPoints);
+			if (token.h / canvas.grid.h < 1) verPoints = Math.floor(verPoints);
+			// Calculate the distance between each point on the vertical and horizontal
+			const horStep = horPoints > 1 ? token.w / (horPoints - 1) : token.w;
+			const verStep = verPoints > 1 ? token.h / (verPoints - 1) : token.h;
+			// Generate the points relative to the token position
+			let x = 0;
+			let y = 0;
+			let pointFound = false;
+			if (DebugMode) pointGraphics.beginFill(0xFF0000);
+			for (let row = 0; !pointFound && row < verPoints; row++) {
+				for (let col = 0; col < horPoints; col++) {
+					if (pointResolution > 1) {
+						x = horPoints > 1 ? tokenX + (horStep * col) : tokenX + hx;
+						y = verPoints > 1 ? tokenY + (verStep * row) : tokenY + hy;
+					}
+					else {
+						x = horPoints > 1 ? tokenX + (canvas.grid.w * col) + (canvas.grid.w / 2) : tokenX + hx;
+						y = verPoints > 1 ? tokenY + (canvas.grid.h * row) + (canvas.grid.h / 2) : tokenY + hy;
+					}
+					if (DebugMode) pointGraphics.drawCircle(x + data.x, y + data.y, 3);
+					// If the point is not contained in the shape, ignore it
+					if (!shape.contains(x, y)) continue;
+					// Otherwise, mark the token as selected
+					token.setTarget(true, { user: game.user, releaseOthers: false, groupSelection: true });
+					if (!DebugMode) {
+						pointFound = true;
+						break;
 					}
 				}
-				if (DebugMode) pointGraphics.endFill();
 			}
-			else {
-				if (DebugMode) {
-					pointGraphics.beginFill(0xFF0000);
-					pointGraphics.drawCircle(tokenX + hx + data.x, tokenY + hy + data.y, 3);
-					pointGraphics.endFill();
-				}
-				if (shape.contains(tokenX + hx, tokenY + hy))
-					token.setTarget(true, { user: game.user, releaseOthers: false, groupSelection: true });
-			}
+			if (DebugMode) pointGraphics.endFill();
 		}
 	}
 }
