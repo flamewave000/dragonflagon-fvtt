@@ -468,7 +468,9 @@ export default class TemplateTargeting {
 					if (!isOwner || !shouldAutoSelect) continue;
 					// Iterate over all existing tokens and target the ones within the template area
 					for (const token of canvas.tokens.placeables) {
-						if (!testRect.contains(token.x + hx, token.y + hy)) continue;
+						const tokenRect = new NormalizedRectangle(token.x, token.y, token.width, token.height);
+						if (testRect.left >= tokenRect.right || testRect.right <= testRect.left
+							|| testRect.top >= tokenRect.bottom || testRect.bottom <= tokenRect.top) continue;
 						token.setTarget(true, { user: game.user, releaseOthers: false, groupSelection: true });
 					}
 					/****** END OF CODE EDIT ******/
