@@ -256,7 +256,7 @@ export default class TemplateTargeting {
 
 			// Clear existing highlight
 			const hl = grid.getHighlightLayer(`Template.${id ?? null}`);
-			hl.clear();
+			hl?.clear();
 
 			// If we are in gridless mode, highlight the shape directly
 			if (grid.type === CONST.GRID_TYPES.GRIDLESS) {
