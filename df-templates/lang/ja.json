@@ -1,8 +1,8 @@
 {
 	"DF_TEMPLATES": {
 		"errorLibWrapperMissing": "「DF Template Enhancements」にはモジュール「libWrapper」が必要です。「libWrapper」をインストールして有効化してください。",
-		"SettingName": "テンプレートによるコマの自動ターゲット",
-		"SettingHint": "有効にすると、範囲指定テンプレート内にいるコマが自動的にターゲットされるようになります。",
+		"AutoTargetName": "テンプレートによるコマの自動ターゲット",
+		"AutoTargetHint": "有効にすると、範囲指定テンプレート内にいるコマが自動的にターゲットされるようになります。",
 		"PreviewName": "テンプレートのターゲットをハイライトする",
 		"PreviewHint": "グリッドのハイライトを表示して自動的にコマのターゲットを行います。",
 		"ToggleTitle": "コマの自動ターゲット",
