@@ -290,7 +290,7 @@ export default class TemplateTargeting {
 			distance *= (d.size / d.distance);
 			width *= (d.size / d.distance);
 			angle = Math.toRadians(angle);
-			direction = Math.toRadians(direction);
+			direction = Math.toRadians((direction % 360) + 360);
 			// If we are round, the side is of length `distance`, otherwise calculate the true length of the hypotenouse
 			const isRound = game.settings.get("core", "coneTemplateType") === 'round';
 			const rayLength = isRound ? distance : (distance / Math.sin((Math.PI / 2) - (angle / 2))) * Math.sin(Math.PI / 2);
