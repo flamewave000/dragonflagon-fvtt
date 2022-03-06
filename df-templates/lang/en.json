@@ -15,6 +15,12 @@
 		"Patch5e_Name": "Use D&D 5e Style Templates",
 		"Patch5e_Hint": "Core Foundry requires a grid square's center to be inside a template to be affected. This adjusts templates to follow the D&D5e rules for targeting grid squares where any square TOUCHED by a template is hit (with the exception of circles).",
 		"Patch5e_Circle_Name": "Make Circle Templates Greedy (Requires D&D 5e Style Templates)",
-		"Patch5e_Circle_Hint": "If you want circle templates to not be an exception to the above D&D 5e style rules, enable this and any square touched by a circle will be hit."
+		"Patch5e_Circle_Hint": "If you want circle templates to not be an exception to the above D&D 5e style rules, enable this and any square touched by a circle will be hit.",
+		"AngleSnap": {
+			"MacroName": "Template Angle Snap Point Count (FoundryVTT Default: 24)",
+			"MacroHint": "How many snap points are available to rotate a template to. This can be used to reduce the number of angles a player has to choose from in order to speed up combat",
+			"MicroName": "Small Rotation Multiplier (Foundry Default: 3",
+			"MicroHint": "When holding Ctrl, you can perform smaller rotation snaps. This essentially multiplies the above setting by this amount to generate a sub-set of angle snaps. Setting this to 1 effectively disables micro angle steps."
+		}
 	}
 }
