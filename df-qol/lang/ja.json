@@ -1,11 +1,11 @@
 {
-    "Localization Provided By": "touge",
+	"Localization Provided By": "touge",
 	"DF-QOL.errorLibWrapperMissing": "「DF Quality of Life」にはモジュール「libWrapper」が必要です。「libWrapper」をインストールして有効化してください。",
 	"DF_QOL": {
 		"QuickRoll": {
 			"Title": "ロール表のクイックロールを有効にする",
 			"Hint": "(要再読み込み) ロール表の右クリックメニューに、表を開かずにロールするオプションを追加します。",
-            "MenuItem": "クイックロール"
+			"MenuItem": "クイックロール"
 		},
 		"AutoFocus": {
 			"Title": "新規作成時の入力欄への自動フォーカスを有効にする",
@@ -43,7 +43,7 @@
 		"TemplateTargeting": {
 			"SettingName": "テンプレートによるコマの自動ターゲット",
 			"SettingHint": "有効にすると、範囲指定テンプレート内にいるコマが自動的にターゲットされるようになります。",
-            "PreviewName": "テンプレートのターゲットをハイライトする",
+			"PreviewName": "テンプレートのターゲットをハイライトする",
 			"PreviewHint": "グリッドのハイライトを表示して自動的にコマのターゲットを行います。",
 			"ToggleTitle": "コマの自動ターゲット",
 			"Patch5e_Name": "D&D5e準拠のテンプレートを使用する",

@@ -33,7 +33,7 @@ export default class DayNightTransition {
 		const animationName = "lighting.animateDarkness";
 		CanvasAnimation.terminateAnimation(animationName);
 		if (target === this.darknessLevel) return false;
-		if (duration <= 0) return this.refresh({ darkness: target });
+		if (duration <= 0) return this.refresh(target);
 		// Prepare the animation data object
 		const animationData = [{
 			parent: { darkness: this.darknessLevel },

@@ -1,5 +1,8 @@
 # DragonFlagon Quality of Life
 
+## Release 1.7.2 (2022-03-06)
+I have removed all of the Template features. These features have found a home in their own dedicated module called DF Template Enhancements. They have also received additional features and some over-due bug fixes.
+
 ## Release 1.7.1 (2022-01-02)
 - **NEW #274:** Japanese Localization: Courtesy of touge and [BrotherSharper](https://github.com/BrotherSharper).
 
