@@ -10,7 +10,6 @@
 	"esmodules": "{{sources}}",
 	"languages": [
 		{ "lang": "en", "path": "lang/en.json", "name": "English" },
-		{ "lang": "fr", "path": "lang/fr.json", "name": "Française" },
 		{ "lang": "ja", "path": "lang/ja.json", "name": "日本語" }
 	],
 	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-templates",

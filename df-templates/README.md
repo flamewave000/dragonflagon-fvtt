@@ -12,13 +12,13 @@ Various enhancements to the FoundryVTT Templates layer. This brings different fo
 
 If enabled, templates will automatically mark tokens that are inside the template area of effect as "Targetted". This is very useful for quickly placing spell templates and be able to apply the spells affect to the targeted tokens.
 
-![Auto-Target Tokens](../.assets/df-qol/df-qol-auto-target.gif)
+![Auto-Target Tokens](../.assets/df-templates/auto-target.gif)
 
 ## Template Preview
 
 If enabled, templates will now actively update the grid highlighting and auto-targetting (if auto-target is on) whil moving the template around the scene, or whil creating a new template. This helps a lot when placing a new template and your players are trying to place it in a particular spot in an attempt to optimize their spell's impact.
 
-![Template Preview](../.assets/df-qol/df-qol-template-preview.gif)
+![Template Preview](../.assets/df-templates/template-preview.gif)
 
 ## D&D 5e Style Templates
 
@@ -28,4 +28,4 @@ When enabled, the Core Foundry template measurements will be overridden to follo
 
 |Foundry Core|D&D 5e|
 |:-:|:-:|
-|![Foundry Core Templates](../.assets/df-qol/df-qol-templates-core.png)|![D&D5e Style Templates](../.assets/df-qol/df-qol-templates-dnd5e.png)|
+|![Foundry Core Templates](../.assets/df-templates/templates-core.png)|![D&D5e Style Templates](../.assets/df-templates/templates-dnd5e.png)|
