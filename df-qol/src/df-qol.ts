@@ -30,6 +30,8 @@ Hooks.once('ready', function () {
 	DnD5eVehicleCapacity.ready();
 	TokenLock.ready();
 
+
+	if (!game.user.isGM) return;
 	SETTINGS.register('temp-migration-df-templates-flag', {
 		config: false,
 		scope: 'client',
