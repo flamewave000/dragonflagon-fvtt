@@ -3,6 +3,7 @@
 ## Release 1.0.1 (2022-03-07)
 - **FIX #325:** Token targeting will no longer be affected by token image scale.
 - **FIX #323:** Intersection snapping will no longer bypass setting when placing a spell template in D&D5e.
+- **FIX #322:** Grid highlighting was erroneously exiting early after highlighting the first square when Auto-Target was turned off.
 
 ## Release 1.0.0 (2022-03-06)
 

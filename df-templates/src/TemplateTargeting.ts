@@ -490,11 +490,15 @@ export default class TemplateTargeting {
 					}
 				}
 
-				if (!contains) continue;
-				grid.grid.highlightGridPosition(hl, { x: gx, y: gy, border, color: <any>color });
+				const DEBUG = SETTINGS.get('template-debug');
+				if (!DEBUG && !contains) continue;
+				if (DEBUG)
+					grid.grid.highlightGridPosition(hl, { x: gx, y: gy, border, color: contains ? 0x00FF00 : 0xFF0000 });
+				else
+					grid.grid.highlightGridPosition(hl, { x: gx, y: gy, border, color: <number>color });
 
 				// Ignore changing the target selection if we don't own the template, or `shouldAutoSelect` is false
-				if (!isOwner || !shouldAutoSelect) return;
+				if (!isOwner || !shouldAutoSelect) continue;
 				// Iterate over all existing tokens and target the ones within the template area
 				for (const token of canvas.tokens.placeables) {
 					const tokenRect = new NormalizedRectangle(token.x, token.y, token.w, token.h);
