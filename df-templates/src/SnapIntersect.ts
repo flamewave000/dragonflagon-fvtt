@@ -33,8 +33,8 @@ export default class SnapIntersect {
 			const now = Date.now(); // Apply a 20ms throttle
 			if (now - moveTime <= 20) return;
 			const center = event.data.getLocalPosition(abilityTemplate.layer);
-			/**** MODIFIED THIS `getSnappedPosition` TO HAVE INTERVAL 1 INSTEAD OF 2 ****/
-			const snapped = canvas.grid.getSnappedPosition(center.x, center.y, 1);
+			/**** MODIFIED THIS `getSnappedPosition` TO HAVE INTERVAL 1 INSTEAD OF 2 IF ENABLED ****/
+			const snapped = canvas.grid.getSnappedPosition(center.x, center.y, SETTINGS.get('SnapIntersect') ? 1 : 2);
 			abilityTemplate.data.update({ x: snapped.x, y: snapped.y });
 			abilityTemplate.refresh();
 			moveTime = now;
