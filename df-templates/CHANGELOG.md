@@ -1,5 +1,8 @@
 # DragonFlagon Template Enhancements
 
+## Release 1.1.0 (2022-03-08)
+- **NEW #327:** Square Templates do not keep their shape when rotating. This will correct the rotation so that a square template maintains its shape while rotating around the template's origin point.
+
 ## Release 1.0.1 (2022-03-07)
 - **FIX #325:** Token targeting will no longer be affected by token image scale.
 - **FIX #323:** Intersection snapping will no longer bypass setting when placing a spell template in D&D5e.

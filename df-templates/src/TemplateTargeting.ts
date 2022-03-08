@@ -303,8 +303,8 @@ export default class TemplateTargeting {
 		}
 
 		// Get number of rows and columns
-		const nr = Math.ceil(((this.data.distance * 1.5) / d.distance) / (d.size / grid.h));
-		const nc = Math.ceil(((this.data.distance * 1.5) / d.distance) / (d.size / grid.w));
+		const rowCount = Math.ceil(((this.data.distance * 1.5) / d.distance) / (d.size / grid.h));
+		const colCount = Math.ceil(((this.data.distance * 1.5) / d.distance) / (d.size / grid.w));
 
 		// Get the offset of the template origin relative to the top-left grid space
 		const [tx, ty] = canvas.grid.getTopLeft(this.data.x, this.data.y);
@@ -363,8 +363,8 @@ export default class TemplateTargeting {
 			];
 		};
 		// Identify grid coordinates covered by the template Graphics
-		for (let r = -nr; r < nr; r++) {
-			for (let c = -nc; c < nc; c++) {
+		for (let r = -rowCount; r < rowCount; r++) {
+			for (let c = -colCount; c < colCount; c++) {
 				const [gx, gy] = canvas.grid.grid.getPixelsFromGridPosition(row0 + r, col0 + c);
 				const testX = gx + hx;
 				const testY = gy + hy;
@@ -392,32 +392,47 @@ export default class TemplateTargeting {
 						break;
 					}
 					case "rect": {
-						const rect = this._getRectShape(direction, distance);
-						rect.x += this.data.x;
-						rect.y += this.data.y;
-						// The normalized rectangle always adds 1 to the width and height
-						rect.width -= 1;
-						rect.height -= 1;
-						// Standard 2D Box Collision detection
-						contains = !(rect.left >= testRect.right || rect.right <= testRect.left
-							|| rect.top >= testRect.bottom || rect.bottom <= testRect.top);
+						const rect = (this as any)._getRectShape(direction, distance, true);
+						if (rect instanceof PIXI.Polygon) {
+							contains = ((r === 0) && (c === 0) && isCenter) || this.shape.contains(testX - this.data.x, testY - this.data.y);
+							if (contains) break;
+							/* Rectangle vertex data order
+								A1───▶B1
+								▲      │
+								│      ▼
+								A2◀───B2
+							*/
+							// Translate points to the position of the MeasuredTemplate and map the points to the dataset
+							[ax1, ay1, bx1, by1, bx2, by2, ax2, ay2] = rect.points.map((e, i) => e + (i % 2 ? this.data.y : this.data.x));
+							// check the top line
+							contains = LineToBoxCollision.cohenSutherlandLineClipAndDraw(ax1, ay1, bx1, by1, testRect)
+								// check the right line
+								|| LineToBoxCollision.cohenSutherlandLineClipAndDraw(bx1, by1, bx2, by2, testRect)
+								// check the bottom line
+								|| LineToBoxCollision.cohenSutherlandLineClipAndDraw(bx2, by2, ax2, ay2, testRect)
+								// check the left line
+								|| LineToBoxCollision.cohenSutherlandLineClipAndDraw(ax2, ay2, ax1, ay1, testRect);
+						} else {
+							rect.x += this.data.x;
+							rect.y += this.data.y;
+							// The normalized rectangle always adds 1 to the width and height
+							rect.width -= 1;
+							rect.height -= 1;
+							// Standard 2D Box Collision detection
+							contains = !(rect.left >= testRect.right || rect.right <= testRect.left
+								|| rect.top >= testRect.bottom || rect.bottom <= testRect.top);
+						}
 						break;
 					}
 					case "cone": {
 						contains = ((r === 0) && (c === 0) && isCenter) || this.shape.contains(testX - this.data.x, testY - this.data.y);
 						if (contains) break;
-						const bounds = {
-							xMin: testRect.left,
-							xMax: testRect.right,
-							yMin: testRect.top,
-							yMax: testRect.bottom
-						};
 						generateConeData();
 						// check the top line
-						contains = LineToBoxCollision.cohenSutherlandLineClipAndDraw(ax1, ay1, bx1, by1, bounds);
+						contains = LineToBoxCollision.cohenSutherlandLineClipAndDraw(ax1, ay1, bx1, by1, testRect);
 						if (contains) break;
 						// check the bottom line
-						contains = LineToBoxCollision.cohenSutherlandLineClipAndDraw(ax2, ay2, bx2, by2, bounds);
+						contains = LineToBoxCollision.cohenSutherlandLineClipAndDraw(ax2, ay2, bx2, by2, testRect);
 						if (contains) break;
 						// check the end-cap
 						if (isRound) {
@@ -461,39 +476,31 @@ export default class TemplateTargeting {
 								contains = testAngle();
 							}
 						} else
-							contains = LineToBoxCollision.cohenSutherlandLineClipAndDraw(bx1, by1, bx2, by2, bounds);
+							contains = LineToBoxCollision.cohenSutherlandLineClipAndDraw(bx1, by1, bx2, by2, testRect);
 						break;
 					}
 					case "ray": {
 						contains = ((r === 0) && (c === 0) && isCenter) || this.shape.contains(testX - this.data.x, testY - this.data.y);
 						if (contains) break;
-						const bounds = {
-							xMin: testRect.left,
-							xMax: testRect.right,
-							yMin: testRect.top,
-							yMax: testRect.bottom
-						};
 						generateRayData();
 						// check the top line
-						contains = LineToBoxCollision.cohenSutherlandLineClipAndDraw(ax1, ay1, bx1, by1, bounds);
-						if (contains) break;
-						// check the bottom line
-						contains = LineToBoxCollision.cohenSutherlandLineClipAndDraw(ax2, ay2, bx2, by2, bounds);
-						if (contains) break;
-						// check the left endcap line
-						contains = LineToBoxCollision.cohenSutherlandLineClipAndDraw(ax1, ay1, ax2, ay2, bounds);
-						if (contains) break;
-						// check the right endcap line
-						contains = LineToBoxCollision.cohenSutherlandLineClipAndDraw(bx1, by1, bx2, by2, bounds);
-						if (contains) break;
+						contains = LineToBoxCollision.cohenSutherlandLineClipAndDraw(ax1, ay1, bx1, by1, testRect)
+							// check the bottom line
+							|| LineToBoxCollision.cohenSutherlandLineClipAndDraw(ax2, ay2, bx2, by2, testRect)
+							// check the left endcap line
+							|| LineToBoxCollision.cohenSutherlandLineClipAndDraw(ax1, ay1, ax2, ay2, testRect)
+							// check the right endcap line
+							|| LineToBoxCollision.cohenSutherlandLineClipAndDraw(bx1, by1, bx2, by2, testRect);
 						break;
 					}
 				}
 
 				const DEBUG = SETTINGS.get('template-debug');
 				if (!DEBUG && !contains) continue;
-				if (DEBUG)
+				if (DEBUG) {
 					grid.grid.highlightGridPosition(hl, { x: gx, y: gy, border, color: contains ? 0x00FF00 : 0xFF0000 });
+					if (!contains) continue;
+				}
 				else
 					grid.grid.highlightGridPosition(hl, { x: gx, y: gy, border, color: <number>color });
 

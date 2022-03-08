@@ -2,6 +2,7 @@ import SETTINGS from "../../common/Settings";
 import AngleSnaps from "./AngleSnaps";
 import DnD5eAbilityTemplateHandlers from "./DnD5eAbilityTemplateHandlers";
 import SnapIntersect from "./SnapIntersect";
+import SquareTemplate from "./SquareTemplate";
 import TemplateTargeting from "./TemplateTargeting";
 
 SETTINGS.init('df-templates');
@@ -10,6 +11,7 @@ Hooks.once('init', function () {
 	TemplateTargeting.init();
 	SnapIntersect.init();
 	AngleSnaps.init();
+	SquareTemplate.init();
 
 	// DEBUG SETTINGS
 	SETTINGS.register('template-debug', {
