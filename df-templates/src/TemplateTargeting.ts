@@ -202,6 +202,38 @@ export default class TemplateTargeting {
 		}
 	}
 
+	private static _calculateGridTestArea(this: MeasuredTemplate) {
+		const shape: {
+			radius?: number,
+			points?: number[],
+			x?: number,
+			y?: number,
+			width?: number,
+			height?: number
+		} = <any>this.shape;
+		const points: number[] = shape.points ? shape.points :
+			(shape.radius ?
+				[-shape.radius, -shape.radius, shape.radius, shape.radius] :
+				[shape.x, shape.y, shape.x + shape.width, shape.y + shape.height]);
+		const shapeBounds = {
+			left: Number.MAX_VALUE, right: Number.MIN_VALUE,
+			top: Number.MAX_VALUE, bottom: Number.MIN_VALUE,
+			width: function () { return this.right - this.left; },
+			height: function () { return this.bottom - this.top; }
+		};
+		for (let c = 0; c < points.length; c += 2) {
+			if (points[c] < shapeBounds.left) shapeBounds.left = points[c];
+			if (points[c] > shapeBounds.right) shapeBounds.right = points[c];
+			if (points[c + 1] < shapeBounds.top) shapeBounds.top = points[c + 1];
+			if (points[c + 1] > shapeBounds.bottom) shapeBounds.bottom = points[c + 1];
+		}
+		const snappedTopLeft = canvas.grid.grid.getSnappedPosition(shapeBounds.left, shapeBounds.top, 1);
+		const snappedBottomRight = canvas.grid.grid.getSnappedPosition(shapeBounds.right, shapeBounds.bottom, 1);
+		[shapeBounds.left, shapeBounds.top] = [snappedTopLeft.x, snappedTopLeft.y];
+		[shapeBounds.right, shapeBounds.bottom] = [snappedBottomRight.x, snappedBottomRight.y];
+		return shapeBounds;
+	}
+
 	private static _handleCoreTemplate(this: MeasuredTemplate, isOwner: boolean, shouldAutoSelect: boolean, wrapped?: () => void) {
 		// Call the original function if we are not doing previews
 		if (!SETTINGS.get(TemplateTargeting.PREVIEW_PREF)) {
@@ -211,9 +243,9 @@ export default class TemplateTargeting {
 		else {
 			/************** THIS CODE IS DIRECTLY COPIED FROM 'MeasuredTemplate.prototype.highlightGrid' ****************/
 			const grid = canvas.grid;
-			const d = canvas.dimensions;
 			const border: number = <number>this.borderColor;
 			const color: number = <number>this.fillColor;
+			const DEBUG = SETTINGS.get('template-debug');
 
 			/***** START OF CODE EDIT *****/
 			// Only highlight for objects which have a defined shape
@@ -245,25 +277,30 @@ export default class TemplateTargeting {
 				return;
 			}
 			// Get number of rows and columns
-			const nr = Math.ceil(((this.data.distance * 1.5) / d.distance) / (d.size / grid.h));
-			const nc = Math.ceil(((this.data.distance * 1.5) / d.distance) / (d.size / grid.w));
+			const shapeBounds = TemplateTargeting._calculateGridTestArea.apply(this);
+			const colCount = Math.ceil(shapeBounds.width() / grid.w) + 2; //? Add a padding ring around for any outlier cases
+			const rowCount = Math.ceil(shapeBounds.height() / grid.h) + 2; //? Add a padding ring around for any outlier cases
 
 			// Get the offset of the template origin relative to the top-left grid space
 			const [tx, ty] = canvas.grid.getTopLeft(this.data.x, this.data.y);
-			const [row0, col0] = grid.grid.getGridPositionFromPixels(tx, ty);
+			const [row0, col0] = grid.grid.getGridPositionFromPixels(shapeBounds.left + tx, shapeBounds.top + ty);
 			const hx = canvas.grid.w / 2;
 			const hy = canvas.grid.h / 2;
-			const isCenter = (this.data.x - tx === hx) && (this.data.y - ty === hy);
 
 			// Identify grid coordinates covered by the template Graphics
-			for (let r = -nr; r < nr; r++) {
-				for (let c = -nc; c < nc; c++) {
+			for (let r = -1; r < rowCount; r++) {
+				for (let c = -1; c < colCount; c++) {
 					const [gx, gy] = canvas.grid.grid.getPixelsFromGridPosition(row0 + r, col0 + c);
 					const testX = (gx + hx) - this.data.x;
 					const testY = (gy + hy) - this.data.y;
-					const contains = ((r === 0) && (c === 0) && isCenter) || this.shape.contains(testX, testY);
+					const contains = (testX === 0 && testY === 0) || this.shape.contains(testX, testY);
+					if (!DEBUG && !contains) continue;
+					try { grid.grid.highlightGridPosition(hl, { x: gx, y: gy, border, color: DEBUG ? (contains ? 0x00FF00 : 0xFF0000) : color }); }
+					catch (error) {
+						// Catches a specific "highlight" error that will randomly occur inside of `grid.grid.highlightGridPosition()`
+						if (!(error instanceof Error) || error.message.includes("'highlight'")) throw error;
+					}
 					if (!contains) continue;
-					grid.grid.highlightGridPosition(hl, { x: gx, y: gy, border, color });
 				}
 			}
 			//* MOVED TOKEN SELECTION TO SEPARATE FUNCTION
@@ -278,6 +315,7 @@ export default class TemplateTargeting {
 		const d = canvas.dimensions;
 		const border = <number>this.borderColor;
 		const color = <number>this.fillColor;
+		const DEBUG = SETTINGS.get('template-debug');
 
 		// Only highlight for objects which have a defined shape
 		const id: string = this.id ?? (<any>this)['_original']?.id;
@@ -310,15 +348,15 @@ export default class TemplateTargeting {
 		}
 
 		// Get number of rows and columns
-		const rowCount = Math.ceil(((this.data.distance * 1.5) / d.distance) / (d.size / grid.h));
-		const colCount = Math.ceil(((this.data.distance * 1.5) / d.distance) / (d.size / grid.w));
+		const shapeBounds = TemplateTargeting._calculateGridTestArea.apply(this);
+		const colCount = Math.ceil(shapeBounds.width() / grid.w) + 2; //? Add a padding ring around for any outlier cases
+		const rowCount = Math.ceil(shapeBounds.height() / grid.h) + 2; //? Add a padding ring around for any outlier cases
 
 		// Get the offset of the template origin relative to the top-left grid space
 		const [tx, ty] = canvas.grid.getTopLeft(this.data.x, this.data.y);
-		const [row0, col0] = grid.grid.getGridPositionFromPixels(tx, ty);
+		const [row0, col0] = grid.grid.getGridPositionFromPixels(shapeBounds.left + tx, shapeBounds.top + ty);
 		const hx = canvas.grid.w / 2;
 		const hy = canvas.grid.h / 2;
-		const isCenter = (this.data.x - tx === hx) && (this.data.y - ty === hy);
 
 		/***** START OF CODE EDIT *****/
 		// Extract and prepare data
@@ -370,8 +408,10 @@ export default class TemplateTargeting {
 			];
 		};
 		// Identify grid coordinates covered by the template Graphics
-		for (let r = -rowCount; r < rowCount; r++) {
-			for (let c = -colCount; c < colCount; c++) {
+		//? Start on -1 to account for padding ring of cells around test area
+		for (let r = -1; r < rowCount; r++) {
+			//? Start on -1 to account for padding ring of cells around test area
+			for (let c = -1; c < colCount; c++) {
 				const [gx, gy] = canvas.grid.grid.getPixelsFromGridPosition(row0 + r, col0 + c);
 				const testX = gx + hx;
 				const testY = gy + hy;
@@ -401,7 +441,7 @@ export default class TemplateTargeting {
 					case "rect": {
 						const rect = (this as any)._getRectShape(direction, distance, true);
 						if (rect instanceof PIXI.Polygon) {
-							contains = ((r === 0) && (c === 0) && isCenter) || this.shape.contains(testX - this.data.x, testY - this.data.y);
+							contains = this.shape.contains(testX - this.data.x, testY - this.data.y);
 							if (contains) break;
 							/* Rectangle vertex data order
 								A1───▶B1
@@ -432,7 +472,7 @@ export default class TemplateTargeting {
 						break;
 					}
 					case "cone": {
-						contains = ((r === 0) && (c === 0) && isCenter) || this.shape.contains(testX - this.data.x, testY - this.data.y);
+						contains = this.shape.contains(testX - this.data.x, testY - this.data.y);
 						if (contains) break;
 						generateConeData();
 						// check the top line
@@ -487,7 +527,7 @@ export default class TemplateTargeting {
 						break;
 					}
 					case "ray": {
-						contains = ((r === 0) && (c === 0) && isCenter) || this.shape.contains(testX - this.data.x, testY - this.data.y);
+						contains = this.shape.contains(testX - this.data.x, testY - this.data.y);
 						if (contains) break;
 						generateRayData();
 						// check the top line
@@ -502,7 +542,6 @@ export default class TemplateTargeting {
 					}
 				}
 
-				const DEBUG = SETTINGS.get('template-debug');
 				if (!DEBUG && !contains) continue;
 				try { grid.grid.highlightGridPosition(hl, { x: gx, y: gy, border, color: DEBUG ? (contains ? 0x00FF00 : 0xFF0000) : color }); }
 				catch (error) {

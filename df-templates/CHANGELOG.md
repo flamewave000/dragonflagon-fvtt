@@ -3,6 +3,7 @@
 ## Release 1.1.1 (2022-03-09)
 - **FIX:** Intersection snapping will no longer occur on gridless scenes.
 - **FIX #331:** DnD5e option no longer overrides the disabled Preview Template option.
+- **IMPROVED:** Grid highlighting will now be much more efficient as the grid test area has been reduced by ~70% compared to Core FoundryVTT.
 
 ## Release 1.1.0 (2022-03-08)
 - **NEW #327:** Square Templates do not keep their shape when rotating. This will correct the rotation so that a square template maintains its shape while rotating around the template's origin point.
