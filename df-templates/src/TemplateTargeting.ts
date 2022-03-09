@@ -39,6 +39,13 @@ function throttle<T>(fn: AnyFunction, threshhold?: number): T {
 
 export default class TemplateTargeting {
 
+	private static readonly PREVIEW_PREF = "template-preview";
+	private static readonly TARGETING_TOGGLE_PREF = "template-targeting-toggle";
+	private static readonly TARGETING_MODE_PREF = "template-targeting";
+	private static readonly GRIDLESS_RESOLUTION_PREF = "template-gridless-resolution";
+	private static readonly PATCH_5E_PREF = "template-targeting-patch5e";
+	private static readonly PATCH_5E_CIRCLE_PREF = "template-targeting-patch5e-circle";
+
 	private static readonly PointGraphContainer = new PIXI.Graphics();
 
 	private static toggleTemplatePatch(enabled: boolean) {
@@ -47,14 +54,14 @@ export default class TemplateTargeting {
 	}
 
 	static init() {
-		SETTINGS.register('template-targeting-toggle', {
+		SETTINGS.register(TemplateTargeting.TARGETING_TOGGLE_PREF, {
 			config: false,
 			scope: 'client',
 			type: Boolean,
 			default: true,
-			onChange: () => { if (SETTINGS.get('template-targeting') !== 'toggle') return; }
+			onChange: () => { if (SETTINGS.get(TemplateTargeting.TARGETING_MODE_PREF) !== 'toggle') return; }
 		});
-		SETTINGS.register('template-targeting', {
+		SETTINGS.register(TemplateTargeting.TARGETING_MODE_PREF, {
 			config: true,
 			scope: 'world',
 			name: 'DF_TEMPLATES.AutoTargetName',
@@ -68,7 +75,7 @@ export default class TemplateTargeting {
 			default: 'toggle',
 			onChange: () => { ui.controls.initialize(); ui.controls.render(true); }
 		});
-		SETTINGS.register<number>('template-gridless-resolution', {
+		SETTINGS.register<number>(TemplateTargeting.GRIDLESS_RESOLUTION_PREF, {
 			config: true,
 			scope: 'world',
 			name: 'DF_TEMPLATES.GridlessPointResolutionName',
@@ -81,16 +88,16 @@ export default class TemplateTargeting {
 			type: Number,
 			default: 3
 		});
-		SETTINGS.register('template-preview', {
+		SETTINGS.register(TemplateTargeting.PREVIEW_PREF, {
 			config: true,
 			scope: 'world',
 			name: 'DF_TEMPLATES.PreviewName',
 			hint: 'DF_TEMPLATES.PreviewHint',
 			type: Boolean,
 			default: true,
-			onChange: (newValue: boolean) => TemplateTargeting.toggleTemplatePatch(newValue || SETTINGS.get('template-targeting-patch5e'))
+			onChange: (newValue: boolean) => TemplateTargeting.toggleTemplatePatch(newValue || SETTINGS.get(TemplateTargeting.PATCH_5E_PREF))
 		});
-		SETTINGS.register('template-targeting-patch5e', {
+		SETTINGS.register(TemplateTargeting.PATCH_5E_PREF, {
 			name: 'DF_TEMPLATES.Patch5e_Name',
 			hint: 'DF_TEMPLATES.Patch5e_Hint',
 			config: true,
@@ -98,11 +105,11 @@ export default class TemplateTargeting {
 			default: false,
 			scope: 'world',
 			onChange: (newValue: boolean) => {
-				TemplateTargeting.toggleTemplatePatch(newValue || SETTINGS.get('template-preview'));
+				TemplateTargeting.toggleTemplatePatch(newValue || SETTINGS.get(TemplateTargeting.PREVIEW_PREF));
 				canvas.templates?.placeables.forEach((t: MeasuredTemplate) => t.draw());
 			}
 		});
-		SETTINGS.register('template-targeting-patch5e-circle', {
+		SETTINGS.register(TemplateTargeting.PATCH_5E_CIRCLE_PREF, {
 			name: 'DF_TEMPLATES.Patch5e_Circle_Name',
 			hint: 'DF_TEMPLATES.Patch5e_Circle_Hint',
 			config: true,
@@ -113,10 +120,10 @@ export default class TemplateTargeting {
 				.forEach((t: MeasuredTemplate) => t.draw())
 		});
 		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.highlightGrid', this._MeasuredTemplate_highlightGrid,
-			SETTINGS.get('template-targeting-patch5e') || SETTINGS.get('template-preview') ? 'OVERRIDE' : 'WRAPPER');
+			SETTINGS.get(TemplateTargeting.PATCH_5E_PREF) || SETTINGS.get(TemplateTargeting.PREVIEW_PREF) ? 'OVERRIDE' : 'WRAPPER');
 
 		Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
-			if (SETTINGS.get('template-targeting') !== 'toggle') return;
+			if (SETTINGS.get(TemplateTargeting.TARGETING_MODE_PREF) !== 'toggle') return;
 			const control = controls.find(x => x.name === 'measure');
 			control.tools.splice(0, 0, {
 				icon: 'fas fa-bullseye',
@@ -124,8 +131,8 @@ export default class TemplateTargeting {
 				title: 'DF_TEMPLATES.ToggleTitle',
 				visible: true,
 				toggle: true,
-				active: SETTINGS.get('template-targeting-toggle'),
-				onClick: (toggled: boolean) => { SETTINGS.set('template-targeting-toggle', toggled); }
+				active: SETTINGS.get(TemplateTargeting.TARGETING_TOGGLE_PREF),
+				onClick: (toggled: boolean) => { SETTINGS.set(TemplateTargeting.TARGETING_TOGGLE_PREF, toggled); }
 			});
 		});
 		// When dragging a template, we need to catch the cancellation in order for us to refresh the template to draw back in its original position.
@@ -178,8 +185,8 @@ export default class TemplateTargeting {
 	}
 
 	private static _MeasuredTemplate_highlightGrid(this: MeasuredTemplate, wrapped?: () => void) {
-		const mode = SETTINGS.get<string>('template-targeting');
-		const shouldAutoSelect = mode === 'always' || (mode === 'toggle' && SETTINGS.get<boolean>('template-targeting-toggle'));
+		const mode = SETTINGS.get<string>(TemplateTargeting.TARGETING_MODE_PREF);
+		const shouldAutoSelect = mode === 'always' || (mode === 'toggle' && SETTINGS.get<boolean>(TemplateTargeting.TARGETING_TOGGLE_PREF));
 		const isOwner = this.document.author.id === game.userId;
 		// Release all previously targeted tokens
 		if (isOwner && shouldAutoSelect && canvas.tokens.objects) {
@@ -188,7 +195,7 @@ export default class TemplateTargeting {
 			}
 		}
 		// @ts-ignore
-		if (!game.dnd5e || !SETTINGS.get('template-targeting-patch5e')) {
+		if (!game.dnd5e || !SETTINGS.get(TemplateTargeting.PATCH_5E_PREF)) {
 			TemplateTargeting._handleCoreTemplate.bind(this)(isOwner, shouldAutoSelect, wrapped);
 		} else {
 			TemplateTargeting._handleDnD5eTemplate.bind(this)(isOwner, shouldAutoSelect);
@@ -197,7 +204,7 @@ export default class TemplateTargeting {
 
 	private static _handleCoreTemplate(this: MeasuredTemplate, isOwner: boolean, shouldAutoSelect: boolean, wrapped?: () => void) {
 		// Call the original function if we are not doing previews
-		if (!SETTINGS.get('template-preview')) {
+		if (!SETTINGS.get(TemplateTargeting.PREVIEW_PREF)) {
 			wrapped?.();
 		}
 		// Otherwise run the 
@@ -270,11 +277,11 @@ export default class TemplateTargeting {
 		const grid = canvas.grid;
 		const d = canvas.dimensions;
 		const border = <number>this.borderColor;
-		const color = this.fillColor;
+		const color = <number>this.fillColor;
 
 		// Only highlight for objects which have a defined shape
 		const id: string = this.id ?? (<any>this)['_original']?.id;
-		if (!this.shape) return;
+		if ((!this.id && !SETTINGS.get(TemplateTargeting.PREVIEW_PREF)) || !this.shape) return;
 
 		// Clear existing highlight
 		const hl = grid.getHighlightLayer(`Template.${id ?? null}`);
@@ -376,7 +383,7 @@ export default class TemplateTargeting {
 						const [rcx, rcy] = [testX - this.data.x, testY - this.data.y];
 						// If the distance between the centres is <= the circle's radius
 						contains = ((rcx * rcx) + (rcy * rcy)) <= (distance * distance);
-						if (contains || !SETTINGS.get('template-targeting-patch5e-circle')) break;
+						if (contains || !SETTINGS.get(TemplateTargeting.PATCH_5E_CIRCLE_PREF)) break;
 
 						const sqrDistance = distance * distance;
 						let [vx, vy] = [0, 0];
@@ -497,12 +504,12 @@ export default class TemplateTargeting {
 
 				const DEBUG = SETTINGS.get('template-debug');
 				if (!DEBUG && !contains) continue;
-				if (DEBUG) {
-					grid.grid.highlightGridPosition(hl, { x: gx, y: gy, border, color: contains ? 0x00FF00 : 0xFF0000 });
-					if (!contains) continue;
+				try { grid.grid.highlightGridPosition(hl, { x: gx, y: gy, border, color: DEBUG ? (contains ? 0x00FF00 : 0xFF0000) : color }); }
+				catch (error) {
+					// Catches a specific "highlight" error that will randomly occur inside of `grid.grid.highlightGridPosition()`
+					if (!(error instanceof Error) || error.message.includes("'highlight'")) throw error;
 				}
-				else
-					grid.grid.highlightGridPosition(hl, { x: gx, y: gy, border, color: <number>color });
+				if (!contains) continue;
 
 				// Ignore changing the target selection if we don't own the template, or `shouldAutoSelect` is false
 				if (!isOwner || !shouldAutoSelect) continue;
@@ -533,7 +540,7 @@ export default class TemplateTargeting {
 			TemplateTargeting.PointGraphContainer.addChild(pointGraphics);
 		}
 		// If we are multi-point grab the gridless resolution, otherwise we test for each grid square center
-		const pointResolution = useMultiPointTest ? SETTINGS.get<number>('template-gridless-resolution') : 1;
+		const pointResolution = useMultiPointTest ? SETTINGS.get<number>(TemplateTargeting.GRIDLESS_RESOLUTION_PREF) : 1;
 		// Iterate over all existing tokens and target the ones within the template area
 		for (const token of canvas.tokens.placeables) {
 			// Get the center offset of the token
