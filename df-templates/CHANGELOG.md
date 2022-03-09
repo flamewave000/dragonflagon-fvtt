@@ -1,5 +1,8 @@
 # DragonFlagon Template Enhancements
 
+## Release 1.1.1 (2022-03-09)
+- **FIX:** Intersection snapping will no longer occur on gridless scenes.
+
 ## Release 1.1.0 (2022-03-08)
 - **NEW #327:** Square Templates do not keep their shape when rotating. This will correct the rotation so that a square template maintains its shape while rotating around the template's origin point.
 

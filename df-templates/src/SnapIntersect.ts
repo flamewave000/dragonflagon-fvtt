@@ -10,18 +10,24 @@ export default class SnapIntersect {
 			hint: 'DF_TEMPLATES.SnapIntersectHint',
 			type: Boolean,
 			default: false,
-			onChange: (toggled) => {
-				if (toggled)
-					libWrapper.register(SETTINGS.MOD_NAME, 'canvas.templates.gridPrecision', () => 1, 'OVERRIDE');
-				else
-					libWrapper.unregister(SETTINGS.MOD_NAME, 'canvas.templates.gridPrecision', false);
-			}
+			onChange: (toggled) => toggled ? this.patch() : this.unpatch()
 		});
 	}
 
 	static ready() {
 		if (SETTINGS.get<boolean>('SnapIntersect'))
-			libWrapper.register(SETTINGS.MOD_NAME, 'canvas.templates.gridPrecision', () => 1, 'OVERRIDE');
+			this.patch();
+	}
+
+	private static patch() {
+		libWrapper.register(SETTINGS.MOD_NAME, 'canvas.templates.gridPrecision', SnapIntersect.TemplateLayer_gridPrecision, 'OVERRIDE');
+	}
+	private static unpatch() {
+		libWrapper.unregister(SETTINGS.MOD_NAME, 'canvas.templates.gridPrecision', false);
+	}
+
+	private static TemplateLayer_gridPrecision() {
+		return canvas.grid.type === CONST.GRID_TYPES.GRIDLESS ? 0 : 1;
 	}
 
 	static handleDnD5eAbilityTemplate(abilityTemplate: any, handlers: DnD5eAbilityTemplateHandlers) {
