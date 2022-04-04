@@ -14,15 +14,26 @@
 		"SquareRotateHint": "Square Templates do not keep their shape when rotating. This will correct the rotation so that a square template maintains its shape while rotating around the template's origin point.",
 		"DebugName": "[DEBUG Only] Display Auto-Target Point Grids and Test Grids",
 		"DebugHint": "For the purposes of debugging the auto-targetting feature, this option will display the points used for detecting token targeting in a gridless scene. Or will display the entire test zone for grid highlighting.",
-		"Patch5e_Name": "Use D&D 5e Style Templates",
-		"Patch5e_Hint": "Core Foundry requires a grid square's center to be inside a template to be affected. This adjusts templates to follow the D&D5e rules for targeting grid squares where any square TOUCHED by a template is hit (with the exception of circles).",
-		"Patch5e_Circle_Name": "Make Circle Templates Greedy (Requires D&D 5e Style Templates)",
-		"Patch5e_Circle_Hint": "If you want circle templates to not be an exception to the above D&D 5e style rules, enable this and any square touched by a circle will be hit.",
 		"AngleSnap": {
 			"MacroName": "Template Angle Snap Point Count (FoundryVTT Default: 24)",
 			"MacroHint": "How many snap points are available to rotate a template to. This can be used to reduce the number of angles a player has to choose from in order to speed up combat",
-			"MicroName": "Small Rotation Multiplier (Foundry Default: 3",
+			"MicroName": "Small Rotation Multiplier (Foundry Default: 3)",
 			"MicroHint": "When holding Ctrl, you can perform smaller rotation snaps. This essentially multiplies the above setting by this amount to generate a sub-set of angle snaps. Setting this to 1 effectively disables micro angle steps."
+		},
+		"TemplateConfig": {
+			"Title": "Template Measures Settings",
+			"ResetButton": "FoundryVTT Defaults",
+			"DnD5eButton": "D&D 5e Style",
+			"Options": {
+				"center": {
+					"label": "Center Point",
+					"desc": "<i>(Default)</i> The center point of each grid cell must be contained inside of the template for that cell to be highlighted."
+				},
+				"touch": {
+					"label": "Touches",
+					"desc": "If <b>Any</b> part of a grid cell is <b>Touched</b>, that cell will be highlighted."
+				}
+			}
 		}
 	}
 }

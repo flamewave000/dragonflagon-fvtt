@@ -8,6 +8,7 @@
 	"compatibleCoreVersion": "9",
 	"dependencies": [ { "name": "lib-wrapper" } ],
 	"esmodules": "{{sources}}",
+	"styles": "{{css}}",
 	"languages": [
 		{ "lang": "en", "path": "lang/en.json", "name": "English" },
 		{ "lang": "ja", "path": "lang/ja.json", "name": "日本語" }

@@ -1,5 +1,8 @@
 # DragonFlagon Template Enhancements
 
+## Release 1.2.0 (2022-04-04)
+- **NEW #332:** Each template type can now be independently configured.
+
 ## Release 1.1.1 (2022-03-09)
 - **FIX:** Intersection snapping will no longer occur on gridless scenes.
 - **FIX #331:** DnD5e option no longer overrides the disabled Preview Template option.

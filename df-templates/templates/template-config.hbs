@@ -1,0 +1,63 @@
+{{!-- DF_TEMPLATES.TemplateConfig. --}}
+
+{{#*inline "templateOptions"}}
+<select name="{{name}}">
+	{{#each options}}
+	<option value="{{type}}"{{#if (eq type ../value)}} selected{{/if}}>{{{label}}}</option>
+	{{/each}}
+</select>
+{{/inline}}
+
+<form class="dfte-template-config">
+
+	<header>
+		<p>{{localize "Configure how each individual template should highlight the grid. This will also effect which
+			tokens will be auto-targeted if you have that option enabled."}}</p>
+	</header>
+
+	<main>
+		<table>
+			<thead>
+				<th>{{localize "Template Type"}}</th>
+				<th>{{localize "Configuration"}}</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>{{localize "CONTROLS.MeasureCircle"}}</td>
+					<td>{{> templateOptions options=options name='circle' value=circle}}</td>
+				</tr>
+				<tr>
+					<td>{{localize "CONTROLS.MeasureCone"}}</td>
+					<td>{{> templateOptions options=options name='cone' value=cone}}</td>
+				</tr>
+				<tr>
+					<td>{{localize "CONTROLS.MeasureRect"}}</td>
+					<td>{{> templateOptions options=options name='rect' value=rect}}</td>
+				</tr>
+				<tr>
+					<td>{{localize "CONTROLS.MeasureRay"}}</td>
+					<td>{{> templateOptions options=options name='ray' value=ray}}</td>
+				</tr>
+			</tbody>
+		</table>
+		<section>
+			<button id="dfte-set-foundry">{{localize "DF_TEMPLATES.TemplateConfig.ResetButton"}}</button>
+			<button id="dfte-set-dnd5e">{{localize "DF_TEMPLATES.TemplateConfig.DnD5eButton"}}</button>
+		</section>
+	</main>
+
+	<footer>
+		<table>
+			{{#each options}}
+			<tr>
+				<td><b>{{{label}}}</b></td>
+				<td>{{{desc}}}</td>
+			</tr>
+			{{/each}}
+		</table>
+		<section>
+			<button id="cancel">{{localize 'Cancel'}}</button>
+			<button>{{localize 'Save'}}</button>
+		</section>
+	</footer>
+</form>

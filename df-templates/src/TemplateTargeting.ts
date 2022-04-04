@@ -1,5 +1,6 @@
 import SETTINGS from "../../common/Settings";
 import LineToBoxCollision from "./LineToBoxCollision";
+import { TemplateConfig, HighlightMode } from "./TemplateConfig";
 
 function throttle<T>(fn: AnyFunction, threshhold?: number): T {
 	threshhold || (threshhold = 250);
@@ -43,17 +44,12 @@ export default class TemplateTargeting {
 	private static readonly TARGETING_TOGGLE_PREF = "template-targeting-toggle";
 	private static readonly TARGETING_MODE_PREF = "template-targeting";
 	private static readonly GRIDLESS_RESOLUTION_PREF = "template-gridless-resolution";
-	private static readonly PATCH_5E_PREF = "template-targeting-patch5e";
-	private static readonly PATCH_5E_CIRCLE_PREF = "template-targeting-patch5e-circle";
 
 	private static readonly PointGraphContainer = new PIXI.Graphics();
 
-	private static toggleTemplatePatch(enabled: boolean) {
-		libWrapper.unregister(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.highlightGrid', false);
-		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.highlightGrid', this._MeasuredTemplate_highlightGrid, enabled ? 'OVERRIDE' : 'WRAPPER');
-	}
-
 	static init() {
+		TemplateConfig.init();
+
 		SETTINGS.register(TemplateTargeting.TARGETING_TOGGLE_PREF, {
 			config: false,
 			scope: 'client',
@@ -94,34 +90,8 @@ export default class TemplateTargeting {
 			name: 'DF_TEMPLATES.PreviewName',
 			hint: 'DF_TEMPLATES.PreviewHint',
 			type: Boolean,
-			default: true,
-			onChange: (newValue: boolean) => TemplateTargeting.toggleTemplatePatch(newValue || SETTINGS.get(TemplateTargeting.PATCH_5E_PREF))
+			default: true
 		});
-		SETTINGS.register(TemplateTargeting.PATCH_5E_PREF, {
-			name: 'DF_TEMPLATES.Patch5e_Name',
-			hint: 'DF_TEMPLATES.Patch5e_Hint',
-			config: true,
-			type: Boolean,
-			default: false,
-			scope: 'world',
-			onChange: (newValue: boolean) => {
-				TemplateTargeting.toggleTemplatePatch(newValue || SETTINGS.get(TemplateTargeting.PREVIEW_PREF));
-				canvas.templates?.placeables.forEach((t: MeasuredTemplate) => t.draw());
-			}
-		});
-		SETTINGS.register(TemplateTargeting.PATCH_5E_CIRCLE_PREF, {
-			name: 'DF_TEMPLATES.Patch5e_Circle_Name',
-			hint: 'DF_TEMPLATES.Patch5e_Circle_Hint',
-			config: true,
-			type: Boolean,
-			default: false,
-			scope: 'world',
-			onChange: () => canvas.templates?.placeables.filter((t: MeasuredTemplate) => t.data.t === "circle")
-				.forEach((t: MeasuredTemplate) => t.draw())
-		});
-		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.highlightGrid', this._MeasuredTemplate_highlightGrid,
-			SETTINGS.get(TemplateTargeting.PATCH_5E_PREF) || SETTINGS.get(TemplateTargeting.PREVIEW_PREF) ? 'OVERRIDE' : 'WRAPPER');
-
 		Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
 			if (SETTINGS.get(TemplateTargeting.TARGETING_MODE_PREF) !== 'toggle') return;
 			const control = controls.find(x => x.name === 'measure');
@@ -135,6 +105,8 @@ export default class TemplateTargeting {
 				onClick: (toggled: boolean) => { SETTINGS.set(TemplateTargeting.TARGETING_TOGGLE_PREF, toggled); }
 			});
 		});
+
+		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.highlightGrid', this._MeasuredTemplate_highlightGrid, 'OVERRIDE');
 		// When dragging a template, we need to catch the cancellation in order for us to refresh the template to draw back in its original position.
 		libWrapper.register(SETTINGS.MOD_NAME, 'PlaceableObject.prototype._createInteractionManager', function (this: PlaceableObject, wrapper: () => MouseInteractionManager) {
 			if (!(this instanceof MeasuredTemplate)) return wrapper();
@@ -151,9 +123,9 @@ export default class TemplateTargeting {
 
 	static ready() {
 		// This is used to throttle the number of UI updates made to a set number of Frames Per Second.
-		const ThrottledTemplateRefresh = throttle<(w?: AnyFunction) => void>(function (this: MeasuredTemplate, wrapped: AnyFunction) {
+		const ThrottledTemplateRefresh = throttle<(w?: AnyFunction) => void>(function (this: MeasuredTemplate) {
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			TemplateTargeting._MeasuredTemplate_highlightGrid.apply(this, [wrapped]);
+			TemplateTargeting._MeasuredTemplate_highlightGrid.apply(this);
 		}, 1000 / 20);// Throttle to 20fps
 
 		// Register for the D&D5e Ability Template preview
@@ -166,7 +138,7 @@ export default class TemplateTargeting {
 		}
 		// Register for the regular template movement preview
 		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.refresh', function (this: MeasuredTemplate, wrapper: AnyFunction) {
-			ThrottledTemplateRefresh.apply(this, [null]);
+			ThrottledTemplateRefresh.apply(this );
 			return wrapper();
 			// return wrapper();
 		}, 'WRAPPER');
@@ -184,7 +156,7 @@ export default class TemplateTargeting {
 		canvas.controls.addChild(TemplateTargeting.PointGraphContainer);
 	}
 
-	private static _MeasuredTemplate_highlightGrid(this: MeasuredTemplate, wrapped?: () => void) {
+	private static _MeasuredTemplate_highlightGrid(this: MeasuredTemplate) {
 		const mode = SETTINGS.get<string>(TemplateTargeting.TARGETING_MODE_PREF);
 		const shouldAutoSelect = mode === 'always' || (mode === 'toggle' && SETTINGS.get<boolean>(TemplateTargeting.TARGETING_TOGGLE_PREF));
 		const isOwner = this.document.author.id === game.userId;
@@ -194,12 +166,7 @@ export default class TemplateTargeting {
 				t.setTarget(false, { releaseOthers: false, groupSelection: true });
 			}
 		}
-		// @ts-ignore
-		if (!game.dnd5e || !SETTINGS.get(TemplateTargeting.PATCH_5E_PREF)) {
-			TemplateTargeting._handleCoreTemplate.bind(this)(isOwner, shouldAutoSelect, wrapped);
-		} else {
-			TemplateTargeting._handleDnD5eTemplate.bind(this)(isOwner, shouldAutoSelect);
-		}
+		TemplateTargeting._handleTouchTemplate.bind(this)(isOwner, shouldAutoSelect);
 	}
 
 	private static _calculateGridTestArea(this: MeasuredTemplate) {
@@ -234,82 +201,7 @@ export default class TemplateTargeting {
 		return shapeBounds;
 	}
 
-	private static _handleCoreTemplate(this: MeasuredTemplate, isOwner: boolean, shouldAutoSelect: boolean, wrapped?: () => void) {
-		// Call the original function if we are not doing previews
-		if (!SETTINGS.get(TemplateTargeting.PREVIEW_PREF)) {
-			wrapped?.();
-		}
-		// Otherwise run the 
-		else {
-			/************** THIS CODE IS DIRECTLY COPIED FROM 'MeasuredTemplate.prototype.highlightGrid' ****************/
-			const grid = canvas.grid;
-			const border: number = <number>this.borderColor;
-			const color: number = <number>this.fillColor;
-			const DEBUG = SETTINGS.get('template-debug');
-
-			/***** START OF CODE EDIT *****/
-			// Only highlight for objects which have a defined shape
-			const id: string = this.id ?? (<any>this)['_original']?.id;
-			if (!this.shape) return;
-			/****** END OF CODE EDIT ******/
-
-			// Clear existing highlight
-			const hl = grid.getHighlightLayer(`Template.${id ?? null}`);
-			hl?.clear();
-
-			// If we are in gridless mode, highlight the shape directly
-			if (grid.type === CONST.GRID_TYPES.GRIDLESS) {
-				const shape = this.shape.clone();
-				if ("points" in shape) {
-					shape.points = shape.points.map((p, i) => {
-						if (i % 2) return this.y + p;
-						else return this.x + p;
-					});
-				} else {
-					shape.x += this.x;
-					shape.y += this.y;
-				}
-				//* REMOVED THE RETURN STATEMENT HERE
-				grid.grid.highlightGridPosition(hl, { border, color, shape: <PIXI.Polygon>shape });
-				//* ADDED THIS TOKEN TARGETTING CALL
-				TemplateTargeting._selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this.data, <PIXI.Polygon>this.shape);
-				//* MOVED RETURN TO AFTER TOKEN SELECTION
-				return;
-			}
-			// Get number of rows and columns
-			const shapeBounds = TemplateTargeting._calculateGridTestArea.apply(this);
-			const colCount = Math.ceil(shapeBounds.width() / grid.w) + 2; //? Add a padding ring around for any outlier cases
-			const rowCount = Math.ceil(shapeBounds.height() / grid.h) + 2; //? Add a padding ring around for any outlier cases
-
-			// Get the offset of the template origin relative to the top-left grid space
-			const [tx, ty] = canvas.grid.getTopLeft(this.data.x, this.data.y);
-			const [row0, col0] = grid.grid.getGridPositionFromPixels(shapeBounds.left + tx, shapeBounds.top + ty);
-			const hx = canvas.grid.w / 2;
-			const hy = canvas.grid.h / 2;
-
-			// Identify grid coordinates covered by the template Graphics
-			for (let r = -1; r < rowCount; r++) {
-				for (let c = -1; c < colCount; c++) {
-					const [gx, gy] = canvas.grid.grid.getPixelsFromGridPosition(row0 + r, col0 + c);
-					const testX = (gx + hx) - this.data.x;
-					const testY = (gy + hy) - this.data.y;
-					const contains = (testX === 0 && testY === 0) || this.shape.contains(testX, testY);
-					if (!DEBUG && !contains) continue;
-					try { grid.grid.highlightGridPosition(hl, { x: gx, y: gy, border, color: DEBUG ? (contains ? 0x00FF00 : 0xFF0000) : color }); }
-					catch (error) {
-						// Catches a specific "highlight" error that will randomly occur inside of `grid.grid.highlightGridPosition()`
-						if (!(error instanceof Error) || error.message.includes("'highlight'")) throw error;
-					}
-					if (!contains) continue;
-				}
-			}
-			//* MOVED TOKEN SELECTION TO SEPARATE FUNCTION
-			TemplateTargeting._selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this.data, <PIXI.Polygon>this.shape);
-		}
-		/******************************************** END OF COPIED CODE ********************************************/
-	}
-
-	private static _handleDnD5eTemplate(this: MeasuredTemplate, isOwner: boolean, shouldAutoSelect: boolean) {
+	private static _handleTouchTemplate(this: MeasuredTemplate, isOwner: boolean, shouldAutoSelect: boolean) {
 		/************** THIS CODE IS DIRECTLY COPIED FROM 'MeasuredTemplate.prototype.highlightGrid' ****************/
 		const grid = canvas.grid;
 		const d = canvas.dimensions;
@@ -423,7 +315,7 @@ export default class TemplateTargeting {
 						const [rcx, rcy] = [testX - this.data.x, testY - this.data.y];
 						// If the distance between the centres is <= the circle's radius
 						contains = ((rcx * rcx) + (rcy * rcy)) <= (distance * distance);
-						if (contains || !SETTINGS.get(TemplateTargeting.PATCH_5E_CIRCLE_PREF)) break;
+						if (contains || TemplateConfig.config.circle === HighlightMode.CENTER) break;
 
 						const sqrDistance = distance * distance;
 						let [vx, vy] = [0, 0];
@@ -442,7 +334,7 @@ export default class TemplateTargeting {
 						const rect = (this as any)._getRectShape(direction, distance, true);
 						if (rect instanceof PIXI.Polygon) {
 							contains = this.shape.contains(testX - this.data.x, testY - this.data.y);
-							if (contains) break;
+							if (contains || TemplateConfig.config.rect === HighlightMode.CENTER) break;
 							/* Rectangle vertex data order
 								A1───▶B1
 								▲      │
@@ -473,7 +365,7 @@ export default class TemplateTargeting {
 					}
 					case "cone": {
 						contains = this.shape.contains(testX - this.data.x, testY - this.data.y);
-						if (contains) break;
+						if (contains || TemplateConfig.config.cone === HighlightMode.CENTER) break;
 						generateConeData();
 						// check the top line
 						contains = LineToBoxCollision.cohenSutherlandLineClipAndDraw(ax1, ay1, bx1, by1, testRect);
@@ -528,7 +420,7 @@ export default class TemplateTargeting {
 					}
 					case "ray": {
 						contains = this.shape.contains(testX - this.data.x, testY - this.data.y);
-						if (contains) break;
+						if (contains || TemplateConfig.config.ray === HighlightMode.CENTER) break;
 						generateRayData();
 						// check the top line
 						contains = LineToBoxCollision.cohenSutherlandLineClipAndDraw(ax1, ay1, bx1, by1, testRect)
@@ -546,7 +438,7 @@ export default class TemplateTargeting {
 				try { grid.grid.highlightGridPosition(hl, { x: gx, y: gy, border, color: DEBUG ? (contains ? 0x00FF00 : 0xFF0000) : color }); }
 				catch (error) {
 					// Catches a specific "highlight" error that will randomly occur inside of `grid.grid.highlightGridPosition()`
-					if (!(error instanceof Error) || error.message.includes("'highlight'")) throw error;
+					if (!(error instanceof Error) || !error.message.includes("'highlight'")) throw error;
 				}
 				if (!contains) continue;
 

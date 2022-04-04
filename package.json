@@ -61,7 +61,7 @@
 		"gulp-zip": "^5.0.2",
 		"json": "^11.0.0",
 		"json-stringify-pretty-compact": "^3.0.0",
-		"sass": "^1.43.4",
+		"sass": "^1.49.9",
 		"spaces-to-tabs": "0.0.3",
 		"terser-webpack-plugin": "^5.2.4",
 		"ts-loader": "^9.2.6",
