@@ -1,8 +1,9 @@
 import SETTINGS from "../../common/Settings";
 
 export default class DFSceneNav {
-	static ON_CLICK = 'nav-on-click';
-	static ON_CLICK_PLAYER = 'nav-on-click-player';
+	private static readonly ON_CLICK = 'nav-on-click';
+	private static readonly ON_CLICK_PLAYER = 'nav-on-click-player';
+	private static readonly SCENE_NAV_REAL_NAME = 'nav-label-type';
 
 	static patchSceneDirectoryClick(newValue?: boolean, isPlayer?: boolean) {
 		let gmClick = SETTINGS.get(DFSceneNav.ON_CLICK);
@@ -102,8 +103,8 @@ export default class DFSceneNav {
 	}
 	static init() {
 		SETTINGS.register(DFSceneNav.ON_CLICK, {
-			name: "DF-SCENE-ENHANCE.Nav_SettingOnClick",
-			hint: "DF-SCENE-ENHANCE.Nav_SettingOnClickHint",
+			name: "DF-SCENE-ENHANCE.Nav.SettingOnClick",
+			hint: "DF-SCENE-ENHANCE.Nav.SettingOnClickHint",
 			scope: "world",
 			config: true,
 			type: Boolean,
@@ -111,13 +112,26 @@ export default class DFSceneNav {
 			onChange: (value: boolean) => DFSceneNav.patchSceneDirectoryClick(value, false)
 		});
 		SETTINGS.register(DFSceneNav.ON_CLICK_PLAYER, {
-			name: "DF-SCENE-ENHANCE.Nav_SettingOnClickPC",
-			hint: "DF-SCENE-ENHANCE.Nav_SettingOnClickPCHint",
+			name: "DF-SCENE-ENHANCE.Nav.SettingOnClickPC",
+			hint: "DF-SCENE-ENHANCE.Nav.SettingOnClickPCHint",
 			scope: "world",
 			config: true,
 			type: Boolean,
 			default: true,
 			onChange: (value: boolean) => DFSceneNav.patchSceneDirectoryClick(value, true)
+		});
+
+		SETTINGS.register(DFSceneNav.SCENE_NAV_REAL_NAME, {
+			name: 'DF-SCENE-ENHANCE.Nav.SettingRealName',
+			hint: 'DF-SCENE-ENHANCE.Nav.SettingRealNameHint',
+			scope: 'world',
+			config: true,
+			type: Boolean,
+			default: false,
+			onChange: () => {
+				DFSceneNav.patchSceneNavGetData();
+				ui.nav.render(false);
+			}
 		});
 
 		Handlebars.registerHelper('dfCheck', function (scene) {
@@ -126,9 +140,53 @@ export default class DFSceneNav {
 
 		DFSceneNav.patchSceneDirectory();
 		DFSceneNav.patchSidebar();
+		DFSceneNav.patchSceneNavGetData();
+		libWrapper.register(SETTINGS.MOD_NAME, 'SceneNavigation.prototype.activateListeners', DFSceneNav.SceneNavigation_activateListeners, 'WRAPPER');
 	}
 
 	static ready() {
 		DFSceneNav.patchSceneDirectoryClick();
+	}
+
+
+	private static patchSceneNavGetData() {
+		if (SETTINGS.get(DFSceneNav.SCENE_NAV_REAL_NAME))
+			libWrapper.register(SETTINGS.MOD_NAME, 'SceneNavigation.prototype.getData', this.SceneNavigation_getData, 'WRAPPER');
+		else
+			libWrapper.unregister(SETTINGS.MOD_NAME, 'SceneNavigation.prototype.getData', false);
+	}
+	private static SceneNavigation_getData(this: SceneNavigation, wrapper: AnyFunction, _options: any) {
+		const data: {
+			collapsed: boolean,
+			scenes: Scene[]
+		} = wrapper(_options);
+		for (const scene of data.scenes) {
+			// @ts-expect-error
+			scene.name = game.scenes.get(scene._id).name;
+		}
+		return data;
+	}
+
+	private static SceneNavigation_activateListeners(this: SceneNavigation, wrapper: (html: JQuery) => void, html: JQuery) {
+		wrapper(html);
+		html.find('li.scene.nav-item').each((_, element) => {
+			const scene = game.scenes.get(element.getAttribute('data-scene-id'));
+
+			// Players will get a tooltip if the nav name is longer than 32 characters
+			if (!game.user.isGM) {
+				const title = scene.data.navName ?? scene.data.name;
+				if (title.length > 32)
+					element.title = scene.data.navName ?? scene.data.name;
+				return;
+			}
+
+			// Don't add a title if there is no Nav Name
+			if (!scene.data.navName || scene.data.navName.trim().length === 0) return;
+			// If we are displaying the scene's Real Name
+			if (SETTINGS.get(DFSceneNav.SCENE_NAV_REAL_NAME))
+				element.title = 'DF-SCENE-ENHANCE.Nav.Tooltip_PC'.localize() + scene.data.navName;
+			else
+				element.title = scene.data.name;
+		});
 	}
 }

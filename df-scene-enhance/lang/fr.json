@@ -1,30 +1,40 @@
 {
-	"DF-SCENE-ENHANCE.errorLibWrapperMissing": "'DF Scene Enhancements' nécessite le module 'libWrapper'. Veuillez installer et activer 'libWrapper'.",
-	"DF-SCENE-ENHANCE.Thumbnail_Label": "Remplacer Aperçu de l'image",
-	"DF-SCENE-ENHANCE.Thumbnail_Hint": "Chemin de la vignette",
-	"DF-SCENE-ENHANCE.Thumbnail_Button": "Parcourir les fichiers",
-
-	"DF-SCENE-ENHANCE.Nav_NavigateMenuItem": "Naviguer",
-	"DF-SCENE-ENHANCE.Nav_SettingOnClick": "Naviguer lorsque la scène est cliquée",
-	"DF-SCENE-ENHANCE.Nav_SettingOnClickHint": "Lorsqu'une scène est cliquée, elle est dirigée vers (Toujours vrai pour les joueurs). MISES À JOUR SUR LE PROCHAIN CHANGEMENT DE SCÈNE",
-	"DF-SCENE-ENHANCE.Nav_SettingOnClickPC": "Activer l'onglet Scène pour les joueurs",
-	"DF-SCENE-ENHANCE.Nav_SettingOnClickPCHint": "(nécessite une actualisation) Autoriser les joueurs à utiliser l'onglet Scènes pour effectuer la navigation.",
-	"DF-SCENE-ENHANCE.Nav_SettingOnClickJournal": "Naviguer lorsqu'un clic sur une référence de scène dans un journal",
-	"DF-SCENE-ENHANCE.Nav_SettingOnClickJournalHint": "Si une entrée de journal contient un lien de scène, cliquer dessus vous permettra d'accéder à cette scène.",
-	"DF-SCENE-ENHANCE.Nav_SettingOnClickJournalOnlyOne": "Exécuter le lien de scène immédiatement si une seule option est disponible",
-	"DF-SCENE-ENHANCE.Nav_SettingOnClickJournalOnlyOneHint": "Si une seule option est disponible, n'affichez pas la boîte de dialogue et exécutez simplement l'action immédiatement.",
-
-	"DF-SCENE-ENHANCE.Dialog_JournalTitle": "Navigation de Scène: ",
-	"DF-SCENE-ENHANCE.Dialog_JournalMessage": "Comment voulez-vous ouvrir cette scène?",
-	"DF-SCENE-ENHANCE.Dialog_JournalNavigate": "Naviguer",
-	"DF-SCENE-ENHANCE.Dialog_JournalJournal": "Journal",
-	"DF-SCENE-ENHANCE.Dialog_JournalConfig": "Config",
-
-	"DF-SCENE-ENHANCE.Ratio_Denominator": "Dénominateur",
-	"DF-SCENE-ENHANCE.Ratio_Numerator": "Numérateur",
-	"DF-SCENE-ENHANCE.Ratio_LockRatio": "Verrouiller le Ratio",
-	"DF-SCENE-ENHANCE.Ratio_SizeRatio": "Ratio de Taille",
-	"DF-SCENE-ENHANCE.Ratio_ApplyRatio": "Appliquer rapport à la largeur/hauteur",
-	"DF-SCENE-ENHANCE.Ratio_Scale": "L'Échelle",
-	"DF-SCENE-ENHANCE.Ratio_ApplyScale": "Multiplier largeur/hauteur par échelle"
+	"DF-SCENE-ENHANCE": {
+		"errorLibWrapperMissing": "'DF Scene Enhancements' nécessite le module 'libWrapper'. Veuillez installer et activer 'libWrapper'.",
+		"Thumbnail": {
+			"Label": "Remplacer Aperçu de l'image",
+			"Hint": "Chemin de la vignette",
+			"Button": "Parcourir les fichiers"
+		},
+		"Nav": {
+			"NavigateMenuItem": "Naviguer",
+			"SettingOnClick": "Naviguer lorsque la scène est cliquée",
+			"SettingOnClickHint": "Lorsqu'une scène est cliquée, elle est dirigée vers (Toujours vrai pour les joueurs). MISES À JOUR SUR LE PROCHAIN CHANGEMENT DE SCÈNE",
+			"SettingOnClickPC": "Activer l'onglet Scène pour les joueurs",
+			"SettingOnClickPCHint": "(nécessite une actualisation) Autoriser les joueurs à utiliser l'onglet Scènes pour effectuer la navigation.",
+			"SettingOnClickJournal": "Naviguer lorsqu'un clic sur une référence de scène dans un journal",
+			"SettingOnClickJournalHint": "Si une entrée de journal contient un lien de scène, cliquer dessus vous permettra d'accéder à cette scène.",
+			"SettingOnClickJournalOnlyOne": "Exécuter le lien de scène immédiatement si une seule option est disponible",
+			"SettingOnClickJournalOnlyOneHint": "Si une seule option est disponible, n'affichez pas la boîte de dialogue et exécutez simplement l'action immédiatement.",
+			"SettingRealName": "Afficher les noms complets dans la barre de navigation pour GM",
+			"SettingRealNameHint": "Remplace la barre de navigation de la scène pour afficher le nom complet de la scène pour les utilisateurs GM.",
+			"Tooltip_PC": "Nom de nav: "
+		},
+		"Dialog": {
+			"JournalTitle": "Navigation de Scène: ",
+			"JournalMessage": "Comment voulez-vous ouvrir cette scène?",
+			"JournalNavigate": "Naviguer",
+			"JournalJournal": "Journal",
+			"JournalConfig": "Config"
+		},
+		"Ratio": {
+			"Denominator": "Dénominateur",
+			"Numerator": "Numérateur",
+			"LockRatio": "Verrouiller le Ratio",
+			"SizeRatio": "Ratio de Taille",
+			"ApplyRatio": "Appliquer rapport à la largeur/hauteur",
+			"Scale": "L'Échelle",
+			"ApplyScale": "Multiplier largeur/hauteur par échelle"
+		}
+	}
 }
