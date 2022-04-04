@@ -2,6 +2,7 @@
 
 ## Release 1.2.0 (2022-04-04)
 - **NEW #332:** Each template type can now be independently configured.
+- **NEW #330:** Experimental Percentage based Token Auto-Target. This uses the Point Grid settings and targets tokens based on the percentage of points within the template.
 - **FIX #333:** Added Width/Height fields to the rectangle template shape which Sequencer is expecting.
 
 ## Release 1.1.1 (2022-03-09)

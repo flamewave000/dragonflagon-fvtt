@@ -44,6 +44,7 @@ export default class TemplateTargeting {
 	private static readonly TARGETING_TOGGLE_PREF = "template-targeting-toggle";
 	private static readonly TARGETING_MODE_PREF = "template-targeting";
 	private static readonly GRIDLESS_RESOLUTION_PREF = "template-gridless-resolution";
+	private static readonly GRIDLESS_PERCENTAGE_PREF = "template-gridless-percentage";
 
 	private static readonly PointGraphContainer = new PIXI.Graphics();
 
@@ -83,6 +84,19 @@ export default class TemplateTargeting {
 			},
 			type: Number,
 			default: 3
+		});
+		SETTINGS.register<number>(TemplateTargeting.GRIDLESS_PERCENTAGE_PREF, {
+			config: true,
+			scope: 'world',
+			name: 'DF_TEMPLATES.GridlessPointPercentageName',
+			hint: 'DF_TEMPLATES.GridlessPointPercentageHint',
+			range: {
+				max: 100,
+				min: 0,
+				step: 10
+			},
+			type: Number,
+			default: 0
 		});
 		SETTINGS.register(TemplateTargeting.PREVIEW_PREF, {
 			config: true,
@@ -138,7 +152,7 @@ export default class TemplateTargeting {
 		}
 		// Register for the regular template movement preview
 		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.refresh', function (this: MeasuredTemplate, wrapper: AnyFunction) {
-			ThrottledTemplateRefresh.apply(this );
+			ThrottledTemplateRefresh.apply(this);
 			return wrapper();
 			// return wrapper();
 		}, 'WRAPPER');
@@ -444,6 +458,12 @@ export default class TemplateTargeting {
 
 				// Ignore changing the target selection if we don't own the template, or `shouldAutoSelect` is false
 				if (!isOwner || !shouldAutoSelect) continue;
+
+				// If we are using Point based targetting for this template
+				if (TemplateConfig.config[this.data.t] === HighlightMode.POINTS) {
+					TemplateTargeting._selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this.data, <PIXI.Polygon>this.shape, true);
+					continue;
+				}
 				// Iterate over all existing tokens and target the ones within the template area
 				for (const token of canvas.tokens.placeables) {
 					const tokenRect = new NormalizedRectangle(token.x, token.y, token.w, token.h);
@@ -493,6 +513,9 @@ export default class TemplateTargeting {
 			let y = 0;
 			let pointFound = false;
 			if (DebugMode) pointGraphics.beginFill(0xFF0000);
+			const percentage = SETTINGS.get<number>(TemplateTargeting.GRIDLESS_PERCENTAGE_PREF) / 100;
+			const pointCount = verPoints * horPoints;
+			let hitCount = 0;
 			for (let row = 0; !pointFound && row < verPoints; row++) {
 				for (let col = 0; col < horPoints; col++) {
 					if (pointResolution > 1) {
@@ -506,11 +529,16 @@ export default class TemplateTargeting {
 					if (DebugMode) pointGraphics.drawCircle(x + data.x, y + data.y, 3);
 					// If the point is not contained in the shape, ignore it
 					if (!shape.contains(x, y)) continue;
-					// Otherwise, mark the token as selected
-					token.setTarget(true, { user: game.user, releaseOthers: false, groupSelection: true });
-					if (!DebugMode) {
-						pointFound = true;
-						break;
+					// Increment our hit count for percentage based targetting
+					hitCount++;
+					// If we target on touch or hit our required percentage
+					if (percentage === 0 || Math.roundDecimals(hitCount / pointCount, 1) >= percentage) {
+						// Mark the token as selected
+						token.setTarget(true, { user: game.user, releaseOthers: false, groupSelection: true });
+						if (!DebugMode) {
+							pointFound = true;
+							break;
+						}
 					}
 				}
 			}

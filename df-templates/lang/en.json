@@ -8,6 +8,8 @@
 		"SnapIntersectHint": "Some rules systems (such as D&D 5e) state that spell templates should originate from a grid intersection.",
 		"GridlessPointResolutionName": "Auto-Target Gridless Resolution (Default: 3)",
 		"GridlessPointResolutionHint": "How many points along each axis to generate for auto-targetting in gridless scenes (Example: for 3, there will be 3 x 3 = 9 points over each square). A higher number might cause slower performance with lots of tokens in a scene.",
+		"GridlessPointPercentageName": "Auto-Target Gridless Percentage (Default: 0)",
+		"GridlessPointPercentageHint": "What percentage of points need to be within the template for it to highlight them. Setting this to 0 means just one point needs to be inside to be targetted.",
 		"PreviewName": "Preview Template Highlight/Targeting",
 		"PreviewHint": "Show the grid highlight and perform auto-targeting when moving or creating a template.",
 		"SquareRotateName": "Fix Square Template Rotation",
@@ -32,6 +34,10 @@
 				"touch": {
 					"label": "Touches",
 					"desc": "If <b>Any</b> part of a grid cell is <b>Touched</b>, that cell will be highlighted."
+				},
+				"points": {
+					"label": "Point Grid (Experimental)",
+					"desc": "Highlight a grid square only if points on the square are inside the template. The number of points are based on the percent slider in the Gridless settings.<br><i><b>This is experimental</b> and only used for token targetting. The grid highlight uses Touch Mode in order to test the tokens.</i>"
 				}
 			}
 		}

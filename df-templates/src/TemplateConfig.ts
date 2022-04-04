@@ -20,7 +20,8 @@ interface Data extends Config {
 
 export enum HighlightMode {
 	CENTER = 'center',
-	TOUCH = 'touch'
+	TOUCH = 'touch',
+	POINTS = 'points'
 }
 
 export class TemplateConfig extends FormApplication<any, Data> {
