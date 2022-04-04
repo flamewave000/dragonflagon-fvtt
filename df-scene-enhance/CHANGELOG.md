@@ -1,5 +1,8 @@
 # DF Scene Enhancement Changes
 
+## Release 3.5.1 (2022-04-04)
+- **FIX #297:** Player scenes tab now renders properly in V9.
+
 ## Release 3.5.0 (2022-01-02)
 - **UPDATED:** Migrated to FoundryVTT V9.
 - **UPDATED #274:** Japanese Localization: Courtesy of touge and [BrotherSharper](https://github.com/BrotherSharper).

@@ -58,26 +58,35 @@ export default class DFSceneNav {
 
 	static patchSidebar() {
 		libWrapper.register(SETTINGS.MOD_NAME, 'Sidebar.prototype._render', async function (this: Sidebar, wrapper: AnyFunction, force: boolean, options = {}) {
+			if (!SETTINGS.get(DFSceneNav.ON_CLICK_PLAYER))
+				return wrapper(force, options);
+			/************** COPIED FROM Sidebar.prototype._render *************/
 			// Render the Sidebar container only once
-			// @ts-ignore
-			if (!this.rendered) await Application.prototype._render.bind(this)(force, options);
-			const pcClick = SETTINGS.get(DFSceneNav.ON_CLICK_PLAYER);
+			// @ts-expect-error
+			if (!this.rendered) await Application.prototype._render.apply(this, [force, options]);
+
 			// Define the sidebar tab names to render
-			const tabs = ["chat", "combat", "actors", "items", "journal", "tables", "playlists", "compendium", "settings"];
-			if (game.user.isGM || pcClick) tabs.push("scenes");
+			const tabs = ["chat", "combat", "actors", "items", "journal", "tables", "cards", "playlists", "compendium", "settings"];
+			if (game.user.isGM || SETTINGS.get(DFSceneNav.ON_CLICK_PLAYER)) tabs.push("scenes");
 
 			// Render sidebar Applications
 			for (const [name, app] of Object.entries(this.tabs)) {
-				// @ts-ignore
+				// @ts-expect-error
 				app._render(true).catch(err => {
-					err.message = `Failed to render Sidebar tab ${name}: ${err.message}`;
-					console.error(err);
+					// @ts-expect-error
+					Hooks.onError("Sidebar#_render", err, {
+						msg: `Failed to render Sidebar tab ${name}`,
+						log: "error",
+						name
+					});
 				});
 			}
+			/******************************************************************/
 		}, 'MIXED');
-		libWrapper.register(SETTINGS.MOD_NAME, 'SceneDirectory.prototype._render', async (wrapper: AnyFunction, ...args: any[]) => {
-			if (!game.user.isGM && !SETTINGS.get(DFSceneNav.ON_CLICK_PLAYER)) return;
-			return wrapper(...args);
+		libWrapper.register(SETTINGS.MOD_NAME, 'SceneDirectory.prototype._render', async function (this: SceneDirectory, wrapper: AnyFunction, ...args: any) {
+			if (!SETTINGS.get(DFSceneNav.ON_CLICK_PLAYER)) return wrapper(...args);
+			// @ts-expect-error
+			return SidebarDirectory.prototype._render.apply(this, <any>[...args]);
 		}, 'MIXED');
 		libWrapper.register(SETTINGS.MOD_NAME, 'Sidebar.prototype.getData', (wrapper: (options: any) => Sidebar.Data, options: any) => {
 			return mergeObject(wrapper(options), { scenesAllowed: game.user.isGM || SETTINGS.get(DFSceneNav.ON_CLICK_PLAYER) });
