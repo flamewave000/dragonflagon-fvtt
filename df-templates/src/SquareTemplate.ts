@@ -41,7 +41,13 @@ export default class SquareTemplate {
 		const botLeft = matrix.apply(new PIXI.Point(EPSILON, size));
 		const botRight = matrix.apply(new PIXI.Point(size, size));
 		// Inject the vector data into a Polygon object to create a closed shape.
-		return new PIXI.Polygon([topLeft.x, topLeft.y, topRight.x, topRight.y, botRight.x, botRight.y, botLeft.x, botLeft.y, topLeft.x, topLeft.y]);
+		const shape = <any>new PIXI.Polygon([topLeft.x, topLeft.y, topRight.x, topRight.y, botRight.x, botRight.y, botLeft.x, botLeft.y, topLeft.x, topLeft.y]);
+		// Add these fields so that the Sequencer mod doesn't have a stroke lol
+		shape.x = topLeft.x;
+		shape.y = topLeft.y;
+		shape.width = size;
+		shape.height = size;
+		return <PIXI.Polygon>shape;
 	}
 
 	private static MeasuredTemplate_refreshRulerText(this: MeasuredTemplate, wrapped: () => void): void {

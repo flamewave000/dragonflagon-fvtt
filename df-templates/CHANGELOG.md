@@ -2,6 +2,7 @@
 
 ## Release 1.2.0 (2022-04-04)
 - **NEW #332:** Each template type can now be independently configured.
+- **FIX #333:** Added Width/Height fields to the rectangle template shape which Sequencer is expecting.
 
 ## Release 1.1.1 (2022-03-09)
 - **FIX:** Intersection snapping will no longer occur on gridless scenes.
