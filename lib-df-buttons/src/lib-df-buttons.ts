@@ -1,34 +1,5 @@
 import SETTINGS from "../../common/Settings";
 import ControlManagerImpl from "./ControlManager";
-import { Tool, ToolGroup } from "./ToolType";
-
-/** Manages the button UI, Hooks, and User Interactions. */
-export interface ControlManager {
-	/** Complete list of {@link ToolGroup} objects. */
-	groups: ToolGroup[];
-	/** Name of currently active {@link ToolGroup}. */
-	activeGroupName: string;
-	/** Name of the currently active {@link Tool}. */
-	get activeToolName(): string;
-	/** The currently active {@link ToolGroup} object. */
-	get activeGroup(): ToolGroup;
-	/** The currently active {@link Tool} object. */
-	get activeTool(): Tool;
-	/**
-	 * Activates a {@link ToolGroup} by its unique name.
-	 * @param groupName Name of the group to be activated.
-	 */
-	activateGroupByName(groupName: string): void;
-	/**
-	 * Activates a {@link Tool} inside the given {@link ToolGroup} via their unique names.
-	 * @param groupName Name of group that contains the {@link Tool}.
-	 * @param toolName Name of the {@link Tool} to be activated.
-	 * @param activateGroup (Default true) Also activate the {@link ToolGroup}.
-	 */
-	activateToolByName(groupName: string, toolName: string, activateGroup?: boolean): void;
-	/** Reload the module buttons bar by rebuilding the {@link ToolGroup}s and rerendering. */
-	reloadModuleButtons(): void;
-}
 
 SETTINGS.init('lib-df-buttons');
 
