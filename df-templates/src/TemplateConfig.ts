@@ -31,11 +31,12 @@ export class TemplateConfig extends FormApplication<any, Data> {
 	private static _options: Option[];
 	private static get options(): Option[] {
 		if (!this._options) {
-			this._options = Object.entries<Option>((game.i18n.translations['DF_TEMPLATES'] as any)['TemplateConfig']['Options'])
-				.map(x => {
-					x[1].type = x[0];
-					return x[1];
-				});
+			const root: Record<string, Option> =
+				<any>(game.i18n.translations['DF_TEMPLATES'] ?? (game.i18n as any)._fallback['DF_TEMPLATES'])['TemplateConfig']['Options'];
+			this._options = Object.keys(root).map(key => {
+				root[key].type = key;
+				return root[key];
+			});
 		}
 		return this._options;
 	}

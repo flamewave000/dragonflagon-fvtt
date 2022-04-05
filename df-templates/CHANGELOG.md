@@ -1,5 +1,8 @@
 # DragonFlagon Template Enhancements
 
+## Release 1.2.1 (2022-04-05)
+- **FIX #350:** Error when opening config while on a language other than English.
+
 ## Release 1.2.0 (2022-04-04)
 - **NEW #332:** Each template type can now be independently configured.
 - **NEW #330:** Experimental Percentage based Token Auto-Target. This uses the Point Grid settings and targets tokens based on the percentage of points within the template.
