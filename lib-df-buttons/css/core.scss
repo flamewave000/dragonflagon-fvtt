@@ -80,11 +80,9 @@
 }
 
 #moduleControls.top {
+	top: 0;
 	flex-direction: column;
 	height: fit-content;
-	width: calc(100vw - 430px);
-	top: 73px;
-	left: 120px;
 	.controls.active {
 		flex-direction: row;
 		flex-wrap: wrap;
@@ -93,8 +91,7 @@
 }
 
 #moduleControls.left {
-	top: 73px;
-	left: 120px;
+	top: 0;
 	width: fit-content;
 	height: calc(100vh - 150px);
 	flex-direction: row;

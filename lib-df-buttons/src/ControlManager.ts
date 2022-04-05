@@ -133,7 +133,7 @@ export default class ControlManager extends Application {
 			if (tool.onClick instanceof Function) this._invokeHandler(tool.onClick, tool);
 		}
 		// Handle Tools
-		else 
+		else
 			this.activateToolByName(this.activeGroupName, toolName, true);
 	}
 
@@ -144,6 +144,8 @@ export default class ControlManager extends Application {
 			Hooks.on('activateToolByName', this.activateToolByName);
 			Hooks.on('reloadModuleButtons', this.reloadModuleButtons);
 			Hooks.on('renderSceneControls', this._handleWindowResize);
+			Hooks.on('collapseSceneNavigation', this._handleWindowResize);
+			Hooks.on('renderPlayerList', this._handleWindowResize);
 			window.addEventListener('resize', this._handleWindowResize);
 		}
 		await super._render(force, options);
@@ -168,6 +170,9 @@ export default class ControlManager extends Application {
 		Hooks.off('activateGroupByName', this.activateGroupByName);
 		Hooks.off('activateToolByName', this.activateToolByName);
 		Hooks.off('reloadModuleButtons', this.reloadModuleButtons);
+		Hooks.off('renderSceneControls', this._handleWindowResize);
+		Hooks.off('collapseSceneNavigation', this._handleWindowResize);
+		Hooks.off('renderPlayerList', this._handleWindowResize);
 		window.removeEventListener('resize', this._handleWindowResize);
 		return super.close(options);
 	}
@@ -183,37 +188,57 @@ export default class ControlManager extends Application {
 			(<ControlManager>(<any>ui).moduleControls).element.animate({ right: '310px' }, 150);
 	}
 
-	private static readonly CONTROL_SIZE = 46;
+	private static readonly CONTROL_WIDTH = 38 + 5;
+	private static readonly CONTROL_HEIGHT = 48;
 	private _handleWindowResize() {
 		const self = <ControlManager>(<any>ui).moduleControls;
 		let max: number;
 		let cols: number;
+
+		const setLeftWidth = () => {
+			// const sceneLayers = document.querySelector<HTMLElement>('#controls > ol.main-controls.app.control-tools.flexcol');
+			// max = Math.floor(sceneLayers.offsetHeight / ControlManager.CONTROL_WIDTH);
+			// cols = Math.ceil(sceneLayers.childElementCount / max);
+			cols = 1;
+			const sceneTools = document.querySelector<HTMLElement>('#controls > ol.sub-controls.app.control-tools.flexcol.active');
+			max = Math.floor(sceneTools.offsetHeight / ControlManager.CONTROL_HEIGHT);
+			cols += Math.ceil(sceneTools.childElementCount / max);
+			self.element[0].style.marginLeft = `${cols * ControlManager.CONTROL_WIDTH + 20}px`;
+		};
+
+		const setTopHeight = (magnetToSceneControls: boolean) => {
+			const uiTop = document.querySelector<HTMLElement>('#ui-middle #ui-top #navigation');
+			let top = uiTop.offsetHeight + uiTop.offsetTop;
+			if (magnetToSceneControls) {
+				const layers = document.querySelector<HTMLElement>('#ui-left > #controls > ol.main-controls.app.control-tools.flexcol');
+				top = Math.max(top, layers.offsetTop);
+			}
+			self.element[0].style.marginTop = `${top}px`;
+		};
+
 		switch (SETTINGS.get('position')) {
 			case 'top': {
-				const sceneTools = document.querySelector<HTMLElement>('#controls > li.scene-control.active > ol');
-				max = Math.floor(sceneTools.offsetHeight / ControlManager.CONTROL_SIZE);
-				cols = Math.ceil(sceneTools.childElementCount / max);
-				self.element[0].style.marginLeft = `${(cols - 1) * (ControlManager.CONTROL_SIZE - 2)}px`;
+				setTopHeight(false);
+				setLeftWidth();
 				break;
 			}
 			case 'left': {
-				max = Math.floor(self.element[0].offsetHeight / ControlManager.CONTROL_SIZE);
+				const controls = document.querySelector<HTMLElement>('#ui-left > #controls');
+				self.element[0].style.height = `${controls.offsetHeight}px`;
+				max = Math.floor(controls.offsetHeight / ControlManager.CONTROL_WIDTH);
 				cols = Math.ceil(self.groups.length / max);
-				self.element.find('.group-tools').css('margin-left', `${(cols - 1) * (ControlManager.CONTROL_SIZE - 2)}px`);
-
-				const sceneTools = document.querySelector<HTMLElement>('#controls > li.scene-control.active > ol');
-				max = Math.floor(sceneTools.offsetHeight / ControlManager.CONTROL_SIZE);
-				cols = Math.ceil(sceneTools.childElementCount / max);
-				self.element[0].style.marginLeft = `${(cols - 1) * (ControlManager.CONTROL_SIZE - 2)}px`;
+				self.element.find('.group-tools').css('margin-left', `${(cols - 1) * (ControlManager.CONTROL_WIDTH + 2)}px`);
+				setTopHeight(true);
+				setLeftWidth();
 				break;
 			}
 			case 'bottom': {
 				break;
 			}
 			case 'right': default: {
-				max = Math.floor(self.element[0].offsetHeight / ControlManager.CONTROL_SIZE);
+				max = Math.floor(self.element[0].offsetHeight / ControlManager.CONTROL_WIDTH);
 				cols = Math.ceil(self.groups.length / max);
-				self.element.find('.group-tools').css('margin-right', `${(cols - 1) * (ControlManager.CONTROL_SIZE - 2)}px`);
+				self.element.find('.group-tools').css('margin-right', `${(cols - 1) * (ControlManager.CONTROL_WIDTH + 2)}px`);
 				break;
 			}
 		}

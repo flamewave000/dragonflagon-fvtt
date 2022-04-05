@@ -46,7 +46,7 @@ Hooks.once('init', () => {
 		name: 'LIB_DF_BUTTONS.name',
 		hint: 'LIB_DF_BUTTONS.hint',
 		config: true,
-		default: 'right',
+		default: 'left',
 		type: String,
 		onChange: () => (<ControlManagerImpl>(<any>ui).moduleControls).render()
 	});
@@ -83,7 +83,7 @@ Hooks.once('ready', () => {
 });
 /* Example code for appending ToolGroups and Tools */
 /**
-import { Tool, ToolGroup } from "./ToolType";
+//import { Tool, ToolGroup } from "./ToolType";
 Hooks.on('getModuleToolGroups', (app: ControlManager, groups: ToolGroup[]) => {
 	const handleClick = function (this: Tool, active?: boolean) {
 		if (active !== undefined)
