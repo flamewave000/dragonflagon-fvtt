@@ -3,6 +3,7 @@
 ## Release 3.3.1 (2022-04-04)
 - **UPDATED #274:** Japanese Localization: Courtesy of touge and [BrotherSharper](https://github.com/BrotherSharper).
 - **FIX #314:** Added handling for disabled canvas mode.
+- **FIX #303:** Fix render issues when you accidentally move a wall while placing a template.
 
 ## Release 3.3.0 (2021-12-30)
 - **UPDATED:** Migrated to FoundryVTT V9

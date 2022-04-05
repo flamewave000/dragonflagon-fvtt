@@ -58,7 +58,6 @@ export class CurvyWallToolManager {
 		[Mode.Rect, { l1: [-100, -100], l2: [100, 100], t: 1, r: 1, b: 1, l: 1 }],
 	]);
 	private _pointMapper = new PointMapper();
-	private _notification: any;
 
 	get segments(): number { return this._activeTool.segments; }
 	set segments(value: number) {
@@ -301,15 +300,21 @@ export class CurvyWallToolManager {
 		this._previousToolData.set(this._mode, this.activeTool.getData());
 	}
 
+	init() {
+		libWrapper.register(SETTINGS.MOD_NAME, 'Wall.prototype._onDragLeftStart', (wrapper: any, ...args: any) => {
+			this.clearTool();
+			wrapper(...args);
+		}, 'WRAPPER');
+	}
+
 	patchWallsLayer() {
 		this.wallsLayer = canvas.walls;
-		const MOD_NAME = 'df-curvy-walls';
-		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onClickLeft', CurvyWallToolManager._onClickLeft, 'MIXED');
-		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftStart', CurvyWallToolManager._onDragLeftStart, 'MIXED');
-		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftMove', CurvyWallToolManager._onDragLeftMove, 'MIXED');
-		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftDrop', CurvyWallToolManager._onDragLeftDrop, 'MIXED');
-		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftCancel', CurvyWallToolManager._onDragLeftCancel, 'MIXED');
-		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onClickRight', CurvyWallToolManager._onClickRight, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onClickLeft', CurvyWallToolManager._onClickLeft, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onDragLeftStart', CurvyWallToolManager._onDragLeftStart, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onDragLeftMove', CurvyWallToolManager._onDragLeftMove, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onDragLeftDrop', CurvyWallToolManager._onDragLeftDrop, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onDragLeftCancel', CurvyWallToolManager._onDragLeftCancel, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onClickRight', CurvyWallToolManager._onClickRight, 'MIXED');
 		Hooks.on('requestCurvyWallsRedraw', () => this.render());
 	}
 }

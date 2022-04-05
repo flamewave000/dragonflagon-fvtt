@@ -35,8 +35,6 @@ Hooks.once('init', function () {
 		type: Boolean,
 		default: false,
 	});
-	// Exit if we do not have a canvas
-	if (game.settings.get('core', 'noCanvas')) return;
 
 	game.keybindings.register(SETTINGS.MOD_NAME, 'applyTool', {
 		name: 'df-curvy-walls.apply',
@@ -60,6 +58,8 @@ Hooks.once('init', function () {
 		repeat: true,
 		onDown: () => { CurvyWallToolManager.instance.segments--; }
 	});
+
+	CurvyWallToolManager.instance.init();
 });
 
 Hooks.once("ready", function () {
