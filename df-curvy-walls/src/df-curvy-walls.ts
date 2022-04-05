@@ -6,7 +6,7 @@ import { BezierTool } from './tools/BezierTool';
 const curvyWallApp = new CurvyWallsToolBar();
 SETTINGS.init('df-curvy-walls');
 
-Hooks.once('init', function() {
+Hooks.once('init', function () {
 	SETTINGS.register(CurvyWallsToolBar.PREF_PRESERVE, {
 		scope: 'world',
 		type: Boolean,
@@ -35,7 +35,9 @@ Hooks.once('init', function() {
 		type: Boolean,
 		default: false,
 	});
-	
+	// Exit if we do not have a canvas
+	if (game.settings.get('core', 'noCanvas')) return;
+
 	game.keybindings.register(SETTINGS.MOD_NAME, 'applyTool', {
 		name: 'df-curvy-walls.apply',
 		editable: [{ key: "Enter" }],
@@ -61,6 +63,8 @@ Hooks.once('init', function() {
 });
 
 Hooks.once("ready", function () {
+	// Exit if we do not have a canvas
+	if (game.settings.get('core', 'noCanvas')) return;
 	if (!game.modules.get('lib-wrapper')?.active) {
 		console.error('Missing libWrapper module dependency');
 		if (game.user.isGM)
@@ -73,6 +77,8 @@ Hooks.once("ready", function () {
 });
 
 Hooks.on('renderSceneControls', async (controls: SceneControls) => {
+	// Exit if we do not have a canvas
+	if (game.settings.get('core', 'noCanvas')) return;
 	if (!game.modules.get('lib-wrapper')?.active) return;
 	if (!game.user.isGM) return;
 	if (controls.activeControl !== 'walls') {
