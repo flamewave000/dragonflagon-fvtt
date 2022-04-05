@@ -1,5 +1,9 @@
 # DragonFlagon Module Buttons Library
 
+## Release 1.0.3 (2022-04-05)
+- Fixed up some definitions.
+- `activateToolByName()` now has the `activateGroup` parameter default to `true` instead of `false`.
+
 ## Release 1.0.2 (2021-11-09)
 - FIX: Tool activation.
 

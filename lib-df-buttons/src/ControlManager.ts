@@ -240,7 +240,7 @@ export default class ControlManager extends Application {
 		self.render();
 		Hooks.callAll("toolGroupActivated", this, group);
 	}
-	activateToolByName(groupName: string, toolName: string, activateGroup?: boolean) {
+	activateToolByName(groupName: string, toolName: string, activateGroup: boolean = true) {
 		const self = <ControlManager>(<any>ui).moduleControls;
 		const group = self.groups.find(x => x.name === groupName);
 		if (!group) {
