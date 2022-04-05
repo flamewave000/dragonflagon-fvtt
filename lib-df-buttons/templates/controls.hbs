@@ -7,9 +7,11 @@
 
 <div id="moduleControls" class="app">
 	<ol class="controls active">
+		{{#unless singleGroup}}
 		{{#each groups as |g|}}
 		{{> control c=g d='group'}}
 		{{/each}}
+		{{/unless}}
 	</ol>
 	<div class="group-tools">
 		{{#each groups as |g|}}

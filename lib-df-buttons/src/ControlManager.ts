@@ -14,7 +14,10 @@ interface ToolGroupUI extends ToolUI {
 	tools: Partial<ToolUI>[];
 }
 
-type CMData = { groups: Partial<ToolGroupUI>[] };
+type CMData = {
+	groups: Partial<ToolGroupUI>[];
+	singleGroup: boolean;
+};
 
 export default class ControlManager extends Application implements IControlManager {
 	static async checkBoolean(field?: Predicate | boolean | null, invertFalsey = false): Promise<boolean> {
@@ -80,13 +83,19 @@ export default class ControlManager extends Application implements IControlManag
 			if (!this.activeGroupName && !group.toggle && !group.button && await ControlManager.checkBoolean(group.visible)) {
 				this.activeGroupName = group.name;
 				group.isActive = true;
+				// Notify the auto-selected group they are now selected
+				const currentGroup = this.activeGroup;
+				this._invokeHandler(currentGroup?.onClick, currentGroup, false);
 			}
 			// Initialize the tools for the group
-			for (const tool of group.tools) {
+			for (const tool of (group.tools ?? [])) {
 				ControlManager.initializeFields(tool);
 				if (!group.activeTool && !tool.toggle && !tool.button && await ControlManager.checkBoolean(tool.visible)) {
 					group.activeTool = tool.name;
 					tool.isActive = true;
+					// Notify the auto-selected tool they are now selected
+					const currentTool = this.activeTool;
+					this._invokeHandler(currentTool?.onClick, currentTool, false);
 				}
 			}
 		}
@@ -105,7 +114,7 @@ export default class ControlManager extends Application implements IControlManag
 	}
 
 	async getData(_?: Application.RenderOptions): Promise<CMData> {
-		if (this.groups.length == 0) return { groups: [] };
+		if (this.groups.length == 0) return { groups: [], singleGroup: false };
 		const groups: ToolGroupUI[] = [];
 		for (const group of this._groups) {
 			if (!await ControlManager.checkBoolean(group.visible, true)) continue;
@@ -131,7 +140,7 @@ export default class ControlManager extends Application implements IControlManag
 			}
 			groups.push(groupUI);
 		}
-		return { groups };
+		return { groups, singleGroup: groups.length === 1 };
 	}
 
 	/** @inheritdoc */
@@ -366,6 +375,15 @@ export default class ControlManager extends Application implements IControlManag
 		Hooks.callAll("toolActivated", this, group, tool);
 	}
 	reloadModuleButtons() {
+		Hooks.callAll("moduleButtonsReloading", this);
+		// Notify the current group that they are now disabled before we rebuild
+		const currentGroup = this.activeGroup;
+		this._invokeHandler(currentGroup?.onClick, currentGroup, false);
+		// Notify all selected tools of being deactivated
+		for (const group of this._groups) {
+			const currentTool = group.activeTool && group.tools ? group.tools.find(x => x.name === group.activeTool) : undefined;
+			this._invokeHandler(currentTool?.onClick, currentTool, false);
+		}
 		(<ControlManager>(<any>ui).moduleControls).initialize();
 		(<ControlManager>(<any>ui).moduleControls).render();
 	}

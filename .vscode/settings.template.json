@@ -12,6 +12,7 @@
 		"**/.github": true
 	},
 	"cSpell.words": [
+		"falsey",
 		"beziercirc",
 		"unpatch",
 		"unsetters"

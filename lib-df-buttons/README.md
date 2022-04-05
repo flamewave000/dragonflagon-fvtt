@@ -159,6 +159,8 @@ Hooks.on('getModuleToolGroupsPost', (app: ControlManager, groups: ToolGroup[]) =
 Hooks.on('toolGroupActivated', (app: ControlManager, groups: ToolGroup[]) => {});
 /* Broadcast when a Tool has been activated, and the parent `ToolGroup` and activated `Tool` instances are passed to it */
 Hooks.on('toolActivated', (app: ControlManager, groups: ToolGroup[]) => {});
+/* Broadcast when a request has been made to tear down and rebuild the module buttons. Called whenever `ControlManager.reloadModuleButtons()` is invoked */
+Hooks.on('moduleButtonsReloading', (app: ControlManager) => {});
 ```
 ### Hooks that are monitored
 ```typescript

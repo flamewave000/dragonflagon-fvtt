@@ -125,7 +125,7 @@ Hooks.on('getModuleToolGroups', (app: ControlManager, groups: ToolGroup[]) => {
 		icon: '<i class="fas fa-dice-two"></i>',
 		title: 'toggle2',
 		toggle: true,
-		active: true,
+		isActive: true,
 		onClick: handleClick,
 	});
 });
