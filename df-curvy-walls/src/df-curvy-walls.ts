@@ -59,6 +59,7 @@ Hooks.once('init', function () {
 		onDown: () => { CurvyWallToolManager.instance.segments--; }
 	});
 
+	CurvyWallsToolBar.init();
 	CurvyWallToolManager.instance.init();
 });
 
@@ -76,6 +77,8 @@ Hooks.once("ready", function () {
 	CurvyWallToolManager.instance.patchWallsLayer();
 });
 
+let moduleControls: ControlManager;
+
 Hooks.on('renderSceneControls', async (controls: SceneControls) => {
 	// Exit if we do not have a canvas
 	if (game.settings.get('core', 'noCanvas')) return;
@@ -83,9 +86,16 @@ Hooks.on('renderSceneControls', async (controls: SceneControls) => {
 	if (!game.user.isGM) return;
 	if (controls.activeControl !== 'walls') {
 		await curvyWallApp.close();
+		if ((moduleControls as any)._state === 2)
+			moduleControls.refresh();
 		return;
 	}
+	else if ((moduleControls as any)._state === 2)
+		moduleControls.activateGroupByName(SETTINGS.MOD_NAME);
 	curvyWallApp.render(true);
 	if (CurvyWallToolManager.instance.mode != Mode.None)
 		CurvyWallToolManager.instance.render();
 });
+// Refresh the curvy wall controls when the button bar re-renders
+Hooks.on('renderControlManager', () => curvyWallApp.render());
+Hooks.on('getModuleToolGroupsPre', (app: ControlManager) => { moduleControls = app; });

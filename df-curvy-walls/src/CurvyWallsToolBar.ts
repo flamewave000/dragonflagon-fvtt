@@ -26,6 +26,55 @@ interface CurvyWallsToolsOptions {
 }
 
 export class CurvyWallsToolBar extends Application {
+	static init() {
+		Hooks.on('getModuleToolGroups', (controlManager: ControlManager, groups: ToolGroup[]) => {
+			groups.push(
+				{
+					name: SETTINGS.MOD_NAME,
+					icon: '<i class="fas fa-bezier-curve"></i>',
+					title: 'Curvy Walls Tools',
+					visible: () => {
+						return ui.controls.activeControl === 'walls';
+					},
+					tools: [
+						{
+							name: 'cubic',
+							title: "df-curvy-walls.cubic",
+							icon: '<i class="fas fa-bezier-curve"></i>',
+							toggle: true,
+							isActive: () => CurvyWallToolManager.instance.mode === Mode.Cube,
+							onClick: active => { CurvyWallToolManager.instance.mode = active ? Mode.Cube : Mode.None; }
+						},
+						{
+							name: 'quadratic',
+							title: "df-curvy-walls.quadratic",
+							icon: '<i class="fas fa-project-diagram"></i>',
+							toggle: true,
+							isActive: () => CurvyWallToolManager.instance.mode === Mode.Quad,
+							onClick: active => { CurvyWallToolManager.instance.mode = active ? Mode.Quad : Mode.None; }
+						},
+						{
+							name: 'circle',
+							title: "df-curvy-walls.circle",
+							icon: '<i class="fas fa-circle"></i>',
+							toggle: true,
+							isActive: () => CurvyWallToolManager.instance.mode === Mode.Circ,
+							onClick: active => { CurvyWallToolManager.instance.mode = active ? Mode.Circ : Mode.None; }
+						},
+						{
+							name: 'rectangle',
+							title: "df-curvy-walls.rectangle",
+							icon: '<i class="fas fa-vector-square"></i>',
+							toggle: true,
+							isActive: () => CurvyWallToolManager.instance.mode === Mode.Rect,
+							onClick: active => { CurvyWallToolManager.instance.mode = active ? Mode.Rect : Mode.None; }
+						}
+					]
+				}
+			);
+		});
+	}
+
 	static readonly PREF_PRESERVE = 'preserve-tool';
 
 	static get defaultOptions(): Application.Options {
@@ -170,19 +219,24 @@ export class CurvyWallsToolBar extends Application {
 	}
 
 	activateListeners(html: JQuery<HTMLElement>) {
-		if ((<any>window).buttonOverflow !== undefined) {
-			const align = () => {
-				const layersHeight = $("ol#controls").height();
-				const controlsHeight = $('ol#controls>li[data-control="walls"]>ol').height();
-				const layerCount = document.querySelector("ol#controls").childElementCount;
-				const controlCount = document.querySelector('ol#controls>li[data-control="walls"]>ol').childElementCount;
-				const layers = Math.ceil(((layerCount - ((<any>window).buttonOverflow.hiddenButtons || 0)) / layersHeight) * 46) * 46 + 10;
-				const controls = Math.ceil((controlCount / controlsHeight) * 46) * 46;
-				// document.body.style.setProperty("--playerlist-offset", `${layers}px`);
-				html.css('left', `${layers + controls}px`);
-			};
-			window.addEventListener("resize", align);
-			align();
+		const toolbarPosition = game.settings.get('lib-df-buttons', 'position');
+		switch (toolbarPosition) {
+			case 'top':
+				html.remove();
+				$(document.querySelector('#moduleControls')).append(html);
+				html.css('position', 'unset');
+				break;
+			case 'left':
+				html.remove();
+				$(document.querySelector('#moduleControls')).append(html);
+				html.css('top', '0');
+				html.css('left', '46px');
+				break;
+			case 'right':
+			case 'bottom':
+				html.css('left', (ui as any).moduleControls.getLeftWidth() + 'px');
+				html.css('top', (ui as any).moduleControls.getTopHeight(true) + 'px');
+				break;
 		}
 		html.find('li').on("click", (event: JQuery.ClickEvent) => {
 			const element = $(event.currentTarget);

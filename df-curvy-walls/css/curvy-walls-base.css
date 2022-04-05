@@ -8,9 +8,13 @@
 }
 
 #df-curvy-walls-tools ol {
-	margin: 0 0 0 7px;
+	margin: 0 10px 0 0;
 	list-style: none;
 	padding: 0;
+}
+
+#moduleControls #df-curvy-walls-tools ol {
+	margin: 0;
 }
 
 #df-curvy-walls-tools .control-tool {
