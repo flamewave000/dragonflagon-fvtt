@@ -1,5 +1,12 @@
 import SETTINGS from "../../common/Settings";
 
+interface ContextOption {
+	name: string;
+	icon: string;
+	condition?: (li: JQuery<HTMLLIElement>) => boolean;
+	callback: ((li: JQuery<HTMLLIElement>) => Promise<unknown>) | ((li: JQuery<HTMLLIElement>) => void)
+}
+
 export default class DFSceneNav {
 	private static readonly ON_CLICK = 'nav-on-click';
 	private static readonly ON_CLICK_PLAYER = 'nav-on-click-player';
@@ -17,7 +24,7 @@ export default class DFSceneNav {
 		const enabled = (game.user.isGM && gmClick) || (!game.user.isGM && pcClick);
 		if (enabled) {
 			libWrapper.register(SETTINGS.MOD_NAME, 'SceneDirectory.prototype._onClickDocumentName', this._onClickDocumentName, 'MIXED');
-			libWrapper.register(SETTINGS.MOD_NAME, 'SceneDirectory.prototype._getEntryContextOptions', this._getEntryContextOptions, 'MIXED');
+			libWrapper.register(SETTINGS.MOD_NAME, 'SceneDirectory.prototype._getEntryContextOptions', this._getEntryContextOptions, 'WRAPPER');
 		} else {
 			libWrapper.unregister(SETTINGS.MOD_NAME, 'SceneDirectory.prototype._onClickDocumentName', false);
 			libWrapper.unregister(SETTINGS.MOD_NAME, 'SceneDirectory.prototype._getEntryContextOptions', false);
@@ -32,20 +39,22 @@ export default class DFSceneNav {
 	}
 
 	private static _getEntryContextOptions(wrapper: AnyFunction, ...args: any) {
-		if (game.user.isGM) return wrapper(...args);
-		else return [{
-			name: "SCENES.View",
-			icon: '<i class="fas fa-eye"></i>',
-			condition: (li: JQuery<HTMLLIElement>) => !canvas.ready || (li.data("entityId") !== (canvas as Canvas).scene.id),
-			callback: (li: JQuery<HTMLLIElement>) => {
-				const scene = game.scenes.get(li.data("entityId"));
-				scene.view();
-			}
-		}];
+		const options: ContextOption[] = wrapper(...args);
+		if (!game.user.isGM) {
+			options.push({
+				name: "SCENES.View",
+				icon: '<i class="fas fa-eye"></i>',
+				condition: li => !canvas.ready || (li.data("entityId") !== (canvas as Canvas).scene.id),
+				callback: li => {
+					const scene = game.scenes.get(li.data("entityId"));
+					scene.view();
+				}
+			});
+		}
+		return options;
 	}
 
 	static patchSceneDirectory() {
-		// const sidebarDirDefOpts = Object.getOwnPropertyDescriptor(SidebarDirectory, 'defaultOptions');
 		const defaultOptions = duplicate(SceneDirectory.defaultOptions);
 		Object.defineProperty(SceneDirectory, 'defaultOptions', {
 			get: function () {
@@ -142,6 +151,7 @@ export default class DFSceneNav {
 		DFSceneNav.patchSidebar();
 		DFSceneNav.patchSceneNavGetData();
 		libWrapper.register(SETTINGS.MOD_NAME, 'SceneNavigation.prototype.activateListeners', DFSceneNav.SceneNavigation_activateListeners, 'WRAPPER');
+		libWrapper.register(SETTINGS.MOD_NAME, 'SceneNavigation.prototype._getContextMenuOptions', DFSceneNav.SceneNavigation_getContextMenuOptions, 'WRAPPER');
 	}
 
 	static ready() {
@@ -188,5 +198,38 @@ export default class DFSceneNav {
 			else
 				element.title = scene.data.name;
 		});
+	}
+
+	private static SceneNavigation_getContextMenuOptions(this: SceneNavigation, wrapper: AnyFunction) {
+		const options = <ContextOption[]>wrapper();
+		options.push({
+			name: 'DF-SCENE-ENHANCE.Nav.ContextOptions.SetView',
+			icon: '<i class="fas fa-crop-alt fa-fw"></i>',
+			condition: li => game.user.isGM && game.scenes.get(li.attr('data-scene-id')).isView,
+			callback: async li => {
+				const scene = game.scenes.get(li.attr('data-scene-id'));
+				await scene.update({
+					initial: {
+						x: parseInt(<any>canvas.stage.pivot.x),
+						y: parseInt(<any>canvas.stage.pivot.y),
+						scale: canvas.stage.scale.x
+					}
+				});
+				ui.notifications.info("DF-SCENE-ENHANCE.Nav.ContextOptions.SetViewConfirmation".localize());
+			}
+		}, {
+			name: 'DF-SCENE-ENHANCE.Nav.ContextOptions.ConfigGrid',
+			icon: '<i class="fas fa-ruler-combined"></i>',
+			condition: li => game.user.isGM && game.scenes.get(li.attr('data-scene-id')).isView,
+			callback: li => {
+				const scene = game.scenes.get(li.attr('data-scene-id'));
+				const gridConfig = new GridConfig(scene, <any>{
+					// eslint-disable-next-line @typescript-eslint/no-empty-function
+					maximize: () => {}
+				});
+				return gridConfig.render(true);
+			}
+		});
+		return options;
 	}
 }
