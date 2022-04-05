@@ -259,37 +259,36 @@ export default class ControlManager extends Application implements IControlManag
 
 	private static readonly CONTROL_WIDTH = 38 + 5;
 	private static readonly CONTROL_HEIGHT = 48;
+	
+	private getLeftWidth(): number {
+		//? This may need to be reintroduced for ardittristan's Button Overflow module
+		// const sceneLayers = document.querySelector<HTMLElement>('#controls > ol.main-controls.app.control-tools.flexcol');
+		// max = Math.floor(sceneLayers.offsetHeight / ControlManager.CONTROL_WIDTH);
+		// cols = Math.ceil(sceneLayers.childElementCount / max);
+		let cols = 1;
+		const sceneTools = document.querySelector<HTMLElement>('#controls > ol.sub-controls.app.control-tools.flexcol.active');
+		const max = Math.floor(sceneTools.offsetHeight / ControlManager.CONTROL_HEIGHT);
+		cols += Math.ceil(sceneTools.childElementCount / max);
+		return cols * ControlManager.CONTROL_WIDTH + 20;
+	}
+	private getTopHeight(magnetToSceneControls: boolean): number {
+		const uiTop = document.querySelector<HTMLElement>('#ui-middle #ui-top #navigation');
+		let top = uiTop.offsetHeight + uiTop.offsetTop;
+		if (magnetToSceneControls) {
+			const layers = document.querySelector<HTMLElement>('#ui-left > #controls > ol.main-controls.app.control-tools.flexcol');
+			top = Math.max(top, layers.offsetTop);
+		}
+		return top;
+	}
 	private _handleWindowResize() {
 		const self = <ControlManager>(<any>ui).moduleControls;
 		let max: number;
 		let cols: number;
 
-		const setLeftWidth = () => {
-			//? This may need to be reintroduced for ardittristan's Button Overflow module
-			// const sceneLayers = document.querySelector<HTMLElement>('#controls > ol.main-controls.app.control-tools.flexcol');
-			// max = Math.floor(sceneLayers.offsetHeight / ControlManager.CONTROL_WIDTH);
-			// cols = Math.ceil(sceneLayers.childElementCount / max);
-			cols = 1;
-			const sceneTools = document.querySelector<HTMLElement>('#controls > ol.sub-controls.app.control-tools.flexcol.active');
-			max = Math.floor(sceneTools.offsetHeight / ControlManager.CONTROL_HEIGHT);
-			cols += Math.ceil(sceneTools.childElementCount / max);
-			self.element[0].style.marginLeft = `${cols * ControlManager.CONTROL_WIDTH + 20}px`;
-		};
-
-		const setTopHeight = (magnetToSceneControls: boolean) => {
-			const uiTop = document.querySelector<HTMLElement>('#ui-middle #ui-top #navigation');
-			let top = uiTop.offsetHeight + uiTop.offsetTop;
-			if (magnetToSceneControls) {
-				const layers = document.querySelector<HTMLElement>('#ui-left > #controls > ol.main-controls.app.control-tools.flexcol');
-				top = Math.max(top, layers.offsetTop);
-			}
-			self.element[0].style.marginTop = `${top}px`;
-		};
-
 		switch (SETTINGS.get('position')) {
 			case 'top': {
-				setTopHeight(false);
-				setLeftWidth();
+				self.element[0].style.marginTop = self.getTopHeight(false) + 'px';
+				self.element[0].style.marginLeft = self.getLeftWidth() + 'px';
 				break;
 			}
 			case 'left': {
@@ -298,8 +297,8 @@ export default class ControlManager extends Application implements IControlManag
 				max = Math.floor(controls.offsetHeight / ControlManager.CONTROL_WIDTH);
 				cols = Math.ceil(self.groups.length / max);
 				self.element.find('.group-tools').css('margin-left', `${(cols - 1) * (ControlManager.CONTROL_WIDTH + 2)}px`);
-				setTopHeight(true);
-				setLeftWidth();
+				self.element[0].style.marginTop = self.getTopHeight(true) + 'px';
+				self.element[0].style.marginLeft = self.getLeftWidth() + 'px';
 				break;
 			}
 			case 'bottom': {
@@ -325,7 +324,10 @@ export default class ControlManager extends Application implements IControlManag
 			console.warn(`ControlManager::activateGroupByName > Attempted to activate ToolGroup that is either a button or toggle`);
 			return;
 		}
-		if (this.activeGroupName === groupName) return;
+		if (this.activeGroupName === groupName) {
+			self.refresh();
+			return;
+		}
 		const prevGroup = this.activeGroup;
 		this.activeGroupName = groupName;
 		// Deactivate previous group
@@ -355,7 +357,10 @@ export default class ControlManager extends Application implements IControlManag
 			console.warn(`ControlManager::activateToolByName > Attempted to activate Tool that is either a button or toggle`);
 			return;
 		}
-		if (group.activeTool === toolName) return;
+		if (group.activeTool === toolName) {
+			self.refresh();
+			return;
+		}
 		const prevTool = group.tools.find(x => x.name === group.activeTool);
 		group.activeTool = toolName;
 		// Deactivate previous group

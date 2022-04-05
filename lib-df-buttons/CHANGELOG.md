@@ -1,5 +1,9 @@
 # DragonFlagon Module Buttons Library
 
+## Release 1.2.1 (2022-04-05)
+- **FIX:** Small rendering issues.
+- **NEW:** Exposed the functions used for calculating the top and left offsets.
+
 ## Release 1.2.0 (2022-04-05)
 - **UPDATE:** _(BREAKING CHANGE)_ Refactored control activation system. `active` has been renamed as `isActive` and will have new behaviour. If the Tool/ToolGroup has `toggle` set to `true`, this field can be a boolean or a predicate. Otherwise the field is overridden by the system to reflect the current active state. The field is completely unused if `button` is set to `true`. IMPORTANT: The old `active` field is deprecated but will be respected for now and converted to the new `isActive` field.
 - **UPDATE:** If `reloadModuleButtons()` is invoked, the previously selected group/tool will be notified of being deselected.
