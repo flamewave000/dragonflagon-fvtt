@@ -1,6 +1,7 @@
 # DragonFlagon Active Lights
 
 ## Release 1.2.1 (2022-04-05)
+- **NEW:** Added toggle button to lighting layer controls for pausing active light animations.
 - **FIX #278:** Fixed the light animation issues for v9. Active Lights should all be fully functional again.
 
 ## Release 1.2.0 (2021-12-30)

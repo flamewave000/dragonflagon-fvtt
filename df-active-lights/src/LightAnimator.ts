@@ -58,11 +58,15 @@ export class LightAnimator {
 		}, 'WRAPPER');
 	}
 	private static _LightingLayer_animateSource(this: LightingLayer, wrapper: (dt: number) => void, dt: number) {
+		// If we are not enabled, return immediately
+		if (!SETTINGS.get('enabled')) {
+			return wrapper(dt);
+		}
 		let atLeastOneLight = false;
 		for (const source of this.sources) {
 			if (!(source.object instanceof AmbientLight) || !source.active) continue;
-			atLeastOneLight = true;
-			LightAnimator._PointSource_animate.bind(source)(<AmbientLightExt>source.object);
+			if (LightAnimator._PointSource_animate.bind(source)(<AmbientLightExt>source.object))
+				atLeastOneLight = true;
 		}
 		if (atLeastOneLight) {
 			canvas.perception.schedule({
@@ -75,14 +79,14 @@ export class LightAnimator {
 		}
 		wrapper(dt);
 	}
-	private static _PointSource_animate(this: PointSource, light: AmbientLightExt) {
+	private static _PointSource_animate(this: PointSource, light: AmbientLightExt): boolean {
 		try {
 			// If the light has not had an animator created for it yet
 			if (!light.animator) {
 				// Get the animation data
 				const animData: AnimatorData = (<any>this.object).document.getFlag(SETTINGS.MOD_NAME, LightAnimator.FLAG_ANIMS);
 				// Ignore any light that has no animations
-				if (!animData || animData.keys.length <= 1) return;
+				if (!animData || animData.keys.length <= 1) return false;
 				if (animData.keys[0].time !== 0) {
 					console.warn('Malformed first keyframe! Time was not 0, setting to zero for now.');
 					animData.keys[0].time = 0;
@@ -91,7 +95,8 @@ export class LightAnimator {
 				light.animator = new LightAnimator(light, animData);
 			}
 			// Update the animation state
-			light.animator.tick();
+			if (!light.animator.tick())
+				return false;
 
 			// hold onto the original data
 			const origData = light.data;
@@ -115,11 +120,13 @@ export class LightAnimator {
 				light.refresh();
 			// Restore the original data
 			light.data = origData;
+			return true;
 		}
 		// We catch all errors that might occur and print them to the console to
 		// prevent them from propagating up and crashing the lighting system
 		catch (e) {
 			console.error(e);
+			return false;
 		}
 	}
 
@@ -162,14 +169,15 @@ export class LightAnimator {
 		}
 	}
 
-	tick() {
-		if (this._data.keys.length <= 1 || this._data.keys[0].time !== 0) return;
+	tick(): boolean {
+		if (this._data.keys.length <= 1 || this._data.keys[0].time !== 0) return false;
 		// Calculate the current time relative to the animation loop
 		const time = (game.time.serverTime + this.offset) % this.duration;
 		for (const value of this._props.values()) {
 			if (value.next === null) continue;
 			this._process(value, time);
 		}
+		return true;
 	}
 
 	private _convert(value: number | string): number {
