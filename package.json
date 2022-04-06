@@ -41,7 +41,7 @@
 	},
 	"homepage": "https://github.com/flamewave000/dragonflagon-fvtt#readme",
 	"devDependencies": {
-		"@league-of-foundry-developers/foundry-vtt-types": "^9.238.0",
+		"@league-of-foundry-developers/foundry-vtt-types": "^9.255.3",
 		"@prantlf/jsonlint": "^10.2.0",
 		"@typescript-eslint/eslint-plugin": "^5.3.1",
 		"@typescript-eslint/parser": "^5.3.1",

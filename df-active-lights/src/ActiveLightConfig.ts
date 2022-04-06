@@ -23,8 +23,8 @@ export default class ActiveLightConfig extends Application {
 		app.setPosition({});
 	}
 
-	static get defaultOptions(): Application.Options {
-		return <any>mergeObject(Application.defaultOptions as Partial<Application.Options>, {
+	static get defaultOptions(): ApplicationOptions {
+		return <any>mergeObject(Application.defaultOptions as Partial<ApplicationOptions>, {
 			template: `modules/${SETTINGS.MOD_NAME}/templates/active-light-config.hbs`,
 			width: 600,
 			resizable: false,

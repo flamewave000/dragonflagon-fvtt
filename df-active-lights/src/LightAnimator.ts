@@ -58,11 +58,21 @@ export class LightAnimator {
 		}, 'WRAPPER');
 	}
 	private static _LightingLayer_animateSource(this: LightingLayer, wrapper: (dt: number) => void, dt: number) {
+		let atLeastOneLight = false;
 		for (const source of this.sources) {
 			if (!(source.object instanceof AmbientLight) || !source.active) continue;
+			atLeastOneLight = true;
 			LightAnimator._PointSource_animate.bind(source)(<AmbientLightExt>source.object);
 		}
-		(canvas as any).perception.schedule({ lighting: { refresh: true }, sight: { refresh: true } });
+		if (atLeastOneLight) {
+			canvas.perception.schedule({
+				lighting: { refresh: true },
+				sight: {
+					refresh: true,
+					forceUpdateFog: true // Update exploration even if the token hasn't moved
+				}
+			});
+		}
 		wrapper(dt);
 	}
 	private static _PointSource_animate(this: PointSource, light: AmbientLightExt) {
@@ -86,9 +96,20 @@ export class LightAnimator {
 			// hold onto the original data
 			const origData = light.data;
 			// Merge a duplicate of the original data with the modified animation data
-			light.data = <AmbientLightData>mergeObject(duplicate(light.data), light.animData);
+			light.data = <AmbientLightData>mergeObject(<any>duplicate(light.data), <AmbientLightData>{
+				config: {
+					dim: light.animData.dim !== undefined ? Math.max(light.animData.dim, 0.0001) : light.data.config.dim,
+					bright: light.animData.bright !== undefined ? Math.max(light.animData.bright, 0.0001) : light.data.config.bright,
+					angle: light.animData.angle ?? light.data.config.angle,
+					color: light.animData.color ?? light.data.config.color,
+					alpha: light.animData.alpha ?? light.data.config.alpha
+				},
+				rotation: light.animData.rotation ?? light.data.rotation
+			});
+			light.data.config.toObject = function () { return this; };
 			// Update the light source with the new data
-			LightAnimator._updateSource.bind(light)();
+			// LightAnimator._updateSource.bind(light)();
+			light.updateSource({ defer: true });
 			// If we are on the LightingLayer, refresh the light's controls
 			if ((<any>canvas).lighting._active)
 				light.refresh();
@@ -100,30 +121,6 @@ export class LightAnimator {
 		catch (e) {
 			console.error(e);
 		}
-	}
-
-	/**
-	 * Update the point source object associated with this light
-	 */
-	private static _updateSource(this: AmbientLight) {
-		// Update source data
-		this.source.initialize(<PointSource.Data>{
-			x: this.data.x,
-			y: this.data.y,
-			z: (<any>this).document.getFlag("core", "priority") || null,
-			dim: this.dimRadius,
-			bright: this.brightRadius,
-			angle: this.data.config.angle,
-			rotation: this.data.rotation,
-			color: this.data.config.color,
-			alpha: this.data.config.alpha,
-			animation: this.data.config.animation,
-			seed: (<any>this).document.getFlag("core", "animationSeed"),
-			darkness: (<any>this).data.darkness
-		});
-		// Update the lighting layer sources
-		if (!this.data.hidden) (<any>this).layer.sources.set(this.sourceId, this.source);
-		else (<any>this).layer.sources.delete(this.sourceId);
 	}
 
 	private _data: AnimatorData;
@@ -185,12 +182,18 @@ export class LightAnimator {
 		while (!!frame.next && frame.next.time <= time) frame = frame.next;
 		// Skip if the time has gone past the last key frame containing something to change here
 		if (frame.time < time && !frame.next) return;
+		// If our frame does not have a next, clamp the time to the current frame
+		if (!frame.next)
+			time = frame.time;
 		// Collect the start value
 		const startValue = this._convert(frame.value);
-		// Collect the end value
-		const endValue = frame.time > time ? this._convert(frame.value) : this._convert(frame.next.value);
+		// Collect the end value, if there is no next frame, use the current one
+		const endValue = frame.time >= time ? this._convert(frame.value) : this._convert(frame.next.value);
 		// Calculate the time factor (0-1) to be passed into the easing function
-		let timeFactor = Math.clamped(frame.time > time ? (time / frame.time) : ((time - frame.time) / (frame.next.time - frame.time)), 0, 1);
+		let timeFactor = Math.clamped(frame.time >= time ? (time / frame.time) : ((time - frame.time) / (frame.next.time - frame.time)), 0, 1);
+		// If the time calculation produces a NaN (which can happen), we just set it to 0 and move on
+		if (isNaN(timeFactor))
+			timeFactor = 0;
 		if (this._data.bounce)
 			timeFactor = timeFactor <= 0.5
 				? timeFactor / 0.5
@@ -203,7 +206,8 @@ export class LightAnimator {
 			const g = ((startValue >> 8) & 0xff) + Math.round((((endValue >> 8) & 0xff) - ((startValue >> 8) & 0xff)) * valueFactor);
 			const b = (startValue & 0xff) + Math.round(((endValue & 0xff) - (startValue & 0xff)) * valueFactor);
 			this._object.animData[prop.name] = '#' + ((r << 16) | (g << 8) | b).toString(16);
-		} else
+		} else {
 			this._object.animData[prop.name] = startValue + ((endValue - startValue) * valueFactor);
+		}
 	}
 }

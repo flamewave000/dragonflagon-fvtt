@@ -1,5 +1,8 @@
 # DragonFlagon Active Lights
 
+## Release 1.2.1 (2022-04-05)
+- **FIX #278:** Fixed the light animation issues for v9. Active Lights should all be fully functional again.
+
 ## Release 1.2.0 (2021-12-30)
 - **UPDATE:** Migrated to FoundryVTT V9.
 - **FIX #267:** Active Lights are now animating again.
