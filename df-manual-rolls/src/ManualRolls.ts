@@ -13,16 +13,17 @@ export default class ManualRolls {
 	static PREF_PC_STATE = 'pc';
 	static PREF_FLAGGED = 'flagged';
 	static PREF_TOGGLED = 'toggled';
+	static FLAG_ROLL_TYPE = 'roll-type';
 
 	static get flagged(): boolean { return SETTINGS.get(ManualRolls.PREF_FLAGGED); }
 	static get toggled(): boolean { return SETTINGS.get(ManualRolls.PREF_TOGGLED); }
 	static setToggled(value: boolean): Promise<boolean> { return SETTINGS.set(ManualRolls.PREF_TOGGLED, value); }
 	static get toggleable() {
-		return SETTINGS.get(game.user.isGM ? ManualRolls.PREF_GM_STATE : ManualRolls.PREF_PC_STATE) === 'toggle';
+		return (game.user.getFlag(SETTINGS.MOD_NAME, ManualRolls.FLAG_ROLL_TYPE) || SETTINGS.get(game.user.isGM ? ManualRolls.PREF_GM_STATE : ManualRolls.PREF_PC_STATE)) === 'toggle';
 	}
 	static tempDisable = false;
 	static get shouldRollManually() {
-		const state = SETTINGS.get(game.user.isGM ? ManualRolls.PREF_GM_STATE : ManualRolls.PREF_PC_STATE);
+		const state = game.user.getFlag(SETTINGS.MOD_NAME, ManualRolls.FLAG_ROLL_TYPE) || SETTINGS.get(game.user.isGM ? ManualRolls.PREF_GM_STATE : ManualRolls.PREF_PC_STATE);
 		return !this.tempDisable && (state === 'always' || (state === 'toggle' && this.toggled));
 	}
 

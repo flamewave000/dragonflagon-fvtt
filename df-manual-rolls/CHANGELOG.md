@@ -3,6 +3,7 @@
 ## Release 2.3.1 (2022-04-10)
 - **FIX #307:** Fixed conflict with Monk's Little Details where round messages do not have a `user` bound.
 - **FIX #302:** Custom Roll implementations courtesy of [JustNoon](https://github.com/JustNoon).
+- **NEW #340:** You can now override the manual roll setting for each player.
 
 ## Release 2.3.0 (2021-12-30)
 - **UPDATE:** Compatibility with FoundryVTT V9.

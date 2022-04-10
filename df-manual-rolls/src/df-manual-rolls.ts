@@ -2,6 +2,7 @@ import ManualRolls from "./ManualRolls";
 import ManualRollsLegacy from "./ManualRollsLegacy";
 import RollPrompt from "./RollPrompt";
 import SETTINGS from "../../common/Settings";
+import RollSettings from "./RollSettings";
 
 SETTINGS.init('df-manual-rolls');
 
@@ -90,6 +91,8 @@ Hooks.on('init', function () {
 			else ManualRollsLegacy.unpatch();
 		}
 	});
+
+	RollSettings.init();
 });
 Hooks.on('ready', function () {
 	if (!game.modules.get('lib-wrapper')?.active && game.user.isGM) {
