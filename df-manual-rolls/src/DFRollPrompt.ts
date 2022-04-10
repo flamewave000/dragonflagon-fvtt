@@ -14,7 +14,7 @@ interface RenderData {
 	term: DiceTerm
 }
 
-export default class DFRollPrompt extends FormApplication<FormApplication.Options, { terms: RenderData[] }> {
+export default class DFRollPrompt extends FormApplication<FormApplicationOptions, { terms: RenderData[] }> {
 
 	static readonly PREF_FOCUS_INPUT = 'focus-input';
 
@@ -24,9 +24,9 @@ export default class DFRollPrompt extends FormApplication<FormApplication.Option
 
 	static get focusInput(): boolean { return SETTINGS.get(DFRollPrompt.PREF_FOCUS_INPUT); }
 
-	static get defaultOptions(): FormApplication.Options {
-		return <FormApplication.Options>mergeObject(
-			<DeepPartial<FormApplication.Options>>FormApplication.defaultOptions,
+	static get defaultOptions(): FormApplicationOptions {
+		return <FormApplicationOptions>mergeObject(
+			<DeepPartial<FormApplicationOptions>>FormApplication.defaultOptions,
 			{
 				title: game.i18n.localize("DF_MANUAL_ROLLS.Prompt.DefaultTitle"),
 				template: `modules/${SETTINGS.MOD_NAME}/templates/roll-prompt.hbs`,

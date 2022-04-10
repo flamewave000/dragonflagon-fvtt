@@ -1,5 +1,9 @@
 # DF Manual Rolls
 
+## Release 2.3.1 (2022-04-10)
+- **FIX #307:** Fixed conflict with Monk's Little Details where round messages do not have a `user` bound.
+- **FIX #302:** Custom Roll implementations courtesy of [JustNoon](https://github.com/JustNoon).
+
 ## Release 2.3.0 (2021-12-30)
 - **UPDATE:** Compatibility with FoundryVTT V9.
 - **REMOVED #271:** Async initiative roll patch for FVTT 0.8.x.

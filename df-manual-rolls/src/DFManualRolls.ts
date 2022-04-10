@@ -59,7 +59,7 @@ export default class DFManualRolls {
 		this.terms = intermediate;
 
 		// Step 2 - Simplify remaining terms
-		this.terms = this.constructor.simplifyTerms(this.terms);
+		this.terms = (this.constructor as any).simplifyTerms(this.terms);
 
 		/****** DF MANUAL ROLLS MODIFICATION ******/
 		// @ts-ignore

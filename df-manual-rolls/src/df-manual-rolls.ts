@@ -12,7 +12,6 @@ Hooks.on('init', function () {
 		scope: 'world',
 		name: 'DF_MANUAL_ROLLS.Settings.GM_Name',
 		hint: 'DF_MANUAL_ROLLS.Settings.GM_Hint',
-		type: String,
 		default: 'disabled',
 		choices: {
 			disabled: 'DF_MANUAL_ROLLS.Setting_Options.Disabled',
@@ -27,7 +26,6 @@ Hooks.on('init', function () {
 		scope: 'world',
 		name: 'DF_MANUAL_ROLLS.Settings.PC_Name',
 		hint: 'DF_MANUAL_ROLLS.Settings.PC_Hint',
-		type: String,
 		default: 'disabled',
 		choices: {
 			disabled: 'DF_MANUAL_ROLLS.Setting_Options.Disabled',
@@ -105,7 +103,7 @@ Hooks.on('ready', function () {
 });
 
 Hooks.on('createChatMessage', async (chatMessage: ChatMessage) => {
-	if (chatMessage.user.id !== game.userId) return;
+	if (!chatMessage.user || chatMessage.user.id !== game.userId) return;
 	// Ignore non-roll, non-flagged, non-manual messages
 	if (!chatMessage.isRoll || !DFManualRolls.flagged || !DFManualRolls.shouldRollManually) return;
 	let flavor = game.i18n.localize("DF_MANUAL_ROLLS.Flag");

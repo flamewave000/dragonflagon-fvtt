@@ -6,6 +6,13 @@ Allows you to manually enter the individual dice results when making any kind of
 
 Given the limitations of Foundry around Rolling (namely that rolls are not Asynchronous) it is difficult to really do any kind of overhaul of the roll system. But I've found a way using good ol' fashioned prompts!
 
+##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
+
+## Contributers
+
+- Touge & [BrotherSharper](https://github.com/BrotherSharper): Japanese Localization
+- [JustNoon](https://github.com/JustNoon): Code contribution
+
 ---
 
 ![Manual Rolls Demo](../.assets/df-manual-rolls-demo.gif)
@@ -58,6 +65,3 @@ Better Rolls does not currently support the new Async Roll system in FoundryVTT 
 
 ### Quick Rolls (DnD5e)
 Has not been updated for FoundryVTT 0.8.6 and is currently non-functional in general.
-
-##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
-
