@@ -1,13 +1,13 @@
-import DFManualRolls from "./DFManualRolls";
-import DFManualRollsLegacy from "./DFManualRollsLegacy";
-import DFRollPrompt from "./DFRollPrompt";
+import ManualRolls from "./ManualRolls";
+import ManualRollsLegacy from "./ManualRollsLegacy";
+import RollPrompt from "./RollPrompt";
 import SETTINGS from "../../common/Settings";
 
 SETTINGS.init('df-manual-rolls');
 
 Hooks.on('init', function () {
 
-	SETTINGS.register(DFManualRolls.PREF_GM_STATE, {
+	SETTINGS.register(ManualRolls.PREF_GM_STATE, {
 		config: true,
 		scope: 'world',
 		name: 'DF_MANUAL_ROLLS.Settings.GM_Name',
@@ -21,7 +21,7 @@ Hooks.on('init', function () {
 		onChange: () => { ui.controls.initialize(); }
 	});
 
-	SETTINGS.register(DFManualRolls.PREF_PC_STATE, {
+	SETTINGS.register(ManualRolls.PREF_PC_STATE, {
 		config: true,
 		scope: 'world',
 		name: 'DF_MANUAL_ROLLS.Settings.PC_Name',
@@ -35,7 +35,7 @@ Hooks.on('init', function () {
 		onChange: () => { ui.controls.initialize(); }
 	});
 
-	SETTINGS.register(DFRollPrompt.PREF_FOCUS_INPUT, {
+	SETTINGS.register(RollPrompt.PREF_FOCUS_INPUT, {
 		config: true,
 		scope: 'client',
 		name: 'DF_MANUAL_ROLLS.Settings.FocusInput_Name',
@@ -44,7 +44,7 @@ Hooks.on('init', function () {
 		default: true
 	});
 
-	SETTINGS.register(DFManualRolls.PREF_FLAGGED, {
+	SETTINGS.register(ManualRolls.PREF_FLAGGED, {
 		name: "DF_MANUAL_ROLLS.Settings.Flagged_Name",
 		hint: "DF_MANUAL_ROLLS.Settings.Flagged_Hint",
 		scope: 'world',
@@ -53,7 +53,7 @@ Hooks.on('init', function () {
 		default: false
 	});
 
-	SETTINGS.register(DFManualRolls.PREF_TOGGLED, {
+	SETTINGS.register(ManualRolls.PREF_TOGGLED, {
 		config: false,
 		scope: 'client',
 		type: Boolean,
@@ -65,20 +65,20 @@ Hooks.on('init', function () {
 		}
 	});
 	Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
-		if (!DFManualRolls.toggleable) return;
+		if (!ManualRolls.toggleable) return;
 		controls.find(x => x.name === 'token').tools.push({
 			icon: 'fas fa-dice-d20',
 			name: 'manualRoll',
 			title: 'DF_MANUAL_ROLLS.SceneControlTitle',
-			visible: DFManualRolls.toggleable,
+			visible: ManualRolls.toggleable,
 			toggle: true,
-			active: DFManualRolls.toggled,
-			onClick: (toggled: boolean) => DFManualRolls.setToggled(toggled)
+			active: ManualRolls.toggled,
+			onClick: (toggled: boolean) => ManualRolls.setToggled(toggled)
 		});
 	});
 
 
-	SETTINGS.register(DFManualRollsLegacy.PREF_USE_LEGACY, {
+	SETTINGS.register(ManualRollsLegacy.PREF_USE_LEGACY, {
 		name: 'Enable Legacy Synchronous Rolls',
 		hint: 'Some systems and modules have not migrated their roll calls to the new Async Roll System in FoundryVTT. To handle the use of the deprecated legacy roll system, this will enabled the old prompts for roll input.',
 		config: true,
@@ -86,8 +86,8 @@ Hooks.on('init', function () {
 		type: Boolean,
 		default: false,
 		onChange: (value: boolean) => {
-			if (value) DFManualRollsLegacy.patch();
-			else DFManualRollsLegacy.unpatch();
+			if (value) ManualRollsLegacy.patch();
+			else ManualRollsLegacy.unpatch();
 		}
 	});
 });
@@ -97,15 +97,15 @@ Hooks.on('ready', function () {
 		return;
 	}
 	Handlebars.registerHelper({ dfmr_mul: (v1, v2) => v1 * v2 });
-	DFManualRolls.patch();
-	if (SETTINGS.get(DFManualRollsLegacy.PREF_USE_LEGACY))
-		DFManualRollsLegacy.patch();
+	ManualRolls.patch();
+	if (SETTINGS.get(ManualRollsLegacy.PREF_USE_LEGACY))
+		ManualRollsLegacy.patch();
 });
 
 Hooks.on('createChatMessage', async (chatMessage: ChatMessage) => {
 	if (!chatMessage.user || chatMessage.user.id !== game.userId) return;
 	// Ignore non-roll, non-flagged, non-manual messages
-	if (!chatMessage.isRoll || !DFManualRolls.flagged || !DFManualRolls.shouldRollManually) return;
+	if (!chatMessage.isRoll || !ManualRolls.flagged || !ManualRolls.shouldRollManually) return;
 	let flavor = game.i18n.localize("DF_MANUAL_ROLLS.Flag");
 	// If all of the manual rolls were cancelled, don't set the flag
 	if (!chatMessage.roll.terms.some((value: any) => value instanceof DiceTerm && (<any>value.options).isManualRoll))
