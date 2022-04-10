@@ -1,5 +1,5 @@
 {{#*inline "control"}}
-<li class="control-tool{{#if c.active}} active{{/if}}{{#if c.button}} button{{/if}}{{#if c.toggle}} toggle{{/if}}"
+<li class="{{#if c.class}}{{c.class}} {{/if}}control-tool{{#if c.active}} active{{/if}}{{#if c.button}} button{{/if}}{{#if c.toggle}} toggle{{/if}}"
 	data-{{d}}="{{c.name}}" title="{{localize c.title}}">
 	{{{c.icon}}}
 </li>

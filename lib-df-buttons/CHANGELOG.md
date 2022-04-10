@@ -3,6 +3,7 @@
 ## Release 1.3.0 (2022-04-10)
 - **FIX:** Small error that sometimes appeared in the console when loading.
 - **NEW #351:** A magnet button will now appear on hover for quickly changing the position of the tool bar.
+- **NEW:** You can now provide your own custom CSS class for each control group/tool you register.
 
 ## Release 1.2.1 (2022-04-05)
 - **FIX:** Small rendering issues.

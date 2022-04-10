@@ -5,6 +5,7 @@ interface ToolUI {
 	name: string;
 	title: string;
 	icon: string;
+	class: string | false;
 	active: boolean;
 	button: boolean;
 	toggle: boolean;
@@ -128,6 +129,7 @@ export default class ControlManager extends Application implements IControlManag
 				title: group.title,
 				button: group.button,
 				toggle: group.toggle,
+				class: group.class ?? false,
 				active: await ControlManager.checkBoolean(group.isActive),
 				tools: []
 			};
@@ -139,6 +141,7 @@ export default class ControlManager extends Application implements IControlManag
 					title: tool.title,
 					button: tool.button,
 					toggle: tool.toggle,
+					class: tool.class ?? false,
 					active: await ControlManager.checkBoolean(tool.isActive)
 				});
 			}

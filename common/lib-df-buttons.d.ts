@@ -26,6 +26,11 @@ declare interface Tool {
 	 */
 	toggle?: boolean | null;
 	/**
+	 * (default: null) Used to add your own custom class name to the generated
+	 * control.
+	 */
+	class?: string | null;
+	/**
 	 * (default: false) If {@link toggle} is true, this holds the toggle
 	 * button's state. If {@link toggle} and {@link button} are false, this
 	 * holds the activation state of the control and will be overridden by the
