@@ -1,7 +1,64 @@
-#moduleControls {
+#lib-df-buttons {
+	margin: 0;
+	padding: 0;
+	background: none;
+	box-shadow: none;
+	border: none;
 	position: absolute;
-	top: 10px;
-	right: 310px;
+	display: grid;
+	height: calc(100vh - 70px);
+	grid-template-rows: auto auto;
+	grid-template-columns: auto auto;
+
+	#magnet {
+		margin: 5px 10px 5px 0px;
+		height: fit-content;
+		width: fit-content;
+		visibility: hidden;
+	}
+
+	&.left {
+		#magnet {
+			grid-area: 1 / 2 / 1 / 2;
+		}
+		#moduleControls {
+			grid-area: 1 / 1 / 1 / 1;
+		}
+	}
+	&.top {
+		height: fit-content;
+		#magnet {
+			grid-area: 1 / 1 / 1 / 1;
+		}
+		#moduleControls {
+			grid-area: 1 / 2 / 1 / 2;
+		}
+	}
+	&.right {
+		#magnet {
+			grid-area: 1 / 1 / 1 / 1;
+		}
+		#moduleControls {
+			grid-area: 1 / 2 / 1 / 2;
+		}
+	}
+	&.bottom {
+		height: fit-content;
+		margin-top: auto;
+		#magnet {
+			grid-area: 1 / 1 / 1 / 1;
+		}
+		#moduleControls {
+			grid-area: 2 / 1 / 2 / 1;
+		}
+	}
+
+	&:hover > #magnet {
+		visibility: visible;
+	}
+}
+
+#moduleControls {
 	margin: 0;
 	padding: 0;
 	background: none;
@@ -66,21 +123,20 @@
 	}
 }
 
-#moduleControls.bottom {
+#lib-df-buttons.bottom #moduleControls {
 	flex-direction: column-reverse;
 	height: fit-content;
-	width: calc(100vw - 532px);
-	left: 222px;
-	bottom: 70px;
-	margin-top: auto;
+	// width: calc(100vw - 532px);
+	// left: 222px;
+	// bottom: 70px;
 	.controls.active {
 		flex-direction: row;
 		justify-content: unset;
 	}
 }
 
-#moduleControls.top {
-	top: 0;
+#lib-df-buttons.top #moduleControls {
+	// top: 0;
 	flex-direction: column;
 	height: fit-content;
 	.controls.active {
@@ -90,10 +146,10 @@
 	}
 }
 
-#moduleControls.left {
-	top: 0;
+#lib-df-buttons.left #moduleControls {
+	// top: 0;
 	width: fit-content;
-	height: calc(100vh - 150px);
+	// height: calc(100vh - 150px);
 	flex-direction: row;
 	.controls.active {
 		flex-wrap: wrap;

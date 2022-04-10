@@ -16,9 +16,8 @@ Hooks.once('init', () => {
 		},
 		name: 'LIB_DF_BUTTONS.name',
 		hint: 'LIB_DF_BUTTONS.hint',
-		config: true,
+		config: false,
 		default: 'left',
-		type: String,
 		onChange: () => (<ControlManagerImpl>(<any>ui).moduleControls).render()
 	});
 
