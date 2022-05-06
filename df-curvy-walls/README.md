@@ -67,7 +67,7 @@ If you have configured a tool to match that perfect circle for a tower but have 
 ## Contributors
 
 - [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo): Spanish localization
-- Touge: Japanese localization
+- Touge & [BrotherSharper](https://github.com/BrotherSharper): Japanese localization
 
 ## Changelog
 

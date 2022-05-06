@@ -41,11 +41,15 @@ export default class PlayerColor {
 			const html = await wrapper(...args);
 			let chatColor = (<string>this.user.getFlag(SETTINGS.MOD_NAME, PlayerColor.FLAG_CHAT_COLOR))?.trim();
 			// If it is a valid color
-			if (!chatColor || !/#[a-fA-F0-9]{6,8}/.test(chatColor)) {
+			if (!chatColor || !/#[a-fA-F0-9]{6,8}/.test(chatColor))
 				chatColor = this.user.color;
-			}
-			html[0].style.borderColor = chatColor;
-			html[0].style.setProperty('--dfce-mc-border-color', chatColor);
+			// If the message belongs to the current user or PREF_TINT_BG is on, colour the border
+			if (game.userId === this.data.user || SETTINGS.get(PlayerColor.PREF_TINT_BG))
+				html[0].style.borderColor = chatColor;
+			else
+				html[0].style.borderColor = '#6f6c66';
+			// Set the hover border colour to what ever the border colour is
+			html[0].style.setProperty('--dfce-mc-border-color', html[0].style.borderColor);
 			if (SETTINGS.get(PlayerColor.PREF_TINT_BG)) {
 				html[0].style.backgroundColor = chatColor;
 				html[0].style.backgroundImage = 'url(../ui/parchment.jpg)';

@@ -3,5 +3,6 @@
 **/dist/
 **/bundle/
 **/package-lock.json
-.devenv
+.devenv*
 .vscode/settings.json
+*foundry-reference*

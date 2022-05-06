@@ -1,4 +1,3 @@
-import { hotkeys } from '../libs/lib-df-hotkeys.shim';
 import { BezierTool, ToolMode } from './tools/BezierTool';
 import CircleTool from './tools/CircleTool';
 import RectangleTool from './tools/RectangleTool';
@@ -59,7 +58,6 @@ export class CurvyWallToolManager {
 		[Mode.Rect, { l1: [-100, -100], l2: [100, 100], t: 1, r: 1, b: 1, l: 1 }],
 	]);
 	private _pointMapper = new PointMapper();
-	private _notification: any;
 
 	get segments(): number { return this._activeTool.segments; }
 	set segments(value: number) {
@@ -302,55 +300,21 @@ export class CurvyWallToolManager {
 		this._previousToolData.set(this._mode, this.activeTool.getData());
 	}
 
+	init() {
+		libWrapper.register(SETTINGS.MOD_NAME, 'Wall.prototype._onDragLeftStart', (wrapper: any, ...args: any) => {
+			this.clearTool();
+			wrapper(...args);
+		}, 'WRAPPER');
+	}
+
 	patchWallsLayer() {
-		const layer = (<Canvas>canvas).getLayer("WallsLayer");
-		this.wallsLayer = layer as WallsLayer;
-		const MOD_NAME = 'df-curvy-walls';
-		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onClickLeft', CurvyWallToolManager._onClickLeft, 'MIXED');
-		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftStart', CurvyWallToolManager._onDragLeftStart, 'MIXED');
-		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftMove', CurvyWallToolManager._onDragLeftMove, 'MIXED');
-		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftDrop', CurvyWallToolManager._onDragLeftDrop, 'MIXED');
-		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onDragLeftCancel', CurvyWallToolManager._onDragLeftCancel, 'MIXED');
-		libWrapper.register(MOD_NAME, 'WallsLayer.prototype._onClickRight', CurvyWallToolManager._onClickRight, 'MIXED');
-
-		if (!game.modules.get('lib-df-hotkeys')?.active) {
-			console.error('Missing lib-df-hotkeys module dependency');
-			if (game.user.isGM)
-				ui.notifications.notify("DF Curvy Walls recommends you install the 'Library: DF Hotkeys' module");
-		}
-
-		hotkeys.registerGroup({
-			name: MOD_NAME,
-			label: 'DF Curvy Walls'
-		});
-		hotkeys.registerShortcut({
-			name: `${MOD_NAME}.apply`,
-			label: 'df-curvy-walls.apply',
-			group: MOD_NAME,
-			default: { key: hotkeys.keys.Enter, alt: false, ctrl: false, shift: false },
-			onKeyDown: () => CurvyWallToolManager.instance.apply()
-		});
-		hotkeys.registerShortcut({
-			name: `${MOD_NAME}.cancel`,
-			label: 'df-curvy-walls.cancel',
-			group: MOD_NAME,
-			default: { key: hotkeys.keys.Delete, alt: false, ctrl: false, shift: false },
-			onKeyDown: () => CurvyWallToolManager.instance.clearTool()
-		});
-		hotkeys.registerShortcut({
-			name: `${MOD_NAME}.increment`,
-			label: 'df-curvy-walls.increment',
-			group: MOD_NAME,
-			default: { key: hotkeys.keys.Equal, alt: false, ctrl: false, shift: false },
-			onKeyDown: () => CurvyWallToolManager.instance.segments++
-		});
-		hotkeys.registerShortcut({
-			name: `${MOD_NAME}.decrement`,
-			label: 'df-curvy-walls.decrement',
-			group: MOD_NAME,
-			default: { key: hotkeys.keys.Minus, alt: false, ctrl: false, shift: false },
-			onKeyDown: () => CurvyWallToolManager.instance.segments--
-		});
+		this.wallsLayer = canvas.walls;
+		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onClickLeft', CurvyWallToolManager._onClickLeft, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onDragLeftStart', CurvyWallToolManager._onDragLeftStart, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onDragLeftMove', CurvyWallToolManager._onDragLeftMove, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onDragLeftDrop', CurvyWallToolManager._onDragLeftDrop, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onDragLeftCancel', CurvyWallToolManager._onDragLeftCancel, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onClickRight', CurvyWallToolManager._onClickRight, 'MIXED');
 		Hooks.on('requestCurvyWallsRedraw', () => this.render());
 	}
 }

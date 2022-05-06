@@ -33,7 +33,7 @@ export default class DnD5eVehicleCapacity {
 				default: true,
 				onChange: DnD5eVehicleCapacity.DF_VEHICLE_UNITS
 			});
-			Hooks.on('renderEntitySheetConfig', DnD5eVehicleCapacity.DF_VEHICLE_UNIT_CONFIG);
+			Hooks.on('renderDocumentSheetConfig', DnD5eVehicleCapacity.DF_VEHICLE_UNIT_CONFIG);
 		}
 	}
 
@@ -45,7 +45,7 @@ export default class DnD5eVehicleCapacity {
 	}
 
 	static DF_VEHICLE_UNITS() {
-		const clazz = (<any>CONFIG.Actor.sheetClasses).vehicle['dnd5e.ActorSheet5eVehicle'].cls;
+		const clazz = (<any>CONFIG.Actor).sheetClasses.vehicle['dnd5e.ActorSheet5eVehicle'].cls;
 		if (!SETTINGS.get('vehicle-unit')) {
 			if (!clazz.prototype.dfqol_computeEncumbrance) return;
 			clazz.prototype._computeEncumbrance = clazz.prototype.dfqol_computeEncumbrance;
@@ -104,7 +104,7 @@ export default class DnD5eVehicleCapacity {
 	<p class="notes">${game.i18n.localize('DF_QOL.VehicleUnit.ConfigHint')}</p>
 </div>`);
 		submitButton.before(unitSelector);
-		const newHeight = unitSelector.outerHeight(true);
+		const newHeight = unitSelector.outerHeight(true) + 8;
 		app.setPosition(mergeObject(app.position, <any>{ height: <number>app.position.height + newHeight }));
 		// @ts-ignore
 		const core = app._updateObject.bind(app);

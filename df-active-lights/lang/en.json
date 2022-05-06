@@ -37,6 +37,7 @@
 		"Warnings": {
 			"KeyFrame_Zero": "You cannot set a custom Key Frame to time ZERO!",
 			"KeyFrame_Exists": "A Key Frame already exists for time {0} Seconds"
-		}
+		},
+		"animationToggleTitle": "Animate Active Lights"
 	}
 }

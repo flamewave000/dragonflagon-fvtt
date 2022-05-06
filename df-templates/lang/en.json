@@ -1,0 +1,45 @@
+{
+	"DF_TEMPLATES": {
+		"errorLibWrapperMissing": "'DF Template Enhancements' requires the 'libWrapper' module. Please install and activate 'libWrapper'.",
+		"ToggleTitle": "Auto-Target Tokens",
+		"AutoTargetName": "Templates Auto-Target Tokens",
+		"AutoTargetHint": "If enabled, will automatically target tokens that are hit by a Measure Template",
+		"SnapIntersectName": "Snap templates to grid intersections",
+		"SnapIntersectHint": "Some rules systems (such as D&D 5e) state that spell templates should originate from a grid intersection.",
+		"GridlessPointResolutionName": "Auto-Target Gridless Resolution (Default: 3)",
+		"GridlessPointResolutionHint": "How many points along each axis to generate for auto-targetting in gridless scenes (Example: for 3, there will be 3 x 3 = 9 points over each square). A higher number might cause slower performance with lots of tokens in a scene.",
+		"GridlessPointPercentageName": "Auto-Target Gridless Percentage (Default: 0)",
+		"GridlessPointPercentageHint": "What percentage of points need to be within the template for it to highlight them. Setting this to 0 means just one point needs to be inside to be targetted.",
+		"PreviewName": "Preview Template Highlight/Targeting",
+		"PreviewHint": "Show the grid highlight and perform auto-targeting when moving or creating a template.",
+		"SquareRotateName": "Fix Square Template Rotation",
+		"SquareRotateHint": "Square Templates do not keep their shape when rotating. This will correct the rotation so that a square template maintains its shape while rotating around the template's origin point.",
+		"DebugName": "[DEBUG Only] Display Auto-Target Point Grids and Test Grids",
+		"DebugHint": "For the purposes of debugging the auto-targetting feature, this option will display the points used for detecting token targeting in a gridless scene. Or will display the entire test zone for grid highlighting.",
+		"AngleSnap": {
+			"MacroName": "Template Angle Snap Point Count (FoundryVTT Default: 24)",
+			"MacroHint": "How many snap points are available to rotate a template to. This can be used to reduce the number of angles a player has to choose from in order to speed up combat",
+			"MicroName": "Small Rotation Multiplier (Foundry Default: 3)",
+			"MicroHint": "When holding Ctrl, you can perform smaller rotation snaps. This essentially multiplies the above setting by this amount to generate a sub-set of angle snaps. Setting this to 1 effectively disables micro angle steps."
+		},
+		"TemplateConfig": {
+			"Title": "Template Measures Settings",
+			"ResetButton": "FoundryVTT Defaults",
+			"DnD5eButton": "D&D 5e Style",
+			"Options": {
+				"center": {
+					"label": "Center Point",
+					"desc": "<i>(Default)</i> The center point of each grid cell must be contained inside of the template for that cell to be highlighted."
+				},
+				"touch": {
+					"label": "Touches",
+					"desc": "If <b>Any</b> part of a grid cell is <b>Touched</b>, that cell will be highlighted."
+				},
+				"points": {
+					"label": "Point Grid (Experimental)",
+					"desc": "Highlight a grid square only if points on the square are inside the template. The number of points are based on the percent slider in the Gridless settings.<br><i><b>This is experimental</b> and only used for token targetting. The grid highlight uses Touch Mode in order to test the tokens.</i>"
+				}
+			}
+		}
+	}
+}

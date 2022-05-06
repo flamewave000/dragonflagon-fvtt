@@ -4,15 +4,15 @@
 		"Settings": {
 			"GM_Name": "For All GM",
 			"GM_Hint": "Manual Roll setting for all GM roles.",
-			"PC_Name": "For All PC",
-			"PC_Hint": "Manual Roll setting for all PC roles.",
+			"PC_Name": "Default For All PC",
+			"PC_Hint": "Default Manual Roll setting for all PC roles. This is overridden by the setting in the player config.",
 			"Flagged_Name": "Flag manual rolls",
 			"Flagged_Hint": "Add a flag to chat rolls that use manual dice.",
 			"FocusInput_Name": "Auto-Focus First Input Field",
 			"FocusInput_Hint": "If enabled, will set the focus to the first input field in the roll request window."
 		},
 		"Setting_Options": {
-			"Disabled": "Disabled",
+			"Disabled": "Manual Rolls Disabled",
 			"Always": "Always use manual rolls",
 			"Toggle": "Toggle manual rolls (see documentation)"
 		},

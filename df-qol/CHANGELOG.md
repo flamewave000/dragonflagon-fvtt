@@ -1,5 +1,25 @@
 # DragonFlagon Quality of Life
 
+## Release 1.7.3 (2022-03-06)
+- Added a GM check for the migration prompt that I forgot to add previously.
+
+## Release 1.7.2 (2022-03-06)
+I have removed all of the Template features. These features have found a home in their own dedicated module called DF Template Enhancements. They have also received additional features and some over-due bug fixes.
+
+## Release 1.7.1 (2022-01-02)
+- **NEW #274:** Japanese Localization: Courtesy of touge and [BrotherSharper](https://github.com/BrotherSharper).
+
+## Release 1.7.0 (2021-12-30)
+- **UPDATE:** Migrated to FoundryVTT V9.
+- **FIX #256:** Vehicle weight options now displays in the sheet config.
+- **FIX #245:** "Quick Roll" context menu option for Roll Tables.
+- **FIX #257:** Day/Night cycle animation.
+- **FIX #258:** Better Toggle button styling.
+
+## Release 1.6.1 (2021-11-22)
+- **FIX #221:** Fix error in console for libWrapper registration.
+- **FIX #224:** Fix issue with tiles caused by recent template feature changes.
+
 ## Release 1.6.0 (2021-11-19)
 - **NEW #193:** Template preview now has an option to perform active highlighting and auto-targeting while creating or moving the template.
 - **FIX #174:** Fixed and integrated folder colours into Monk's Enhanced Journal.

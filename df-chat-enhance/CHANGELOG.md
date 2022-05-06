@@ -1,5 +1,16 @@
 # DF Chat Enhancements
 
+# Release 3.6.0 (2022-01-02)
+- **UPDATED:** Migrated to FoundryVTT V9.
+- **UPDATED #274:** Japanese Localization: Courtesy of tonishi and [BrotherSharper](https://github.com/BrotherSharper).
+- **FIX #269:** Public Roll button now displays correctly.
+- **FIX #261&#243:** Keyboard entry in chat-box working correctly now.
+
+## Release 3.5.2 (2021-11-22)
+- **FIX #219:** Markdown now works as exepcted with appropriate Chat Commands.
+- **FIX #220:** Chat borders are no longer coloured non-owned messages.
+- **FIX:** Hover shadow was not working.
+
 ## Release 3.5.1 (2021-11-16)
 - **FIX #215:** Last character of chat messages was getting accidentally eaten.
 

@@ -1,5 +1,5 @@
-import DFManualRolls from "./DFManualRolls";
-import DFRollPrompt from "./DFRollPrompt";
+import ManualRolls from "./ManualRolls";
+import RollPrompt from "./RollPrompt";
 import SETTINGS from "../../common/Settings";
 
 /***** Pathfinder1 Roller Declaration *****/
@@ -7,10 +7,10 @@ declare class RollPF {
 	static safeRoll(p1: any, p2: any): any;
 }
 
-export default class DFManualRollsLegacy {
+export default class ManualRollsLegacy {
 	static PREF_USE_LEGACY = 'use-legacy';
 
-	static get useLegacy(): boolean { return SETTINGS.get(DFManualRollsLegacy.PREF_USE_LEGACY); }
+	static get useLegacy(): boolean { return SETTINGS.get(ManualRollsLegacy.PREF_USE_LEGACY); }
 
 	private static pf1HelpersPatched = false;
 
@@ -35,10 +35,10 @@ export default class DFManualRollsLegacy {
 				/******** MODIFIED PORTION START ********/
 				let roll: any;
 				try {
-					DFManualRolls.tempDisable = true;
+					ManualRolls.tempDisable = true;
 					roll = RollPF.safeRoll(formula, rollData);
 				} finally {
-					DFManualRolls.tempDisable = false;
+					ManualRolls.tempDisable = false;
 				}
 				/******** MODIFIED PORTION END ********/
 				formula = roll.formula.replace(/\[[^\]]+\]/g, ""); // remove flairs
@@ -91,15 +91,15 @@ export default class DFManualRollsLegacy {
 		}
 
 		// ignore min/max rolls
-		if (!DFManualRolls.shouldRollManually || minimize || maximize)
+		if (!ManualRolls.shouldRollManually || minimize || maximize)
 			return wrapper({ minimize, maximize });
 
 		// if there are no modifiers, display a "total" roll request
 		if (this.modifiers.length == 0) {
-			const total = DFManualRollsLegacy.prompt(this.number, this.faces, this.flavor);
-			const results = DFRollPrompt.distributeRoll(total[0], this.number);
+			const total = ManualRollsLegacy.prompt(this.number, this.faces, this.flavor);
+			const results = RollPrompt.distributeRoll(total[0], this.number);
 			this.results = results.map(x => { return { result: x, active: true }; });
-			if (DFManualRolls.flagged && total[1]) {
+			if (ManualRolls.flagged && total[1]) {
 				this.options.flavor = (this.options.flavor || '') + '[MRT]';
 				(<any>this.options).isManualRoll = true;
 			}
@@ -117,13 +117,13 @@ export default class DFManualRollsLegacy {
 					flags.push('RN');
 				}
 				else {
-					const result = DFManualRollsLegacy.prompt(1, this.faces, this.flavor);
+					const result = ManualRollsLegacy.prompt(1, this.faces, this.flavor);
 					roll.result = result[0];
 					flags.push(result[1] ? 'MR' : 'RN');
 				}
 				this.results.push(roll);
 			}
-			if (DFManualRolls.flagged && flags.some(x => x === 'MR')) {
+			if (ManualRolls.flagged && flags.some(x => x === 'MR')) {
 				this.options.flavor = (this.options.flavor || '') + '[' + flags.join(',') + ']';
 				(<any>this.options).isManualRoll = true;
 			}

@@ -18,7 +18,8 @@
 		"launch": "./.cmds launch",
 		"tag": "./.cmds tag",
 		"release": "npm run lint && npm run tag && npm run prod && ./.cmds bundle",
-		"shims": "./.cmds shims"
+		"shims": "./.cmds shims",
+		"swap": "./.cmds swap"
 	},
 	"repository": {
 		"type": "git",
@@ -40,7 +41,7 @@
 	},
 	"homepage": "https://github.com/flamewave000/dragonflagon-fvtt#readme",
 	"devDependencies": {
-		"@league-of-foundry-developers/foundry-vtt-types": "^0.8.9-7",
+		"@league-of-foundry-developers/foundry-vtt-types": "^9.255.3",
 		"@prantlf/jsonlint": "^10.2.0",
 		"@typescript-eslint/eslint-plugin": "^5.3.1",
 		"@typescript-eslint/parser": "^5.3.1",
@@ -60,7 +61,7 @@
 		"gulp-zip": "^5.0.2",
 		"json": "^11.0.0",
 		"json-stringify-pretty-compact": "^3.0.0",
-		"sass": "^1.43.4",
+		"sass": "^1.49.9",
 		"spaces-to-tabs": "0.0.3",
 		"terser-webpack-plugin": "^5.2.4",
 		"ts-loader": "^9.2.6",
@@ -91,7 +92,8 @@
 			"*.d.ts",
 			"*.json",
 			"gulpfile.js",
-			"foundry-reference.js",
+			"foundry-reference-v9.js",
+			"foundry-reference-v8.js",
 			"**/dist/**/*.js",
 			"**/bundle/**/*.js"
 		],

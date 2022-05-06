@@ -1,4 +1,4 @@
-import DFManualRolls from "./DFManualRolls";
+import ManualRolls from "./ManualRolls";
 import SETTINGS from "../../common/Settings";
 
 interface RollPromptData {
@@ -14,7 +14,7 @@ interface RenderData {
 	term: DiceTerm
 }
 
-export default class DFRollPrompt extends FormApplication<FormApplication.Options, { terms: RenderData[] }> {
+export default class RollPrompt extends FormApplication<FormApplicationOptions, { terms: RenderData[] }> {
 
 	static readonly PREF_FOCUS_INPUT = 'focus-input';
 
@@ -22,11 +22,11 @@ export default class DFRollPrompt extends FormApplication<FormApplication.Option
 	private _terms: RollPromptData[] = [];
 	private _rolled = false;
 
-	static get focusInput(): boolean { return SETTINGS.get(DFRollPrompt.PREF_FOCUS_INPUT); }
+	static get focusInput(): boolean { return SETTINGS.get(RollPrompt.PREF_FOCUS_INPUT); }
 
-	static get defaultOptions(): FormApplication.Options {
-		return <FormApplication.Options>mergeObject(
-			<DeepPartial<FormApplication.Options>>FormApplication.defaultOptions,
+	static get defaultOptions(): FormApplicationOptions {
+		return <FormApplicationOptions>mergeObject(
+			<DeepPartial<FormApplicationOptions>>FormApplication.defaultOptions,
 			{
 				title: game.i18n.localize("DF_MANUAL_ROLLS.Prompt.DefaultTitle"),
 				template: `modules/${SETTINGS.MOD_NAME}/templates/roll-prompt.hbs`,
@@ -71,7 +71,7 @@ export default class DFRollPrompt extends FormApplication<FormApplication.Option
 	}
 	async _render(force?: boolean, options?: Application.RenderOptions) {
 		await super._render(force, options);
-		if (DFRollPrompt.focusInput)
+		if (RollPrompt.focusInput)
 			this.element.find('input')[0].focus();
 	}
 	protected _updateObject(_: Event, formData?: { [key: string]: string | null }): Promise<unknown> {
@@ -81,8 +81,8 @@ export default class DFRollPrompt extends FormApplication<FormApplication.Option
 			// If a total input was defined and given, it overrides everything else.
 			if (total !== undefined && total !== null) {
 				const value = parseInt(total);
-				results.push(...DFRollPrompt.distributeRoll(value, x.term.number));
-				if (DFManualRolls.flagged)
+				results.push(...RollPrompt.distributeRoll(value, x.term.number));
+				if (ManualRolls.flagged)
 					x.term.options.flavor = (x.term.options.flavor || '') + '[MRT]';
 			} else {
 				const flags = [];
@@ -98,7 +98,7 @@ export default class DFRollPrompt extends FormApplication<FormApplication.Option
 					}
 					results.push(value);
 				}
-				if (DFManualRolls.flagged && flags.some(x => x === 'MR')) {
+				if (ManualRolls.flagged && flags.some(x => x === 'MR')) {
 					x.term.options.flavor = (x.term.options.flavor || '') + '[' + flags.join(',') + ']';
 					(<any>x.term.options).isManualRoll = true;
 				}

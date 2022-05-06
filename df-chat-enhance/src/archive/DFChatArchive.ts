@@ -38,7 +38,6 @@ class ArchiveFolderMenu extends FormApplication {
 		html.find('label>button').on('click', async event => {
 			event.preventDefault();
 			const fp = new FilePicker(<any>{
-				current: SETTINGS.get(DFChatArchive.PREF_FOLDER),
 				title: 'DF_CHAT_ARCHIVE.Settings.ArchiveFolder_Name',
 				type: 'folder',
 				field: input,
@@ -48,7 +47,7 @@ class ArchiveFolderMenu extends FormApplication {
 				},
 				button: event.currentTarget
 			});
-			await fp.browse();
+			await fp.browse(SETTINGS.get(DFChatArchive.PREF_FOLDER));
 		});
 		return html;
 	}
@@ -66,7 +65,7 @@ export class DFChatArchive {
 	private static readonly PREF_FOLDER_MENU = 'archiveFolderMenu';
 	private static _updateListener: () => void = null;
 
-	private static get DATA_FOLDER(): FilePicker.DataSource { return SETTINGS.get(DFChatArchive.PREF_FOLDER_SOURCE); }
+	private static get DATA_FOLDER(): FilePicker.SourceType { return SETTINGS.get(DFChatArchive.PREF_FOLDER_SOURCE); }
 
 	static setUpdateListener(listener: () => void) {
 		this._updateListener = listener;

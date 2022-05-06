@@ -1,17 +1,14 @@
 {
 	"name": "df-curvy-walls",
-	"version": "3.2.3",
+	"version": "3.3.1",
 	"title": "DF Curvy Walls",
 	"description": "Creates wall segments along a Bezier Cubic or Quadratic curve, an ellipse, or a rectangle",
 	"author": "flamewave000#0001",
-	"minimumCoreVersion": "0.8.6",
-	"compatibleCoreVersion": "0.8.8",
+	"minimumCoreVersion": "9",
+	"compatibleCoreVersion": "9",
 	"dependencies": [
 		{ "name": "lib-wrapper" },
-		{
-			"name": "lib-df-hotkeys",
-			"manifest": "https://dragonflagon.cafe/mods/man/lib-df-hotkeys"
-		}
+		{ "name": "lib-df-buttons" }
 	],
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",

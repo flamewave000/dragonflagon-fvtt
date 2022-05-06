@@ -42,9 +42,8 @@ export default class DFChatEdit {
 
 		libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype._onChatKeyDown', (wrapper: (..._: any) => void, ...args: any) => {
 			const event = args[0] as KeyboardEvent;
-			const code = game.keyboard.getKey(event);
 			// We have used the Shift+Up combo to edit previously sent message
-			if (code === "ArrowUp" && event.ctrlKey) {
+			if (event.code === "ArrowUp" && event.ctrlKey) {
 				event.preventDefault();
 				let messages = <ChatMessage[]>[...(ui.chat.collection.values())];
 				// Perform an inverted sort ( n<0 before, n=0 same, n>0 after )
@@ -59,8 +58,31 @@ export default class DFChatEdit {
 
 		libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype.processMessage', function (this: ChatLog, wrapper: AnyFunction, message: string) {
 			let originalMessage: string = null;
-			if (SETTINGS.get(DFChatEditor.PREF_MARKDOWN) && !message.trim().startsWith('/')) {
-				[originalMessage, message] = DFChatEditor.processMarkdown(message);
+			if (SETTINGS.get(DFChatEditor.PREF_MARKDOWN)) {
+				if (message.trim().startsWith('/')) {
+					const token = message.split(' ')[0].trim();
+					switch (token) {
+						case '/ooc': /* fall-through */
+						case '/ic': /* fall-through */
+						case '/emote': /* fall-through */
+						case '/whisper': /* fall-through */
+						case '/w':
+							[originalMessage, message] = DFChatEditor.processMarkdown(message.substr(token.length));
+							originalMessage = `${token} ${originalMessage.trimStart()}`;
+							message = `${token} ${message.trimStart()}`;
+							break;
+						case 'log': /* fall-through */
+						case 'gmlog': /* fall-through */
+						case '/gmroll': /* fall-through */
+						case '/blindroll': /* fall-through */
+						case '/selfroll': /* fall-through */
+						case '/r': /* fall-through */
+						case '/roll': /* fall-through */
+						default: break;
+					}
+				} else {
+					[originalMessage, message] = DFChatEditor.processMarkdown(message);
+				}
 			}
 			const result = wrapper(message);
 			if (originalMessage) {
@@ -88,7 +110,7 @@ export default class DFChatEdit {
 	}
 
 	// Will be bound to the instance of ChatMessage we are observing
-	static editChatMessage(this: ChatMessage) {
+	static async editChatMessage(this: ChatMessage) {
 		// Double check permissions
 		if (!SETTINGS.get(PREF_EDIT_ALLOWED)) {
 			ui.notifications.warn('DF_CHAT_EDIT.Error_NoPermission'.localize());
@@ -98,8 +120,9 @@ export default class DFChatEdit {
 			(<any>this).chatEditor.bringToTop();
 		} else {
 			(<any>this).chatEditor = new DFChatEditor(this);
-			(<any>this).chatEditor.render(true);
+			await (<any>this).chatEditor._render(true);
 		}
+		(<any>this).chatEditor.element.find('textarea').focus();
 	}
 
 	static isHTML(str: string): boolean {

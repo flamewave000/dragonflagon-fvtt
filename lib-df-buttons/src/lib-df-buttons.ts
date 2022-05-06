@@ -1,11 +1,10 @@
-import {} from "../../common/global";
 import SETTINGS from "../../common/Settings";
-import ControlManager from "./ControlManager";
+import ControlManagerImpl from "./ControlManager";
 
 SETTINGS.init('lib-df-buttons');
 
 Hooks.once('init', () => {
-	(<ControlManager>(<any>ui).moduleControls) = new ControlManager();
+	(<any>ui).moduleControls = new ControlManagerImpl();
 
 	SETTINGS.register('position', {
 		scope: 'client',
@@ -17,10 +16,9 @@ Hooks.once('init', () => {
 		},
 		name: 'LIB_DF_BUTTONS.name',
 		hint: 'LIB_DF_BUTTONS.hint',
-		config: true,
-		default: 'right',
-		type: String,
-		onChange: () => (<ControlManager>(<any>ui).moduleControls).render()
+		config: false,
+		default: 'left',
+		onChange: () => (<ControlManagerImpl>(<any>ui).moduleControls).render()
 	});
 
 	// Soft Dependency on `libwrapper`. Only use it if it already exists
@@ -48,14 +46,14 @@ Hooks.once('init', () => {
 	}
 });
 Hooks.once('setup', () => {
-	(<ControlManager>(<any>ui).moduleControls).initialize();
+	(<ControlManagerImpl>(<any>ui).moduleControls).initialize();
 });
 Hooks.once('ready', () => {
-	(<ControlManager>(<any>ui).moduleControls).render(true);
+	(<ControlManagerImpl>(<any>ui).moduleControls).render(true);
 });
 /* Example code for appending ToolGroups and Tools */
 /**
-import { Tool, ToolGroup } from "./ToolType";
+//import { Tool, ToolGroup } from "./ToolType";
 Hooks.on('getModuleToolGroups', (app: ControlManager, groups: ToolGroup[]) => {
 	const handleClick = function (this: Tool, active?: boolean) {
 		if (active !== undefined)
@@ -126,7 +124,7 @@ Hooks.on('getModuleToolGroups', (app: ControlManager, groups: ToolGroup[]) => {
 		icon: '<i class="fas fa-dice-two"></i>',
 		title: 'toggle2',
 		toggle: true,
-		active: true,
+		isActive: true,
 		onClick: handleClick,
 	});
 });

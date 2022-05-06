@@ -15,7 +15,7 @@ export default class DFSceneJournal {
 		const hasConfig = game.user.isGM;
 		const hasJournal = !!scene.journal && scene.journal.testUserPermission(game.user, "OBSERVER");
 		if (!permScene && !hasConfig && !hasJournal)
-			return ui.notifications.warn(`You do not have permission to view this ${scene.entity}.`);
+			return ui.notifications.warn(`You do not have permission to view this ${scene.documentName}.`);
 
 		const buttons: Record<string, Button> = {};
 		let defaultButton = '';
@@ -23,7 +23,7 @@ export default class DFSceneJournal {
 			defaultButton = 'config';
 			buttons.config = {
 				icon: '<i class="fas fa-cog"></i>',
-				label: game.i18n.localize('DF-SCENE-ENHANCE.Dialog_JournalConfig'),
+				label: game.i18n.localize('DF-SCENE-ENHANCE.Dialog.JournalConfig'),
 				callback: async () => { return scene.sheet.render(true); }
 			};
 		}
@@ -31,7 +31,7 @@ export default class DFSceneJournal {
 			defaultButton = 'journal';
 			buttons.journal = {
 				icon: '<i class="fas fa-book-open"></i>',
-				label: game.i18n.localize('DF-SCENE-ENHANCE.Dialog_JournalJournal'),
+				label: game.i18n.localize('DF-SCENE-ENHANCE.Dialog.JournalJournal'),
 				callback: async () => { return scene.journal.sheet.render(true); }
 			};
 		}
@@ -39,7 +39,7 @@ export default class DFSceneJournal {
 			defaultButton = 'navigate';
 			buttons.navigate = {
 				icon: '<i class="fas fa-directions"></i>',
-				label: game.i18n.localize('DF-SCENE-ENHANCE.Dialog_JournalNavigate'),
+				label: game.i18n.localize('DF-SCENE-ENHANCE.Dialog.JournalNavigate'),
 				callback: async () => { return scene.view(); }
 			};
 		}
@@ -50,8 +50,8 @@ export default class DFSceneJournal {
 			return buttons[Object.keys(buttons)[0]].callback();
 
 		return (new Dialog({
-			title: game.i18n.localize("DF-SCENE-ENHANCE.Dialog_JournalTitle") + scene.name,
-			content: "<p>" + game.i18n.localize("DF-SCENE-ENHANCE.Dialog_JournalMessage") + "</p>",
+			title: game.i18n.localize("DF-SCENE-ENHANCE.Dialog.JournalTitle") + scene.name,
+			content: "<p>" + game.i18n.localize("DF-SCENE-ENHANCE.Dialog.JournalMessage") + "</p>",
 			buttons: buttons as any,
 			default: defaultButton,
 		})).render(true);
@@ -69,6 +69,7 @@ export default class DFSceneJournal {
 			const collection = game.collections.get(a.dataset.entity);
 			document = collection.get(id);
 			if ((document.documentName === "Scene")) {
+				event.preventDefault();
 				return DFSceneJournal.displayDialog(document);
 			}
 		}
@@ -83,19 +84,19 @@ export default class DFSceneJournal {
 		}
 		const body = $("body");
 		if (journalClick) {
-			body.off("click", "a.entity-link", (TextEditor as any)._onClickContentLink);
-			body.on("click", "a.entity-link", DFSceneJournal._onClickContentLink);
+			body.off("click", "a.content-link", (TextEditor as any)._onClickContentLink);
+			body.on("click", "a.content-link", DFSceneJournal._onClickContentLink);
 		}
 		else {
-			body.off("click", "a.entity-link", DFSceneJournal._onClickContentLink);
-			body.on("click", "a.entity-link", (TextEditor as any)._onClickContentLink);
+			body.off("click", "a.content-link", DFSceneJournal._onClickContentLink);
+			body.on("click", "a.content-link", (TextEditor as any)._onClickContentLink);
 		}
 	}
 
 	static init() {
 		SETTINGS.register(DFSceneJournal.ON_CLICK_JOURNAL, {
-			name: "DF-SCENE-ENHANCE.Nav_SettingOnClickJournal",
-			hint: "DF-SCENE-ENHANCE.Nav_SettingOnClickJournalHint",
+			name: "DF-SCENE-ENHANCE.Nav.SettingOnClickJournal",
+			hint: "DF-SCENE-ENHANCE.Nav.SettingOnClickJournalHint",
 			scope: "world",
 			config: true,
 			type: Boolean,
@@ -103,8 +104,8 @@ export default class DFSceneJournal {
 			onChange: (value: boolean) => DFSceneJournal.patchTextEditor(value)
 		});
 		SETTINGS.register(DFSceneJournal.ON_CLICK_JOURNAL_ONLY_ONE, {
-			name: "DF-SCENE-ENHANCE.Nav_SettingOnClickJournalOnlyOne",
-			hint: "DF-SCENE-ENHANCE.Nav_SettingOnClickJournalOnlyOneHint",
+			name: "DF-SCENE-ENHANCE.Nav.SettingOnClickJournalOnlyOne",
+			hint: "DF-SCENE-ENHANCE.Nav.SettingOnClickJournalOnlyOneHint",
 			scope: "scene",
 			config: true,
 			type: Boolean,

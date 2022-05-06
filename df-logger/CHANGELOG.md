@@ -1,5 +1,18 @@
 # DF User Logger
 
+## Release 1.6.8 (2022-01-04)
+- **FIX #283:** Localisation bugs.
+
+## Release 1.6.7 (2022-01-04)
+- **NEW #279:** Italian Localization: Courtesy of [smoothingplane](https://github.com/smoothingplane).
+
+## Release 1.6.6 (2022-01-04)
+- **NEW:** Better default message management for any number of localized messages.
+- **FIX #281:** Sounds folder was missing for previous release.
+
+## Release 1.6.5 (2022-01-02)
+- **NEW #274:** Japanese Localization: Courtesy of [BrotherSharper](https://github.com/BrotherSharper).
+
 ## Release 1.6.4 (2021-11-15)
 - Updated Spanish localization, courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
 

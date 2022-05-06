@@ -6,7 +6,7 @@ import { BezierTool } from './tools/BezierTool';
 const curvyWallApp = new CurvyWallsToolBar();
 SETTINGS.init('df-curvy-walls');
 
-Hooks.once('init', function() {
+Hooks.once('init', function () {
 	SETTINGS.register(CurvyWallsToolBar.PREF_PRESERVE, {
 		scope: 'world',
 		type: Boolean,
@@ -35,9 +35,37 @@ Hooks.once('init', function() {
 		type: Boolean,
 		default: false,
 	});
+
+	game.keybindings.register(SETTINGS.MOD_NAME, 'applyTool', {
+		name: 'df-curvy-walls.apply',
+		editable: [{ key: "Enter" }],
+		onDown: () => { CurvyWallToolManager.instance.apply(); }
+	});
+	game.keybindings.register(SETTINGS.MOD_NAME, 'cancelTool', {
+		name: 'df-curvy-walls.cancel',
+		editable: [{ key: 'Delete' }],
+		onDown: () => CurvyWallToolManager.instance.clearTool()
+	});
+	game.keybindings.register(SETTINGS.MOD_NAME, 'incrementSegments', {
+		name: 'df-curvy-walls.increment',
+		editable: [{ key: 'Equal' }],
+		repeat: true,
+		onDown: () => { CurvyWallToolManager.instance.segments++; }
+	});
+	game.keybindings.register(SETTINGS.MOD_NAME, 'decrementSegments', {
+		name: 'df-curvy-walls.decrement',
+		editable: [{ key: 'Minus' }],
+		repeat: true,
+		onDown: () => { CurvyWallToolManager.instance.segments--; }
+	});
+
+	CurvyWallsToolBar.init();
+	CurvyWallToolManager.instance.init();
 });
 
 Hooks.once("ready", function () {
+	// Exit if we do not have a canvas
+	if (game.settings.get('core', 'noCanvas')) return;
 	if (!game.modules.get('lib-wrapper')?.active) {
 		console.error('Missing libWrapper module dependency');
 		if (game.user.isGM)
@@ -49,14 +77,25 @@ Hooks.once("ready", function () {
 	CurvyWallToolManager.instance.patchWallsLayer();
 });
 
+let moduleControls: ControlManager;
+
 Hooks.on('renderSceneControls', async (controls: SceneControls) => {
+	// Exit if we do not have a canvas
+	if (game.settings.get('core', 'noCanvas')) return;
 	if (!game.modules.get('lib-wrapper')?.active) return;
 	if (!game.user.isGM) return;
 	if (controls.activeControl !== 'walls') {
 		await curvyWallApp.close();
+		if ((moduleControls as any)._state === 2)
+			moduleControls.refresh();
 		return;
 	}
+	else if ((moduleControls as any)._state === 2)
+		moduleControls.activateGroupByName(SETTINGS.MOD_NAME);
 	curvyWallApp.render(true);
 	if (CurvyWallToolManager.instance.mode != Mode.None)
 		CurvyWallToolManager.instance.render();
 });
+// Refresh the curvy wall controls when the button bar re-renders
+Hooks.on('renderControlManager', () => curvyWallApp.render());
+Hooks.on('getModuleToolGroupsPre', (app: ControlManager) => { moduleControls = app; });

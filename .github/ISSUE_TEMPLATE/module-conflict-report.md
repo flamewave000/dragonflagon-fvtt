@@ -7,7 +7,7 @@ assignees: flamewave000
 
 ---
 
-** Conflicting Module(s)**
+**Conflicting Module(s)**
 - List of conflicting modules
 
 **Describe the conflict**

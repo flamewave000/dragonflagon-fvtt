@@ -90,7 +90,7 @@ export default class ChatMerge {
 			type: Boolean,
 			onChange: (newValue: boolean) => {
 				const style = (<HTMLElement>document.querySelector(':root')).style;
-				style.setProperty('--dfce-cm-hover-shadow', newValue ? '' : '0');
+				newValue ? style.removeProperty('--dfce-cm-hover-shadow') : style.setProperty('--dfce-cm-hover-shadow', '0px');
 			}
 		});
 		SETTINGS.register<number>(this.PREF_EPOCH, {
@@ -114,7 +114,7 @@ export default class ChatMerge {
 	static ready() {
 		const style = (<HTMLElement>document.querySelector(':root')).style;
 		style.setProperty('--dfce-cm-separation', this._separateWithBorder ? '' : '0');
-		style.setProperty('--dfce-cm-hover-shadow', this._showHover ? '' : '0');
+		this._showHover ? style.removeProperty('--dfce-cm-hover-shadow') : style.setProperty('--dfce-cm-hover-shadow', '0px');
 		style.setProperty('--dfce-cm-header', this._showHeader ? '' : 'none');
 		if (game.user.isGM) {
 			style.setProperty('--dfce-cm-header-delete', this._showHeader ? '' : '0');
@@ -213,7 +213,7 @@ export default class ChatMerge {
 			// this is a bit complex, basically we want to group by actors, but if you're not using an actor, group by user instead
 			userCompare = ( // If actors are equal and NOT null
 				currData.speaker.actor === prevData.speaker.actor
-				&& !currData.speaker.actor
+				&& !!currData.speaker.actor
 			) ||
 				( // If BOTH actors are null and users are equal
 					!currData.speaker.actor
@@ -241,8 +241,10 @@ export default class ChatMerge {
 			const logId = parseInt(/df-chat-log-(\d+)/.exec(currElem.parentElement.parentElement.id)[1]);
 			if (isNaN(logId)) return;
 			const chatLog = DFChatArchiveManager.chatViewers.get(logId);
-			curr = <ChatMessage>chatLog.messages.find(x => x._id == currElem.dataset.messageId);
-			prev = <ChatMessage>chatLog.messages.find(x => x._id == prevElem.dataset.messageId);
+			curr = <ChatMessage>chatLog.messages.find(x =>
+				((x as ChatMessageData)._id ? (x as ChatMessageData)._id : (x as ChatMessage).id) == currElem.dataset.messageId);
+			prev = <ChatMessage>chatLog.messages.find(x =>
+				((x as ChatMessageData)._id ? (x as ChatMessageData)._id : (x as ChatMessage).id) == prevElem.dataset.messageId);
 		}
 		if (!ChatMerge._isValidMessage(curr, prev)) return;
 		if (prevElem.classList.contains('dfce-cm-bottom')) {

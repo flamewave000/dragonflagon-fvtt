@@ -1,0 +1,24 @@
+.dfte-template-config {
+	table {
+		th {
+			white-space: nowrap;
+			padding: 0 0.5em;
+		}
+		td:first-child {
+			font-weight: bold;
+			text-align: right;
+			padding-right: 0.5em;
+		}
+		td:last-child {
+			padding-left: 0.5em;
+		}
+	}
+
+	main,
+	footer {
+		section {
+			display: flex;
+			flex: row nowrap;
+		}
+	}
+}

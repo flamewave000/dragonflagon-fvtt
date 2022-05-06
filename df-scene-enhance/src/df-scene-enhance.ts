@@ -1,4 +1,3 @@
-import {} from '../../common/global';
 import DFSceneJournal from './df-scene-journal';
 import DFSceneNav from './df-scene-nav';
 import DFSceneThumb from './df-scene-thumb';

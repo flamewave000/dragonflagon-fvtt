@@ -1,11 +1,27 @@
 # DF Curvy Walls
 
+## Release 3.3.1 (2022-04-05)
+- **UPDATED #274:** Japanese Localization: Courtesy of touge and [BrotherSharper](https://github.com/BrotherSharper).
+- **NEW:** Module is now dependant on [Library: DF Module Buttons](https://foundryvtt.com/packages/lib-df-buttons).
+- **FIX #314:** Added handling for disabled canvas mode.
+- **FIX #303:** Fix render issues when you accidentally move a wall while placing a template.
+- **FIX #296:** Fixed layout issues for overlapping buttons.
+
+## Release 3.3.0 (2021-12-30)
+- **UPDATED:** Migrated to FoundryVTT V9
+- **NEW #272:** Migrated to new FVTTv9 Core Keyboard Shortcuts.
+- **Fixed #259 & #260:** Rendering issues in V9.
+
+## Release 3.2.4 (2021-11-22)
+- **UPDATED:** French Localization.
+- **UPDATED:** Spanish Localization, courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
+
 ## Release 3.2.3 (2021-11-16)
 - **NEW #190:** There is now an option to use smaller control handles.
 - **FIX #213:** Applying tool crashed and would not succeed.
 
 ## Release 3.2.2 (2021-11-15)
-- Updated Spanish localization, courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
+- **UPDATED:** Updated Spanish localization, courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo)
 
 ## Release 3.2.1 (2021-08-09)
 - License Migration.

@@ -1,5 +1,22 @@
 # DF Scene Enhancement Changes
 
+## Release 3.5.1 (2022-04-04)
+- **NEW:** Hovering a Scene Nav Button will display the "Real" scene name in a tooltip if you are a GM.
+- **NEW #176:** New option to display the real scene name on the nav buttons for GMs (will display the Nav Name in the tooltip when hovered).
+- **NEW #149:** New options in the nav button context menu for the currently viewed scene.
+	- **Set Initial View:** Set the initial view of the scene to the current view.
+	- **Configure Grid:** Launch the Grid Configuration tool to quickly begin adjusting the current scene's grid alignment.
+- **FIX #297:** Player scenes tab now renders properly in V9.
+
+## Release 3.5.0 (2022-01-02)
+- **UPDATED:** Migrated to FoundryVTT V9.
+- **UPDATED #274:** Japanese Localization: Courtesy of touge and [BrotherSharper](https://github.com/BrotherSharper).
+- **FIX #264:** libWrapper errors.
+- **FIX #263:** Scenes Context menu now works correctly.
+- **FIX #242:** Sidebar no longer shifted left.
+- **FIX #266:** Thumbnail overrides now generate properly.
+- **FIX #265:** Scene links in journals will properly stop the scene config from opening alongside the regular prompt.
+
 ## Release 3.4.1 (2021-07-02)
 - Fixed some issues with the scenes directory.
 	- Fixed issue where the Create Scene/Folder buttons are missing when there are no scenes in the world yet.

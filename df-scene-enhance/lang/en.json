@@ -1,30 +1,45 @@
 {
-	"DF-SCENE-ENHANCE.errorLibWrapperMissing": "'DF Scene Enhancements' requires the 'libWrapper' module. Please install and activate 'libWrapper'.",
-	"DF-SCENE-ENHANCE.Thumbnail_Label": "Preview Image Override",
-	"DF-SCENE-ENHANCE.Thumbnail_Hint": "Thumbnail Path",
-	"DF-SCENE-ENHANCE.Thumbnail_Button": "Browse Files",
-
-	"DF-SCENE-ENHANCE.Nav_NavigateMenuItem": "Navigate",
-	"DF-SCENE-ENHANCE.Nav_SettingOnClick": "Navigate when scene is clicked",
-	"DF-SCENE-ENHANCE.Nav_SettingOnClickHint": "When a scene is clicked in the sidebar, it is navigated to (Always true for players). UPDATES ON NEXT SCENE CHANGE",
-	"DF-SCENE-ENHANCE.Nav_SettingOnClickPC": "Enable Scene Tab for Players",
-	"DF-SCENE-ENHANCE.Nav_SettingOnClickPCHint": "(requires refresh) Allow players to use the Scenes Tab to perform navigation.",
-	"DF-SCENE-ENHANCE.Nav_SettingOnClickJournal": "Navigate when a Scene reference is clicked in a Journal",
-	"DF-SCENE-ENHANCE.Nav_SettingOnClickJournalHint": "If a Journal Entry contains a Scene link, clicking it will allow you to navigate to that Scene.",
-	"DF-SCENE-ENHANCE.Nav_SettingOnClickJournalOnlyOne": "Execute Scene Link immediately if only one option is available",
-	"DF-SCENE-ENHANCE.Nav_SettingOnClickJournalOnlyOneHint": "If only one option is available, don't display the dialog and just execute the action immediately.",
-
-	"DF-SCENE-ENHANCE.Dialog_JournalTitle": "Scene Navigation: ",
-	"DF-SCENE-ENHANCE.Dialog_JournalMessage": "How would you like to open this Scene?",
-	"DF-SCENE-ENHANCE.Dialog_JournalNavigate": "Navigate",
-	"DF-SCENE-ENHANCE.Dialog_JournalJournal": "Journal",
-	"DF-SCENE-ENHANCE.Dialog_JournalConfig": "Config",
-
-	"DF-SCENE-ENHANCE.Ratio_Denominator": "Denominator",
-	"DF-SCENE-ENHANCE.Ratio_Numerator": "Numerator",
-	"DF-SCENE-ENHANCE.Ratio_LockRatio": "Lock Ratio",
-	"DF-SCENE-ENHANCE.Ratio_SizeRatio": "Size Ratio",
-	"DF-SCENE-ENHANCE.Ratio_ApplyRatio": "Apply custom ratio to width/height",
-	"DF-SCENE-ENHANCE.Ratio_Scale": "Scale",
-	"DF-SCENE-ENHANCE.Ratio_ApplyScale": "Multiply width/height by scale"
+	"DF-SCENE-ENHANCE": {
+		"errorLibWrapperMissing": "'DF Scene Enhancements' requires the 'libWrapper' module. Please install and activate 'libWrapper'.",
+		"Thumbnail": {
+			"Label": "Preview Image Override",
+			"Hint": "Thumbnail Path",
+			"Button": "Browse Files"
+		},
+		"Nav": {
+			"NavigateMenuItem": "Navigate",
+			"SettingOnClick": "Navigate when scene is clicked",
+			"SettingOnClickHint": "When a scene is clicked in the sidebar, it is navigated to (Always true for players). UPDATES ON NEXT SCENE CHANGE",
+			"SettingOnClickPC": "Enable Scene Tab for Players",
+			"SettingOnClickPCHint": "(requires refresh) Allow players to use the Scenes Tab to perform navigation.",
+			"SettingOnClickJournal": "Navigate when a Scene reference is clicked in a Journal",
+			"SettingOnClickJournalHint": "If a Journal Entry contains a Scene link, clicking it will allow you to navigate to that Scene.",
+			"SettingOnClickJournalOnlyOne": "Execute Scene Link immediately if only one option is available",
+			"SettingOnClickJournalOnlyOneHint": "If only one option is available, don't display the dialog and just execute the action immediately.",
+			"SettingRealName": "Display Full Names in Nav Bar for GM",
+			"SettingRealNameHint": "Overrides the scene navigation bar to display the Scene's Full name for GM users.",
+			"Tooltip_PC": "Nav Name: ",
+			"ContextOptions": {
+				"SetView": "Set View Position",
+				"ConfigGrid": "Configure Grid",
+				"SetViewConfirmation": "Updated scene's initial view"
+			}
+		},
+		"Dialog": {
+			"JournalTitle": "Scene Navigation: ",
+			"JournalMessage": "How would you like to open this Scene?",
+			"JournalNavigate": "Navigate",
+			"JournalJournal": "Journal",
+			"JournalConfig": "Config"
+		},
+		"Ratio": {
+			"Denominator": "Denominator",
+			"Numerator": "Numerator",
+			"LockRatio": "Lock Ratio",
+			"SizeRatio": "Size Ratio",
+			"ApplyRatio": "Apply custom ratio to width/height",
+			"Scale": "Scale",
+			"ApplyScale": "Multiply width/height by scale"
+		}
+	}
 }

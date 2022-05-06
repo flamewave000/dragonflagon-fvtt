@@ -1,0 +1,118 @@
+{
+	"I18N.LANGUAGE": "Italiano",
+	"I18N.MAINTAINERS": "smoothingplane",
+	"DF-LOGGER": {
+		"Settings": {
+			"ManageMessages": "Modifica i Messaggi",
+			"Sound_Name": "Suono per i Messaggi",
+			"Sound_Hint": "Il suono che viene riprodotto quando un messaggio di accesso/uscita viene visualizzato nella chat",
+			"GmOnly_Name": "Mostra il messaggio solo al GM",
+			"GmOnly_Hint": "Mostra il messaggio di connessione/disconnessione dei giocatori solo al GM",
+			"NotMe_Name": "Non mostrarmi il mio messaggio",
+			"NotMe_Hint": "Mostra il messaggio di connessione/disconnessione solo agli altri giocatori",
+			"Delay_Name": "Tempo di rimozione automatica",
+			"Delay_Hint": "Quanti secondi vuoi che rimanga il messaggio nella chat?",
+			"SelfDestruct_Name": "Rimozione automatica messaggi",
+			"SelfDestruct_Hint": "I messaggi di connessione/disconnessione verranno automaticamente rimossi dopo un po' di tempo"
+		},
+		"Content": {
+			"Login": "Giocatore Connesso",
+			"Login_Persist": "*Giocatore Connesso",
+			"Logout": "Giocatore Disconnesso",
+			"Logout_Persist": "*Giocatore Disconnesso"
+		},
+		"ManageMenu": {
+			"Title": "Gestione Messaggi",
+			"Confirm": {
+				"Title": "Ripristina Tutti i Messaggi",
+				"Content": "Sei sicuro di voler ripristinare tutti i messaggi a quelli predefiniti? Questa operazione non può essere annullata e cancellerà tutti i messaggi personalizzati."
+			},
+			"TabLogin": "Messaggi di Benvenuto",
+			"TabLogout": "Messaggi di Uscita",
+			"Headers": {
+				"Toggle": "Usa Messaggi",
+				"Message": "Testo Messaggio",
+				"Remove": "Cancella Messaggio"
+			},
+			"Entry": {
+				"ToggleTitle": "Attiva/Disattiva Messaggio",
+				"MessagePlaceholder": "Inserisci qui il tuo messaggio personalizzato...",
+				"RemoveTitle": "Rimuovi Voce"
+			},
+			"Buttons": {
+				"Add": "Aggiungi Voce",
+				"Reset": "Ripristina Tutti i Messaggi",
+				"Save": "Salva Messaggi"
+			}
+		},
+		"LoginMsg": [
+			"{{username}}, Benvenuto",
+			"Oh, no! {{username}} è qui! Nascondete l'oro!",
+			"Dannato  {{username}}, entrando ha rovinato la festa",
+			"{{username}}! {{username}}! È arrivato {{username}}! Visto? Non gliene frega niente a nessuno.",
+			"{{username}} ecco il mio braccio, benvenuta al braccio, le porgerò io stesso lo scalone",
+			"{{username}}, buonasera e ben ritrovato, un saluto affettuoso a lei. L'ultima volta ci siamo divertiti, direi più lei che me",
+			"Hey  {{username}}, finalmente hai aperto gli occhi. Stavi cercando di attraversare il confine, vero?",
+			"Nooo, {{username}}, allucinazione immensa, mi sembra che tu fossi un omino verde basso basso con l'orecchi a sventola grossissime.",
+			"Ciao {{username}}, sei un maschio o una femmina?",
+			"{{username}} è sospetto...",
+			"Non fate caso a {{username}}, l'abbiamo addestrato male di proposito, per ridere.",
+			"Attento {{username}}, stai per entrare in una valle di lacrime.",
+			"Bene {{username}}! Non ti metterai a fare la stupida? Se ce ne stiamo quieti, nessuno si farà del male. Saremo tutti come dei piccoli Fonzie, noi qui.",
+			"A {{username}} piace Paolo Ruffini.",
+			"Sono il signor {{username}}, risolvo problemi.",
+			"{{username}} resta dove sei! Non m'incanti, sai? Tu ti sbaciucchi con tutti quelli che ti capitano! Snuffy, Al, Leo, Little Moe... Sì, proprio lui, lo zoppo! Cheeks, Boney Bob, Cliff... E potrei continuare all'infinito, baby!",
+			"Signora, c'è un {{username}} per lei.",
+			"{{username}}!!! SHOCKING!!!",
+			"{{username}} hai scelto la pillola blu sbagliata.",
+			"{{username}}, il mio nome è HAL9000. Benvenuto a bordo.",
+			"Svegliati {{username}}, abbiamo una sessione da bruciare",
+			"{{username}} de panza, {{username}} de sostanza.",
+			"Le braccia di {{username}} si piegano all'indietro.",
+			"{{username}} WALK WITH ME.",
+			"{{username}} è entrato nella loggia bianca.",
+			"{{username}}, questa è struttura.",
+			"All'ombra dei cipressi e dentro le room, è il sonno di {{username}} men duro?",
+			"Un {{username}} selvatico, appare!",
+			"Oooh! È arrivato {{username}}! Butta la pasta allora.",
+			"Un {{username}} all'orizzonte!",
+			"Hai attivato la mia carta trappola, {{username}}",
+			"{{username}} i tuoi punti ferita sono una risorsa! Usali!",
+			"Klaatu barada {{username}}!",
+			"{{username}} ARRENDITI! SEI CIRCONDATO!",
+			"{{username}}, le nostre riserve di sangue sono a malapena sufficienti.",
+			"{{username}} è il conducente del treno di cacca!",
+			"Nanomacchine, {{username}}!",
+			"{{username}}, sporco powerplayer",
+			"Nessuna recalcitranza, {{username}}!",
+			"{{username}} è ineluttabile.",
+			"Quanto pane hai mangiato nella tua vita, {{username}}?",
+			"Cosa c'è nella scatola, {{username}}?!?!",
+			"No, {{username}}. Io sono tuo padre!",
+			"No, {{username}}. Tu sei mio padre",
+			"Per essere un {{username}}, ha fatto un bel volo.",
+			"Che cosa hai se incroci un gufo con un cavo da bungie? {{username}}",
+			"Lento! Lento! {{username}} è il giocatore più forte!",
+			"Un tempo anche io ero un {{username}}, finche non mi sono buscato una freccia nel ginocchio.",
+			"EVOCO {{username}}!",
+			"{{username}} entra nel server tappato.",
+			"{{username}} lo qual di pietà non abbonda tema l'alopecia et l'ira de Golconda ! {{username}} che amò la mora et la bionda amerà la rossa fiamma de Golconda ! Golconda ! Golconda ! L'anima sprofonda ! Golconda ! Golconda ! La grande baraonda !"
+		],
+		"LogoutMsg": [
+			"Addio {{username}} e grazie per tutto il pesce.",
+			"See you, Space {{username}}",
+			"No {{username}}! Se vai via perderai la tua anima!",
+			"{{username}}, rolla un d20 su destrezza per vedere se esci intero.",
+			"{{username}} dammi un Benny per provare a uscire illeso.",
+			"A presto buon {{username}}, che la luna ti guidi nella notte della caccia.",
+			"Klaatu barada {{username}}!",
+			"Addio {{username}}, avremo sempre Parigi.",
+			"Ne ho visto cose da raccontar, ma mai {{username}} volar!",
+			"Per essere un {{username}}, ha fatto un bel volo.",
+			"Ma dottore, {{username}} sono io.",
+			"{{username}}che va et ritorna come onda fermerassi alfine su la spiaggia de Golconda ! {{username}} per primo et su mamma non seconda moveran lo passo su la strada de Golconda ! Golconda ! Golconda ! La Morte ! La Morte ! La Morte tua sposa !",
+			"{{username}} ha lasciato il campo di battaglia.",
+			"{{username}} è morta e io ho avuto un Benny gratis."
+		]
+	}
+}

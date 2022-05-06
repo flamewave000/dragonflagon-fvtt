@@ -25,7 +25,9 @@ Sends an OOC whisper to all users when someone logs in. These messages have a li
 
 ## Contributors
 
-- [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo): Spanish localization
+- [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo): Spanish Localization
+- [BrotherSharper](https://github.com/BrotherSharper): Japanese Localization
+- [smoothingplane](https://github.com/smoothingplane): Italian Localization
 
 ## Changelog
 

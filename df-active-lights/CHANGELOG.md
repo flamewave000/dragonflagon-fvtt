@@ -1,14 +1,23 @@
 # DragonFlagon Active Lights
 
+## Release 1.2.1 (2022-04-05)
+- **NEW:** Added toggle button to lighting layer controls for pausing active light animations.
+- **FIX #278:** Fixed the light animation issues for v9. Active Lights should all be fully functional again.
+
+## Release 1.2.0 (2021-12-30)
+- **UPDATE:** Migrated to FoundryVTT V9.
+- **FIX #267:** Active Lights are now animating again.
+- **FIX #268:** Active Light Config can now be opened from the "Light Animation" tab in the Ambient Light Config.
+
 ## Release 1.1.3 (2021-10-15)
-- FIX: Wrong word in a label.
+- **FIX:** Wrong word in a label.
 
 ## Release 1.1.2 (2021-08-09)
 - Migrated license from GPLv3 to BSD 3-Clause
 
 ## Release 1.1.1 (2021-07-16)
-- FIX: an issue with 0 Radius light animations. If you animate both the Dim and Bright radius to 0, the light would get removed from the lighting system. This has been corrected so that lights can be 0-radius while they are being animated.
-- FIX: Small optimizations in the light animation cycle.
+- **FIX:** an issue with 0 Radius light animations. If you animate both the Dim and Bright radius to 0, the light would get removed from the lighting system. This has been corrected so that lights can be 0-radius while they are being animated.
+- **FIX:** Small optimizations in the light animation cycle.
 
 ## Release 1.1.0 (2021-02-12)
 - Revised animation functions

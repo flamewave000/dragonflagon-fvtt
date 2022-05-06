@@ -9,10 +9,10 @@ declare class LightConfigExt extends LightConfig {
 export default class ActiveLightConfig extends Application {
 	static ready() {
 		if (game.user.isGM)
-			Hooks.on('renderLightConfig', this._renderLightConfig);
+			Hooks.on('renderAmbientLightConfig', this._renderAmbientLightConfig);
 	}
 
-	private static _renderLightConfig(app: LightConfig, html: JQuery<HTMLElement>) {
+	private static _renderAmbientLightConfig(app: AmbientLightConfig, html: JQuery<HTMLElement>) {
 		if (!(app.object instanceof AmbientLightDocument)) return;
 		const config = app as LightConfigExt;
 		if (!config.anims) {
@@ -23,8 +23,8 @@ export default class ActiveLightConfig extends Application {
 		app.setPosition({});
 	}
 
-	static get defaultOptions(): Application.Options {
-		return <any>mergeObject(Application.defaultOptions as Partial<Application.Options>, {
+	static get defaultOptions(): ApplicationOptions {
+		return <any>mergeObject(Application.defaultOptions as Partial<ApplicationOptions>, {
 			template: `modules/${SETTINGS.MOD_NAME}/templates/active-light-config.hbs`,
 			width: 600,
 			resizable: false,
@@ -68,18 +68,18 @@ export default class ActiveLightConfig extends Application {
 			else
 				this.render(true);
 		});
-		html.find('button').before(animConfigButton);
+		html.find('div[data-tab="animation"]').append(animConfigButton);
 	}
 
 	private static _createKeyFrame(time: number, data?: Partial<AmbientLightData>): KeyFrame {
 		return {
 			time,
-			angle: { enabled: false, value: data?.angle ?? 0 },
-			bright: { enabled: false, value: data?.bright ?? 0 },
-			dim: { enabled: false, value: data?.dim ?? 0 },
+			angle: { enabled: false, value: data?.config?.angle ?? 0 },
+			bright: { enabled: false, value: data?.config?.bright ?? 0 },
+			dim: { enabled: false, value: data?.config?.dim ?? 0 },
 			rotation: { enabled: false, value: data?.rotation ?? 0 },
-			tintAlpha: { enabled: false, value: data?.tintAlpha ?? 0 },
-			tintColor: { enabled: false, value: data?.tintColor ?? '#000000', isColor: true }
+			tintAlpha: { enabled: false, value: data?.config?.alpha ?? 0 },
+			tintColor: { enabled: false, value: data?.config?.color ?? '#000000', isColor: true }
 		};
 	}
 
@@ -250,7 +250,7 @@ export default class ActiveLightConfig extends Application {
 			await this._object.setFlag(SETTINGS.MOD_NAME, LightAnimator.FLAG_ANIMS, null);
 		else
 			await this._object.setFlag(SETTINGS.MOD_NAME, LightAnimator.FLAG_ANIMS, duplicate(this._data));
-		const pointSource = (canvas.getLayer('LightingLayer') as LightingLayer).sources.find(x => x.object.id === this._object.id);
+		const pointSource = canvas.lighting.sources.find(x => x.object.id === this._object.id);
 		delete (pointSource.object as AmbientLightExt).animator;
 	}
 

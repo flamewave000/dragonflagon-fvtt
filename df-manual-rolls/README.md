@@ -6,9 +6,16 @@ Allows you to manually enter the individual dice results when making any kind of
 
 Given the limitations of Foundry around Rolling (namely that rolls are not Asynchronous) it is difficult to really do any kind of overhaul of the roll system. But I've found a way using good ol' fashioned prompts!
 
+##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
+
+## Contributers
+
+- Touge & [BrotherSharper](https://github.com/BrotherSharper): Japanese Localization
+- [JustNoon](https://github.com/JustNoon): Code contribution
+
 ---
 
-![Manual Rolls Demo](../.assets/df-manual-rolls-demo.gif)
+![Manual Rolls Demo](../.assets/df-manual-rolls/demo.gif)
 
 ## Manual Roll Flagging in Chat
 
@@ -20,7 +27,7 @@ Manual rolls can be flagged to show not only which chat card has manual rolls in
 
 These indicators will be in the same order as the dice rolls.
 
-![Core FoundryVTT Labels](../.assets/df-manual-rolls-labels.png)
+![Core FoundryVTT Labels](../.assets/df-manual-rolls/labels.png)
 
 ## Settings Options
 
@@ -32,7 +39,23 @@ You can specify the manual rolling behaviour for GMs and for PCs separately. Thi
 
 |Module Settings|Toggle Button|
 |:-:|:-:|
-|![Module Settings](../.assets/df-manual-rolls-settings.png)|![Toggle Button in the Scene Controls](../.assets/df-manual-rolls-toggle.png)|
+|![Module Settings](../.assets/df-manual-rolls/settings.png)|![Toggle Button in the Scene Controls](../.assets/df-manual-rolls/toggle.png)|
+
+### Per Player Override
+
+You can override the default setting for each individual player. This allows you to disable or enable manual rolling for players who may be remote, or otherwise won't be rolling real dice.
+
+Simply open the User Configuration for the player and adjust the setting. For users who have an override set, you will see a small icon beside their player name indicating the override state:
+
+| Icon                                                         | Setting                 |
+| ------------------------------------------------------------ | ----------------------- |
+| <img width="50" height="50" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NDAgNTEyIj48IS0tISBGb250IEF3ZXNvbWUgUHJvIDYuMS4xIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlIChDb21tZXJjaWFsIExpY2Vuc2UpIENvcHlyaWdodCAyMDIyIEZvbnRpY29ucywgSW5jLiAtLT48cGF0aCBkPSJNNDQ3LjEgMjI0YzAtMTIuNTYtNC43ODEtMjUuMTMtMTQuMzUtMzQuNzZsLTE3NC45LTE3NC45QzI0OS4xIDQuNzg2IDIzNi41IDAgMjIzLjEgMEMyMTEuNCAwIDE5OC45IDQuNzg2IDE4OS4yIDE0LjM1TDE0LjM1IDE4OS4yQzQuNzgzIDE5OC45LS4wMDExIDIxMS40LS4wMDExIDIyMy4xYzAgMTIuNTYgNC43ODUgMjUuMTcgMTQuMzUgMzQuOGwxNzQuOSAxNzQuOWM5LjYyNSA5LjU2MiAyMi4xOSAxNC4zNSAzNC43NSAxNC4zNXMyNS4xMy00Ljc4MyAzNC43NS0xNC4zNWwxNzQuOS0xNzQuOUM0NDMuMiAyNDkuMSA0NDcuMSAyMzYuNiA0NDcuMSAyMjR6TTk2IDI0OGMtMTMuMjUgMC0yMy4xLTEwLjc1LTIzLjEtMjMuMXMxMC43NS0yMy4xIDIzLjEtMjMuMVMxMjAgMjEwLjggMTIwIDIyNFMxMDkuMyAyNDggOTYgMjQ4ek0yMjQgMzc2Yy0xMy4yNSAwLTIzLjEtMTAuNzUtMjMuMS0yMy4xczEwLjc1LTIzLjEgMjMuMS0yMy4xczIzLjEgMTAuNzUgMjMuMSAyMy4xUzIzNy4zIDM3NiAyMjQgMzc2ek0yMjQgMjQ4Yy0xMy4yNSAwLTIzLjEtMTAuNzUtMjMuMS0yMy4xczEwLjc1LTIzLjEgMjMuMS0yMy4xUzI0OCAyMTAuOCAyNDggMjI0UzIzNy4zIDI0OCAyMjQgMjQ4ek0yMjQgMTIwYy0xMy4yNSAwLTIzLjEtMTAuNzUtMjMuMS0yMy4xczEwLjc1LTIzLjEgMjMuMS0yMy4xczIzLjEgMTAuNzUgMjMuMSAyMy4xUzIzNy4zIDEyMCAyMjQgMTIwek0zNTIgMjQ4Yy0xMy4yNSAwLTIzLjEtMTAuNzUtMjMuMS0yMy4xczEwLjc1LTIzLjEgMjMuMS0yMy4xczIzLjEgMTAuNzUgMjMuMSAyMy4xUzM2NS4zIDI0OCAzNTIgMjQ4ek01OTEuMSAxOTJsLTExOC43IDBjNC40MTggMTAuMjcgNi42MDQgMjEuMjUgNi42MDQgMzIuMjNjMCAyMC43LTcuODY1IDQxLjM4LTIzLjYzIDU3LjE0bC0xMzYuMiAxMzYuMnY0Ni4zN0MzMjAgNDkwLjUgMzQxLjUgNTEyIDM2OCA1MTJoMjIzLjFjMjYuNSAwIDQ3LjEtMjEuNSA0Ny4xLTQ3LjFWMjQwQzYzOS4xIDIxMy41IDYxOC41IDE5MiA1OTEuMSAxOTJ6TTQ3OS4xIDM3NmMtMTMuMjUgMC0yMy4xLTEwLjc1LTIzLjEtMjMuMXMxMC43NS0yMy4xIDIzLjEtMjMuMXMyMy4xIDEwLjc1IDIzLjEgMjMuMVM0OTMuMiAzNzYgNDc5LjEgMzc2eiIvPjwvc3ZnPg"> | Manual Rolls Disabled   |
+| <img width="50" height="50" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NzYgNTEyIj48IS0tISBGb250IEF3ZXNvbWUgUHJvIDYuMS4xIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlIChDb21tZXJjaWFsIExpY2Vuc2UpIENvcHlyaWdodCAyMDIyIEZvbnRpY29ucywgSW5jLiAtLT48cGF0aCBkPSJNNTEyIDQ0OEg2NGMtMzUuMzUgMC02NC0yOC42NS02NC02NFYxMjhjMC0zNS4zNSAyOC42NS02NCA2NC02NGg0NDhjMzUuMzUgMCA2NCAyOC42NSA2NCA2NHYyNTZDNTc2IDQxOS4zIDU0Ny4zIDQ0OCA1MTIgNDQ4ek0xMjggMTgwdi00MEMxMjggMTMzLjQgMTIyLjYgMTI4IDExNiAxMjhoLTQwQzY5LjM4IDEyOCA2NCAxMzMuNCA2NCAxNDB2NDBDNjQgMTg2LjYgNjkuMzggMTkyIDc2IDE5Mmg0MEMxMjIuNiAxOTIgMTI4IDE4Ni42IDEyOCAxODB6TTIyNCAxODB2LTQwQzIyNCAxMzMuNCAyMTguNiAxMjggMjEyIDEyOGgtNDBDMTY1LjQgMTI4IDE2MCAxMzMuNCAxNjAgMTQwdjQwQzE2MCAxODYuNiAxNjUuNCAxOTIgMTcyIDE5Mmg0MEMyMTguNiAxOTIgMjI0IDE4Ni42IDIyNCAxODB6TTMyMCAxODB2LTQwQzMyMCAxMzMuNCAzMTQuNiAxMjggMzA4IDEyOGgtNDBDMjYxLjQgMTI4IDI1NiAxMzMuNCAyNTYgMTQwdjQwQzI1NiAxODYuNiAyNjEuNCAxOTIgMjY4IDE5Mmg0MEMzMTQuNiAxOTIgMzIwIDE4Ni42IDMyMCAxODB6TTQxNiAxODB2LTQwQzQxNiAxMzMuNCA0MTAuNiAxMjggNDA0IDEyOGgtNDBDMzU3LjQgMTI4IDM1MiAxMzMuNCAzNTIgMTQwdjQwQzM1MiAxODYuNiAzNTcuNCAxOTIgMzY0IDE5Mmg0MEM0MTAuNiAxOTIgNDE2IDE4Ni42IDQxNiAxODB6TTUxMiAxODB2LTQwQzUxMiAxMzMuNCA1MDYuNiAxMjggNTAwIDEyOGgtNDBDNDUzLjQgMTI4IDQ0OCAxMzMuNCA0NDggMTQwdjQwQzQ0OCAxODYuNiA0NTMuNCAxOTIgNDYwIDE5Mmg0MEM1MDYuNiAxOTIgNTEyIDE4Ni42IDUxMiAxODB6TTEyOCAyNzZ2LTQwQzEyOCAyMjkuNCAxMjIuNiAyMjQgMTE2IDIyNGgtNDBDNjkuMzggMjI0IDY0IDIyOS40IDY0IDIzNnY0MEM2NCAyODIuNiA2OS4zOCAyODggNzYgMjg4aDQwQzEyMi42IDI4OCAxMjggMjgyLjYgMTI4IDI3NnpNMjI0IDI3NnYtNDBDMjI0IDIyOS40IDIxOC42IDIyNCAyMTIgMjI0aC00MEMxNjUuNCAyMjQgMTYwIDIyOS40IDE2MCAyMzZ2NDBDMTYwIDI4Mi42IDE2NS40IDI4OCAxNzIgMjg4aDQwQzIxOC42IDI4OCAyMjQgMjgyLjYgMjI0IDI3NnpNMzIwIDI3NnYtNDBDMzIwIDIyOS40IDMxNC42IDIyNCAzMDggMjI0aC00MEMyNjEuNCAyMjQgMjU2IDIyOS40IDI1NiAyMzZ2NDBDMjU2IDI4Mi42IDI2MS40IDI4OCAyNjggMjg4aDQwQzMxNC42IDI4OCAzMjAgMjgyLjYgMzIwIDI3NnpNNDE2IDI3NnYtNDBDNDE2IDIyOS40IDQxMC42IDIyNCA0MDQgMjI0aC00MEMzNTcuNCAyMjQgMzUyIDIyOS40IDM1MiAyMzZ2NDBDMzUyIDI4Mi42IDM1Ny40IDI4OCAzNjQgMjg4aDQwQzQxMC42IDI4OCA0MTYgMjgyLjYgNDE2IDI3NnpNNTEyIDI3NnYtNDBDNTEyIDIyOS40IDUwNi42IDIyNCA1MDAgMjI0aC00MEM0NTMuNCAyMjQgNDQ4IDIyOS40IDQ0OCAyMzZ2NDBDNDQ4IDI4Mi42IDQ1My40IDI4OCA0NjAgMjg4aDQwQzUwNi42IDI4OCA1MTIgMjgyLjYgNTEyIDI3NnpNMTI4IDM3MnYtNDBDMTI4IDMyNS40IDEyMi42IDMyMCAxMTYgMzIwaC00MEM2OS4zOCAzMjAgNjQgMzI1LjQgNjQgMzMydjQwQzY0IDM3OC42IDY5LjM4IDM4NCA3NiAzODRoNDBDMTIyLjYgMzg0IDEyOCAzNzguNiAxMjggMzcyek00MTYgMzcydi00MEM0MTYgMzI1LjQgNDEwLjYgMzIwIDQwNCAzMjBoLTIzMkMxNjUuNCAzMjAgMTYwIDMyNS40IDE2MCAzMzJ2NDBDMTYwIDM3OC42IDE2NS40IDM4NCAxNzIgMzg0aDIzMkM0MTAuNiAzODQgNDE2IDM3OC42IDQxNiAzNzJ6TTUxMiAzNzJ2LTQwQzUxMiAzMjUuNCA1MDYuNiAzMjAgNTAwIDMyMGgtNDBDNDUzLjQgMzIwIDQ0OCAzMjUuNCA0NDggMzMydjQwQzQ0OCAzNzguNiA0NTMuNCAzODQgNDYwIDM4NGg0MEM1MDYuNiAzODQgNTEyIDM3OC42IDUxMiAzNzJ6Ii8+PC9zdmc+"> | Manual Rolls Always On  |
+| <img width="50" height="50" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NzYgNTEyIj48IS0tISBGb250IEF3ZXNvbWUgUHJvIDYuMS4xIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlIChDb21tZXJjaWFsIExpY2Vuc2UpIENvcHlyaWdodCAyMDIyIEZvbnRpY29ucywgSW5jLiAtLT48cGF0aCBkPSJNMzg0IDY0QzQ5MCA2NCA1NzYgMTQ5LjEgNTc2IDI1NkM1NzYgMzYyIDQ5MCA0NDggMzg0IDQ0OEgxOTJDODUuOTYgNDQ4IDAgMzYyIDAgMjU2QzAgMTQ5LjEgODUuOTYgNjQgMTkyIDY0SDM4NHpNMzg0IDM1MkM0MzcgMzUyIDQ4MCAzMDkgNDgwIDI1NkM0ODAgMjAyLjEgNDM3IDE2MCAzODQgMTYwQzMzMC4xIDE2MCAyODggMjAyLjEgMjg4IDI1NkMyODggMzA5IDMzMC4xIDM1MiAzODQgMzUyeiIvPjwvc3ZnPg"> | Manual Rolls Toggleable |
+
+
+
+![Manual Roll override](../.assets/df-manual-rolls/user-config.png)
 
 ## Legacy Rolling Support
 
@@ -58,6 +81,3 @@ Better Rolls does not currently support the new Async Roll system in FoundryVTT 
 
 ### Quick Rolls (DnD5e)
 Has not been updated for FoundryVTT 0.8.6 and is currently non-functional in general.
-
-##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
-

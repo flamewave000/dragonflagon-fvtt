@@ -22,12 +22,14 @@ const SOURCE = 'src/';
 const LIBS = 'libs/';
 const LANG = 'lang/';
 const PACKS = 'packs/';
+const SOUNDS = 'sounds/';
 const TEMPLATES = 'templates/';
 const CSS = 'css/';
 const LICENSE = '../LICENSE';
+const DEV_ENV = '../.devenv';
 
 var PACKAGE = JSON.parse(fs.readFileSync('module.json'));
-var DEV_DIR = fs.existsSync('../.devenv') ? JSON.parse(fs.readFileSync('../.devenv').toString())?.foundry?.data?.trim() + '/Data/modules/' : '';
+var DEV_DIR = fs.existsSync(DEV_ENV) ? JSON.parse(fs.readFileSync(DEV_ENV).toString())?.foundry?.data?.trim() + '/Data/modules/' : '';
 
 function reloadPackage(cb) { PACKAGE = JSON.parse(fs.readFileSync('module.json')); cb(); }
 function DEV_DIST() { return DEV_DIR + PACKAGE.name + '/'; }
@@ -157,6 +159,7 @@ function buildManifest(output = null) {
 exports.step_buildManifest = buildManifest();
 
 function outputLanguages(output = null) { return desc('output Languages', () => gulp.src(LANG + GLOB).pipe(jsonminify()).pipe(gulp.dest((output || DIST) + LANG))); }
+function outputSoundsDir(output = null) { return desc('output Sounds', () => gulp.src(SOUNDS + GLOB).pipe(gulp.dest((output || DIST) + SOUNDS))); }
 function outputTemplates(output = null) { return desc('output Templates', () => gulp.src(TEMPLATES + GLOB).pipe(replace(/\t/g, '')).pipe(replace(/\>\n\</g, '><')).pipe(gulp.dest((output || DIST) + TEMPLATES))); }
 function outputStylesCSS(output = null) { return desc('output Styles CSS', () => gulp.src(CSS + GLOB).pipe(sass({ outputStyle: process.argv.includes('--min') ? 'compressed' : undefined })).pipe(concat(PACKAGE.name + '.css')).pipe(gulp.dest((output || DIST) + CSS))); }
 function outputMetaFiles(output = null) { return desc('output Meta Files', () => gulp.src([LICENSE, 'README.md', 'CHANGELOG.md']).pipe(gulp.dest((output || DIST)))); }
@@ -197,6 +200,7 @@ exports.default = gulp.series(
 	, gulp.parallel(
 		buildSource()
 		, outputLanguages()
+		, outputSoundsDir()
 		, outputTemplates()
 		, outputStylesCSS()
 		, outputMetaFiles()
@@ -215,6 +219,7 @@ exports.dev = gulp.series(
 	gulp.parallel(
 		buildSource(DEV_DIST())
 		, outputLanguages(DEV_DIST())
+		, outputSoundsDir(DEV_DIST())
 		, outputTemplates(DEV_DIST())
 		, outputStylesCSS(DEV_DIST())
 		, outputMetaFiles(DEV_DIST())
@@ -233,6 +238,7 @@ exports.zip = gulp.series(
 	, gulp.parallel(
 		buildSource()
 		, outputLanguages()
+		, outputSoundsDir()
 		, outputTemplates()
 		, outputStylesCSS()
 		, outputMetaFiles()
@@ -254,6 +260,7 @@ exports.watch = function () {
 	gulp.watch(SOURCE + GLOB, gulp.series(pdel(DIST + SOURCE), buildSource(), pnotify('Default distribution build completed.', 'Build Complete')));
 	gulp.watch([CSS + GLOB, 'module.json'], buildManifest());
 	gulp.watch(LANG + GLOB, gulp.series(pdel(DIST + LANG), outputLanguages()));
+	gulp.watch(SOUNDS + GLOB, gulp.series(pdel(DIST + SOUNDS), outputSoundsDir()));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(DIST + TEMPLATES), outputTemplates()));
 	gulp.watch(CSS + GLOB, gulp.series(pdel(DIST + CSS), outputStylesCSS()));
 	gulp.watch([LICENSE, 'README.md', 'CHANGELOG.md'], outputMetaFiles());
@@ -270,6 +277,7 @@ exports.devWatch = function () {
 	gulp.watch(SOURCE + GLOB, gulp.series(pdel([devDist + SOURCE + GLOB, DIST + SOURCE + GLOB], { force: true }), buildSource(devDist), copyDevDistToLocalDist, pnotify('Development distribution build completed.', 'Dev Build Complete')));
 	gulp.watch([CSS + GLOB, 'module.json'], gulp.series(reloadPackage, buildManifest(devDist), plog('manifest done.')));
 	gulp.watch(LANG + GLOB, gulp.series(pdel(devDist + LANG + GLOB, { force: true }), outputLanguages(devDist), plog('langs done.')));
+	gulp.watch(SOUNDS + GLOB, gulp.series(pdel(devDist + SOUNDS + GLOB, { force: true }), outputSoundsDir(devDist), plog('sounds done.')));
 	gulp.watch(TEMPLATES + GLOB, gulp.series(pdel(devDist + TEMPLATES + GLOB, { force: true }), outputTemplates(devDist), plog('templates done.')));
 	gulp.watch(CSS + GLOB, gulp.series(pdel(devDist + CSS + GLOB, { force: true }), outputStylesCSS(devDist), plog('css done.')));
 	gulp.watch([LICENSE, 'README.md', 'CHANGELOG.md'], gulp.series(outputMetaFiles(devDist), plog('metas done.')));

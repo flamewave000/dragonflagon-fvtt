@@ -1,0 +1,31 @@
+{
+	"DF_TEMPLATES": {
+		"errorLibWrapperMissing": "「DF Template Enhancements」にはモジュール「libWrapper」が必要です。「libWrapper」をインストールして有効化してください。",
+		"AutoTargetName": "テンプレートによるコマの自動ターゲット",
+		"AutoTargetHint": "有効にすると、範囲指定テンプレート内にいるコマが自動的にターゲットされるようになります。",
+		"PreviewName": "テンプレートのターゲットをハイライトする",
+		"PreviewHint": "グリッドのハイライトを表示して自動的にコマのターゲットを行います。",
+		"ToggleTitle": "コマの自動ターゲット",
+		"Patch5e_Name": "D&D5e準拠のテンプレートを使用する",
+		"Patch5e_Hint": "Foundryのコア機能では、マスの中心がテンプレートの内側になければ有効マスと判定されません。このオプションは、テンプレートが触れたマスが有効マスになるよう調整し、5eのルールに沿うようにします（円形は例外です）。",
+		"Patch5e_Circle_Name": "円形テンプレートの例外を無視する（要D&D5e準拠のテンプレート）",
+		"Patch5e_Circle_Hint": "先の例外を無視して、円形テンプレートでも触れたマスすべてを有効マスと判定するようにします（5eのルールからは外れます）。",
+		
+		"TemplateConfig": {
+			"Options": {
+				"center": {
+					"label": "Center Point",
+					"desc": "<i>(Default)</i> The center point of each grid cell must be contained inside of the template for that cell to be highlighted."
+				},
+				"touch": {
+					"label": "Touches",
+					"desc": "If <b>Any</b> part of a grid cell is <b>Touched</b>, that cell will be highlighted."
+				},
+				"points": {
+					"label": "Point Grid (Experimental)",
+					"desc": "Highlight a grid square only if points on the square are inside the template. The number of points are based on the percent slider in the Gridless settings.<br><i><b>This is experimental</b> and only used for token targetting. The grid highlight uses Touch Mode in order to test the tokens.</i>"
+				}
+			}
+		}
+	}
+}

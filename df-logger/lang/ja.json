@@ -1,0 +1,91 @@
+{
+	"Localization Provided By": "Brother Sharp",
+	"DF-LOGGER": {
+		"Settings": {
+			"ManageMessages": "メッセージ管理",
+			"Sound_Name": "メッセージ音",
+			"Sound_Hint": "チャットにログイン・ログアウトメッセージが表示されたときの音を指定します。",
+			"GmOnly_Name": "GMのみ表示",
+			"GmOnly_Hint": "ログイン・ログアウトメッセージをGMにのみ表示します。",
+			"NotMe_Name": "自分のメッセージを自分に表示しない",
+			"NotMe_Hint": "ログイン・ログアウトメッセージを他人のみに表示して、自分には何も表示しません。",
+			"Delay_Name": "自動削除時間",
+			"Delay_Hint": "秒単位で設定した時間後にチャットログにログイン・ログアウトメッセージがチャットから削除されます。",
+			"SelfDestruct_Name": "自滅時間",
+			"SelfDestruct_Hint": "秒単位で設定した時間後にチャットログにログイン・ログアウトメッセージが自滅します。"
+		},
+		"Content": {
+			"Login": "ユーザがログインしました",
+			"Login_Persist": "*ユーザがログインしました",
+			"Logout": "ユーザがログアウトしました",
+			"Logout_Persist": "*ユーザがログアウトしました"
+		},
+		"ManageMenu": {
+			"Title": "メッセージ管理",
+			"Confirm": {
+				"Title": "すべてのメッセージをリセット",
+				"Content": "ログインメッセージをデフォルトの状態に戻しますか？この操作は取り消すことができません、本当によろしいですか？"
+			},
+			"TabLogin": "ログインメッセージ",
+			"TabLogout": "ログアウトメッセージ",
+			"Headers": {
+				"Toggle": "メッセージを使用",
+				"Message": "メッセージテキスト",
+				"Remove": "メッセージ削除"
+			},
+			"Entry": {
+				"ToggleTitle": "メッセージ切り替え",
+				"MessagePlaceholder": "ここに任意のメッセージをおいてください。",
+				"RemoveTitle": "削除"
+			},
+			"Buttons": {
+				"Add": "追加",
+				"Reset": "メッセージリセット",
+				"Save": "保存"
+			}
+		},
+		"LoginMsg": [
+			"{{username}} just joined the server - glhf!",
+			"{{username}} just joined. Everyone, look busy!",
+			"{{username}} just joined. Can I get a heal?",
+			"{{username}} joined your party.",
+			"{{username}} joined. You must construct additional pylons.",
+			"Ermagherd. {{username}} is here.",
+			"Welcome, {{username}}. Stay awhile and listen.",
+			"Welcome, {{username}}. ( ͡° ͜ʖ ͡°) We were expecting you",
+			"Welcome, {{username}}. We hope you brought pizza.",
+			"Welcome {{username}}. Leave your weapons by the door.",
+			"A wild {{username}} appeared.",
+			"Swoooosh. {{username}} just landed.",
+			"Brace yourselves. {{username}} just joined the server.",
+			"{{username}} just joined. Hide your bananas.",
+			"{{username}} just arrived. Seems OP - please nerf.",
+			"{{username}} just slid into the server.",
+			"A {{username}} has spawned in the server.",
+			"Big {{username}} showed up!",
+			"Where's {{username}}? In the server!",
+			"{{username}} hopped into the server. Kangaroo!!",
+			"{{username}} just showed up. Hold my beer.",
+			"Challenger approaching - {{username}} has appeared!",
+			"It's a bird! It's a plane! Nevermind, it's just {{username}}.",
+			"It's {{username}}! Praise the sun!\n\\[T]/",
+			"Never gonna give {{username}} up. Never gonna let {{username}} down.",
+			"Ha! {{username}} has joined! You activated my trap card!",
+			"Cheers, love! {{username}}'s here!",
+			"Hey! Listen! {{username}} has joined!",
+			"We've been expecting you {{username}}",
+			"It's dangerous to go alone, take {{username}}!",
+			"{{username}} has joined the server! It's super effective!",
+			"Cheers, love! {{username}} is here!",
+			"{{username}} is here, as the prophecy foretold.",
+			"{{username}} has arrived. Party's over.",
+			"Ready player {{username}}",
+			"{{username}} is here to kick butt and chew bubblegum. And {{username}} is all out of gum.",
+			"Hello. Is it {{username}} you're looking for?",
+			"Roses are red, violets are blue, {{username}} joined this server with you"
+		],
+		"LogoutMsg": [
+			"{{username}} has left the building!"
+		]
+	}
+}
