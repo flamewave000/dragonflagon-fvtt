@@ -1,5 +1,5 @@
 
-// float cabable gcd solver that finds the lowest value within a tollerance
+// float cabable gcd solver that finds the largest value within a tollerance
 function fgcd(a: number, b: number, tol: number = 0) {
 	if (b > a) { [a, b] = [b, a]; } // for consistancy
 	for (let i = 1; i <= b; i++) {
@@ -11,8 +11,8 @@ function fgcd(a: number, b: number, tol: number = 0) {
 // Reduce a fraction by finding the Greatest Common Divisor and dividing by it.
 function reduce(numerator: number, denominator: number) {
 	const tol = 0.01; // good starting tollerance for scale value
-	let a = fgcd(numerator, denominator, tol);
-	return [numerator / a, denominator / a];
+	let gcd = fgcd(numerator, denominator, tol);
+	return [Math.round(numerator / gcd), Math.round(denominator / gcd)];
 }
 function floatVal(input: JQuery<HTMLElement>) {
 	return parseFloat(input.val() as string);
