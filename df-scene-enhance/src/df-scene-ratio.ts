@@ -1,13 +1,17 @@
 
-// Reduce a fraction by finding the Greatest Common Divisor and dividing by it.
-function reduce(numerator: number, denominator: number) {
-	let a = numerator;
-	let b = denominator;
-	let c;
-	while (b) {
-		c = a % b; a = b; b = c;
+// float cabable gcd solver that finds the lowest value within a tollerance
+function fgcd(a: number, b: number, tol: number = 0) {
+	if (b > a) { [a, b] = [b, a]; } // for consistancy
+	for (let i = 1; i <= b; i++) {
+		let j = (i * a) / b;
+		if (Math.abs(j - Math.round(j)) < tol) { return b / i; }
 	}
-	return [numerator / a, denominator / a];
+	return 1;
+}
+// Reduce a fraction by finding the Greatest Common Divisor and dividing by it.
+function reduce(numerator: number, denominator: number, tol: number = 0.01) {
+	let gcd = fgcd(numerator, denominator, tol);
+	return [numerator / gcd, denominator / gcd];
 }
 function floatVal(input: JQuery<HTMLElement>) {
 	return parseFloat(input.val() as string);
