@@ -9,9 +9,10 @@ function fgcd(a: number, b: number, tol: number = 0) {
 	return 1;
 }
 // Reduce a fraction by finding the Greatest Common Divisor and dividing by it.
-function reduce(numerator: number, denominator: number, tol: number = 0.01) {
-	let gcd = fgcd(numerator, denominator, tol);
-	return [numerator / gcd, denominator / gcd];
+function reduce(numerator: number, denominator: number) {
+	const tol = 0.01; // good starting tollerance for scale value
+	let a = fgcd(numerator, denominator, tol);
+	return [numerator / a, denominator / a];
 }
 function floatVal(input: JQuery<HTMLElement>) {
 	return parseFloat(input.val() as string);
