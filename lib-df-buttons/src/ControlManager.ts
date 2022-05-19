@@ -147,7 +147,7 @@ export default class ControlManager extends Application implements IControlManag
 			}
 			groups.push(groupUI);
 		}
-		return { groups, singleGroup: groups.length === 1 };
+		return { groups, singleGroup: groups.length === 1 && !groups[0].button && !groups[0].toggle };
 	}
 
 	/** @inheritdoc */

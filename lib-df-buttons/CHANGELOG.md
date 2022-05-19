@@ -1,5 +1,8 @@
 # DragonFlagon Module Buttons Library
 
+## Release 1.3.1 (2022-05-19)
+- **FIX:** Rendering issue when only a single button or toggle is added to the tool groups.
+
 ## Release 1.3.0 (2022-04-10)
 - **FIX:** Small error that sometimes appeared in the console when loading.
 - **NEW #351:** A magnet button will now appear on hover for quickly changing the position of the tool bar.
