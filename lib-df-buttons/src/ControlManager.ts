@@ -187,7 +187,7 @@ export default class ControlManager extends Application implements IControlManag
 			const newState = !await ControlManager.checkBoolean(group.isActive);
 			// If the group's active state is not a function, use it to store state
 			if (!(group.isActive instanceof Function))
-				group.isActive = !newState;
+				group.isActive = newState;
 			this._invokeHandler(group.onClick, group, newState);
 			// Render the controls
 			this.refresh();
@@ -212,7 +212,7 @@ export default class ControlManager extends Application implements IControlManag
 			const newState = !await ControlManager.checkBoolean(tool.isActive);
 			// If the tool's active state is not a function, use it to store state
 			if (!(tool.isActive instanceof Function))
-				tool.isActive = !newState;
+				tool.isActive = newState;
 			this._invokeHandler(tool.onClick, tool, newState);
 			// Render the controls
 			this.refresh();

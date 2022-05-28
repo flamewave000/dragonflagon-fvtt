@@ -1,5 +1,9 @@
 # DragonFlagon Module Buttons Library
 
+## Release 1.3.2 (2022-05-28)
+- **FIX #361:** Buttons container was erroneously absorbing mouse events. It will now ignore all events.
+- **UPDATE:** The Magnet button will now only appear when you mouse over its occupied region of the screen.
+
 ## Release 1.3.1 (2022-05-19)
 - **FIX:** Rendering issue when only a single button or toggle is added to the tool groups.
 

@@ -6,15 +6,23 @@
 	border: none;
 	position: absolute;
 	display: grid;
+	pointer-events: none;
 	height: calc(100vh - 70px);
 	grid-template-rows: auto auto;
 	grid-template-columns: auto auto;
 
 	#magnet {
-		margin: 5px 10px 5px 0px;
+		padding: 5px 10px 5px 0px;
 		height: fit-content;
 		width: fit-content;
-		visibility: hidden;
+		pointer-events: all;
+		i {
+			visibility: hidden;
+		}
+		
+		&:hover > i {
+			visibility: visible;
+		}
 	}
 
 	&.left {
@@ -51,10 +59,6 @@
 		#moduleControls {
 			grid-area: 2 / 1 / 2 / 1;
 		}
-	}
-
-	&:hover > #magnet {
-		visibility: visible;
 	}
 }
 
@@ -101,6 +105,7 @@
 		border: 1px solid #000;
 		border-radius: 5px;
 		cursor: pointer;
+		pointer-events: all;
 	}
 
 	.control-tool.active,
