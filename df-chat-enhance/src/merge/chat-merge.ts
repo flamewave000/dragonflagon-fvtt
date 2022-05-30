@@ -202,13 +202,17 @@ export default class ChatMerge {
 		return current > previous && (current - previous) < (this._epoch * 1000);
 	}
 
-	private static _isValidMessage(current: ChatMessage, previous: ChatMessage) {
+	private static _isValidMessage(current: ChatMessage, previous: ChatMessage): boolean {
 		const rolls = this._allowRolls;
 		const splitSpeaker = SETTINGS.get<boolean>(this.PREF_SPLIT_SPEAKER);
 		let userCompare = false;
 
 		const currData = current.data ?? <ChatMessageData><any>current;
 		const prevData = previous.data ?? <ChatMessageData><any>previous;
+
+		// If either message is a Midi-QoL message, ignore it
+		if ((currData.flags as Record<string, any>)['midi-qol'] || (prevData.flags as Record<string, any>)['midi-qol'])
+			return false;
 
 		if (splitSpeaker) {
 			// this is a bit complex, basically we want to group by actors, but if you're not using an actor, group by user instead

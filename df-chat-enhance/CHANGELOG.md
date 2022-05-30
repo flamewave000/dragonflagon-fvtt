@@ -6,6 +6,7 @@
 - **FIX #362:** Chat Archives containing unicode characters can now be properly downloaded as HTML.
 - **FIX #207:** Scroll to bottom element would not go away if the entire chat log were deleted.
 - **FIX #308:** Modules like Dice So Nice! can now safely call ChatLog.scrollBottom and the scroll manager will handle it correctly.
+- **FIX #317:** Chat Merging conflict with Midi QOL's roll merging feature.
 
 # Release 3.6.0 (2022-01-02)
 - **UPDATED:** Migrated to FoundryVTT V9.
@@ -14,7 +15,7 @@
 - **FIX #261&#243:** Keyboard entry in chat-box working correctly now.
 
 ## Release 3.5.2 (2021-11-22)
-- **FIX #219:** Markdown now works as exepcted with appropriate Chat Commands.
+- **FIX #219:** Markdown now works as expected with appropriate Chat Commands.
 - **FIX #220:** Chat borders are no longer coloured non-owned messages.
 - **FIX:** Hover shadow was not working.
 
