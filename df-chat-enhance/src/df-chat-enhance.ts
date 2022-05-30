@@ -3,7 +3,7 @@ import DFChatEdit from "./edit/df-chat-edit";
 import * as DFAdventureLog from "./logger/df-adventure-log";
 import DFAdventureLogProcessor from "./logger/DFAdventureLogProcessor";
 import ChatMerge from "./merge/chat-merge";
-import initDFChatPrivacy from "./privacy/df-chat-privacy";
+import ChatRollPrivacy from "./privacy/df-chat-privacy";
 import ScrollManage from "./scroll-manage/scroll-manage";
 import SETTINGS from "../../common/Settings";
 import WhisperTruncation from "./whisper-trunc/whisper-trunc";
@@ -23,6 +23,10 @@ declare global {
 	this.setPosition({});
 };
 
+Hooks.once('setup', function () {
+	ChatRollPrivacy.setup();
+});
+
 Hooks.once('init', function () {
 	/**
 	 * Order here matters! The archive adds a button to the
@@ -30,7 +34,7 @@ Hooks.once('init', function () {
 	 * from <a> tags to <button> tags if enabled.
 	 */
 	DFChatArchive.init();
-	initDFChatPrivacy();
+	ChatRollPrivacy.init();
 	DFAdventureLog.init();
 	ChatMerge.init();
 	ScrollManage.init();

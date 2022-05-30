@@ -120,12 +120,12 @@ AdventureLog.gmquote("Bob", "Don't worry, be happy!", true)
 | :-: | :-: |
 | ![Roll buttons for players](../.assets/df-chat-enhance-privacy-pc.png) | ![Roll buttons for Game Master](../.assets/df-chat-enhance-privacy-gm.png) |
 
-| Roll Type | Button |
-| - | - |
-| Public Rolls | ![](../.assets/df-chat-enhance-privacy-rt-public.png) |
-| Private GM Rolls | ![](../.assets/df-chat-enhance-privacy-rt-gm.png) |
-| Blind GM Rolls | ![](../.assets/df-chat-enhance-privacy-rt-blind.png) |
-| Self Rolls | ![](../.assets/df-chat-enhance-privacy-rt-self.png) |
+| Roll Type | Button | Keyboard Shortcut |
+| - | - | :-: |
+| Public Rolls | ![](../.assets/df-chat-enhance-privacy-rt-public.png) | <kbd>Alt</kbd> `+` <kbd>Q</kbd> |
+| Private GM Rolls | ![](../.assets/df-chat-enhance-privacy-rt-gm.png) | <kbd>Alt</kbd> `+` <kbd>W</kbd> |
+| Blind GM Rolls | ![](../.assets/df-chat-enhance-privacy-rt-blind.png) | <kbd>Alt</kbd> `+` <kbd>E</kbd> |
+| Self Rolls | ![](../.assets/df-chat-enhance-privacy-rt-self.png) | <kbd>Alt</kbd> `+` <kbd>R</kbd> |
 
 ## Chat Archive
 
