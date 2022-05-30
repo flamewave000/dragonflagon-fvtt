@@ -162,5 +162,10 @@
 		"Label": "Player Chat Colour",
 		"SettingTintBackgroundName": "Tint Chat Message Background",
 		"SettingTintBackgroundHint": "Tint the backgrounds of chat messages to the player's colour."
+	},
+	"DF_CHAT_SEND_BUTTON": {
+		"EnabledName": "Display Send Button in Chat",
+		"EnabledHint": "Display a send button in the chat box that can be clicked to send a message.",
+		"ButtonTitle": "Send message"
 	}
 }

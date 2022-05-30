@@ -8,6 +8,7 @@ import ScrollManage from "./scroll-manage/scroll-manage";
 import SETTINGS from "../../common/Settings";
 import WhisperTruncation from "./whisper-trunc/whisper-trunc";
 import PlayerColor from './player-color/PlayerColor';
+import SendButton from "./send/send-button";
 SETTINGS.init('df-chat-enhance');
 
 declare global {
@@ -35,6 +36,7 @@ Hooks.once('init', function () {
 	ScrollManage.init();
 	WhisperTruncation.init();
 	PlayerColor.init();
+	SendButton.init();
 
 	libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype._getEntryContextOptions', function (wrapped: (...args: any) => ContextMenu.Item[], ...args: any) {
 		const options = wrapped(...args);

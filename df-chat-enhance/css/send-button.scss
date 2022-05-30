@@ -1,0 +1,26 @@
+.dfce-send-btn {
+	transform: translateY(-100%) translateY(-6px);
+	width: fit-content;
+	margin-bottom: 12px;
+	border: none;
+	background: none;
+	cursor: pointer;
+	font-size: 20px;
+	float: right;
+
+	&:hover,
+	&:focus {
+		box-shadow: none;
+		outline: none;
+		text-shadow: 0 0 5px var(--color-shadow-primary);
+	}
+
+	&:disabled {
+		cursor: default;
+		pointer-events: none;
+		&:hover,
+		&:focus {
+			text-shadow: none;
+		}
+	}
+}

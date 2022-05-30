@@ -223,6 +223,12 @@ Rolls can be merged in an independent way. You have three choices, No Merging, M
 |:-:|:-:|:-:|
 |![No Merging](../.assets/df-chat-enhance-chat-merge-roll-none.png)|![Merge with other Rolls](../.assets/df-chat-enhance-chat-merge-roll-rolls.png)|![Merge With Any](../.assets/df-chat-enhance-chat-merge-roll-all.png)|
 
+## Chat Box Send Button
+
+*This feature OFF by default, but can be turned on in the module settings.*
+
+Displays a Send Message button in the chat box. This button can be clicked to send the currently written message. This is useful for anyone using a touch screen, or just prefers using a mouse to send the message instead of hitting Enter.
+
 ## Whisper Recipient List Truncation
 
 Now when you whisper a message to a list of users, the Recipient List at the top of the message is truncated if it is too long. There are some games that have many GM users and hitting up `/w gm ...` can make a very massive chat message. Instead it will truncate the list and say how many more names there are. You simply have to hover your mouse over the visible names and the rest will show in the mouse-over hint bubble.
