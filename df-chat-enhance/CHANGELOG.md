@@ -2,6 +2,7 @@
 
 # Release 3.6.1 (2022-05-30)
 - **FIX #231:** Conflict with the combat round messages posted by Monk's Little Details.
+- **FIX #370:** Chat Archive will now handle special characters in archive names.
 
 # Release 3.6.0 (2022-01-02)
 - **UPDATED:** Migrated to FoundryVTT V9.
