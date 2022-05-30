@@ -1,12 +1,15 @@
 import libWrapperShared from "../../../common/libWrapperShared";
 import SETTINGS from "../../../common/Settings";
 
+declare class ChatLogExt extends ChatLog {
+	_scrollToBottomButton: JQuery<HTMLElement>;
+}
 
 export default class ScrollManage {
 	private static readonly PREF_ENABLED = 'scroll-manage-enabled';
 	private static readonly PREF_SCROLL_IF_YOU = 'scroll-manage-scroll-if-you';
 	private static readonly ScrollThreshold = 50;
-	private static _scrollToBottomButton: JQuery<HTMLElement>;
+	// private static _scrollToBottomButton: JQuery<HTMLElement>;
 	private static _deleteMessageRegistrationID: number | null = null;
 
 
@@ -45,41 +48,54 @@ export default class ScrollManage {
 
 	private static register() {
 		libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype.postOne', this._ChatLog_postOne, 'OVERRIDE');
-		this._deleteMessageRegistrationID = libWrapperShared.register('ChatLog.prototype.deleteMessage', this._ChatLog_deleteMessage.bind(this));
+		libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype.scrollBottom', this._ChatLog_scrollBottom, 'OVERRIDE');
+		this._deleteMessageRegistrationID = libWrapperShared.register('ChatLog.prototype.deleteMessage', this._ChatLog_deleteMessage);
 	}
 	private static unregister() {
 		libWrapper.unregister(SETTINGS.MOD_NAME, 'ChatLog.prototype.postOne', false);
+		libWrapper.unregister(SETTINGS.MOD_NAME, 'ChatLog.prototype.scrollBottom', false);
 		libWrapperShared.unregister('ChatLog.prototype.deleteMessage', this._deleteMessageRegistrationID);
 	}
 
-	private static _renderChatLog(app: ChatLog, html: JQuery<HTMLElement>) {
-		this._scrollToBottomButton = $(`<div id="scrollToBottom" style="display:none">
+	private static _renderChatLog(app: ChatLogExt, html: JQuery<HTMLElement>) {
+		app._scrollToBottomButton = $(`<div id="scrollToBottom" style="display:none">
 	<span>${'DF_CHAT_SCROLL.NewMessage'.localize()}</span> ${'DF_CHAT_SCROLL.ScrollButton'.localize()}
 </div>`);
-		this._scrollToBottomButton.on('click', () => {
+		app._scrollToBottomButton.on('click', () => {
 			const el = app.element;
 			const log = el.length ? el[0].querySelector("#chat-log") : null;
 			if (log) {
 				log.scrollTo({ behavior: "smooth", top: log.scrollHeight });
 			}
 		});
-		html.find('div#chat-controls').before(this._scrollToBottomButton);
+		html.find('div#chat-controls').before(app._scrollToBottomButton);
 
 		html.find('ol#chat-log').on('scroll', (event) => {
-			if (!this._scrollToBottomButton) return;
+			if (!app._scrollToBottomButton) return;
 			const element = <HTMLOListElement>event.currentTarget;
 			// Ignore events when the scroll height is too small to matter
 			if (element.clientHeight > element.scrollHeight - this.ScrollThreshold) return;
 			if (element.scrollTop < (element.scrollHeight - element.clientHeight) - this.ScrollThreshold)
-				this._scrollToBottomButton.show();
+				app._scrollToBottomButton.show();
 			else {
-				this._scrollToBottomButton.hide();
-				this._scrollToBottomButton.removeClass('new');
+				app._scrollToBottomButton.hide();
+				app._scrollToBottomButton.removeClass('new');
 			}
 		});
 	}
 
-	private static async _ChatLog_postOne(this: ChatLog, message: ChatMessage, notify = false) {
+	private static _ChatLog_scrollBottom(this: ChatLogExt) {
+		const el = this.element;
+		const log = el.length ? el[0].querySelector("#chat-log") : null;
+		// If we are already at the bottom, perform the scroll
+		if (this._scrollToBottomButton.is(':hidden'))
+			setTimeout(() => log.scrollTo({ behavior: 'smooth', top: log.scrollHeight }), 100);
+		// Otherwise do not scroll, but do trigger a scroll event.
+		// Some modules might use this function after manually adding message content to the ChatLog
+		else $('#chat #chat-log').trigger('scroll');
+	}
+
+	private static async _ChatLog_postOne(this: ChatLogExt, message: ChatMessage, notify = false) {
 		if (!message.visible) return;
 
 		// Track internal flags
@@ -97,7 +113,7 @@ export default class ScrollManage {
 			element[0].scrollTo({ top: element[0].scrollHeight, behavior: 'smooth' });
 		// this.scrollBottom();
 		else {
-			ScrollManage._scrollToBottomButton.addClass('new');
+			this._scrollToBottomButton.addClass('new');
 		}
 
 		// Post notification
@@ -108,7 +124,7 @@ export default class ScrollManage {
 		if (this.popOut) this.setPosition();
 	}
 
-	private static _ChatLog_deleteMessage(wrapped: (...args: any) => unknown, messageId: string, { deleteAll = false }: { deleteAll?: boolean } = {}): unknown {
+	private static _ChatLog_deleteMessage(this: ChatLogExt, wrapped: (...args: any) => unknown, messageId: string, { deleteAll = false }: { deleteAll?: boolean } = {}): unknown {
 		const result = wrapped(messageId, { deleteAll });
 		// Ignore singular message deletions, only react to a Delete All event.
 		// Also ignore the deletion if the scroll-to-bottom element is already hidden

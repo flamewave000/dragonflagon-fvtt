@@ -5,6 +5,7 @@
 - **FIX #370:** Chat Archive will now handle special characters in archive names.
 - **FIX #362:** Chat Archives containing unicode characters can now be properly downloaded as HTML.
 - **FIX #207:** Scroll to bottom element would not go away if the entire chat log were deleted.
+- **FIX #308:** Modules like Dice So Nice! can now safely call ChatLog.scrollBottom and the scroll manager will handle it correctly.
 
 # Release 3.6.0 (2022-01-02)
 - **UPDATED:** Migrated to FoundryVTT V9.
