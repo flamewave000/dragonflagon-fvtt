@@ -1,5 +1,8 @@
 # DF Chat Enhancements
 
+# Release 3.6.1 (2022-05-30)
+- **FIX #231:** Conflict with the combat round messages posted by Monk's Little Details.
+
 # Release 3.6.0 (2022-01-02)
 - **UPDATED:** Migrated to FoundryVTT V9.
 - **UPDATED #274:** Japanese Localization: Courtesy of tonishi and [BrotherSharper](https://github.com/BrotherSharper).

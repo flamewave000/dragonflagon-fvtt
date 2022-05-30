@@ -7,14 +7,14 @@ export default class DFChatArchiveManager extends Application {
 	static chatViewers: Map<number, DFChatArchiveViewer> = new Map();
 
 	static get defaultOptions() {
-		return mergeObject(Application.defaultOptions as Partial<Application.Options>, {
+		return mergeObject(Application.defaultOptions as Partial<ApplicationOptions>, {
 			template: "modules/df-chat-enhance/templates/archive-manager.hbs",
 			resizable: true,
 			minimizable: true,
 			width: 300,
 			height: 500,
 			title: "DF_CHAT_ARCHIVE.ArchiveManager_Title".localize()
-		}) as Application.Options;
+		}) as ApplicationOptions;
 	}
 
 	getData(options?: any) {

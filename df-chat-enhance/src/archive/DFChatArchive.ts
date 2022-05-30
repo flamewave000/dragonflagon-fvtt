@@ -12,7 +12,7 @@ export interface DFChatArchiveEntry {
 
 class ArchiveFolderMenu extends FormApplication {
 	static get defaultOptions() {
-		return mergeObject(FormApplication.defaultOptions as Partial<FormApplication.Options>, {
+		return mergeObject(FormApplication.defaultOptions as Partial<FormApplicationOptions>, {
 			width: 400,
 			height: 125,
 			resizable: false,
@@ -22,7 +22,7 @@ class ArchiveFolderMenu extends FormApplication {
 			submitOnClose: false,
 			submitOnChange: false,
 			closeOnSubmit: true
-		}) as FormApplication.Options;
+		}) as FormApplicationOptions;
 	}
 
 	private folder = SETTINGS.get<string>(DFChatArchive.PREF_FOLDER);

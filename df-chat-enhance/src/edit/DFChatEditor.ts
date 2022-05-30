@@ -15,8 +15,8 @@ export default class DFChatEditor extends FormApplication {
 	 * @override
 	 * @see {@link Application.defaultOptions}
 	 */
-	static get defaultOptions(): FormApplication.Options {
-		return mergeObject(FormApplication.defaultOptions as Partial<FormApplication.Options>, {
+	static get defaultOptions(): FormApplicationOptions {
+		return mergeObject(FormApplication.defaultOptions as Partial<FormApplicationOptions>, {
 			closeOnSubmit: true,
 			editable: true,
 			resizable: true,
@@ -24,7 +24,7 @@ export default class DFChatEditor extends FormApplication {
 			popOut: true,
 			title: 'DF_CHAT_EDIT.Editor_Title',
 			template: 'modules/df-chat-enhance/templates/chat-edit.hbs'
-		}) as FormApplication.Options;
+		}) as FormApplicationOptions;
 	}
 
 	constructor(chatMessage: ChatMessage) {

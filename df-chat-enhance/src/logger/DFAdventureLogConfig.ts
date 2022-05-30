@@ -8,12 +8,12 @@ export default class DFAdventureLogConfig extends FormApplication {
 	static readonly PREF_CONFIG = 'log-config-menu';
 
 	static get defaultOptions() {
-		return mergeObject(FormApplication.defaultOptions as Partial<FormApplication.Options>, {
+		return mergeObject(FormApplication.defaultOptions as Partial<FormApplicationOptions>, {
 			template: "modules/df-chat-enhance/templates/log-config.hbs",
 			resizable: false,
 			minimizable: false,
 			title: "DF_CHAT_LOG.Config_Title".localize()
-		}) as FormApplication.Options;
+		}) as FormApplicationOptions;
 	}
 
 	static setupSettings() {
@@ -31,7 +31,7 @@ export default class DFAdventureLogConfig extends FormApplication {
 		});
 		SETTINGS.registerMenu(DFAdventureLogConfig.PREF_CONFIG, {
 			restricted: true,
-			type: DFAdventureLogConfig,
+			type: <any>DFAdventureLogConfig,
 			label: "DF_CHAT_LOG.Config_Title",
 			icon: 'fas fa-edit'
 		});

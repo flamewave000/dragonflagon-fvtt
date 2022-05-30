@@ -39,6 +39,8 @@ export default class PlayerColor {
 
 		libWrapper.register(SETTINGS.MOD_NAME, 'ChatMessage.prototype.getHTML', async function (this: ChatMessage, wrapper: (...arg: any) => Promise<JQuery<HTMLElement>>, ...args: any) {
 			const html = await wrapper(...args);
+			// If the message has no user bound to it, then it is likely some kind of other message being created by a module. Just return immediately.
+			if (!this.user) return html;
 			let chatColor = (<string>this.user.getFlag(SETTINGS.MOD_NAME, PlayerColor.FLAG_CHAT_COLOR))?.trim();
 			// If it is a valid color
 			if (!chatColor || !/#[a-fA-F0-9]{6,8}/.test(chatColor))

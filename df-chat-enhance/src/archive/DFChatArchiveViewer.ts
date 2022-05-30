@@ -12,14 +12,14 @@ export default class DFChatArchiveViewer extends Application {
 	}
 
 	static get defaultOptions() {
-		return mergeObject(Application.defaultOptions as Partial<Application.Options>, {
+		return mergeObject(Application.defaultOptions as Partial<ApplicationOptions>, {
 			template: "modules/df-chat-enhance/templates/archive-viewer.hbs",
 			width: 300,
 			height: 500,
 			resizable: true,
 			title: 'DF_CHAT_ARCHIVE.ArchiveViewer_Title',
 			classes: ['df-chat-log-window']
-		}) as Application.Options;
+		}) as ApplicationOptions;
 	}
 
 	getData(options = {}) {

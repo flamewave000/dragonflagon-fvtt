@@ -55,7 +55,7 @@ export default class ChatMerge {
 			type: Boolean,
 			onChange: () => this._processAllMessage()
 		});
-		SETTINGS.register(this.PREF_ALLOW_ROLLS, {
+		SETTINGS.register<string>(this.PREF_ALLOW_ROLLS, {
 			name: 'DF_CHAT_MERGE.AllowRollsName',
 			hint: 'DF_CHAT_MERGE.AllowRollsHint',
 			config: true,

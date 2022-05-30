@@ -1,7 +1,7 @@
 import { DFChatArchive } from "./DFChatArchive";
 import SETTINGS from "../../../common/Settings";
 
-export default class DFChatArchiveNew extends FormApplication<FormApplication.Options, { shouldDelete: boolean }> {
+export default class DFChatArchiveNew extends FormApplication<FormApplicationOptions, { shouldDelete: boolean }> {
 	static readonly PREF_DELETE = 'new-should-delete';
 	static readonly PREF_HIDE_EXPORT = 'hide-export';
 	static get defaultOptions() {
