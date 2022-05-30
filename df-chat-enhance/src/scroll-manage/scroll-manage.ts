@@ -1,3 +1,4 @@
+import libWrapperShared from "../../../common/libWrapperShared";
 import SETTINGS from "../../../common/Settings";
 
 
@@ -6,6 +7,7 @@ export default class ScrollManage {
 	private static readonly PREF_SCROLL_IF_YOU = 'scroll-manage-scroll-if-you';
 	private static readonly ScrollThreshold = 50;
 	private static _scrollToBottomButton: JQuery<HTMLElement>;
+	private static _deleteMessageRegistrationID: number | null = null;
 
 
 	static get enabled(): boolean { return SETTINGS.get(this.PREF_ENABLED); }
@@ -22,12 +24,8 @@ export default class ScrollManage {
 			type: Boolean,
 			default: true,
 			onChange: (newValue) => {
-				if (newValue) {
-					libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype.postOne', this._ChatLog_postOne, 'OVERRIDE');
-				}
-				else {
-					libWrapper.unregister(SETTINGS.MOD_NAME, 'ChatLog.prototype.postOne', false);
-				}
+				if (newValue) this.register();
+				else this.unregister();
 			}
 		});
 		SETTINGS.register(this.PREF_SCROLL_IF_YOU, {
@@ -42,7 +40,16 @@ export default class ScrollManage {
 
 	static ready() {
 		if (this.enabled)
-			libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype.postOne', this._ChatLog_postOne, 'OVERRIDE');
+			this.register();
+	}
+
+	private static register() {
+		libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype.postOne', this._ChatLog_postOne, 'OVERRIDE');
+		this._deleteMessageRegistrationID = libWrapperShared.register('ChatLog.prototype.deleteMessage', this._ChatLog_deleteMessage.bind(this));
+	}
+	private static unregister() {
+		libWrapper.unregister(SETTINGS.MOD_NAME, 'ChatLog.prototype.postOne', false);
+		libWrapperShared.unregister('ChatLog.prototype.deleteMessage', this._deleteMessageRegistrationID);
 	}
 
 	private static _renderChatLog(app: ChatLog, html: JQuery<HTMLElement>) {
@@ -99,5 +106,15 @@ export default class ScrollManage {
 		// Update popout tab
 		if (this._popout) await (<any>this._popout).postOne(message, false);
 		if (this.popOut) this.setPosition();
+	}
+
+	private static _ChatLog_deleteMessage(wrapped: (...args: any) => unknown, messageId: string, { deleteAll = false }: { deleteAll?: boolean } = {}): unknown {
+		const result = wrapped(messageId, { deleteAll });
+		// Ignore singular message deletions, only react to a Delete All event.
+		// Also ignore the deletion if the scroll-to-bottom element is already hidden
+		if (!deleteAll || this._scrollToBottomButton.is(':hidden')) return result;
+		this._scrollToBottomButton.hide();
+		this._scrollToBottomButton.removeClass('new');
+		return result;
 	}
 }

@@ -1,4 +1,5 @@
 import { ChatMessageData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import libWrapperShared from "../../../common/libWrapperShared";
 import SETTINGS from "../../../common/Settings";
 import DFChatArchiveManager from "../archive/DFChatArchiveManager";
 
@@ -108,7 +109,7 @@ export default class ChatMerge {
 			onChange: () => this._processAllMessage()
 		});
 
-		libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype.deleteMessage', this._deleteMessage.bind(this), 'WRAPPER');
+		libWrapperShared.register('ChatLog.prototype.deleteMessage', this._deleteMessage.bind(this));
 		Hooks.on("renderChatMessage", this._renderChatMessage);
 	}
 	static ready() {
