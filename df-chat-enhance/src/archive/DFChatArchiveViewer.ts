@@ -32,6 +32,26 @@ export default class DFChatArchiveViewer extends Application {
 		};
 	}
 
+	// convert a Unicode string to a string in which
+	// each 16-bit unit occupies only one byte
+	/**
+	 * Converts a UTF-16 string to an ASCii string containing the binary data of the UTF-16 text.
+	 * @param data UTF-16 data
+	 * @returns Binary data coerced into a string
+	 */
+	private static toBinary(data: string): string {
+		const codeUnits = new Uint16Array(data.length);
+		for (let i = 0; i < codeUnits.length; i++) {
+			codeUnits[i] = data.charCodeAt(i);
+		}
+		const charCodes = new Uint8Array(codeUnits.buffer);
+		let result = '';
+		for (let i = 0; i < charCodes.byteLength; i++) {
+			result += String.fromCharCode(charCodes[i]);
+		}
+		return result;
+	}
+
 	_renderInner(data: any): Promise<JQuery> {
 		return (super._renderInner(data) as Promise<JQuery>)
 			.then(async (html: JQuery<HTMLElement>) => {
@@ -126,7 +146,8 @@ export default class DFChatArchiveViewer extends Application {
 					const data = $('<div></div>').append(html.find('#df-chat-log').clone()).html();
 					const anchor = document.createElement('a');
 					anchor.download = encodeURI(this.archive.name) + '.html';
-					anchor.href = "data:text/html;base64," + btoa(data);
+					// anchor.href = "data:text/html;base64," + btoa(unescape(encodeURIComponent(data)));
+					anchor.href = "data:text/html," + encodeURIComponent(data);
 					anchor.click();
 				});
 
