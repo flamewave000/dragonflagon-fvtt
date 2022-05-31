@@ -169,5 +169,9 @@
 		"EnabledName": "Display Send Button in Chat",
 		"EnabledHint": "Display a send button in the chat box that can be clicked to send a message.",
 		"ButtonTitle": "Send message"
+	},
+	"DF_CHAT_FONT_SIZE": {
+		"FontSizeName": "Chat Message Font Size",
+		"FontSizeHint": "The font size of chat messages and the text box. (default: 14)"
 	}
 }

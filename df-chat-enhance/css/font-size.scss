@@ -1,0 +1,11 @@
+:root {
+	--dfce-chat-font-size: ;
+}
+
+.chat-message {
+	font-size: var(--dfce-chat-font-size, 14px);
+}
+
+#chat-form #chat-message {
+	font-size: var(--dfce-chat-font-size, 13.3333px);
+}
