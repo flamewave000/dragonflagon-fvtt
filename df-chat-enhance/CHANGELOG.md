@@ -7,6 +7,7 @@
 - **NEW #321:** Adventure Log events and quotes can now contain Markdown like any other message.
 - **NEW #277:** Added slider for selecting the font size of chat messages. Default size is 14px, but can now be anything from 10px to 30px.
 - **NEW #210:** You can now change the speaker for a message when editing it. Lists all available tokens from the current scene in addition to any player.
+- **UPDATE #356:** Whispers in chat archives will now only be visible to GMs, the sender, and the receivers. All others will not see the whispers when viewing the archive.
 
 # Release 3.6.1 (2022-05-30)
 - **FIX #231:** Conflict with the combat round messages posted by Monk's Little Details.
@@ -17,8 +18,8 @@
 - **FIX #317:** Chat Merging conflict with Midi QOL's roll merging feature.
 
 # Release 3.6.0 (2022-01-02)
-- **UPDATED:** Migrated to FoundryVTT V9.
-- **UPDATED #274:** Japanese Localization: Courtesy of tonishi and [BrotherSharper](https://github.com/BrotherSharper).
+- **UPDATE:** Migrated to FoundryVTT V9.
+- **UPDATE #274:** Japanese Localization: Courtesy of tonishi and [BrotherSharper](https://github.com/BrotherSharper).
 - **FIX #269:** Public Roll button now displays correctly.
 - **FIX #261&#243:** Keyboard entry in chat-box working correctly now.
 

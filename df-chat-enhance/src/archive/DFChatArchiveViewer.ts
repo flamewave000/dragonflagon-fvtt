@@ -153,7 +153,9 @@ export default class DFChatArchiveViewer extends Application {
 
 				const log = html.find('#df-chat-log');
 				const messageHtml = [];
-				this.messages = await DFChatArchive.getArchiveContents(this.archive);
+				this.messages = (await DFChatArchive.getArchiveContents(this.archive) as ChatMessageData[])
+					.filter(x => game.user.isGM || x.user === game.userId || x.type !== CONST.CHAT_MESSAGE_TYPES.WHISPER || x.whisper.some(x => x === game.userId));
+
 				const deletionList: string[] = [];
 				const deleteButton = html.find('#dfal-save-changes');
 				for (const value of this.messages as ChatMessageData[]) {
