@@ -6,6 +6,7 @@
 - **NEW #241:** Setting for disabling the "(edited)" label from being added to edited messages.
 - **NEW #321:** Adventure Log events and quotes can now contain Markdown like any other message.
 - **NEW #277:** Added slider for selecting the font size of chat messages. Default size is 14px, but can now be anything from 10px to 30px.
+- **NEW #210:** You can now change the speaker for a message when editing it. Lists all available tokens from the current scene in addition to any player.
 
 # Release 3.6.1 (2022-05-30)
 - **FIX #231:** Conflict with the combat round messages posted by Monk's Little Details.

@@ -35,7 +35,29 @@ export default class DFChatEditor extends FormApplication {
 
 	/** @override */
 	getData(options?: any): any {
+
+		// Collect the different Actor types and the labels for those types
+		const types = Object.keys(CONFIG.Actor.typeLabels).map(type => {
+			return { type, label: CONFIG.Actor.typeLabels[type], actors: [] };
+		});
+		// Organize the actors in the current scene into those type categories
+		for (const type of types) {
+			type.actors = game.scenes.viewed.tokens.contents.filter(x => x.actor.type === type.type).map(x => ({
+				id: 'token-' + x.id,
+				name: x.name
+			}));
+		}
+
+		let selected = '';
+		if (this.chatMessage.data.user)
+			selected = 'user-' + this.chatMessage.data.user;
+		if (this.chatMessage.data.speaker.token)
+			selected = 'token-' + this.chatMessage.data.speaker.token;
+
 		return mergeObject(options, {
+			selected,
+			players: game.users.map(x => ({ id: 'user-' + x.id, name: x.name })),
+			actorGroups: types.filter(x => x.actors.length > 0),
 			messageText: this.chatMessage.data.content
 				.replace(/< *br *\/?>/gm, '\n')
 				.replace(/<p +class="df-edited">.+/, '')
@@ -49,7 +71,7 @@ export default class DFChatEditor extends FormApplication {
 	}
 
 	/** @override */
-	async _updateObject(_event?: any, formData?: any) {
+	async _updateObject(_event?: any, formData?: { content: string, speaker: string }) {
 		let data = formData.content as string;
 		if (SETTINGS.get(DFChatEditor.PREF_MARKDOWN)) {
 			data = DFChatEditor.processMarkdown(data)[1];
@@ -59,7 +81,18 @@ export default class DFChatEditor extends FormApplication {
 		if (SETTINGS.get<boolean>(DFChatEdit.PREF_SHOW_EDITED) && data.search(/<p +class="df-edited">/) < 0) {
 			data += `<p class="df-edited">${'DF_CHAT_EDIT.EditedFlag'.localize()}</p>`;
 		}
-		this.chatMessage.update({ content: data });
+
+		let speaker = undefined;
+		let user = undefined;
+		if (formData.speaker.startsWith('user-')) {
+			user = game.users.get(formData.speaker.substring('user-'.length)).id;
+			// @ts-expect-error
+			speaker = ChatMessage._getSpeakerFromUser({ user });
+		} else
+			speaker = ChatMessage.getSpeaker({ token: game.scenes.viewed.tokens.get(formData.speaker.substring('token-'.length)) });
+		if (speaker.alias === undefined)
+			speaker.alias = null;
+		this.chatMessage.update({ content: data, speaker, user });
 	}
 	/** @override */
 	close(options?: FormApplication.CloseOptions) {

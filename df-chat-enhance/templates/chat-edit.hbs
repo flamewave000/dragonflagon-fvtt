@@ -1,6 +1,23 @@
 <form class="dfce-editor" style="display:flex;flex-flow:column">
+	<h3>Speaker</h3>
+	<select name="speaker">
+		<optgroup label="{{localize 'Players'}}">
+			{{#each players}}
+			<option value="{{id}}" {{#if (eq ../selected id)}}selected{{/if}}>{{name}}</option>
+			{{/each}}
+		</optgroup>
+
+		{{#each actorGroups}}
+		<optgroup label="{{localize 'label'}}">
+			{{#each actors}}
+			<option value="{{id}}" {{#if (eq ../../selected id)}}selected{{/if}}>{{name}}</option>
+			{{/each}}
+		</optgroup>
+		{{/each}}
+	</select>
 	<h3>{{localize 'DF_CHAT_EDIT.Editor_Original'}}</h3>
 	<blockquote>{{{messageText}}}</blockquote>
+	<hr>
 	<textarea name="content" autocomplete="nope" rows="6" cols="40">{{messageText}}</textarea>
 	<br />
 	<div class="dfce-editor-buttons">
