@@ -1,6 +1,7 @@
 
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 import SETTINGS from "../../../common/Settings";
+import DFChatEditor from "../edit/DFChatEditor";
 import DFAdventureLogConfig from './DFAdventureLogConfig';
 
 declare global {
@@ -352,7 +353,7 @@ export default class DFAdventureLogProcessor {
 				}
 				else
 					source = tokens[1];
-				messageText = messageText.replace(source, '').trim();
+				messageText = DFChatEditor.processMarkdown(messageText)[1].replace(source, '').trim();
 				// Remove any double-quotes surrounding the source token
 				source = source.replace(/"/gm, '');
 				messageData.flavor = `${game.user.name} quoted ${source}`;
@@ -373,7 +374,7 @@ export default class DFAdventureLogProcessor {
 				messageText = messageText.replace(tokens[0], '').trim();
 				// fallthrough
 			default:
-				messageText = messageText.trim();
+				messageText = DFChatEditor.processMarkdown(messageText)[1].trim();
 				messageData.flavor = 'Event Logged';
 				messageData.content = `<span class="dfal-ev">${messageText}</span>`;
 				line = 'DF_CHAT_LOG.Log_Event'.localize();
@@ -394,12 +395,11 @@ export default class DFAdventureLogProcessor {
 		}
 		const journal = game.journal.get(journalId);
 		let html = $(journal.data.content);
-		let messageHtml = $(messageText);
+		const messageHtml = $(messageText);
 		let section = html.find('section.df-adventure-log');
 		if (section.length == 0) {
 			await DFAdventureLogConfig.initializeJournal(journalId, false, gmLog);
 			html = $(journal.data.content);
-			messageHtml = $(messageText);
 			section = html.find('section.df-adventure-log');
 		}
 		const descending = SETTINGS.get(this.PREF_SORTDESC) as boolean;
