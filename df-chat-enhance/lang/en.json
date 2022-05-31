@@ -80,6 +80,8 @@
 			"PrintMessagesHint": "Post a message to the chat for new Adventure Log entries",
 			"DisableFormatName": "Adventure Log: Disable Entry Formatting",
 			"DisableFormatHint": "Disables the font formatting when adding entries to the Adventure Log.",
+			"DisableEntryAuthorName": "Adventure Log: Disable Writing Author in Entries",
+			"DisableEntryAuthorHint": "Prevents writing the author's name to the Adventure Log when logging events and quotes.",
 			"SortDescendingName": "Adventure Log: Sort Newest on Top",
 			"SortDescendingHint": "Sort the adventure log with the newest messages at the top of the log, and oldest message at the bottom of the log.",
 			"SimpleCalendarName": "Adventure Log: Use SimpleCalendar Timestamps",
@@ -103,6 +105,12 @@
 		"Log_Quote": "<p><code><span class=\"dfal-ts\">{0}</span></code>&nbsp;(<span class=\"dfal-na\">{1}</span>)&nbsp;<span class=\"dfal-qu-src\">{2} said:</span>&nbsp;<span class=\"dfal-qu\">\"{3}\"</span></p>",
 		"Log_Event_Bland": "<p><span>{0}</span>&nbsp;(<span>{1}</span>)&nbsp;<span>{2}</span></p>",
 		"Log_Quote_Bland": "<p><span>{0}</span>&nbsp;(<span>{1}</span>)&nbsp;<span>{2} said:</span>&nbsp;<span>\"{3}\"</span></p>",
+
+		"Log_Event_NoAuth": "<p><code><span class=\"dfal-ts\">[{0}]</span></code>&nbsp;<span class=\"dfal-ev\">{2}</span></p>",
+		"Log_Quote_NoAuth": "<p><code><span class=\"dfal-ts\">[{0}]</span></code>&nbsp;<span class=\"dfal-qu-src\">{2} said:</span>&nbsp;<span class=\"dfal-qu\">\"{3}\"</span></p>",
+		"Log_Event_Bland_NoAuth": "<p><span>({0})</span>&nbsp;<span>{2}</span></p>",
+		"Log_Quote_Bland_NoAuth": "<p><span>({0})</span>&nbsp;<span>{2} said:</span>&nbsp;<span>\"{3}\"</span></p>",
+
 		"Config_Title": "Adventure Log Settings",
 		"Config_JournalSelect": "Journal to use as the Adventure Log",
 		"Config_GMJournalSelect": "Journal to use as the GM Only Log",

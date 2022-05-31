@@ -9,6 +9,7 @@
 - **NEW #210:** You can now change the speaker for a message when editing it. Lists all available tokens from the current scene in addition to any player.
 - **NEW #320:** Players can now be configured their own personal Adventure Log. This is done in the User Config, and players can add entries to their personal log using the new `/plog` command.
 - **NEW #342:** Added option to disable the text formatting for Adventure Log entries.
+- **NEW #343:** Added option to disable printing the author on Adventure Log entries.
 - **UPDATE #356:** Whispers in chat archives will now only be visible to GMs, the sender, and the receivers. All others will not see the whispers when viewing the archive.
 
 # Release 3.6.1 (2022-05-30)

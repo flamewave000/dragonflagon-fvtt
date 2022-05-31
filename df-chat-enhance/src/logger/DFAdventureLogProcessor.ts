@@ -76,6 +76,7 @@ export default class DFAdventureLogProcessor {
 	static readonly PREF_MESSAGES = 'df-log-messages';
 	static readonly PREF_SORTDESC = 'df-log-sortdesc';
 	static readonly PREF_DISABLE_FORMATTING = 'df-log-disable-format';
+	static readonly PREF_DISABLE_AUTHOR = 'df-log-disable-author';
 	static readonly PREF_SIMPLE_CALENDAR = 'df-log-use-simple-calendar';
 	static readonly PREF_USE_TIME = 'df-log-use-time';
 	static readonly PREF_PLAYER_LOG_JOURNAL = 'PlayerAdventureLog';
@@ -220,6 +221,14 @@ export default class DFAdventureLogProcessor {
 			type: Boolean,
 			default: false
 		});
+		SETTINGS.register(DFAdventureLogProcessor.PREF_DISABLE_AUTHOR, {
+			name: 'DF_CHAT_LOG.Setting.DisableEntryAuthorName'.localize(),
+			hint: 'DF_CHAT_LOG.Setting.DisableEntryAuthorHint'.localize(),
+			config: true,
+			scope: 'world',
+			type: Boolean,
+			default: false
+		});
 		// If Simple Calendar is enabled
 		if (game.modules.get('foundryvtt-simple-calendar')?.active) {
 			SETTINGS.register(DFAdventureLogProcessor.PREF_SIMPLE_CALENDAR, {
@@ -337,6 +346,8 @@ export default class DFAdventureLogProcessor {
 			content: '',
 		};
 		let line: string;
+		const disableFormatting = SETTINGS.get(DFAdventureLogProcessor.PREF_DISABLE_FORMATTING);
+		const disableAuthor = isPlayerLog || SETTINGS.get(DFAdventureLogProcessor.PREF_DISABLE_AUTHOR);
 		switch (tokens[0].toLowerCase()) {
 			case 'config':
 				if (!game.user.isGM) {
@@ -385,7 +396,10 @@ export default class DFAdventureLogProcessor {
 					setTimeout(() => $('#chat-message').val(`/log q "${source}" ${messageText}`), 1);
 					return;
 				}
-				line = (SETTINGS.get(DFAdventureLogProcessor.PREF_DISABLE_FORMATTING) ? 'DF_CHAT_LOG.Log_Quote_Bland' : 'DF_CHAT_LOG.Log_Quote').localize();
+				line = 'DF_CHAT_LOG.Log_Quote';
+				if (disableFormatting) line += '_Bland';
+				if (disableAuthor) line += '_NoAuth';
+				line = line.localize();
 				line = line.replace('{0}', this._getTimestamp());
 				line = line.replace('{1}', game.user.name);
 				line = line.replace('{2}', source);
@@ -399,7 +413,10 @@ export default class DFAdventureLogProcessor {
 				messageText = DFChatEditor.processMarkdown(messageText)[1].trim();
 				messageData.flavor = 'Event Logged';
 				messageData.content = `<span class="dfal-ev">${messageText}</span>`;
-				line = (SETTINGS.get(DFAdventureLogProcessor.PREF_DISABLE_FORMATTING) ? 'DF_CHAT_LOG.Log_Event_Bland' : 'DF_CHAT_LOG.Log_Event').localize();
+				line = 'DF_CHAT_LOG.Log_Event';
+				if (disableFormatting) line += '_Bland';
+				if (disableAuthor) line += '_NoAuth';
+				line = line.localize();
 				line = line.replace('{0}', this._getTimestamp());
 				line = line.replace('{1}', game.user.name);
 				messageText = line.replace('{2}', messageText);
