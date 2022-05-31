@@ -7,6 +7,7 @@
 - **NEW #321:** Adventure Log events and quotes can now contain Markdown like any other message.
 - **NEW #277:** Added slider for selecting the font size of chat messages. Default size is 14px, but can now be anything from 10px to 30px.
 - **NEW #210:** You can now change the speaker for a message when editing it. Lists all available tokens from the current scene in addition to any player.
+- **NEW #320:** Players can now be configured their own personal Adventure Log. This is done in the User Config, and players can add entries to their personal log using the new `/plog` command.
 - **UPDATE #356:** Whispers in chat archives will now only be visible to GMs, the sender, and the receivers. All others will not see the whispers when viewing the archive.
 
 # Release 3.6.1 (2022-05-30)

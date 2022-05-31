@@ -7,14 +7,13 @@ class Registration {
 	nextId = 0;
 	wrappers = new Map<number, Handler>();
 
-	handler(context: any, wrapped: Wrapper, ...args: any) {
-		const wrappers = [...this.wrappers.values()];
-		let current = (...args: any) => wrappers[0].call(context, wrapped, ...args);
-		for (let c = 1; c < wrappers.length; c++) {
+	handler(context: any, wrapped: Wrapper, ...args: any): Promise<unknown> | unknown {
+		let current = wrapped;
+		for (const wrapper of this.wrappers.values()) {
 			const next = current;
-			current = (...args: any) => wrappers[c].call(context, next, ...args);
+			current = (...args: any) => wrapper.call(context, next, ...args);
 		}
-		current.apply(context, args);
+		return current.call(context, ...args);
 	}
 }
 
@@ -26,8 +25,7 @@ export default class libWrapperShared {
 		if (!registration) {
 			registration = new Registration();
 			libWrapper.register(SETTINGS.MOD_NAME, target,
-				function (this: any, wrapped: Wrapper, ...args: any) { registration.handler(this, wrapped, ...args); },
-				'WRAPPER');
+				function (this: any, wrapped: Wrapper, ...args: any) { return registration.handler(this, wrapped, ...args); }, 'WRAPPER');
 			this.registrations.set(target, registration);
 		}
 		const id = registration.nextId++;

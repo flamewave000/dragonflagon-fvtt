@@ -73,11 +73,11 @@ export default class DFAdventureLogConfig extends FormApplication {
 		const gmClear = formData['dfal-clear-gm'];
 		SETTINGS.set(DFAdventureLogConfig.PREF_JOURNAL, logJournal);
 		SETTINGS.set(DFAdventureLogConfig.PREF_JOURNAL_GM, gmlogJournal);
-		await DFAdventureLogConfig.initializeJournal(logJournal, clear, false);
-		await DFAdventureLogConfig.initializeJournal(gmlogJournal, gmClear, true);
+		await DFAdventureLogConfig.initializeJournal(logJournal, clear, false, false);
+		await DFAdventureLogConfig.initializeJournal(gmlogJournal, gmClear, true, false);
 	}
 
-	static async initializeJournal(id: string, clear: boolean, isGMOnly: boolean) {
+	static async initializeJournal(id: string, clear: boolean, isGMOnly: boolean, isPlayerLog: boolean) {
 		if (!game.journal.has(id)) return;
 		const journal = game.journal.get(id);
 		if (clear || journal.data.content === null)
@@ -91,7 +91,7 @@ export default class DFAdventureLogConfig extends FormApplication {
 		await journal.update({
 			content: journal.data.content + `
 			<section>
-				<h2>${game.i18n.localize(isGMOnly ? 'DF_CHAT_LOG.GMLog_Header' : 'DF_CHAT_LOG.Log_Header')}</h2>
+				<h2>${game.i18n.localize(isGMOnly ? 'DF_CHAT_LOG.GMLog_Header' : isPlayerLog ? 'DF_CHAT_LOG.PLog_Header' : 'DF_CHAT_LOG.Log_Header')}</h2>
 				<section class="df-adventure-log"></section>
 				<hr />
 			</section>

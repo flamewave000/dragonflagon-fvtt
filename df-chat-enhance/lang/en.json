@@ -64,6 +64,7 @@
 	},
 	"DF_CHAT_LOG": {
 		"CommandDescription": "Submit an event to the Adventure Log",
+		"PCCommandDescription": "Submit an event to the Player Log",
 		"GMCommandDescription": "Submit an event to the GM Adventure Log",
 		"HelpDialog_Title": "Adventure Journal Command Help",
 		"Setting": {
@@ -87,12 +88,14 @@
 			"ConfigGmOnly": "Only the GM is allowed to change the Adventure Log configuration.",
 			"Disabled": "The Gamemaster has disabled the Adventure Log",
 			"NoJournalSet": "The Gamemaster has not set a journal for use as an Adventure Log",
+			"NoPlayerJournalSet": "A Personal Adventure Log has not been bound to your user account.",
 			"NoJournalSetGM": "There is no journal set for use as an Adventure Log. Use \"<code>/log config</code>\" to set one",
 			"MissingQuote": "You are missing the closing quote for {0}",
 			"MissingMessage": "You did not supply a message",
 			"ApiLog_NotGm": "You must be a GM to log events to the GM Adventure Log"
 		},
 		"Log_Header": "Adventure Log",
+		"PLog_Header": "Player Log",
 		"GMLog_Header": "GM Only Adventure Log",
 		"Log_Event": "<p><code><span class=\"dfal-ts\">{0}</span></code>&nbsp;(<span class=\"dfal-na\">{1}</span>)&nbsp;<span class=\"dfal-ev\">{2}</span></p>",
 		"Log_Quote": "<p><code><span class=\"dfal-ts\">{0}</span></code>&nbsp;(<span class=\"dfal-na\">{1}</span>)&nbsp;<span class=\"dfal-qu-src\">{2} said:</span>&nbsp;<span class=\"dfal-qu\">\"{3}\"</span></p>",

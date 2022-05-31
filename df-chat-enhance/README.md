@@ -11,6 +11,7 @@ Multiple improvements to the chat system feature set. Brings a new Chat Archive 
 - Japanese Localization: Tonishi & [BrotherSharper](https://github.com/BrotherSharper)
 - Korean Localization: [drdwing](https://github.com/drdwing)
 - Portuguese (Brazil) Localization: [Brn086](https://github.com/Brn086) and [Matheus Clemente](https://github.com/mclemente)
+- Helping me Fix my dumb mistakes with libWrapper 🤣: [ruipin](https://github.com/ruipin)
 
 ## Table of Contents
 
@@ -65,6 +66,10 @@ At any time you can simply enter `/log` into the chat to display the help dialog
 | General Event | `/log ...message`<br />`/log e ...message`<br />`/log event ...message` | Logs a simple event message to the adventure log. |
 | Quote | `/log q <source> ...message`<br />`/log quote <source> ...message`<br />`/log q "<source with spaces" ...message`<br />`/log quote "<source with spaces" ...message` | Adds an entry Quote of the "Source". |
 
+#### Player Log
+
+Players can be assigned their own personal Adventure Log. This can be assigned in the User Config, and can be written to with the `/plog` command.
+
 #### GM Only Log
 
 For any of the above commands, you can use `/gmlog` instead and the event/quote will be sent to the GM Only Adventure Log instead.
@@ -98,16 +103,22 @@ You can post messages to the Adventure Logs using a custom Macro. To do so, simp
 ```JavaScript
 // Log an Event to the Adventure Log
 AdventureLog.event("Something happened!")
+// Log an Event to the Player Log
+AdventureLog.pevent("Something happened!")
 // (GM Only) Log an Event to the GM Adventure Log
 AdventureLog.gmevent("The players did something!")
 // Log a Quote to the Adventure Log
 AdventureLog.quote("Bob", "Don't worry, be happy!")
+// Log a Quote to the Player Log
+AdventureLog.pquote("Bob", "Don't worry, be happy!")
 // (GM Only) Log a Quote to the GM Adventure Log
 AdventureLog.gmquote("Bob", "Don't worry, be happy!")
 
 // If you want the event/quote posted to the chat, add "true" to the call
 AdventureLog.event("Something happened!", true)
+AdventureLog.pevent("Something happened!", true)
 AdventureLog.quote("Bob", "Don't worry, be happy!", true)
+AdventureLog.pquote("Bob", "Don't worry, be happy!", true)
 
 // (GM Only) GM logs will be whispered to yourself
 AdventureLog.gmevent("The players did something!", true)

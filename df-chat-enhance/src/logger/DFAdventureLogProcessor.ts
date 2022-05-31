@@ -77,8 +77,10 @@ export default class DFAdventureLogProcessor {
 	static readonly PREF_SORTDESC = 'df-log-sortdesc';
 	static readonly PREF_SIMPLE_CALENDAR = 'df-log-use-simple-calendar';
 	static readonly PREF_USE_TIME = 'df-log-use-time';
+	static readonly PREF_PLAYER_LOG_JOURNAL = 'PlayerAdventureLog';
 	static logCommand: ChatCommand = null;
 	static gmlogCommand: ChatCommand = null;
+	static plogCommand: ChatCommand = null;
 
 	static appendChatContextMenuOptions(options: ContextMenu.Item[]) {
 		options.push({
@@ -92,7 +94,7 @@ export default class DFAdventureLogProcessor {
 			},
 			callback: (header) => {
 				const chatData = ui.chat.collection.get($(header).attr('data-message-id')).data;
-				DFAdventureLogProcessor.commandProcessor(chatData.content, false);
+				DFAdventureLogProcessor.commandProcessor(chatData.content, false, false);
 				return {};
 			}
 		});
@@ -108,9 +110,9 @@ export default class DFAdventureLogProcessor {
 			callback: (header) => {
 				const chatData = ui.chat.collection.get($(header).attr('data-message-id')).data;
 				if (chatData.content.trimStart().startsWith('"'))
-					DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, false);
+					DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, false, false);
 				else
-					DFAdventureLogProcessor.commandProcessor(`q "${game.users.get(chatData.user).name}" ${chatData.content}`, false);
+					DFAdventureLogProcessor.commandProcessor(`q "${game.users.get(chatData.user).name}" ${chatData.content}`, false, false);
 				return {};
 			}
 		});
@@ -124,7 +126,7 @@ export default class DFAdventureLogProcessor {
 			},
 			callback: (header) => {
 				const chatData = ui.chat.collection.get($(header).attr('data-message-id')).data;
-				DFAdventureLogProcessor.commandProcessor(chatData.content, true);
+				DFAdventureLogProcessor.commandProcessor(chatData.content, true, false);
 				return {};
 			}
 		});
@@ -139,9 +141,9 @@ export default class DFAdventureLogProcessor {
 			callback: (header) => {
 				const chatData = ui.chat.collection.get($(header).attr('data-message-id')).data;
 				if (chatData.content.trimStart().startsWith('"'))
-					DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, true);
+					DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, true, false);
 				else
-					DFAdventureLogProcessor.commandProcessor(`q "${game.users.get(chatData.user).name}" ${chatData.content}`, true);
+					DFAdventureLogProcessor.commandProcessor(`q "${game.users.get(chatData.user).name}" ${chatData.content}`, true, false);
 				return {};
 			}
 		});
@@ -230,9 +232,11 @@ export default class DFAdventureLogProcessor {
 
 	static deregisterCommand() {
 		(game as GameExt).chatCommands.deregisterCommand(DFAdventureLogProcessor.logCommand);
+		(game as GameExt).chatCommands.deregisterCommand(DFAdventureLogProcessor.plogCommand);
 		if (DFAdventureLogProcessor.gmlogCommand)
 			(game as GameExt).chatCommands.deregisterCommand(DFAdventureLogProcessor.gmlogCommand);
 		DFAdventureLogProcessor.logCommand = null;
+		DFAdventureLogProcessor.plogCommand = null;
 		DFAdventureLogProcessor.gmlogCommand = null;
 	}
 	static registerCommand() {
@@ -245,19 +249,28 @@ export default class DFAdventureLogProcessor {
 
 		DFAdventureLogProcessor.logCommand = (game as GameExt).chatCommands.createCommandFromData({
 			commandKey: "/log",
-			invokeOnCommand: async (_cl: any, msg: string, _cd: any) => await DFAdventureLogProcessor.commandProcessor(msg, false),
+			invokeOnCommand: async (_cl: any, msg: string, _cd: any) => await DFAdventureLogProcessor.commandProcessor(msg, false, false),
 			shouldDisplayToChat: false,
 			iconClass: "fa-edit",
 			description: "DF_CHAT_LOG.CommandDescription".localize()
 		});
 		(game as GameExt).chatCommands.registerCommand(DFAdventureLogProcessor.logCommand);
 
+		DFAdventureLogProcessor.plogCommand = (game as GameExt).chatCommands.createCommandFromData({
+			commandKey: "/plog",
+			invokeOnCommand: async (_cl: any, msg: string, _cd: any) => await DFAdventureLogProcessor.commandProcessor(msg, false, true),
+			shouldDisplayToChat: false,
+			iconClass: "fa-edit",
+			description: "DF_CHAT_LOG.PCCommandDescription".localize()
+		});
+		(game as GameExt).chatCommands.registerCommand(DFAdventureLogProcessor.plogCommand);
+
 		// If we are not the GM, early return to avoid registering the /gmlog command
 		if (!game.user.isGM) return;
 		// Register the /gmlog command
 		DFAdventureLogProcessor.gmlogCommand = (game as GameExt).chatCommands.createCommandFromData({
 			commandKey: "/gmlog",
-			invokeOnCommand: async (_cl: any, msg: string, _cd: any) => await DFAdventureLogProcessor.commandProcessor(msg, true),
+			invokeOnCommand: async (_cl: any, msg: string, _cd: any) => await DFAdventureLogProcessor.commandProcessor(msg, true, false),
 			shouldDisplayToChat: false,
 			iconClass: "fa-edit",
 			description: "DF_CHAT_LOG.GMCommandDescription".localize()
@@ -279,7 +292,7 @@ export default class DFAdventureLogProcessor {
 	}
 
 	private static logConfig: DFAdventureLogConfig = null;
-	static async commandProcessor(messageText: string, gmLog: boolean, preventPostToChat = false): Promise<void> {
+	static async commandProcessor(messageText: string, gmLog: boolean, isPlayerLog: boolean, preventPostToChat = false): Promise<void> {
 		messageText = messageText.trim();
 		const tokens = messageText.split(' ');
 
@@ -372,7 +385,7 @@ export default class DFAdventureLogProcessor {
 			case 'e':
 			case 'event':
 				messageText = messageText.replace(tokens[0], '').trim();
-				// fallthrough
+			// fallthrough
 			default:
 				messageText = DFChatEditor.processMarkdown(messageText)[1].trim();
 				messageData.flavor = 'Event Logged';
@@ -385,9 +398,12 @@ export default class DFAdventureLogProcessor {
 		}
 
 		// fetch the log to submit to
-		const journalId = SETTINGS.get(gmLog ? DFAdventureLogConfig.PREF_JOURNAL_GM : DFAdventureLogConfig.PREF_JOURNAL) as string;
+		const journalId = isPlayerLog ? game.user.getFlag(SETTINGS.MOD_NAME, this.PREF_PLAYER_LOG_JOURNAL) as string :
+			SETTINGS.get<string>(gmLog ? DFAdventureLogConfig.PREF_JOURNAL_GM : DFAdventureLogConfig.PREF_JOURNAL);
 		if (!game.journal.has(journalId)) {
-			if (game.user.isGM)
+			if (isPlayerLog)
+				ui.notifications.error('DF_CHAT_LOG.Error.NoPlayerJournalSet'.localize());
+			else if (game.user.isGM)
 				ui.notifications.error('DF_CHAT_LOG.Error.NoJournalSetGM'.localize(), { permanent: true });
 			else
 				ui.notifications.warn('DF_CHAT_LOG.Error.NoJournalSet'.localize());
@@ -398,7 +414,7 @@ export default class DFAdventureLogProcessor {
 		const messageHtml = $(messageText);
 		let section = html.find('section.df-adventure-log');
 		if (section.length == 0) {
-			await DFAdventureLogConfig.initializeJournal(journalId, false, gmLog);
+			await DFAdventureLogConfig.initializeJournal(journalId, false, gmLog, isPlayerLog);
 			html = $(journal.data.content);
 			section = html.find('section.df-adventure-log');
 		}
@@ -418,8 +434,8 @@ export default class DFAdventureLogProcessor {
 				messageData.whisper = [game.user.id];
 			}
 		}
-		// All GM logs are whispered
-		if (gmLog) {
+		// All GM and Player logs are whispered
+		if (isPlayerLog || gmLog) {
 			messageData.whisper = [game.user.id];
 		}
 		// Post message to chat if Messages are enabled

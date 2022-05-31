@@ -1,3 +1,4 @@
+import libWrapperShared from "../../../common/libWrapperShared";
 import SETTINGS from "../../../common/Settings";
 
 export default class PlayerColor {
@@ -31,11 +32,11 @@ export default class PlayerColor {
 			app.setPosition({});
 		});
 
-		libWrapper.register(SETTINGS.MOD_NAME, 'UserConfig.prototype._updateObject',
-			async function (this: UserConfig, wrapped: (arg0: any, arg1: any) => any, event: any, formData: { "chat-color": string }) {
+		libWrapperShared.register('UserConfig.prototype._updateObject',
+			async function (this: UserConfig, wrapped: (arg0: any, arg1: any) => any, event: any, formData: { "chat-color": string }): Promise<void> {
 				await this.object.setFlag(SETTINGS.MOD_NAME, PlayerColor.FLAG_CHAT_COLOR, formData["chat-color"]);
 				await wrapped(event, formData);
-			}, 'WRAPPER');
+			});
 
 		libWrapper.register(SETTINGS.MOD_NAME, 'ChatMessage.prototype.getHTML', async function (this: ChatMessage, wrapper: (...arg: any) => Promise<JQuery<HTMLElement>>, ...args: any) {
 			const html = await wrapper(...args);
