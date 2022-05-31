@@ -6,6 +6,8 @@ const PREF_GM_ALL = 'gm-edit-all';
 const PREF_IGNORE_HTML = 'edit-ignore-html';
 
 export default class DFChatEdit {
+	static readonly PREF_SHOW_EDITED = 'DFChatEdit.ShowEditedLable';
+
 	static ready() {
 		SETTINGS.register(DFChatEditor.PREF_MARKDOWN, {
 			name: 'DF_CHAT_EDIT.Settings_MarkdownName',
@@ -36,6 +38,14 @@ export default class DFChatEdit {
 			hint: 'DF_CHAT_EDIT.Settings_IgnoreHtmlHint',
 			type: Boolean,
 			default: false,
+			config: true,
+			scope: 'world'
+		});
+		SETTINGS.register(this.PREF_SHOW_EDITED, {
+			name: 'DF_CHAT_EDIT.Settings_ShowEditedLabelName',
+			hint: 'DF_CHAT_EDIT.Settings_ShowEditedLabelHint',
+			type: Boolean,
+			default: true,
 			config: true,
 			scope: 'world'
 		});

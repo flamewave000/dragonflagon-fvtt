@@ -3,6 +3,7 @@
 # Release 3.7.0 (2022-05-30)
 - **NEW #295:** Send message button has been added to the chat box. This can be enabled in the module settings.
 - **NEW #316:** Registered editable keybindings for switching roll modes.
+- **NEW #241:** Setting for disabling the "(edited)" label from being added to edited messages.
 
 # Release 3.6.1 (2022-05-30)
 - **FIX #231:** Conflict with the combat round messages posted by Monk's Little Details.

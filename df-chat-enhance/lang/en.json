@@ -119,6 +119,8 @@
 		"Settings_IgnoreHtmlHint": "Do not allow messages containing HTML to be edited.",
 		"Settings_MarkdownName": "Chat Edit: Enable Markdown",
 		"Settings_MarkdownHint": "Enable Markdown styling in the Chat Log.",
+		"Settings_ShowEditedLabelName": "Chat Edit: Tag Edited Messages",
+		"Settings_ShowEditedLabelHint": "Add a small label at the bottom of an edited message that says \"(edited)\"",
 		"EditedFlag": "(edited)",
 		"Error_NoPermission": "The Gamemaster has disabled editing",
 		"ContextOption": "Edit Message"

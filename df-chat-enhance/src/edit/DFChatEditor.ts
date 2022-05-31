@@ -1,4 +1,5 @@
 import SETTINGS from "../../../common/Settings";
+import DFChatEdit from "./df-chat-edit";
 
 
 declare namespace marked {
@@ -55,12 +56,10 @@ export default class DFChatEditor extends FormApplication {
 		} else {
 			data = data.replace(/\r?\n/gm, '<br/>');
 		}
-		if (data.search(/<p +class="df-edited">/) < 0) {
+		if (SETTINGS.get<boolean>(DFChatEdit.PREF_SHOW_EDITED) && data.search(/<p +class="df-edited">/) < 0) {
 			data += `<p class="df-edited">${'DF_CHAT_EDIT.EditedFlag'.localize()}</p>`;
 		}
-		this.chatMessage.update({
-			content: data
-		});
+		this.chatMessage.update({ content: data });
 	}
 	/** @override */
 	close(options?: FormApplication.CloseOptions) {
