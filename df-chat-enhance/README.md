@@ -240,6 +240,10 @@ Rolls can be merged in an independent way. You have three choices, No Merging, M
 
 Displays a Send Message button in the chat box. This button can be clicked to send the currently written message. This is useful for anyone using a touch screen, or just prefers using a mouse to send the message instead of hitting Enter.
 
+## Simple Calendar Chat Message Timestamps
+
+There is an option that when enabled, you will see the chat message timestamp changed from real-world time to one based on the current Game Time. The format of this timestamp is provided by the Simple Calendar module, which must be installed in order to use this feature.
+
 ## Whisper Recipient List Truncation
 
 Now when you whisper a message to a list of users, the Recipient List at the top of the message is truncated if it is too long. There are some games that have many GM users and hitting up `/w gm ...` can make a very massive chat message. Instead it will truncate the list and say how many more names there are. You simply have to hover your mouse over the visible names and the rest will show in the mouse-over hint bubble.

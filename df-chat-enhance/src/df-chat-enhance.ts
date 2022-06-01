@@ -10,6 +10,7 @@ import WhisperTruncation from "./whisper-trunc/whisper-trunc";
 import PlayerColor from './player-color/PlayerColor';
 import SendButton from "./send/send-button";
 import FontSizePatch from "./font-size/font-size";
+import ChatTime from "./chat-time/chat-time";
 SETTINGS.init('df-chat-enhance');
 
 declare global {
@@ -43,6 +44,7 @@ Hooks.once('init', function () {
 	PlayerColor.init();
 	SendButton.init();
 	FontSizePatch.init();
+	ChatTime.init();
 
 	libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype._getEntryContextOptions', function (wrapped: (...args: any) => ContextMenu.Item[], ...args: any) {
 		const options = wrapped(...args);
@@ -62,4 +64,5 @@ Hooks.once('ready', function () {
 	DFChatEdit.ready();
 	ChatMerge.ready();
 	ScrollManage.ready();
+	ChatTime.ready();
 });

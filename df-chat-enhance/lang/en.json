@@ -188,5 +188,12 @@
 	"DF_CHAT_FONT_SIZE": {
 		"FontSizeName": "Chat Message Font Size",
 		"FontSizeHint": "The font size of chat messages and the text box. (default: 14)"
+	},
+	"DF_CHAT_TIME": {
+		"EnabledName": "Use Simple Calendar for Chat Timestamps",
+		"EnabledHint": "(Requires Simple Calendar) If enabled, chat messages will display the current game time instead of real world time. Important! Changing this will cause the Chat Log to re-render.",
+		"FormatName": "Format used for Chat Message Timestamps",
+		"FormatHint": "The format used for the Simple Calendar timestamp that is displayed on chat messages. Requires above setting to be enabled. (default: \"YYYY, MMM DD, HH:mm\")",
+		"ErrorSimpleCalendarMissing": "Simple Calendar must be installed and active in order to use it for chat message timestamps"
 	}
 }
