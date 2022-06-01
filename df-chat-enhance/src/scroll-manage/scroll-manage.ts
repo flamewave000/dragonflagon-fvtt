@@ -1,5 +1,6 @@
 import libWrapperShared from "../../../common/libWrapperShared";
 import SETTINGS from "../../../common/Settings";
+import ChatHistoryOptimizer from "./ChatHistoryOptimizer";
 
 declare class ChatLogExt extends ChatLog {
 	_scrollToBottomButton: JQuery<HTMLElement>;
@@ -39,6 +40,8 @@ export default class ScrollManage {
 			type: Boolean,
 			default: true
 		});
+
+		ChatHistoryOptimizer.init();
 	}
 
 	static ready() {

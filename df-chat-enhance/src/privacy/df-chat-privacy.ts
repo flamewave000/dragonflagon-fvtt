@@ -1,5 +1,5 @@
 import SETTINGS from "../../../common/Settings";
-import CONFIG from "../CONFIG";
+import UTIL from "../Util";
 
 
 const ICONS_FOR_KNOWN_ROLL_TYPES: {
@@ -66,7 +66,7 @@ export default class ChatRollPrivacy {
 			type: Boolean,
 			default: true,
 			config: true,
-			onChange: CONFIG.requestReload
+			onChange: UTIL.requestReload
 		});
 		SETTINGS.register('replace-buttons', {
 			name: 'DF_CHAT_PRIVACY.Settings_ReplaceButtonsTitle',
@@ -75,7 +75,7 @@ export default class ChatRollPrivacy {
 			type: Boolean,
 			default: true,
 			config: true,
-			onChange: CONFIG.requestReload
+			onChange: UTIL.requestReload
 		});
 	
 		if (SETTINGS.get('enabled') === false)

@@ -1,6 +1,7 @@
 # DF Chat Enhancements
 
-# Release 3.7.0 (2022-05-30)
+# Release 4.0.0 (2022-06-01)
+- **NEW #371:** **More Efficient Chat History!** There is now a customizable Max History in the Chat Log. As messages are added to the log, old messages will automatically be removed from the visible Chat Log. If you scroll back up, the old messages will be re-added as needed, but then scrolling back down will automatically remove them again. This will hopefully help improve FoundryVTT's overall performance during a long session with hundreds of chat messages.
 - **NEW #295:** Send message button has been added to the chat box. This can be enabled in the module settings.
 - **NEW #316:** Registered editable keybindings for switching roll modes.
 - **NEW #241:** Setting for disabling the "(edited)" label from being added to edited messages.

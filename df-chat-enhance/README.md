@@ -43,6 +43,12 @@ Multiple improvements to the chat system feature set. Brings a new Chat Archive 
 
 **[![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!**
 
+## More Efficient Chat History
+
+By default, FoundryVTT only loads messages as you scroll up through the history in the Chat Log. The only problem is that once the messages have been loaded, they stay there for the entirety of the session unless you reload the page. I always found that Foundry would continue to gradually slow down as time went on and the chat log filled up more and more.
+
+Instead, DF Chat Enhancements will actively monitor the scroll position and automatically unload chat messages based on a maximum history size. This way, as more and more messages are added to the Chat Log, old messages will be removed to help reduce FoundryVTT's memory and cpu usage.
+
 ## Adventure Log
 
 You can now enable the Adventure Log feature for easy in-game event tracking. This feature adds the new chat command `/log` that allows you to quickly add a note about something that has just happened. This command will save the event message as an entry in a designated journal. It will be formatted with a timestamp, and who made the entry.

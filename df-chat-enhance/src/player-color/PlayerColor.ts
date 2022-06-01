@@ -1,6 +1,6 @@
 import libWrapperShared from "../../../common/libWrapperShared";
 import SETTINGS from "../../../common/Settings";
-import CONFIG from '../CONFIG';
+import UTIL from '../Util';
 
 export default class PlayerColor {
 	static readonly PREF_TINT_BG = 'PlayerColor_TintBackground';
@@ -15,7 +15,7 @@ export default class PlayerColor {
 			scope: 'world',
 			type: Boolean,
 			default: false,
-			onChange: CONFIG.reloadChatLog
+			onChange: UTIL.reloadChatLog
 		});
 		SETTINGS.register<string>(PlayerColor.PREF_BORDER_STYLE, {
 			name: 'DF_CHAT_PLAYER_COLOR.SettingBorderStyleName',
@@ -29,7 +29,7 @@ export default class PlayerColor {
 			},
 			default: 'all',
 			scope: 'client',
-			onChange: CONFIG.reloadChatLog
+			onChange: UTIL.reloadChatLog
 		});
 
 		Hooks.on('renderUserConfig', (app: UserConfig, html: JQuery<HTMLElement>, data: UserConfig.Data<any>) => {

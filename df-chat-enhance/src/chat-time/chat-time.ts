@@ -1,6 +1,6 @@
 import { ChatMessageData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import SETTINGS from "../../../common/Settings";
-import CONFIG from "../CONFIG";
+import UTIL from "../Util";
 
 export default class ChatTime {
 
@@ -24,7 +24,7 @@ export default class ChatTime {
 			hint: "DF_CHAT_TIME.EnabledHint",
 			default: false,
 			config: true,
-			onChange: CONFIG.reloadChatLog
+			onChange: UTIL.reloadChatLog
 		});
 
 		SETTINGS.register(this.PREF_FORMAT, {
@@ -34,7 +34,7 @@ export default class ChatTime {
 			hint: 'DF_CHAT_TIME.FormatHint',
 			default: 'YYYY, MMM DD, HH:mm',
 			config: this.simpleCalendarActive,
-			onChange: CONFIG.reloadChatLog
+			onChange: UTIL.reloadChatLog
 		});
 
 		libWrapper.register(SETTINGS.MOD_NAME, 'ChatMessage.implementation.create',

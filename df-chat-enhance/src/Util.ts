@@ -1,4 +1,4 @@
-export default class CONFIG {
+export default class UTIL {
 	static async requestReload() {
 		if (await Dialog.confirm({
 			title: "DF_CHAT_ENHANCE.ReloadGameTitle".localize(),
