@@ -1,8 +1,10 @@
 import libWrapperShared from "../../../common/libWrapperShared";
 import SETTINGS from "../../../common/Settings";
+import CONFIG from '../CONFIG';
 
 export default class PlayerColor {
 	static readonly PREF_TINT_BG = 'PlayerColor_TintBackground';
+	static readonly PREF_BORDER_STYLE = 'PlayerColor.BorderStyle';
 	static readonly FLAG_CHAT_COLOR = 'chat-color';
 
 	static init() {
@@ -12,7 +14,22 @@ export default class PlayerColor {
 			hint: 'DF_CHAT_PLAYER_COLOR.SettingTintBackgroundHint',
 			scope: 'world',
 			type: Boolean,
-			default: false
+			default: false,
+			onChange: CONFIG.reloadChatLog
+		});
+		SETTINGS.register<string>(PlayerColor.PREF_BORDER_STYLE, {
+			name: 'DF_CHAT_PLAYER_COLOR.SettingBorderStyleName',
+			hint: 'DF_CHAT_PLAYER_COLOR.SettingBorderStyleHint',
+			config: true,
+			type: String,
+			choices: {
+				all: 'DF_CHAT_PLAYER_COLOR.BorderStyle.all',
+				mine: 'DF_CHAT_PLAYER_COLOR.BorderStyle.mine',
+				none: 'DF_CHAT_PLAYER_COLOR.BorderStyle.none'
+			},
+			default: 'all',
+			scope: 'client',
+			onChange: CONFIG.reloadChatLog
 		});
 
 		Hooks.on('renderUserConfig', (app: UserConfig, html: JQuery<HTMLElement>, data: UserConfig.Data<any>) => {
@@ -46,13 +63,22 @@ export default class PlayerColor {
 			// If it is a valid color
 			if (!chatColor || !/#[a-fA-F0-9]{6,8}/.test(chatColor))
 				chatColor = this.user.color;
-			// If the message belongs to the current user or PREF_TINT_BG is on, colour the border
-			if (game.userId === this.data.user || SETTINGS.get(PlayerColor.PREF_TINT_BG))
-				html[0].style.borderColor = chatColor;
-			else
-				html[0].style.borderColor = '#6f6c66';
+
+			// Set the border colour to its default
+			let borderColour = '#6f6c66';
+			switch (SETTINGS.get<string>(PlayerColor.PREF_BORDER_STYLE)) {
+				case 'none': break;
+				case 'mine':
+					if (game.userId !== this.data.user) break;
+				// fallthrough
+				case 'all':
+					borderColour = chatColor;
+					break;
+			}
+			html[0].style.borderColor = borderColour;
+
 			// Set the hover border colour to what ever the border colour is
-			html[0].style.setProperty('--dfce-mc-border-color', html[0].style.borderColor);
+			html[0].style.setProperty('--dfce-mc-border-color', borderColour);
 			if (SETTINGS.get(PlayerColor.PREF_TINT_BG)) {
 				html[0].style.backgroundColor = chatColor;
 				html[0].style.backgroundImage = 'url(../ui/parchment.jpg)';

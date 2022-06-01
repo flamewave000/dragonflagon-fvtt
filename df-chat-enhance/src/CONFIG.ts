@@ -8,4 +8,12 @@ export default class CONFIG {
 			window.location.reload();
 		}
 	}
+
+	static reloadChatLog() {
+		// @ts-expect-error
+		ui.chat._lastId = null;
+		// @ts-expect-error
+		ui.chat._state = Application.RENDER_STATES.NONE;
+		ui.chat.render(true);
+	}
 }

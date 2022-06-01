@@ -1,5 +1,6 @@
 import { ChatMessageData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import SETTINGS from "../../../common/Settings";
+import CONFIG from "../CONFIG";
 
 export default class ChatTime {
 
@@ -23,13 +24,7 @@ export default class ChatTime {
 			hint: "DF_CHAT_TIME.EnabledHint",
 			default: false,
 			config: true,
-			onChange: () => {
-				// @ts-expect-error
-				ui.chat._lastId = null;
-				// @ts-expect-error
-				ui.chat._state = Application.RENDER_STATES.NONE;
-				ui.chat.render(true);
-			}
+			onChange: CONFIG.reloadChatLog
 		});
 
 		SETTINGS.register(this.PREF_FORMAT, {
@@ -38,7 +33,8 @@ export default class ChatTime {
 			name: 'DF_CHAT_TIME.FormatName',
 			hint: 'DF_CHAT_TIME.FormatHint',
 			default: 'YYYY, MMM DD, HH:mm',
-			config: this.simpleCalendarActive
+			config: this.simpleCalendarActive,
+			onChange: CONFIG.reloadChatLog
 		});
 
 		libWrapper.register(SETTINGS.MOD_NAME, 'ChatMessage.implementation.create',
@@ -49,9 +45,8 @@ export default class ChatTime {
 				return wrapped(chatData, createOptions);
 			}, 'WRAPPER');
 
-		Hooks.on('renderChatMessage', (message: ChatMessage, html: JQuery<HTMLElement>, data: any) => {
+		Hooks.on('renderChatMessage', (message: ChatMessage, html: JQuery<HTMLElement>, _data: any) => {
 			if (!this.simpleCalendarActive || !this.enabled) return;
-			console.log('render start');
 			const simpleTimestamp = <number>message.getFlag(SETTINGS.MOD_NAME, this.FLAG_CHAT_TIME);
 			if (simpleTimestamp === undefined) return;
 			const timeElement = html.find('.message-timestamp');
@@ -60,7 +55,6 @@ export default class ChatTime {
 			)}</time>`);
 			timeElement.after(simpleTimeElement);
 			timeElement.hide();
-			console.log(data);
 		});
 	}
 }

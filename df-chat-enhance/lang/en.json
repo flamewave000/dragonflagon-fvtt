@@ -178,7 +178,14 @@
 	"DF_CHAT_PLAYER_COLOR": {
 		"Label": "Player Chat Colour",
 		"SettingTintBackgroundName": "Tint Chat Message Background",
-		"SettingTintBackgroundHint": "Tint the backgrounds of chat messages to the player's colour."
+		"SettingTintBackgroundHint": "Tint the backgrounds of chat messages to the player's colour.",
+		"SettingBorderStyleName": "Chat Message Tinted Borders",
+		"SettingBorderStyleHint": "Which chat messages should have tinted borders.",
+		"BorderStyle": {
+			"all": "All Messages (default)",
+			"mine": "Only My Messages",
+			"none": "No Border Tinting"
+		}
 	},
 	"DF_CHAT_SEND_BUTTON": {
 		"EnabledName": "Display Send Button in Chat",

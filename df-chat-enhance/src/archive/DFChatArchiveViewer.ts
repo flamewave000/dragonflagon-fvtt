@@ -194,7 +194,6 @@ export default class DFChatArchiveViewer extends Application {
 
 				deleteButton.hide();
 				deleteButton.on('click', async () => {
-					console.log(deletionList);
 					if (deletionList.length === this.messages.length) {
 						ui.notifications.warn('DF_CHAT_ARCHIVE.ArchiveViewer_Error_Delete_All'.localize());
 						return;
