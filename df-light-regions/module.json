@@ -1,0 +1,26 @@
+{
+	"name": "df-light-regions",
+	"title": "DF Light Regions",
+	"version": "1.0.0",
+	"description": "Light Regions for Faster Vision",
+	"author": "flamewave000#0001",
+	"minimumCoreVersion": "9",
+	"compatibleCoreVersion": "9",
+	"esmodules": "{{sources}}",
+	"styles": "{{css}}",
+	"languages": [
+		{ "lang": "en", "name": "English", "path": "lang/en.json" }
+	],
+	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-light-regions",
+	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/LICENSE",
+	"manifest":	"https://dragonflagon.cafe/mods/man/df-light-regions",
+	"download":	"https://dragonflagon.cafe/mods/pak/df-light-regions",
+	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-light-regions/README.md",
+	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-light-regions/CHANGELOG.md",
+	"manifestPlusVersion": "1.0.0",
+	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues/new/choose",
+	"authors": [ { "name": "flamewave000", "discord": "flamewave000#0001", "url": "https://github.com/flamewave000" } ],
+	"media": [
+		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" }
+	]
+}
