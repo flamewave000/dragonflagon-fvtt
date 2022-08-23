@@ -11,7 +11,8 @@
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [
-		{ "lang": "en", "name": "English", "path": "lang/en.json" }
+		{ "lang": "en", "name": "English", "path": "lang/en.json" },
+		{ "lang": "ja", "name": "日本語", "path": "lang/ja.json" }
 	],
 	"relationships": {
 		"requires": [

@@ -1,0 +1,42 @@
+{"DF_ACTIVE_LIGHTS":
+   {"name":"DF Active Lights",
+   "Seconds":"秒",
+   "Config":{
+	   "Title":"Active Light Config: ",
+	   "OpenButton":"アクティブライトの設定",
+	   "AddKey":"キーフレームを追加",
+	   "Bounce":"アニメーションを前後させる",
+	   "Randomize":"現在の継続時間に基づいてオフセットをランダム化する",
+	   "Offset":"類似のアニメーションを\"非同期化\"するための時間オフセット(ミリ秒)"
+	   },
+   "Props":{
+	   "Time":"キーフレームの時間位置（ミリ秒）",
+	   "Enable":"プロパティを有効にする",
+	   "Dim":"薄暗い光の半径",
+	   "Bright":"明るい光の半径",
+	   "Angle":"照射角度",
+	   "Rotation":"回転角度",
+	   "TintColor":"照明の色",
+	   "TintAlpha":"色の濃度"
+	   },
+   "Funcs":{
+	   "Linear":"線形",
+	   "LinearLoop":"線形ループ",
+	   "FixedStart":"固定スタート",
+	   "FixedEnd":"固定端",
+	   "QuadIn":"二次方程式",
+	   "QuadOut":"二次出力",
+	   "QuadFull":"二次フル",
+	   "QuadLoop":"二次ループ",
+	   "EllipseIn":"エリプティカルイン",
+	   "EllipseOut":"エリプティカルアウト",
+	   "EllipseFull":"エリプティカルフル",
+	   "EllipseLoop":"エリプティカルループ"
+	   },
+   "Warnings":{
+	   "KeyFrame_Zero":"カスタムキーフレームをタイムゼロに設定することはできません。",
+	   "KeyFrame_Exists":"時間{0}秒のキーフレームが既に存在しています。"
+	   },
+   "animationToggleTitle":"アクティブライトのアニメーション"
+   }
+}

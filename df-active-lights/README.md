@@ -39,6 +39,11 @@ Here are all of the animation functions that are available, along with a graph f
 | Fixed&nbsp;Start | ![df-active-lights-graph-fixed-start](../.assets/df-active-lights/df-active-lights-graph-fixed-start.png) | Quadratic&nbsp;Full | ![df-active-lights-graph-quad-full](../.assets/df-active-lights/df-active-lights-graph-quad-full.png) | Elliptical&nbsp;Full | ![df-active-lights-graph-ellipse-full](../.assets/df-active-lights/df-active-lights-graph-ellipse-full.png) |
 | Fixed&nbsp;End   | ![df-active-lights-graph-fixed-end](../.assets/df-active-lights/df-active-lights-graph-fixed-end.png)     | Quadratic&nbsp;Loop | ![df-active-lights-graph-quad-loop](../.assets/df-active-lights/df-active-lights-graph-quad-loop.png) | Elliptical&nbsp;Loop | ![df-active-lights-graph-ellipse-loop](../.assets/df-active-lights/df-active-lights-graph-ellipse-loop.png) |
 
+### Contributors
+
+- Tonishi & [BrotherSharper](https://github.com/BrotherSharper): Japanese Localization
+
+
 **[![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!**
 
 ## Changelog
