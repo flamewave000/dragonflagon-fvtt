@@ -9,7 +9,8 @@
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [
-		{ "lang": "en", "name": "English", "path": "lang/en.json" }
+		{ "lang": "en", "name": "English", "path": "lang/en.json" },
+		{ "lang": "ja", "name": "日本語", "path": "lang/ja.json" }
 	],
 	"dependencies": [ { "name": "lib-wrapper" } ],
 	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-active-lights",
