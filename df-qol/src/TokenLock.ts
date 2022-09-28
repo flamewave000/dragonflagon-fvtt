@@ -74,7 +74,7 @@ export default class TokenLock {
 
 	private static _renderTokenHUD(app: TokenHUD, html: JQuery<HTMLElement>, _data: any) {
 		const toggle = $(`<div class="control-icon${TokenLock.getLocked((<any>app.object).document) ? ' active' : ''}" data-action="lock">
-<img src="icons/svg/padlock.svg" width="36" height="36" title="${game.i18n.localize('DF_WOL.TokenLock.LockTitle')}">
+<img src="icons/svg/padlock.svg" width="36" height="36" title="${game.i18n.localize('DF_QOL.TokenLock.LockTitle')}">
 </div>`);
 		toggle.on('click', async (e) => {
 			const element = $(e.currentTarget);
