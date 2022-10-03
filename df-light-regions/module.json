@@ -4,8 +4,10 @@
 	"version": "1.0.0",
 	"description": "Light Regions for Faster Vision",
 	"author": "flamewave000#0001",
-	"minimumCoreVersion": "9",
-	"compatibleCoreVersion": "9",
+	"compatibility": {
+		"minimum": "9",
+		"verified": "9"
+	},
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [

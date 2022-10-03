@@ -4,8 +4,10 @@
 	"version": "1.3.2",
 	"description": "Library that provides a way for modules to register controls outside of the scene layer controls",
 	"author": "flamewave000#0001",
-	"minimumCoreVersion": "9.255",
-	"compatibleCoreVersion": "9",
+	"compatibility": {
+		"minimum": "9.255",
+		"verified": "9"
+	},
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [

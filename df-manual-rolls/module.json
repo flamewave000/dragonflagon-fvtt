@@ -4,11 +4,15 @@
 	"version": "2.3.1",
 	"description": "Provides a way for a user to enter a custom value for rolls. This is to facilitate rolling real dice and then providing the values to Foundry to use.",
 	"author": "flamewave000#0001",
-	"minimumCoreVersion": "9",
-	"compatibleCoreVersion": "9",
+	"compatibility": {
+		"minimum": "9",
+		"verified": "9"
+	},
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
-	"dependencies": [ { "name": "lib-wrapper" } ],
+	"relationships": {
+		"requires": [ { "name": "lib-wrapper" } ]
+	},
 	"languages": [
 		{ "lang": "en", "name": "English", "path": "lang/en.json" },
 		{ "lang": "pl", "name": "Polski", "path": "lang/pl.json" }

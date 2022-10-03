@@ -4,9 +4,13 @@
 	"title": "DF Scene Enhancement",
 	"description": "A few enhancements to scene management for players and GMs.",
 	"author": "flamewave000#0001",
-	"minimumCoreVersion": "9",
-	"compatibleCoreVersion": "9",
-	"dependencies": [ { "name": "lib-wrapper" } ],
+	"compatibility": {
+		"minimum": "9",
+		"verified": "9"
+	},
+	"relationships": {
+		"requires": [ { "id": "lib-wrapper" } ]
+	},
 	"esmodules": "{{sources}}",
 	"languages": [
 		{ "lang": "en", "path": "lang/en.json", "name": "English" },

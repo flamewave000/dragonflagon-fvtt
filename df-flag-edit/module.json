@@ -4,8 +4,10 @@
 	"version": "1.1.2",
 	"description": "Foundry Document Flags Editor",
 	"author": "flamewave000#0001",
-	"minimumCoreVersion": "0.8.9",
-	"compatibleCoreVersion": "9",
+	"compatibility": {
+		"minimum": "0.8.9",
+		"verified": "9"
+	},
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [

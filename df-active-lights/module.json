@@ -4,14 +4,18 @@
 	"version": "1.2.1",
 	"description": "Lights can now have complex animations attached to their various properties such as the direction or colour.",
 	"author": "flamewave000#0001",
-	"minimumCoreVersion": "9",
-	"compatibleCoreVersion": "9",
+	"compatibility": {
+		"minimum": "9",
+		"verified": "9"
+	},
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [
 		{ "lang": "en", "name": "English", "path": "lang/en.json" }
 	],
-	"dependencies": [ { "name": "lib-wrapper" } ],
+	"relationships": {
+		"requires": [ { "id": "lib-wrapper" } ]
+	},
 	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-active-lights",
 	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/LICENSE",
 	"manifest":	"https://dragonflagon.cafe/mods/man/df-active-lights",

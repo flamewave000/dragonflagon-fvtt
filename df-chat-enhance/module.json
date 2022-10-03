@@ -4,12 +4,16 @@
 	"description": "Various enhancements to the chat features.",
 	"version": "4.0.0",
 	"author": "flamewave000#0001",
-	"minimumCoreVersion": "9.269",
-	"compatibleCoreVersion": "9",
-	"dependencies": [
-		{ "name": "_chatcommands" },
-		{ "name": "lib-wrapper" }
-	],
+	"compatibility": {
+		"minimum": "9.269",
+		"verified": "9"
+	},
+	"relationships": {
+		"requires": [
+			{ "id": "_chatcommands"},
+			{ "id": "lib-wrapper"}
+		]
+	},
 	"scripts": [ "libs/marked.min.js" ],
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",

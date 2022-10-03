@@ -4,8 +4,10 @@
 	"version": "1.6.8",
 	"description": "Prints a simple message whenever a user logs-in/out of FoundryVTT",
 	"author": "flamewave000#0001",
-	"minimumCoreVersion": "0.8.8",
-	"compatibleCoreVersion": "9",
+	"compatibility": {
+		"minimum": "0.8.8",
+		"verified": "9"
+	},
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [

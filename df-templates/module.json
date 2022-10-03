@@ -4,9 +4,13 @@
 	"title": "DF Template Enhancements",
 	"description": "Enhanced templates for different types of grid targetting.",
 	"author": "flamewave000#0001",
-	"minimumCoreVersion": "9",
-	"compatibleCoreVersion": "9",
-	"dependencies": [ { "name": "lib-wrapper" } ],
+	"compatibility": {
+		"minimum": "9",
+		"verified": "9"
+	},
+	"relationships": {
+		"requires": [ { "id": "lib-wrapper" } ]
+	},
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [
