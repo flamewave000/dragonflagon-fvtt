@@ -77,7 +77,7 @@ export class CurvyWallsToolBar extends Application {
 
 	static readonly PREF_PRESERVE = 'preserve-tool';
 
-	static get defaultOptions(): Application.Options {
+	static get defaultOptions(): ApplicationOptions {
 		return mergeObject(super.defaultOptions, {
 			popOut: false,
 			template: 'modules/df-curvy-walls/templates/curvy-walls-controls.hbs'
@@ -155,7 +155,7 @@ export class CurvyWallsToolBar extends Application {
 		}
 	};
 
-	constructor(options?: Application.Options) {
+	constructor(options?: ApplicationOptions) {
 		super(options);
 		CurvyWallToolManager.instance.setModeListener(() => {
 			if (this._closing) {
@@ -234,7 +234,9 @@ export class CurvyWallsToolBar extends Application {
 				break;
 			case 'right':
 			case 'bottom':
-				html.css('left', (ui as any).moduleControls.getLeftWidth() + 'px');
+				html.remove();
+				$(document.querySelector('body')).append(html);
+				html.css('left', ((ui as any).moduleControls.getLeftWidth() + 5) + 'px');
 				html.css('top', (ui as any).moduleControls.getTopHeight(true) + 'px');
 				break;
 		}

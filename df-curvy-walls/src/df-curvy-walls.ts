@@ -15,7 +15,7 @@ Hooks.once('init', function () {
 		name: 'df-curvy-walls.SettingPreserve_Name',
 		hint: 'df-curvy-walls.SettingPreserve_Hint',
 	});
-	SETTINGS.register(CurvyWallToolManager.PREF_DROP_KEY, {
+	SETTINGS.register<string>(CurvyWallToolManager.PREF_DROP_KEY, {
 		name: 'df-curvy-walls.SettingDropKey_Name',
 		hint: 'df-curvy-walls.SettingDropKey_Hint',
 		config: true,

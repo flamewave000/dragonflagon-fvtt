@@ -1,5 +1,8 @@
 # DF Curvy Walls
 
+## Release 3.4.0 (2022-10-15)
+- **UPDATE:** Migrated to FoundryVTT v10.
+
 ## Release 3.3.1 (2022-04-05)
 - **UPDATED #274:** Japanese Localization: Courtesy of touge and [BrotherSharper](https://github.com/BrotherSharper).
 - **NEW:** Module is now dependant on [Library: DF Module Buttons](https://foundryvtt.com/packages/lib-df-buttons).

@@ -35,7 +35,9 @@ class WallPool {
 	static readonly walls: Wall[] = [];
 	static acquire(wallData: WallData): Wall {
 		const result = this.walls.pop() ?? new Wall(new WallDocument(wallData, { parent: canvas.scene }));
-		result.data = wallData;
+		wallData = deepClone(wallData);
+		delete wallData._id;
+		result.document = <WallDocument><any>mergeObject(result.document, wallData);
 		return result;
 	}
 	static release(wall: Wall) { this.walls.push(wall); }
@@ -120,7 +122,7 @@ export class CurvyWallToolManager {
 
 	async apply() {
 		if (!this.activeTool || this.activeTool.mode != ToolMode.Placed) return;
-		await game.scenes.viewed.createEmbeddedDocuments("Wall", <any>this.walls.map(e => e.data));
+		await game.scenes.viewed.createEmbeddedDocuments("Wall", this._getCurrentWallData());
 		this.clearTool();
 	}
 
@@ -257,13 +259,14 @@ export class CurvyWallToolManager {
 			const points = pointData as PIXI.Point[];
 			for (let c = 0; c < points.length - 1; c++) {
 				const data = duplicate(wallData) as WallData;
+				delete data._id;
 				data.c = [points[c].x, points[c].y, points[c + 1].x, points[c + 1].y];
 				if (c == this.walls.length) {
 					this.walls.push(WallPool.acquire(data));
 					this.wallsLayer.preview.addChild(this.walls[c]);
 					this.walls[c].draw();
 				} else {
-					this.walls[c].data = data;
+					this.walls[c].document = <WallDocument><any>mergeObject(this.walls[c].document, data);
 					this.wallsLayer.preview.addChild(this.walls[c]);
 					this.walls[c].refresh();
 				}
@@ -278,13 +281,14 @@ export class CurvyWallToolManager {
 			}
 			for (let c = 0; c < points.length; c++) {
 				const data = duplicate(wallData) as WallData;
+				delete data._id;
 				data.c = [points[c][0].x, points[c][0].y, points[c][1].x, points[c][1].y];
 				if (c == this.walls.length) {
 					this.walls.push(WallPool.acquire(data));
 					this.wallsLayer.preview.addChild(this.walls[c]);
 					this.walls[c].draw();
 				} else {
-					this.walls[c].data = data;
+					this.walls[c].document = <WallDocument><any>mergeObject(this.walls[c].document, data);
 					this.wallsLayer.preview.addChild(this.walls[c]);
 					this.walls[c].refresh();
 				}
@@ -317,4 +321,30 @@ export class CurvyWallToolManager {
 		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onClickRight', CurvyWallToolManager._onClickRight, 'MIXED');
 		Hooks.on('requestCurvyWallsRedraw', () => this.render());
 	}
+
+	private _getCurrentWallData(): Record<string, unknown>[] {
+		return <Record<string, unknown>[]>this.walls
+			.map((x: any) => ({
+				c: x.document.c,
+				light: x.document.light,
+				move: x.document.move,
+				sight: x.document.sight,
+				sound: x.document.sound,
+				dir: x.document.dir,
+				door: x.document.door,
+				ds: x.document.ds,
+				flags: x.document.flags
+			}));
+	}
 }
+/*
+   c: [x0: number, y0: number, x1: number, y1: number];
+   light: foundry.CONST.WALL_SENSE_TYPES;
+   move: foundry.CONST.WALL_MOVEMENT_TYPES;
+   sight: foundry.CONST.WALL_SENSE_TYPES;
+   sound: foundry.CONST.WALL_SENSE_TYPES;
+   dir: foundry.CONST.WALL_DIRECTIONS;
+   door: foundry.CONST.WALL_DOOR_TYPES;
+   ds: foundry.CONST.WALL_DOOR_STATES;
+   flags: ConfiguredFlags<'Wall'>;
+*/

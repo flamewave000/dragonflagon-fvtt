@@ -2,17 +2,17 @@
 
 ![Forge Installs](https://img.shields.io/badge/dynamic/json?color=red&label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-curvy-walls) ![Latest Version](https://img.shields.io/badge/dynamic/json?label=Latest%20Release&prefix=v&query=package.versions%5B0%5D&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-curvy-walls) [![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Fdf-curvy-walls%2Fshield%2Fendorsements)](https://www.foundryvtt-hub.com/package/df-curvy-walls/)
 
-![Curvy Walls Banner](../.assets/df-curvy-walls-banner.png)
+![Curvy Walls Banner](../.assets/df-curvy-walls/banner.png)
 
 Adds Bezier Curves and Ellipse tools to the walls layer. This gives you the ability to generate wall segments along a curve quickly and easily. You can also increase or decrease the number of wall segments used along the curve.
 
 | Cubic Bezier Curve | Quadratic Bezier Curve |
 | :-: | :-: |
-| [![Cubic Curve](../.assets/df-curvy-walls-cubic.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/18) | [![Quadratic Curve](../.assets/df-curvy-walls-quadratic.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/19) |
+| [![Cubic Curve](../.assets/df-curvy-walls/cubic.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/18) | [![Quadratic Curve](../.assets/df-curvy-walls/quadratic.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/19) |
 
 | Ellipse With Slicing | Rectangle with Segmented Sides |
 | :-: | :-: |
-| [![Ellipse Curve](../.assets/df-curvy-walls-ellipse.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/20) | [![Rectangle](../.assets/df-curvy-walls-rectangle.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/20) |
+| [![Ellipse Curve](../.assets/df-curvy-walls/ellipse.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/20) | [![Rectangle](../.assets/df-curvy-walls/rectangle.gif)](https://github.com/flamewave000/dragonflagon-fvtt/issues/20) |
 
 ##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
 
@@ -40,7 +40,7 @@ You can place a perfect square by holding the <kbd>Alt</kbd> key while placing o
 
 You can have the tool grow the rectangle out from a center point by holding the <kbd>Ctrl</kbd> key while placing the ellipse tool. Useful if you know where the center of a room is and just want to grow the wall tool out from there.
 
-![Special placement of Ellipse and Rectangle tools](../.assets/df-curvy-walls-circ-rect-special-placement.gif)
+![Special placement of Ellipse and Rectangle tools](../.assets/df-curvy-walls/circ-rect-special-placement.gif)
 
 ## Shape Tracing
 
@@ -48,17 +48,17 @@ For the Quadratic Bezier Curve, Ellipse, and Rectangle tools, you can now plot p
 
 To place points, simply <kbd>Left-Click</kbd> on the canvas. You can also drag an existing point by <kbd>Left-Click Drag</kbd>. To remove a point, simply <kbd>Ctrl</kbd>&nbsp;+&nbsp;<kbd>Left-Click</kbd>
 
-![Shape Tracing for Tool Placement](../.assets/df-curvy-walls-tracing.gif)
+![Shape Tracing for Tool Placement](../.assets/df-curvy-walls/tracing.gif)
 
 ## Move or Place Most Recent Configuration
 
 If you have configured a tool to match that perfect circle for a tower but have a couple more identical towers to do, you can simply <kbd>Ctrl</kbd>&nbsp;+&nbsp;<kbd>Left-Click</kbd> the canvas to place the tool using the most recent configuration.
 
-![Clone recent tool config to new location](../.assets/df-curvy-walls-clone-tool.gif)
+![Clone recent tool config to new location](../.assets/df-curvy-walls/clone-tool.gif)
 
 ## Uses the Current Wall Type Selection
 
-![Wall Type Selection](../.assets/df-curvy-walls-types.webp)
+![Wall Type Selection](../.assets/df-curvy-walls/types.webp)
 
 ## Community Libraries Used
 
