@@ -1,13 +1,25 @@
 {
-	"name": "df-settings-clarity",
-	"version": "3.2.1",
+	"id": "df-settings-clarity",
+	"version": "3.3.0",
 	"title": "DF Settings Clarity",
 	"description": "Displays a tag next to each module setting, indicating if it is a World setting (GM Only) or a client setting (Per User).",
 	"author": "flamewave000#0001",
-	"minimumCoreVersion": "0.7.9",
-	"compatibleCoreVersion": "0.8.7",
-	"scripts": [ "src/lib/fuzzysort.js" ],
-	"dependencies": [ { "name": "lib-wrapper" } ],
+	"compatibility": {
+		"minimum": 10,
+		"verified": 10.288
+	},
+	"scripts": [ "libs/fuzzysort.js" ],
+	"relationships": {
+		"requires": [
+			{
+				"id": "lib-wrapper",
+				"type": "module",
+				"compatibility": {
+					"verified": "1.12.10.0"
+				}
+			}
+		]
+	},
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [
@@ -25,7 +37,7 @@
 	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues/new/choose",
 	"authors": [ { "name": "flamewave000", "discord": "flamewave000#0001", "url": "https://github.com/flamewave000" } ],
 	"media": [
-		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-settings-clarity.png" },
+		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-settings-clarity/cover.png" },
 		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" }
 	]
 }

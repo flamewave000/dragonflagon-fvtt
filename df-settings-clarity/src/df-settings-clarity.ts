@@ -1,7 +1,6 @@
 import { UserData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs';
-import { } from '../../common/global';
 import FuzzySearch from "./FuzzySearch";
-
+import { } from '../../common/Settings';
 
 export { };
 
@@ -22,16 +21,16 @@ class DFSettingsClarity {
 		}
 	}
 
-	static formatName(name: string, data: ClientSettings.PartialSetting<any> | ClientSettings.PartialMenuSetting): string {
+	static formatName(name: string, data: ClientSettings.PartialSettingConfig<any> | ClientSettings.PartialSettingSubmenuConfig): string {
 		if (name.startsWith('👤') || name.startsWith('🌎'))
 			return name;
 		let scope;
-		if ((data as ClientSettings.PartialSetting<any>).scope)
-			scope = DFSettingsClarity.types.includes((data as ClientSettings.PartialSetting<any>).scope)
-				? (data as ClientSettings.PartialSetting<any>).scope
+		if ((data as ClientSettings.PartialSettingConfig<any>).scope)
+			scope = DFSettingsClarity.types.includes((data as ClientSettings.PartialSettingConfig<any>).scope)
+				? (data as ClientSettings.PartialSettingConfig<any>).scope
 				: "client";
-		else if ((data as ClientSettings.PartialMenuSetting).restricted)
-			scope = (data as ClientSettings.PartialMenuSetting) ? 'world' : 'client';
+		else if ((data as ClientSettings.PartialSettingSubmenuConfig).restricted)
+			scope = (data as ClientSettings.PartialSettingSubmenuConfig) ? 'world' : 'client';
 		else {
 			console.warn('Unknown restriction/scope on registered setting for ' + name + '". Defaulting to "client"');
 			scope = 'client';
@@ -41,12 +40,12 @@ class DFSettingsClarity {
 		return name;
 	}
 
-	static settingsRegister(this: ClientSettings, wrapper: AnyFunction, module: string, key: string, data: ClientSettings.PartialSetting<any>) {
+	static settingsRegister(this: ClientSettings, wrapper: AnyFunction, module: string, key: string, data: ClientSettings.PartialSettingConfig<any>) {
 		data.name = DFSettingsClarity.formatName(data.name ?? '', data);
 		wrapper(module, key, data);
 	}
 
-	static settingsRegisterMenu(this: ClientSettings, wrapper: AnyFunction, module: string, key: string, data: ClientSettings.PartialMenuSetting) {
+	static settingsRegisterMenu(this: ClientSettings, wrapper: AnyFunction, module: string, key: string, data: ClientSettings.PartialSettingSubmenuConfig) {
 		data.name = DFSettingsClarity.formatName(data.name ?? '', data);
 		wrapper(module, key, data);
 	}

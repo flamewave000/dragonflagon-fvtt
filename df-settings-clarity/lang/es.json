@@ -4,7 +4,5 @@
 	
 	"DF_SETTINGS_CLARITY.errorLibWrapperMissing": "'DF Settings Clarity' requiere el módulo 'libWrapper'. Por favor, instale y active 'libWrapper'",
 	"DF_SETTINGS_CLARITY.Scope_world": "Solo GM",
-	"DF_SETTINGS_CLARITY.Scope_client": "Por usuario",
-	"DF_SETTINGS_CLARITY.SearchPlaceholder": "Empiece a escribir para buscar una configuración",
-	"DF_SETTINGS_CLARITY.SearchClear": "Limpiar campo de búsqueda"
+	"DF_SETTINGS_CLARITY.Scope_client": "Por usuario"
 }

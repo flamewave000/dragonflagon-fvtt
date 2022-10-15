@@ -1,5 +1,8 @@
 # DF Settings Clarity
 
+## Release 3.3.0 (2022-10-15)
+- **UPDATE:** Migrated to v10.
+
 ## Release 3.2.0 (2021-06-18)
 - Fixed height issues in 0.8.x where the save button was being pushed off the screen.
 - Corrected the styling to match TidyUI when it is enabled.
