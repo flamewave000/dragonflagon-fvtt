@@ -1,12 +1,24 @@
 {
-	"name": "df-scene-enhance",
-	"version": "3.5.1",
+	"id": "df-scene-enhance",
+	"version": "3.6.0",
 	"title": "DF Scene Enhancement",
 	"description": "A few enhancements to scene management for players and GMs.",
 	"author": "flamewave000#0001",
-	"minimumCoreVersion": "9",
-	"compatibleCoreVersion": "9",
-	"dependencies": [ { "name": "lib-wrapper" } ],
+	"compatibility": {
+		"minimum": 10,
+		"verified": 10.288
+	},
+	"relationships": {
+		"requires": [
+			{
+				"id": "lib-wrapper",
+				"type": "module",
+				"compatibility": {
+					"verified": "1.12.10.0"
+				}
+			}
+		]
+	},
 	"esmodules": "{{sources}}",
 	"languages": [
 		{ "lang": "en", "path": "lang/en.json", "name": "English" },

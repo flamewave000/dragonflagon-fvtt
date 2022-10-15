@@ -1,5 +1,9 @@
 # DF Scene Enhancement Changes
 
+## Release 3.6.0 (2022-10-15)
+- **UPDATED:** Migrated to FoundryVTT v10.
+- **UPDATED #363:** Spanish Localization: Courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo).
+
 ## Release 3.5.1 (2022-04-04)
 - **NEW:** Hovering a Scene Nav Button will display the "Real" scene name in a tooltip if you are a GM.
 - **NEW #176:** New option to display the real scene name on the nav buttons for GMs (will display the Nav Name in the tooltip when hovered).

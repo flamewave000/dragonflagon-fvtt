@@ -1,6 +1,9 @@
 # DF Chat Enhancements
 
-# Release 4.0.0 (2022-06-01)
+## Release 4.0.1 (2022-06-22)
+- **FIX:** Fixed a conflict with Z's Requestor module.
+
+## Release 4.0.0 (2022-06-01)
 - **NEW #371:** **More Efficient Chat History!** There is now a customizable Max History in the Chat Log. As messages are added to the log, old messages will automatically be removed from the visible Chat Log. If you scroll back up, the old messages will be re-added as needed, but then scrolling back down will automatically remove them again. This will hopefully help improve FoundryVTT's overall performance during a long session with hundreds of chat messages.
 - **NEW #295:** Send message button has been added to the chat box. This can be enabled in the module settings.
 - **NEW #316:** Registered editable keybindings for switching roll modes.
@@ -16,7 +19,7 @@
 - **FIX #299:** Fixed chat borders to colour every message not just your own as is the default Foundry behaviour.
 - **UPDATE #356:** Whispers in chat archives will now only be visible to GMs, the sender, and the receivers. All others will not see the whispers when viewing the archive.
 
-# Release 3.6.1 (2022-05-30)
+## Release 3.6.1 (2022-05-30)
 - **FIX #231:** Conflict with the combat round messages posted by Monk's Little Details.
 - **FIX #370:** Chat Archive will now handle special characters in archive names.
 - **FIX #362:** Chat Archives containing unicode characters can now be properly downloaded as HTML.
@@ -24,7 +27,7 @@
 - **FIX #308:** Modules like Dice So Nice! can now safely call ChatLog.scrollBottom and the scroll manager will handle it correctly.
 - **FIX #317:** Chat Merging conflict with Midi QOL's roll merging feature.
 
-# Release 3.6.0 (2022-01-02)
+## Release 3.6.0 (2022-01-02)
 - **UPDATE:** Migrated to FoundryVTT V9.
 - **UPDATE #274:** Japanese Localization: Courtesy of tonishi and [BrotherSharper](https://github.com/BrotherSharper).
 - **FIX #269:** Public Roll button now displays correctly.

@@ -58,23 +58,16 @@ export default class DFSceneJournal {
 	}
 
 	/**
-	 * This is copied directly from the `TextEditor._onClickEntityLink` static method. It is only
-	 * modified for `Target 2` to display a dialog for navigation.
+	 * This is copied directly from the `TextEditor._onClickContentLink` static method. It is only
+	 * modified to display a dialog for scene links.
 	 */
 	static async _onClickContentLink(event: JQuery.ClickEvent) {
-		const a = event.currentTarget;
-		let document = null;
-		const id = a.dataset.id;
-		if (!a.dataset.pack) {
-			const collection = game.collections.get(a.dataset.entity);
-			document = collection.get(id);
-			if ((document.documentName === "Scene")) {
-				event.preventDefault();
-				return DFSceneJournal.displayDialog(document);
-			}
-		}
+		event.preventDefault();
+		const doc = await fromUuid(event.currentTarget.dataset.uuid);
+		if (doc instanceof Scene)
+			return DFSceneJournal.displayDialog(doc);
 		// @ts-ignore
-		return TextEditor._onClickContentLink(event);
+		return doc?._onClickDocumentLink(event);
 	}
 
 	static patchTextEditor(newValue?: boolean) {
@@ -106,7 +99,7 @@ export default class DFSceneJournal {
 		SETTINGS.register(DFSceneJournal.ON_CLICK_JOURNAL_ONLY_ONE, {
 			name: "DF-SCENE-ENHANCE.Nav.SettingOnClickJournalOnlyOne",
 			hint: "DF-SCENE-ENHANCE.Nav.SettingOnClickJournalOnlyOneHint",
-			scope: "scene",
+			scope: "world",
 			config: true,
 			type: Boolean,
 			default: false

@@ -1,11 +1,6 @@
 import SETTINGS from "../../common/Settings";
+import DFSceneThumb from "./df-scene-thumb";
 
-interface ContextOption {
-	name: string;
-	icon: string;
-	condition?: (li: JQuery<HTMLLIElement>) => boolean;
-	callback: ((li: JQuery<HTMLLIElement>) => Promise<unknown>) | ((li: JQuery<HTMLLIElement>) => void)
-}
 
 export default class DFSceneNav {
 	private static readonly ON_CLICK = 'nav-on-click';
@@ -40,75 +35,46 @@ export default class DFSceneNav {
 
 	private static _getEntryContextOptions(wrapper: AnyFunction, ...args: any) {
 		const options: ContextOption[] = wrapper(...args);
-		if (!game.user.isGM) {
-			options.push({
-				name: "SCENES.View",
-				icon: '<i class="fas fa-eye"></i>',
-				condition: li => !canvas.ready || (li.data("entityId") !== (canvas as Canvas).scene.id),
-				callback: li => {
-					const scene = game.scenes.get(li.data("entityId"));
-					scene.view();
-				}
-			});
-		}
+		DFSceneThumb._getEntryContextOptions(options);
+
+		const blackList = ['SCENES.Activate', 'SCENES.Configure', 'SCENES.ToggleNav', 'SCENES.GenerateThumb'];
+		if (!game.user.isGM)
+			return options.filter(x => !blackList.includes(x.name));
 		return options;
 	}
 
 	static patchSceneDirectory() {
-		const defaultOptions = duplicate(SceneDirectory.defaultOptions);
-		Object.defineProperty(SceneDirectory, 'defaultOptions', {
-			get: function () {
-				const options = mergeObject(defaultOptions, {
-					template: `modules/${SETTINGS.MOD_NAME}/templates/scene-directory.hbs`,
-				});
-				return options;
-			}
-		});
+		libWrapper.register(SETTINGS.MOD_NAME, 'SceneDirectory.prototype._render', async function (this: SceneDirectory, wrapper: (force: any, options: any) => any, force: any, options: any) {
+			if (!game.user.isGM && SETTINGS.get(DFSceneNav.ON_CLICK_PLAYER))
+				return SidebarDirectory.prototype._render.apply(this, <any>[force, options]);
+			return wrapper(force, options);
+		}, 'MIXED');
 	}
 
 	static patchSidebar() {
-		libWrapper.register(SETTINGS.MOD_NAME, 'Sidebar.prototype._render', async function (this: Sidebar, wrapper: AnyFunction, force: boolean, options = {}) {
-			if (!SETTINGS.get(DFSceneNav.ON_CLICK_PLAYER))
-				return wrapper(force, options);
-			/************** COPIED FROM Sidebar.prototype._render *************/
-			// Render the Sidebar container only once
-			// @ts-expect-error
-			if (!this.rendered) await Application.prototype._render.apply(this, [force, options]);
-
-			// Define the sidebar tab names to render
-			const tabs = ["chat", "combat", "actors", "items", "journal", "tables", "cards", "playlists", "compendium", "settings"];
-			if (game.user.isGM || SETTINGS.get(DFSceneNav.ON_CLICK_PLAYER)) tabs.push("scenes");
-
-			// Render sidebar Applications
-			for (const [name, app] of Object.entries(this.tabs)) {
-				// @ts-expect-error
-				app._render(true).catch(err => {
-					// @ts-expect-error
-					Hooks.onError("Sidebar#_render", err, {
-						msg: `Failed to render Sidebar tab ${name}`,
-						log: "error",
-						name
-					});
-				});
-			}
-			/******************************************************************/
-		}, 'MIXED');
-		libWrapper.register(SETTINGS.MOD_NAME, 'SceneDirectory.prototype._render', async function (this: SceneDirectory, wrapper: AnyFunction, ...args: any) {
-			if (!SETTINGS.get(DFSceneNav.ON_CLICK_PLAYER)) return wrapper(...args);
-			// @ts-expect-error
-			return SidebarDirectory.prototype._render.apply(this, <any>[...args]);
-		}, 'MIXED');
-		libWrapper.register(SETTINGS.MOD_NAME, 'Sidebar.prototype.getData', (wrapper: (options: any) => Sidebar.Data, options: any) => {
-			return mergeObject(wrapper(options), { scenesAllowed: game.user.isGM || SETTINGS.get(DFSceneNav.ON_CLICK_PLAYER) });
+		libWrapper.register(SETTINGS.MOD_NAME, 'Sidebar.prototype.getData', (wrapper: (options: any) => any, options: any) => {
+			const data = wrapper(options);
+			if (game.user.isGM || !SETTINGS.get(DFSceneNav.ON_CLICK_PLAYER))
+				return data;
+			return {
+				tabs: {
+					chat: data.tabs.chat,
+					combat: data.tabs.combat,
+					scenes: {
+						tooltip: Scene.metadata.labelPlural,
+						icon: CONFIG.Scene.sidebarIcon
+					},
+					actors: data.tabs.actors,
+					items: data.tabs.items,
+					journal: data.tabs.journal,
+					tables: data.tabs.tables,
+					cards: data.tabs.cards,
+					playlists: data.tabs.playlists,
+					compendium: data.tabs.compendium,
+					settings: data.tabs.settings
+				}
+			};
 		}, 'WRAPPER');
-		const sidebarDefaultOptions = Object.getOwnPropertyDescriptor(Sidebar, 'defaultOptions');
-		Object.defineProperty(Sidebar, 'defaultOptions', {
-			get: function () {
-				return mergeObject(sidebarDefaultOptions.get(), {
-					template: `modules/${SETTINGS.MOD_NAME}/templates/sidebar.hbs`
-				});
-			}
-		});
 	}
 	static init() {
 		SETTINGS.register(DFSceneNav.ON_CLICK, {
@@ -144,7 +110,7 @@ export default class DFSceneNav {
 		});
 
 		Handlebars.registerHelper('dfCheck', function (scene) {
-			return ((game.user && game.user.isGM) || !scene.data.navName) ? scene.data.name : scene.data.navName;
+			return ((game.user && game.user.isGM) || !scene.navName) ? scene.name : scene.navName;
 		});
 
 		DFSceneNav.patchSceneDirectory();
@@ -180,23 +146,23 @@ export default class DFSceneNav {
 	private static SceneNavigation_activateListeners(this: SceneNavigation, wrapper: (html: JQuery) => void, html: JQuery) {
 		wrapper(html);
 		html.find('li.scene.nav-item').each((_, element) => {
-			const scene = game.scenes.get(element.getAttribute('data-scene-id'));
+			const scene = <Scene>game.scenes.get(element.getAttribute('data-scene-id'));
 
 			// Players will get a tooltip if the nav name is longer than 32 characters
 			if (!game.user.isGM) {
-				const title = scene.data.navName ?? scene.data.name;
+				const title = scene.navName ?? scene.name;
 				if (title.length > 32)
-					element.title = scene.data.navName ?? scene.data.name;
+					element.title = scene.navName ?? scene.name;
 				return;
 			}
 
 			// Don't add a title if there is no Nav Name
-			if (!scene.data.navName || scene.data.navName.trim().length === 0) return;
+			if (!scene.navName || scene.navName.trim().length === 0) return;
 			// If we are displaying the scene's Real Name
 			if (SETTINGS.get(DFSceneNav.SCENE_NAV_REAL_NAME))
-				element.title = 'DF-SCENE-ENHANCE.Nav.Tooltip_PC'.localize() + scene.data.navName;
+				element.title = 'DF-SCENE-ENHANCE.Nav.Tooltip_PC'.localize() + scene.navName;
 			else
-				element.title = scene.data.name;
+				element.title = scene.name;
 		});
 	}
 
@@ -225,7 +191,7 @@ export default class DFSceneNav {
 				const scene = game.scenes.get(li.attr('data-scene-id'));
 				const gridConfig = new GridConfig(scene, <any>{
 					// eslint-disable-next-line @typescript-eslint/no-empty-function
-					maximize: () => {}
+					maximize: () => { }
 				});
 				return gridConfig.render(true);
 			}

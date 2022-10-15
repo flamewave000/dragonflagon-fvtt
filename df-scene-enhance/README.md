@@ -12,7 +12,7 @@ This feature changes the behaviour of Scenes in the Scenes Tab. Now if you click
 
 |GM View of Scenes Tab|Player View of Scenes Tab|
 |:-:|:-:|
-|![GM View of Scenes Tab](../.assets/df-scene-enhance-gm.png)|![Player View of Scenes Tab](../.assets/df-scene-enhance-pc.png)|
+|![GM View of Scenes Tab](../.assets/df-scene-enhance/gm.png)|![Player View of Scenes Tab](../.assets/df-scene-enhance/pc.png)|
 
 ## Scene Navigation from Scene Links in Journal Entries
 
@@ -20,15 +20,15 @@ This feature allows the user to navigate to a scene that is referenced inside of
 
 |||
 |:-:|:-:|
-|![Journal Entry](../.assets/df-scene-enhance-journal.png)|![Configure, Journal, and Navigation Prompt](../.assets/df-scene-enhance-journal-confirm-cjn.png)|
-|![Configure and Navigation Prompt](../.assets/df-scene-enhance-journal-confirm-cn.png)|![Navigation Prompt](../.assets/df-scene-enhance-journal-confirm-n.png)|
-|![Journal Prompt](../.assets/df-scene-enhance-journal-confirm-j.png)| |
+|![Journal Entry](../.assets/df-scene-enhance/journal.png)|![Configure, Journal, and Navigation Prompt](../.assets/df-scene-enhance/journal-confirm-cjn.png)|
+|![Configure and Navigation Prompt](../.assets/df-scene-enhance/journal-confirm-cn.png)|![Navigation Prompt](../.assets/df-scene-enhance/journal-confirm-n.png)|
+|![Journal Prompt](../.assets/df-scene-enhance/journal-confirm-j.png)| |
 
 ## Advanced Scene Dimensions
 
 *Feature suggestion by @Damocles#7837*
 
-![](../.assets/df-scene-enhance-ratio.png)
+![](../.assets/df-scene-enhance/ratio.png)
 
 Provides various features for more advanced Scene Dimension control.
 

@@ -39,9 +39,7 @@ export default class ChatTime {
 
 		libWrapper.register(SETTINGS.MOD_NAME, 'ChatMessage.implementation.create',
 			(wrapped: (...args: any) => unknown, chatData: Partial<ChatMessageData>, createOptions: any) => {
-				chatData.flags = chatData.flags ?? {};
-				chatData.flags[SETTINGS.MOD_NAME] = {};
-				(chatData.flags[SETTINGS.MOD_NAME] as any)[this.FLAG_CHAT_TIME] = game.time.worldTime;
+				(chatData as any)[`${SETTINGS.MOD_NAME}.${this.FLAG_CHAT_TIME}`] = game.time.worldTime;
 				return wrapped(chatData, createOptions);
 			}, 'WRAPPER');
 
