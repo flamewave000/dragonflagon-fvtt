@@ -1,5 +1,9 @@
 # DragonFlagon Module Buttons Library
 
+## Release 1.4.0 (2022-10-15)
+- **UPDATE:** Manifest for FoundryVTT v10.
+- **FIX:** Alignment issue when buttons are on the bottom of the screen.
+
 ## Release 1.3.2 (2022-05-28)
 - **FIX #361:** Buttons container was erroneously absorbing mouse events. It will now ignore all events.
 - **UPDATE:** The Magnet button will now only appear when you mouse over its occupied region of the screen.

@@ -335,7 +335,8 @@ export default class ControlManager extends Application implements IControlManag
 				break;
 			}
 			case 'bottom': {
-				self.element[0].style.left = document.getElementById("hotbar-directory-controls").offsetLeft + 'px';
+				self.element[0].style.left = (document.getElementById("ui-middle").offsetLeft +
+					document.getElementById("hotbar-directory-controls").offsetLeft) + 'px';
 				self.element[0].style.bottom = (document.getElementById('hotbar').offsetHeight + 10) + 'px';
 				break;
 			}

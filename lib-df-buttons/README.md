@@ -4,7 +4,7 @@
 
 Library for Foundry VTT module developers to use. It allows modules to register control buttons that appear on the right side of the screen.
 
-![image-20211107113847436](../.assets/lib-df-buttons.png)
+![image-20211107113847436](../.assets/lib-df-buttons/cover.png)
 
 ##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
 

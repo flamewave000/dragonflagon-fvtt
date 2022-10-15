@@ -32,7 +32,7 @@ var PACKAGE = JSON.parse(fs.readFileSync('module.json'));
 var DEV_DIR = fs.existsSync(DEV_ENV) ? JSON.parse(fs.readFileSync(DEV_ENV).toString())?.foundry?.data?.trim() + '/Data/modules/' : '';
 
 function reloadPackage(cb) { PACKAGE = JSON.parse(fs.readFileSync('module.json')); cb(); }
-function DEV_DIST() { return DEV_DIR + PACKAGE.name + '/'; }
+function DEV_DIST() { return DEV_DIR + PACKAGE.id + '/'; }
 
 String.prototype.replaceAll = function (pattern, replace) { return this.split(pattern).join(replace); }
 function pdel(patterns, options) { return desc(`deleting ${patterns}`, () => { return del(patterns, options); }); }
@@ -66,15 +66,15 @@ function desc(name, lambda) {
  * @param {String} output The output directory for the build
  */
 function buildSource(output = null) {
-	return desc(`build Source: ./src/${PACKAGE.name}.ts`, () => {
-		var entry = `./src/${PACKAGE.name}.ts`;
-		if (fs.existsSync(`./src/${PACKAGE.name}-shim.ts`)) {
+	return desc(`build Source: ./src/${PACKAGE.id}.ts`, () => {
+		var entry = `./src/${PACKAGE.id}.ts`;
+		if (fs.existsSync(`./src/${PACKAGE.id}-shim.ts`)) {
 			entry = {};
-			entry[PACKAGE.name] = `./src/${PACKAGE.name}.ts`;
-			entry[PACKAGE.name + '-shim'] = `./src/${PACKAGE.name}-shim.ts`;
+			entry[PACKAGE.id] = `./src/${PACKAGE.id}.ts`;
+			entry[PACKAGE.id + '-shim'] = `./src/${PACKAGE.id}-shim.ts`;
 		}
 		return webpack({
-			entry, mode: 'none',
+			entry, mode: 'development',
 			devtool: process.argv.includes('--sm') ? 'source-map' : undefined,
 			module: {
 				rules: [{
@@ -161,7 +161,7 @@ exports.step_buildManifest = buildManifest();
 function outputLanguages(output = null) { return desc('output Languages', () => gulp.src(LANG + GLOB).pipe(jsonminify()).pipe(gulp.dest((output || DIST) + LANG))); }
 function outputSoundsDir(output = null) { return desc('output Sounds', () => gulp.src(SOUNDS + GLOB).pipe(gulp.dest((output || DIST) + SOUNDS))); }
 function outputTemplates(output = null) { return desc('output Templates', () => gulp.src(TEMPLATES + GLOB).pipe(replace(/\t/g, '')).pipe(replace(/\>\n\</g, '><')).pipe(gulp.dest((output || DIST) + TEMPLATES))); }
-function outputStylesCSS(output = null) { return desc('output Styles CSS', () => gulp.src(CSS + GLOB).pipe(sass({ outputStyle: process.argv.includes('--min') ? 'compressed' : undefined })).pipe(concat(PACKAGE.name + '.css')).pipe(gulp.dest((output || DIST) + CSS))); }
+function outputStylesCSS(output = null) { return desc('output Styles CSS', () => gulp.src(CSS + GLOB).pipe(sass({ outputStyle: process.argv.includes('--min') ? 'compressed' : undefined })).pipe(concat(PACKAGE.id + '.css')).pipe(gulp.dest((output || DIST) + CSS))); }
 function outputMetaFiles(output = null) { return desc('output Meta Files', () => gulp.src([LICENSE, 'README.md', 'CHANGELOG.md']).pipe(gulp.dest((output || DIST)))); }
 function outputPackFiles(output = null) { return desc('output Meta Files', () => gulp.src(PACKS + GLOB).pipe(gulp.dest((output || DIST) + PACKS))); }
 function outputLibraries(output = null) { return desc("output Libs Files", () => gulp.src(LIBS + GLOB).pipe(gulp.dest((output || DIST) + LIBS))); }
@@ -173,16 +173,16 @@ function compressDistribution() {
 	return gulp.series(
 		// Copy files to folder with module's name
 		() => gulp.src(DIST + GLOB)
-			.pipe(gulp.dest(DIST + `${PACKAGE.name}/${PACKAGE.name}`))
+			.pipe(gulp.dest(DIST + `${PACKAGE.id}/${PACKAGE.id}`))
 		// Compress the new folder into a ZIP and save it to the `bundle` folder
-		, () => gulp.src(DIST + PACKAGE.name + '/' + GLOB)
-			.pipe(zip(PACKAGE.name + '.zip'))
+		, () => gulp.src(DIST + PACKAGE.id + '/' + GLOB)
+			.pipe(zip(PACKAGE.id + '.zip'))
 			.pipe(gulp.dest(BUNDLE))
 		// Copy the module.json to the bundle directory
 		, () => gulp.src(DIST + '/module.json')
 			.pipe(gulp.dest(BUNDLE))
 		// Cleanup by deleting the intermediate module named folder
-		, pdel(DIST + PACKAGE.name)
+		, pdel(DIST + PACKAGE.id)
 	);
 }
 exports.step_compress = compressDistribution();
@@ -245,7 +245,7 @@ exports.zip = gulp.series(
 		, outputPackFiles()
 		, outputLibraries()
 	)
-	, generateTypings(`src/${PACKAGE.name}.ts`, PACKAGE.name, BUNDLE)
+	, generateTypings(`src/${PACKAGE.id}.ts`, PACKAGE.id, BUNDLE)
 	, buildManifest()
 	, pwait(10) // <- This is here because GULP is not respecting the series request and executing compressDistribution before buildManifest has finished
 	, compressDistribution()
