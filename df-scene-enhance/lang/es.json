@@ -1,32 +1,49 @@
 {
-	"I18N.LANGUAGE": "Español",
-	"I18N.MAINTAINERS": "@Viriato139ac#0342",
-	"DF-SCENE-ENHANCE.errorLibWrapperMissing": "'DF Scene Enhancements' requiere el módulo 'libWrapper'. Por favor, instale y active 'libWrapper'",
-	"DF-SCENE-ENHANCE.Thumbnail.Label": "Sobrescribir vista previa",
-	"DF-SCENE-ENHANCE.Thumbnail.Hint": "Ruta de la miniatura",
-	"DF-SCENE-ENHANCE.Thumbnail.Button": "Explorar archivos",
-
-	"DF-SCENE-ENHANCE.Nav.NavigateMenuItem": "Navegar",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClick": "Navegar al hacer clic en una escena",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickHint": "Cuando se hace clic sobre una escena en la barra lateral, se navegará a la misma (activado siempre para los jugadores). SE ACTUALIZA AL CAMBIAR DE ESCENA",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickPC": "Habilitar para los jugadores la pestaña de escenas",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickPCHint": "Permite que los jugadores tengan una pestaña de escenas y navegar por ellas (requiere recargar el programa)",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickJournal": "Navegar cuando se hace clic en una referencia a una escena en el Diario",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickJournalHint": "Si una entrada de diario tiene un enlace a una escena, al hacer clic se navega a la escena",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickJournalOnlyOne": "No mostrar las opciones si solo hay una disponible",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickJournalOnlyOneHint": "Si solo hay una opción disponible, no mostrar el diálogo y ejecutarla directamente",
-
-	"DF-SCENE-ENHANCE.Dialog.JournalTitle": "Navegación a la escena: ",
-	"DF-SCENE-ENHANCE.Dialog.JournalMessage": "¿Como quiere abrir esta escena?",
-	"DF-SCENE-ENHANCE.Dialog.JournalNavigate": "Navegar",
-	"DF-SCENE-ENHANCE.Dialog.JournalJournal": "Diario",
-	"DF-SCENE-ENHANCE.Dialog.JournalConfig": "Ajustes",
-
-	"DF-SCENE-ENHANCE.Ratio.Denominator": "Denominador",
-	"DF-SCENE-ENHANCE.Ratio.Numerator": "Numerador",
-	"DF-SCENE-ENHANCE.Ratio.LockRatio": "Bloquear aspecto",
-	"DF-SCENE-ENHANCE.Ratio.SizeRatio": "Proporción de tamaño",
-	"DF-SCENE-ENHANCE.Ratio.ApplyRatio": "Aplicar proporción personalizada al ancho/alto",
-	"DF-SCENE-ENHANCE.Ratio.Scale": "Escala",
-	"DF-SCENE-ENHANCE.Ratio.ApplyScale": "Multiplicar ancho/alto por la escala"
+	"DF-SCENE-ENHANCE": {
+		"I18N.LANGUAGE": {
+			"LANGUAGE": "Español",
+			"MAINTAINERS": "@Viriato139ac#0342"
+		},		
+		"errorLibWrapperMissing": "'DF Scene Enhancements' requiere el módulo 'libWrapper'. Por favor, instale y active 'libWrapper'",
+		"Thumbnail": {
+			"Label": "Sobrescribir vista previa",
+			"Hint": "Ruta de la miniatura",
+			"Button": "Explorar archivos"
+		},
+		"Nav": {
+			"NavigateMenuItem": "Navegar",
+			"SettingOnClick": "Navegar al hacer clic en una escena",
+			"SettingOnClickHint": "Cuando se hace clic sobre una escena en la barra lateral, se navegará a la misma (activado siempre para los jugadores). SE ACTUALIZA AL CAMBIAR DE ESCENA",
+			"SettingOnClickPC": "Habilitar para los jugadores la pestaña de escenas",
+			"SettingOnClickPCHint": "Permite que los jugadores tengan una pestaña de escenas y navegar por ellas (requiere recargar el programa)",
+			"SettingOnClickJournal": "Navegar cuando se hace clic en una referencia a una escena en el Diario",
+			"SettingOnClickJournalHint": "Si una entrada de diario tiene un enlace a una escena, al hacer clic se navega a la escena",
+			"SettingOnClickJournalOnlyOne": "No mostrar las opciones si solo hay una disponible",
+			"SettingOnClickJournalOnlyOneHint": "Si solo hay una opción disponible, no mostrar el diálogo y ejecutarla directamente",
+			"SettingRealName": "Mostrar para el GM los nombres completos en la barra de navegación",
+			"SettingRealNameHint": "Sobrescribe la barra de navegación de la escena para mostrar el nombre completo de la escena para usuarios GM",
+			"Tooltip_PC": "Nombre de navegación: ",
+			"ContextOptions": {
+				"SetView": "Mostrar posición de la vista",
+				"ConfigGrid": "Configurar rejilla",
+				"SetViewConfirmation": "Vista inicial de escena actualizada"
+			}
+		},
+		"Dialog": {
+			"JournalTitle": "Navegación a la escena: ",
+			"JournalMessage": "¿Como quiere abrir esta escena?",
+			"JournalNavigate": "Navegar",
+			"JournalJournal": "Diario",
+			"JournalConfig": "Ajustes"
+		},
+		"Ratio": {
+			"Denominator": "Denominador",
+			"Numerator": "Numerador",
+			"LockRatio": "Bloquear aspecto",
+			"SizeRatio": "Proporción de tamaño",
+			"ApplyRatio": "Aplicar proporción personalizada al ancho/alto",
+			"Scale": "Escala",
+			"ApplyScale": "Multiplicar ancho/alto por la escala"			
+		}
+	}
 }
