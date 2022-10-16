@@ -1,0 +1,43 @@
+{
+	"DF_ACTIVE_LIGHTS": {
+		"name": "DF Active Lights",
+		"Seconds": "Seconds",
+		"Config": {
+			"Title": "Configuration de la Lumière Active: ",
+			"OpenButton": "Configuration de la Lumière Active",
+			"AddKey": "Ajouter une Image Clé",
+			"Bounce": "Faire rebondir l'animation d'avant en arrière",
+			"Randomize": "Décalage aléatoire en fonction de la durée actuelle",
+			"Offset": "Décalage Temporel en millisecondes pour la \"désync\" d'animations similaires"
+		},
+		"Props": {
+			"Time": "Position Temporelle de l'Image Clé (Millisecondes)",
+			"Enable": "Activer Propriété",
+			"Dim": "Radius de Lumière Tamisée ",
+			"Bright": "Radius de Lumière Vive",
+			"Angle": "Angle d'Émission",
+			"Rotation": "Angle de Rotation de la Lumière",
+			"TintColor": "Couleur de la Lumière",
+			"TintAlpha": "Intensité de la Couleur"
+		},
+		"Funcs": {
+			"Linear": "Linear",
+			"LinearLoop": "Linear Loop",
+			"FixedStart": "Fixed Start",
+			"FixedEnd": "Fixed End",
+			"QuadIn": "Quadratic In",
+			"QuadOut": "Quadratic Out",
+			"QuadFull": "Quadratic Full",
+			"QuadLoop": "Quadratic Loop",
+			"EllipseIn": "Elliptic In",
+			"EllipseOut": "Elliptic Out",
+			"EllipseFull": "Elliptic Full",
+			"EllipseLoop": "Elliptic Loop"
+		},
+		"Warnings": {
+			"KeyFrame_Zero": "Vous ne pouvez pas définir une image clé personnalisée sur le temps ZERO!",
+			"KeyFrame_Exists": "Une image clé existe déjà pour le temps {0} secondes"
+		},
+		"animationToggleTitle": "Animer les Lumières Actives"
+	}
+}

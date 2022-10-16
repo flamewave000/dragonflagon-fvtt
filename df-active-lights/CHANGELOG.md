@@ -4,6 +4,7 @@
 - **UPDATE:** Migrated to v10.
 - **FIX:** Colour transitions work again.
 - **NEW #388:** Japanese Localization: Courtesy of tonishi and [BrotherSharper](https://github.com/BrotherSharper).
+- **NEW:** Added French Localization.
 
 ## Release 1.2.1 (2022-04-05)
 - **NEW:** Added toggle button to lighting layer controls for pausing active light animations.
