@@ -4,7 +4,7 @@ import SETTINGS from "../../common/Settings";
 SETTINGS.init('df-active-lights');
 
 Hooks.once('init', function () {
-	LightAnimator.init();
+	// LightAnimator.init();
 
 	SETTINGS.register('enabled', {
 		config: false,
@@ -26,13 +26,11 @@ Hooks.once('init', function () {
 				canvas.lighting.objects.children.forEach(x => {
 					(x as AmbientLight).updateSource({ defer: true });
 					(x as AmbientLight).refresh();
-					canvas.perception.schedule({
-						lighting: { refresh: true },
-						sight: {
-							refresh: true,
-							forceUpdateFog: true // Update exploration even if the token hasn't moved
-						}
-					});
+					canvas.perception.update({
+						refreshLighting: true,
+						refreshVision: true
+						// @ts-expect-error
+					}, true);
 				});
 			}
 		});

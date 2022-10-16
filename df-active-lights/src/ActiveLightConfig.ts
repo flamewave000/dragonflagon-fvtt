@@ -35,8 +35,8 @@ export default class ActiveLightConfig extends Application {
 	private _object: AmbientLightDocument;
 	private _data: AnimatorData;
 
-	constructor(app: LightConfig) {
-		const obj = app.object;
+	constructor(app: AmbientLightConfig) {
+		const obj = app.original;
 		super({
 			id: obj.id + '-anims',
 			title: game.i18n.localize('DF_ACTIVE_LIGHTS.Config.Title') + obj.id,
@@ -50,6 +50,16 @@ export default class ActiveLightConfig extends Application {
 				keys: [ActiveLightConfig._createKeyFrame(0, obj.data)]
 			};
 		} else this._data = <any>duplicate(this._data);
+
+		//? When the light config closes it overwrites the current light preview.
+		//? This just makes sure the active light animation is refreshed as well.
+		// @ts-expect-error
+		const orig_reset = <() => void>app._resetPreview;
+		// @ts-expect-error
+		app._resetPreview = () => {
+			orig_reset.apply(app);
+			this._save();
+		};
 	}
 
 	getData(_options?: Application.RenderOptions): any {
@@ -250,7 +260,7 @@ export default class ActiveLightConfig extends Application {
 			await this._object.setFlag(SETTINGS.MOD_NAME, LightAnimator.FLAG_ANIMS, null);
 		else
 			await this._object.setFlag(SETTINGS.MOD_NAME, LightAnimator.FLAG_ANIMS, duplicate(this._data));
-		const pointSource = canvas.lighting.sources.find(x => x.object.id === this._object.id);
+		const pointSource = canvas.effects.lightSources.find(x => x.object && x.object.id === this._object.id);
 		delete (pointSource.object as AmbientLightExt).animator;
 	}
 

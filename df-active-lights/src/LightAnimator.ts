@@ -1,6 +1,6 @@
 import EaseFunctions from "./EaseFunctions";
 import SETTINGS from "../../common/Settings";
-import { AmbientLightData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import { AmbientLightData, LightData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 
 interface AmbientLightDataExt extends Partial<AmbientLightData> {
 	[key: string]: any;
@@ -14,6 +14,7 @@ export declare class AmbientLightExt extends AmbientLight {
 	animator?: LightAnimator;
 	animData: AmbientLightDataExt;
 	origData: AmbientLightDataExt;
+	document: AmbientLightDocument;
 }
 
 export interface KeyFrame {
@@ -48,36 +49,32 @@ interface PropertyKeyFrame extends PropertyDelta {
 export class LightAnimator {
 	static readonly FLAG_ANIMS = 'anims';
 
-	static init() {
-		libWrapper.register(SETTINGS.MOD_NAME, 'LightingLayer.prototype._animateSource', this._LightingLayer_animateSource, 'WRAPPER');
-	}
+	// static init() {
+	// }
 	static ready() {
 		libWrapper.register(SETTINGS.MOD_NAME, 'AmbientLight.prototype._onUpdate', function (this: AmbientLight, wrapped: (..._: any) => void, ...args: any) {
 			wrapped(...args);
 			delete (this as AmbientLightExt).animator;
 		}, 'WRAPPER');
+		canvas.app.ticker.add(this._LightingLayer_animateSource, this);
 	}
-	private static _LightingLayer_animateSource(this: LightingLayer, wrapper: (dt: number) => void, dt: number) {
+	private static _LightingLayer_animateSource(_: number) {
 		// If we are not enabled, return immediately
-		if (!SETTINGS.get('enabled')) {
-			return wrapper(dt);
-		}
+		if (!SETTINGS.get('enabled')) return;
 		let atLeastOneLight = false;
-		for (const source of this.sources) {
+
+		for (const source of <PointSource[]>canvas.effects.lightSources) {
 			if (!(source.object instanceof AmbientLight) || !source.active) continue;
 			if (LightAnimator._PointSource_animate.bind(source)(<AmbientLightExt>source.object))
 				atLeastOneLight = true;
 		}
 		if (atLeastOneLight) {
-			canvas.perception.schedule({
-				lighting: { refresh: true },
-				sight: {
-					refresh: true,
-					forceUpdateFog: true // Update exploration even if the token hasn't moved
-				}
-			});
+			canvas.perception.update({
+				refreshLighting: true,
+				refreshVision: true
+				// @ts-expect-error
+			}, true);
 		}
-		wrapper(dt);
 	}
 	private static _PointSource_animate(this: PointSource, light: AmbientLightExt): boolean {
 		try {
@@ -99,27 +96,26 @@ export class LightAnimator {
 				return false;
 
 			// hold onto the original data
-			const origData = light.data;
+			const origConfig = light.document.config;
+			const origRotation = light.document.rotation;
 			// Merge a duplicate of the original data with the modified animation data
-			light.data = <AmbientLightData>mergeObject(<any>duplicate(light.data), <AmbientLightData>{
-				config: {
-					dim: light.animData.dim !== undefined ? Math.max(light.animData.dim, 0.0001) : light.data.config.dim,
-					bright: light.animData.bright !== undefined ? Math.max(light.animData.bright, 0.0001) : light.data.config.bright,
-					angle: light.animData.angle ?? light.data.config.angle,
-					color: light.animData.color ?? light.data.config.color,
-					alpha: light.animData.alpha ?? light.data.config.alpha
-				},
-				rotation: light.animData.rotation ?? light.data.rotation
+			light.document.config = <LightData>mergeObject(<any>duplicate(light.document.config), <Partial<LightData>>{
+				dim: light.animData.dim !== undefined ? Math.max(light.animData.dim, 0.0001) : light.document.config.dim,
+				bright: light.animData.bright !== undefined ? Math.max(light.animData.bright, 0.0001) : light.document.config.bright,
+				angle: light.animData.angle ?? light.document.config.angle,
+				color: light.animData.tintColor ?? light.document.config.color,
+				alpha: light.animData.alpha ?? light.document.config.alpha
 			});
-			light.data.config.toObject = function () { return this; };
+			light.document.rotation = light.animData.rotation ?? light.document.rotation;
+			light.document.config.toObject = function () { return this; };
 			// Update the light source with the new data
-			// LightAnimator._updateSource.bind(light)();
 			light.updateSource({ defer: true });
 			// If we are on the LightingLayer, refresh the light's controls
-			if ((<any>canvas).lighting._active)
+			if (canvas.lighting.active)
 				light.refresh();
 			// Restore the original data
-			light.data = origData;
+			light.document.config = origConfig;
+			light.document.rotation = origRotation;
 			return true;
 		}
 		// We catch all errors that might occur and print them to the console to
@@ -180,8 +176,14 @@ export class LightAnimator {
 		return true;
 	}
 
+	private fromColorHex(value: string): number {
+		if (value[0] == '#')
+			return parseInt(value.substring(1), 16);
+		return parseInt(value, 16);
+	}
+
 	private _convert(value: number | string): number {
-		return typeof value === "string" ? foundry.utils.colorStringToHex(value) : value;
+		return typeof value === "string" ? this.fromColorHex(value) : value;
 	}
 
 	private _process(prop: PropertyKeyFrame, time: number) {
