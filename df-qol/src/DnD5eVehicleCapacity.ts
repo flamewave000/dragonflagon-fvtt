@@ -63,7 +63,7 @@ export default class DnD5eVehicleCapacity {
 		const DND5E = <DND5E>CONFIG.DND5E;
 		// Compute currency weight
 		// @ts-ignore
-		const totalCoins = Object.values((<Record<string, number>>actorData.data.currency)).reduce((acc, denom) => acc + denom, 0);
+		const totalCoins = Object.values((<Record<string, number>>actorData.system.currency)).reduce((acc, denom) => acc + denom, 0);
 		totalWeight += totalCoins / DND5E.encumbrance.currencyPerWeight.imperial;
 
 		// Vehicle weights are an order of magnitude greater.
@@ -72,7 +72,7 @@ export default class DnD5eVehicleCapacity {
 
 		// Compute overall encumbrance
 		// @ts-ignore
-		const max = actorData.data.attributes.capacity.cargo;
+		const max = actorData.system.attributes.capacity.cargo;
 		const pct = Math.clamped((totalWeight * 100) / max, 0, 100);
 		return { value: totalWeight.toNearest(0.01), max, pct };
 	}
@@ -84,8 +84,8 @@ export default class DnD5eVehicleCapacity {
 			case 2000: unit = ['S.Ton', 'DF_QOL.VehicleUnit.Units_ShortTon']; break;
 			case 1: unit = ['lb.', 'DF_QOL.VehicleUnit.Units_Pounds']; break;
 		}
-		html.find('input[name="data.attributes.capacity.cargo"]')
-			.after(`<label style="margin-left:0.5em" title="${game.i18n.localize(unit[1])}">${unit[0]}</label>`);
+		html.find('input[name="system.attributes.capacity.cargo"]')
+			.after(`<label class="df-qol-cargo-unit" title="${game.i18n.localize(unit[1])}">${unit[0]}</label>`);
 	}
 	static DF_VEHICLE_UNIT_CONFIG(app: EntitySheetConfig, html: JQuery<HTMLElement>, data: EntityConfigData<ActorData>) {
 		if (data.object.type !== "vehicle") return;
@@ -105,7 +105,7 @@ export default class DnD5eVehicleCapacity {
 </div>`);
 		submitButton.before(unitSelector);
 		const newHeight = unitSelector.outerHeight(true) + 8;
-		app.setPosition(mergeObject(app.position, <any>{ height: <number>app.position.height + newHeight }));
+		app.setPosition(<any>mergeObject(app.position, <any>{ height: <number>app.position.height + newHeight }));
 		// @ts-ignore
 		const core = app._updateObject.bind(app);
 		// @ts-ignore
@@ -138,8 +138,9 @@ export default class DnD5eVehicleCapacity {
 			});
 			// Convert the data
 			if (confirm) {
-				const pounds = Math.round(this.object.data.data.attributes.capacity.cargo * current);
-				await this.object.update({ 'data.attributes.capacity.cargo': (pounds / unit).toNearest(0.01) });
+				// @ts-expect-error
+				const pounds = Math.round(this.object.system.attributes.capacity.cargo * current);
+				await this.object.update({ 'system.attributes.capacity.cargo': (pounds / unit).toNearest(0.01) });
 			}
 			await this.object.setFlag(SETTINGS.MOD_NAME, 'unit', unit);
 			return core(event, formData);

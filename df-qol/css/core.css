@@ -1,0 +1,13 @@
+header.folder-header.context * {
+	color: var(--color-text-light-highlight) !important;
+}
+
+.df-qol-cargo-unit {
+	margin-left: 0.5em;
+}
+
+.df-qol-quickroll {
+	font-size: 14pt;
+	flex: 0;
+	margin-right: 10px;
+}

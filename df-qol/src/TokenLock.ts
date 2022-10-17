@@ -5,10 +5,10 @@ export default class TokenLock {
 	private static readonly PREF_ENABLED = 'TokenLock.Enabled';
 	private static readonly PREF_ALLOW_GM = 'TokenLock.AllowGM';
 
-	static getLocked(token: any): boolean {
-		return token.getFlag(SETTINGS.MOD_NAME, TokenLock.TokenLockFlag);
+	static getLocked(token: TokenDocument): boolean {
+		return <boolean>token.getFlag(SETTINGS.MOD_NAME, TokenLock.TokenLockFlag);
 	}
-	static setLocked(token: any, value: boolean): Promise<unknown> {
+	static setLocked(token: any, value: boolean): Promise<void> {
 		return token.setFlag(SETTINGS.MOD_NAME, TokenLock.TokenLockFlag, value);
 	}
 
@@ -52,13 +52,21 @@ export default class TokenLock {
 			libWrapper.register(SETTINGS.MOD_NAME, 'Token.prototype._canDrag', function (this: any, wrapped: AnyFunction, ...args: any) {
 				return wrapped(...args) && ((TokenLock.allowGM && game.user.isGM) || !TokenLock.getLocked(this.document));
 			}, 'WRAPPER');
-			libWrapper.register(SETTINGS.MOD_NAME, 'TokenLayer.prototype.moveMany', async function (this: any, wrapped: (data: any) => any, data: any) {
-				const ids = data.ids instanceof Array ? data.ids : this.controlled.filter((o: any) => !o.data.locked).map((o: any) => o.id);
-				data.ids = ids.filter((x: string) => {
-					return !TokenLock.getLocked((<any>canvas).tokens.documentCollection.get(x)) ||
-						(TokenLock.allowGM && game.user.isGM);
+
+			libWrapper.register(SETTINGS.MOD_NAME, 'Token.prototype._onDragLeftStart', async function (this: Token, wrapped: (event: any) => any, event: PIXI.InteractionEvent) {
+				// This is a little hack that tricks the wrapped function into thinking locked tokens are already being "dragged" and therefore should not be modified
+				this.layer.controlled.forEach(x => {
+					if (x.dfQolLocked !== undefined) return;
+					x.dfQolLocked = x.document.locked;
+					x.document.locked = TokenLock.getLocked(x.document) && !(TokenLock.allowGM && game.user.isGM);
 				});
-				return wrapped(data);
+				const result = wrapped(event);
+				this.layer.controlled.forEach(x => {
+					if (x.dfQolLocked === undefined) return;
+					x.document.locked = x.dfQolLocked;
+					delete x.dfQolLocked;
+				});
+				return result;
 			}, 'WRAPPER');
 		}
 		else {
@@ -74,7 +82,7 @@ export default class TokenLock {
 
 	private static _renderTokenHUD(app: TokenHUD, html: JQuery<HTMLElement>, _data: any) {
 		const toggle = $(`<div class="control-icon${TokenLock.getLocked((<any>app.object).document) ? ' active' : ''}" data-action="lock">
-<img src="icons/svg/padlock.svg" width="36" height="36" title="${game.i18n.localize('DF_WOL.TokenLock.LockTitle')}">
+<img src="icons/svg/padlock.svg" width="36" height="36" title="${game.i18n.localize('DF_QOL.TokenLock.LockTitle')}">
 </div>`);
 		toggle.on('click', async (e) => {
 			const element = $(e.currentTarget);
@@ -88,12 +96,10 @@ export default class TokenLock {
 					// Only update tokens that are different than what we are trying to set the rest to
 					.filter((x: any) => TokenLock.getLocked(x.document) != locked)
 					// Create the update data for each token
-					.map(x => {
-						return {
-							_id: x.data._id,
-							flags: { 'df-qol': { locked } }
-						};
-					});
+					.map(x => ({
+						_id: x.data._id,
+						flags: { 'df-qol': { locked } }
+					}));
 				// Perform Batch Update
 				await (<any>canvas).scene.updateEmbeddedDocuments("Token", data);
 			}

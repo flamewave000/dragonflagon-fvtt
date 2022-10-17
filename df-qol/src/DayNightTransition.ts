@@ -14,7 +14,7 @@ export default class DayNightTransition {
 			}
 		});
 		if (SETTINGS.get('day-night-progress')) {
-			libWrapper.register(SETTINGS.MOD_NAME, 'LightingLayer.prototype.animateDarkness', DayNightTransition._animateDarkness, 'OVERRIDE');
+			libWrapper.register(SETTINGS.MOD_NAME, 'EffectsCanvasGroup.prototype.animateDarkness', DayNightTransition._animateDarkness, 'OVERRIDE');
 		}
 		SETTINGS.register<number>('day-night-duration', {
 			scope: 'world',
@@ -28,15 +28,16 @@ export default class DayNightTransition {
 	}
 	static async _animateDarkness(this: LightingLayer, target = 1.0, { duration = 10000 } = {}) {
 		/***************************************************************************************/
-		/** COPYRIGHT START FoundryVTT : foundry.js > LightingLayer.prototype.animateDarkness **/
+		/** COPYRIGHT START FoundryVTT : foundry.js > EffectsCanvasGroup.prototype.animateDarkness **/
 		/***************************************************************************************/
 		const animationName = "lighting.animateDarkness";
 		CanvasAnimation.terminateAnimation(animationName);
-		if (target === this.darknessLevel) return false;
-		if (duration <= 0) return this.refresh(target);
-		// Prepare the animation data object
+		if (target === canvas.darknessLevel) return false;
+		if (duration <= 0) return canvas.colorManager.initialize({ darknessLevel: target });
+
+		// Update with an animation
 		const animationData = [{
-			parent: { darkness: this.darknessLevel },
+			parent: { darkness: canvas.darknessLevel },
 			attribute: "darkness",
 			to: Math.clamped(target, 0, 1)
 		}];
@@ -54,11 +55,11 @@ export default class DayNightTransition {
 		/*************************/
 
 		// Trigger the animation function
-		return CanvasAnimation.animateLinear(animationData, {
+		return CanvasAnimation.animate(animationData, {
 			name: animationName,
 			duration: duration,
-			ontick: (dt, attributes) => {
-				this.refresh(attributes[0].parent);
+			ontick: (dt: number, animation: any) => {
+				canvas.colorManager.initialize({ darknessLevel: animation.attributes[0].parent.darkness });
 
 				/***************************/
 				/** DF QOL ADDITION START **/

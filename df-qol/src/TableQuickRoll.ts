@@ -24,6 +24,20 @@ export default class TableQuickRoll {
 		});
 		if (SETTINGS.get('quick-roll')) Hooks.on('getRollTableDirectoryEntryContext', TableQuickRoll.DF_QUICK_ROLL);
 		else Hooks.off('getRollTableDirectoryEntryContext', TableQuickRoll.DF_QUICK_ROLL);
+
+		Hooks.on('renderRollTableDirectory', (_app: RollTableDirectory, html: JQuery<HTMLElement>, _data: any) => {
+			html.find(".rolltable").each((_idx, element) => {
+				const button = $(`<a title="${'DF_QOL.QuickRoll.MenuItem'.localize()}" class="button df-qol-quickroll"><i class="fas fa-dice-d20"/></a>`);
+				button.on('click', async function () {
+					const table = game.tables.get(this.parentElement.getAttribute('data-document-id'));
+					if (!table) return;
+					if (table.description === undefined)
+						table.description = '';
+					await table.draw();
+				});
+				$(element).append(button);
+			});
+		});
 	}
 
 	static DF_QUICK_ROLL(_html: any, entryOptions: any) {
@@ -33,8 +47,9 @@ export default class TableQuickRoll {
 			condition: () => true,
 			callback: async (header: any) => {
 				const table = game.tables.get(header.data('documentId'));
-				if (table.data.description === undefined)
-					table.data.description = '';
+				if (!table) return;
+				if (table.description === undefined)
+					table.description = '';
 				await table.draw();
 			}
 		});
