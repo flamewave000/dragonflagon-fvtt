@@ -23,7 +23,8 @@
 	"styles": "{{css}}",
 	"languages": [
 		{ "lang": "en", "name": "English", "path": "lang/en.json" },
-		{ "lang": "ja", "name": "日本語", "path": "lang/ja.json" }
+		{ "lang": "ja", "name": "日本語", "path": "lang/ja.json" },
+		{ "lang": "pt-BR", "path": "lang/pt-BR.json", "name": "Português (Brasil)"}
 	],
 	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-qol",
 	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/LICENSE",

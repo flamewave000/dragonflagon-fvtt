@@ -1,0 +1,61 @@
+{
+	"DF-QOL.errorLibWrapperMissing": "'DF Quality of Life' requer o módulo 'libWrapper'. Instale e ative 'libWrapper'.",
+	"DF_QOL": {
+		"QuickRoll": {
+			"Title": "Habilitar opção de menu Rolar Tabela para rolagem rápida",
+			"Hint": "(Requer recarga) Adiciona uma opção de menu para Rolar Tabelas na barra lateral das Tabelas de Rolagem para rolar na mesa sem ter que abrir a janela da tabela.",
+			"MenuItem": "Rolagem Rápida"
+		},
+		"AutoFocus": {
+			"Title": "Habilitar foco automático do campo de texto em caixas de diálogo de entidade",
+			"Hint": "Ao criar uma entidade (atores, itens, tabelas, cenas, etc.), isso selecionará automaticamente a caixa de texto Nome para que você não precise clicar nela. Basta abrir a caixa de diálogo e começar a digitar!"
+		},
+		"FolderTextColour": {
+			"Name": "Habilitar cor do texto da pasta",
+			"Hint": "Adicione a capacidade de definir uma cor de texto personalizada para pastas de entidades."
+		},
+		"BetterToggle": {
+			"Name": "Ativar Melhor Realce do Controles de Alternância das Cenas",
+			"Hint": "Altera os controles da cena para que quando os botões de alternância roxos estiverem ativados, eles fiquem mais visíveis."
+		},
+		"ReloadGame": {
+			"Title": "Recarregar o jogo?",
+			"Content": "<p style=\"margin:1em 0\">Algumas alterações feitas só terão efeito com uma recarga. Você gostaria de recarregar agora?</p>"
+		},
+		"VehicleUnit": {
+			"SettingName": "Habilitar Unidade de peso para Veículos",
+			"SettingHint": "Permite a capacidade de alterar a unidade de base para peso usado por veículos",
+			"ConfigName": "Unidade de Peso",
+			"ConfigHint": "Unidade de medida a ser usada para cálculo de peso.",
+			"Units_LongTon": "Tonelada Longa (2.240 lb.)",
+			"Units_ShortTon": "Tonelada Curta (2.000 lb.)",
+			"Units_Pounds": "Libras (1 lb.)",
+			"ConvertTitle": "Converter Capacidade de Carga",
+			"ConvertContent": "Você gostaria de converter a capacidade de carga atual de '{{OLD}}' para '{{NEW}}'?"
+		},
+		"DayNight": {
+			"ProgressSettingName": "Exibir Progresso de Transição Dia/Noite",
+			"ProgressSettingHint": "Quando você executa a transição animada Dia/Noite, ativar exibirá uma barra mostrando o progresso do início ao fim da animação.",
+			"DurationSettingName": "Duração da Transição Dia/Noite (Segundos)",
+			"DurationSettingHint": "A duração que leva para a animação de transição Dia/Noite ser concluída. Em segundos (1-60 segundos)"
+		},
+		"TemplateTargeting": {
+			"SettingName": "Gabaritos Selecionam Tokens Automáticamente",
+			"SettingHint": "Se ativado, irá automaticamente selecionar tokens que são atingidos por um Gabarito de Medida",
+			"PreviewName": "Pré-visualizar Realce/Seleção do Gabarito",
+			"PreviewHint": "Mostra o realce da grade e executa a seleção automática ao mover ou criar um gabarito.",
+			"ToggleTitle": "Selecionar Tokens Automáticamente",
+			"Patch5e_Name": "Use Gabaritos no Estilo D&D 5e",
+			"Patch5e_Hint": "O padrão do Foundry requer que o centro da grade de um quadrado esteja dentro de um gabarito para ser afetado. Isso ajusta os gabaritos para seguir as regras D&D5e para selecionar quadrados de grade onde qualquer quadrado TOCADO por um gabarito é atingido (com exceção de círculos).",
+			"Patch5e_Circle_Name": "Tornar os Gabaritos de Círculo gananciosos (Requer os Gabaritos no Estilo D&D 5e)",
+			"Patch5e_Circle_Hint": "Se você quiser que os gabaritos de círculo não sejam uma exceção às regras do estilo D&D 5e acima, habilite isso e qualquer quadrado tocado por um círculo será atingido."
+		},
+		"TokenLock": {
+			"Setting.EnableName": "Bloqueio de Token: Ativar",
+			"Setting.EnableHint": "Quando ativado, os tokens terão um botão de bloqueio no HUD do Token para bloquear sua posição. Atua da mesma forma que bloquear uma peça ou desenho.",
+			"Setting.AllowGMName": "Bloqueio de Token: Ignorar MJ",
+			"Setting.AllowGMHint": "Permitirá que MJs movam tokens quando estiverem bloqueados. Útil se você quiser apenas impedir que os jogadores movam os tokens.",
+			"LockTitle": "Alternar Estado de Bloqueio"
+		}
+	}
+}
