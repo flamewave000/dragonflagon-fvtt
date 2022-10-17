@@ -22,6 +22,10 @@
 			"Title": "Reload game?",
 			"Content": "<p style=\"margin:1em 0\">Some changes made will only go into effect on a reload. Would you like to reload now?</p>"
 		},
+		"BetterAttack": {
+			"Name": "Enable Better Default Attack Buttons Highlight",
+			"Hint": "The attack buttons do not show the suggested action very clearly. This adds a Green border for Advantage and Red for Disadvantage depending on which button is highlighted."
+		},
 		"VehicleUnit": {
 			"SettingName": "Enable Unit of weight for Vehicles",
 			"SettingHint": "Enables ability to change the base unit for weight used by vehicles",

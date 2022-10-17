@@ -3,6 +3,7 @@ import FolderColours from './FolderColours';
 // import TextboxAutoFocus from './TextboxAutoFocus';
 import BetterToggle from './BetterToggle';
 import DayNightTransition from './DayNightTransition';
+import DnD5eBetterAttackDialog from './DnD5eBetterAttackDialog';
 import DnD5eVehicleCapacity from './DnD5eVehicleCapacity';
 
 import SETTINGS from "../../common/Settings";
@@ -16,6 +17,7 @@ Hooks.once('init', function () {
 	// TextboxAutoFocus.init();
 	BetterToggle.init();
 	DayNightTransition.init();
+	DnD5eBetterAttackDialog.init();
 	DnD5eVehicleCapacity.init();
 	TokenLock.init();
 });
