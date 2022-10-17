@@ -164,7 +164,7 @@ function outputTemplates(output = null) { return desc('output Templates', () => 
 function outputStylesCSS(output = null) { return desc('output Styles CSS', () => gulp.src(CSS + GLOB).pipe(sass({ outputStyle: process.argv.includes('--min') ? 'compressed' : undefined })).pipe(concat(PACKAGE.id + '.css')).pipe(gulp.dest((output || DIST) + CSS))); }
 function outputMetaFiles(output = null) { return desc('output Meta Files', () => gulp.src([LICENSE, 'README.md', 'CHANGELOG.md']).pipe(gulp.dest((output || DIST)))); }
 function outputPackFiles(output = null) { return desc('output Meta Files', () => gulp.src(PACKS + GLOB).pipe(gulp.dest((output || DIST) + PACKS))); }
-function outputLibraries(output = null) { return desc("output Libs Files", () => gulp.src(LIBS + GLOB + '.js').pipe(gulp.dest((output || DIST) + LIBS))); }
+function outputLibraries(output = null) { return desc("output Libs Files", () => gulp.src(LIBS + '**/!(*.d.ts)').pipe(gulp.dest((output || DIST) + LIBS))); }
 
 /**
  * Copy files to module named directory and then compress that folder into a zip

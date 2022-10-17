@@ -3,7 +3,7 @@
 
 Provides a useful way for module and macro developers to view and edit the flags of an object. Simply provide the object's ID or a JavaScript Expression that results in an ID, Document, or Data Object.
 
-![Flag Edit Screenshot](../.assets/df-flag-edit.png)
+![Flag Edit Screenshot](../.assets/df-flag-edit/cover.png)
 
 ##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
 

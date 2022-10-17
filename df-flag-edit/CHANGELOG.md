@@ -1,5 +1,9 @@
 # DragonFlagon Flag Editor
 
+## Release 1.2.0 (2022-10-17)
+- **UPDATE:** Migrated to v10.
+- **UPDATE:** Improved flag deletion. You can now properly delete root flags, and if a root has no properties or is null, it will be automatically deleted to keep the flags clean.
+
 ## Release 1.1.2 (2021-12-30)
 - **FIX #244:** Modifying values would delete everything instead of properly updating them.
 - **UPDATE:** Updated FoundryVTT support to V9.

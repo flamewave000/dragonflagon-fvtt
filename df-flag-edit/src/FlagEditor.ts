@@ -33,14 +33,9 @@ declare namespace JSONEditor {
 	}
 }
 
-declare interface FoundryData {
+declare interface FoundryDocument {
 	_id: string;
 	flags: any;
-	document: FoundryDocument;
-}
-
-declare interface FoundryDocument {
-	data: FoundryData;
 	update: (data: any) => Promise<any>
 	unsetFlag(scope: string, key: string): Promise<unknown>
 }
@@ -55,7 +50,7 @@ export default class FlagEditor extends Application {
 	];
 
 	static get defaultOptions(): any {
-		return mergeObject(<Partial<Application.Options>>Application.defaultOptions, {
+		return mergeObject(<Partial<ApplicationOptions>>Application.defaultOptions, {
 			template: `modules/${SETTINGS.MOD_NAME}/templates/flag-edit.hbs`,
 			minimizable: true,
 			resizable: true,
@@ -72,7 +67,7 @@ export default class FlagEditor extends Application {
 			const collections = game.collections;
 			for (const [key, map] of collections.entries()) {
 				if (FlagEditor.IGNORED_COLLECTIONS.includes(key) || !map.has(<any>id)) continue;
-				res(map.get(<any>id));
+				res(<any>map.get(<any>id));
 				break;
 			}
 			rej();
@@ -107,7 +102,7 @@ export default class FlagEditor extends Application {
 	private _document: FoundryDocument | null = null;
 	set document(value: FoundryDocument | null) {
 		this._document = value;
-		this.editor.set(this._document?.data?.flags || '');
+		this.editor.set(this._document?.flags || '');
 	}
 	get document(): FoundryDocument | null { return this._document; }
 	editor: JSONEditor;
@@ -145,7 +140,7 @@ export default class FlagEditor extends Application {
 			this.close();
 		});
 		applyButton.on('click', async () => {
-			if (this.document?.data?.flags === undefined || this.document?.data?.flags === null)
+			if (this.document?.flags === undefined || this.document?.flags === null)
 				return;
 			saveButton.prop('disabled', true);
 			applyButton.prop('disabled', true);
@@ -153,24 +148,44 @@ export default class FlagEditor extends Application {
 			const newKeys = Object.keys(flags)
 				.flatMap(x => Object.keys(flags[x]).map(y => `${x}_____${y}`))
 				.filter(x => !x.endsWith('_____'));
-			const oldKeys = Object.keys(this.document.data.flags)
-				.flatMap(x => Object.keys(this.document.data.flags[x]).map(y => `${x}_____${y}`))
+			const oldKeys = Object.keys(this.document.flags)
+				.flatMap(x => {
+					if (typeof (this.document.flags[x]) === 'object')
+						return Object.keys(this.document.flags[x]).map(y => `${x}_____${y}`);
+					else return x;
+				})
 				.filter(x => !x.endsWith('_____'));
 			const deleted = oldKeys.filter(x => !newKeys.includes(x));
 			for (const flag of deleted) {
+				if (!flag.includes('_____')) {
+					delete flags[flag];
+					flags['-=' + flag] = null;
+					continue;
+				}
 				const scope = flag.split('_____')[0];
 				const key = flag.split('_____')[1];
 				try {
 					// await this.document.unsetFlag(scope, key);
 					const head = key.split('.');
 					const tail = `-=${head.pop()}`;
-					const t = [scope, ...head, tail].join('.');
-					flags[t] = null;
+					const t = [...head, tail].join('.');
+					flags[scope][t] = null;
 				}
 				catch (err) { console.warn(err); }
 			}
+			for (const scope of Object.keys(flags)) {
+				if (flags[scope] === null || flags[scope] === undefined) {
+					if (scope.startsWith('-=')) continue;
+					delete flags[scope];
+					flags['-=' + scope] = null;
+				}
+				else if (Object.keys(flags[scope]).every(x => x.startsWith('-='))) {
+					delete flags[<any>scope];
+					flags['-=' + scope] = null;
+				}
+			}
 			await this.document.update({ flags });
-			this.editor.set(this._document?.data?.flags || '');
+			this.editor.set(this._document?.flags || '');
 			saveButton.prop('disabled', false);
 			applyButton.prop('disabled', false);
 		});
@@ -182,7 +197,7 @@ export default class FlagEditor extends Application {
 		// Resolve immediately if element exists
 		if (this._loadEditorPromise == null) {
 			// If the Editor library has not yet been loaded, lets load it now inside a promise
-			const scriptPromise = new Promise<void>(res => {
+			this._loadEditorPromise = new Promise<void>(res => {
 				const script = document.createElement('script') as HTMLScriptElement;
 				script.async = true;
 				script.onload = () => res();
@@ -193,15 +208,6 @@ export default class FlagEditor extends Application {
 					script.src = `/modules/${SETTINGS.MOD_NAME}/libs/jsoneditor.min.js`;
 				document.body.append(script);
 			});
-			const stylePromise = new Promise<void>(res => {
-				const style = document.createElement('link') as HTMLLinkElement;
-				style.rel = 'stylesheet';
-				style.type = 'text/css';
-				style.onload = () => res();
-				style.href = `/modules/${SETTINGS.MOD_NAME}/libs/jsoneditor.min.css`;
-				document.body.append(style);
-			});
-			this._loadEditorPromise = Promise.all([scriptPromise, stylePromise]);
 		}
 		return <Promise<void>>this._loadEditorPromise;
 	}
@@ -219,7 +225,7 @@ export default class FlagEditor extends Application {
 	private _updateTitle() {
 		this.options.title = game.i18n.localize('DF_FLAG_EDIT.Title')
 			.replace('{0}', this.document !== null ? Object.getPrototypeOf(this.document).constructor.name : '#')
-			.replace('{1}', this.document?.data?._id || '#');
+			.replace('{1}', this.document?._id || '#');
 		this.element.find('h4.window-title').text(this.options.title);
 	}
 
@@ -258,14 +264,7 @@ export default class FlagEditor extends Application {
 			document = null;
 			return;
 		}
-		if (document?.data === undefined || document?.data === null) {
-			if ((<any>document)?.document === undefined || (<any>document)?.document === null) {
-				this._showError("Invalid object: document must be of type 'string', 'Document', or 'DocumentData'");
-				return;
-			}
-			else document = (<any>document)?.document;
-		}
-		if (document?.data?.flags === undefined || document?.data?.flags === null) {
+		if (document?.flags === undefined || document?.flags === null) {
 			this._showError('Invalid object: does not contain a flags field');
 			return;
 		}

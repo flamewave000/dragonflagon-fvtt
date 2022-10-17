@@ -20,70 +20,47 @@ if (!(<any>globalThis).HooksExt) {
 	 */
 	class _HooksExt {
 		/** Registry of RegExp based hooks */
-		static readonly _regex = new Map<string, { regex: RegExp, fns: number[] }>();
+		static readonly _regex = new Map<string, { regex: RegExp, fns: { fn: any, id: number }[] }>();
 		/** Repository of all hooks ever invoked. This is only ever used when `CONFIG.debug.hooks` is `true` */
 		static readonly _hookRepo = new Set<string>();
 
 		/**
 		 * Register a callback handler which should be triggered when a hook is triggered.
 		 *
-		 * @param {string | RegExp} hook	The unique name of the hooked event
+		 * @param {RegExp} hook	The unique name of the hooked event
 		 * @param {Function} fn				The callback function which should be triggered when the hook event occurs
 		 * @return {number}					An ID number of the hooked function which can be used to turn off the hook later
 		 */
-		static on(hook: string | RegExp, fn: (...args: any) => any): number {
-			console.debug(`${vtt} | Registered callback for ${hook} hook`); //		─┬─ FoundryVTT Original
-			const id = Hooks._id++; //												─┘
-			if (hook instanceof RegExp) { //										─┐
-				const pattern = hook.toString(); //									 │
-				let regex = this._regex.get(pattern); //							 │
-				if (!regex) { //													 │
-					regex = { regex: hook, fns: [] }; //							 │
-					this._regex.set(pattern, regex); //								 ├─ HooksExt Customized
-				} //																 │
-				regex.fns.push(id); //												 │
-				Hooks._hooks[pattern] = Hooks._hooks[pattern] || []; //				 │
-				Hooks._hooks[pattern].push(fn); //									 │
-			} //																	 │
-			else { //																─┘
-				Hooks._hooks[hook] = Hooks._hooks[hook] || []; //					─┬─ FoundryVTT Original
-				Hooks._hooks[hook].push(fn); //										─┘
-			} //																	─── HooksExt Customized
-			Hooks._ids[id] = fn; //													─┬─ FoundryVTT Original
-			return id; //															─┘
+		static onRE(hook: RegExp, fn: (...args: any) => any): number {
+			const pattern = hook.toString();
+			let regex = this._regex.get(pattern);
+			if (!regex) {
+				regex = { regex: hook, fns: [] };
+				this._regex.set(pattern, regex);
+			}
+			const id = Hooks.on(hook, fn);
+			regex.fns.push({ fn, id });
+			return id;
 		}
 
 		/**
 		 * Unregister a callback handler for a particular hook event
 		 *
-		 * @param {string | RegExp} hook	The unique name of the hooked event
+		 * @param {RegExp} hook	The unique name of the hooked event
 		 * @param {Function|number} fn		The function, or ID number for the function, that should be turned off
 		 */
-		static off(hook: string | RegExp, fn: ((...args: any) => any) | number) {
-			if (typeof fn === "number") { //										─┐
-				const id = fn; //													 │
-				fn = Hooks._ids[fn]; //												 ├─ FoundryVTT Original
-				delete Hooks._ids[id]; //											 │
-			} //																	─┘
-			/* Foundry does not currently delete the function from ids if //		─┐
-			only the function is provided. This is a potential memory leak //		 │
-			that HooksExt attempts to plug. */ //									 │
-			else { //																 │
-				const entry = Object.entries(Hooks._ids).find(x => x[1] === fn);//	 │
-				if (entry) //														 ├─ HooksExt Customized
-					delete Hooks._ids[parseInt(entry[0])]; //						 │
-			} //																	 │
-			/* Convert the hook to its string pattern */ //							 │
-			if (hook instanceof RegExp) //											 │
-				hook = hook.toString(); //											 │
-			this._regex.delete(hook); //											─┘
-			if (!Hooks._hooks.hasOwnProperty(hook)) //								─┐
-				return; //															 │
-			const fns = Hooks._hooks[hook]; //										 │
-			const idx = fns.indexOf(fn); //											 ├─ FoundryVTT Original
-			if (idx !== -1) //														 │
-				fns.splice(idx, 1); //												 │
-			console.debug(`${vtt} | Unregistered callback for ${hook} hook`); //	─┘
+		static offRE(hook: RegExp, fn: ((...args: any) => any) | number) {
+			const pattern = hook.toString();
+			Hooks.off(pattern, fn);
+			const regex = this._regex.get(pattern);
+			if (regex) {
+				if (typeof (fn) === 'number')
+					regex.fns = regex.fns.filter(x => x.id === fn);
+				else
+					regex.fns = regex.fns.filter(x => x.fn === fn);
+				if (regex.fns.length === 0)
+					this._regex.delete(pattern);
+			}
 		}
 
 		/**
@@ -103,14 +80,12 @@ if (!(<any>globalThis).HooksExt) {
 			for (const regex of this._regex) { //									─┐
 				if (!regex[1].regex.test(hook)) //									 │
 					continue; //													 │
-				for (const fnId of regex[1].fns) //									 ├─ HooksExt Customized
-					Hooks._call(hook, Hooks._ids[fnId], args); //					 │
+				for (const entry of regex[1].fns) //								 ├─ HooksExt Customized
+					this.#call(hook, entry.fn, args); //							 │
 			} //																	─┘
-			if (!Hooks._hooks.hasOwnProperty(hook)) //								─┐
-				return true; //														 │
-			const fns = new Array(...Hooks._hooks[hook]); //						 │
-			for (const fn of fns) { //												 ├─ FoundryVTT Original
-				Hooks._call(hook, fn, args); //										 │
+			if (!(hook in Hooks.events)) return true; //							─┐
+			for (const entry of Array.from(Hooks.events[hook])) { //				 │
+				this.#call(entry, args); //											 ├─ FoundryVTT Original
 			} //																	 │
 			return true; //															─┘
 		}
@@ -131,23 +106,34 @@ if (!(<any>globalThis).HooksExt) {
 				console.log(`DEBUG | Calling ${hook} hook with args:`); //			 ├─ FoundryVTT Original
 				console.log(args); //												─┘
 				this._hookRepo.add(hook); //										─── HooksExt Customized
-			} //																	─── FoundryVTT Original
+			} //																	─┬─ FoundryVTT Original
 			let fns = []; //														─┐
 			for (const regex of this._regex) { //									 │
 				if (regex[1].regex.test(hook)) //									 │
-					fns = fns.concat(regex[1].fns.map(x => Hooks._ids[x])); //		 │
+					fns = fns.concat(regex[1].fns); //								 │
 			} //																	 ├─ HooksExt Customized
-			const hooksExist = Hooks._hooks.hasOwnProperty(hook); //				 │
+			const hooksExist = Hooks.events.hasOwnProperty(hook); //				 │
 			if (!hooksExist && fns.length == 0) //									 │
 				return true; //														 │
 			if (hooksExist) //														 │
-				fns = fns.concat(...Hooks._hooks[hook]); //							─┘
-			for (const fn of fns) { //												─┐
-				const callAdditional = Hooks._call(hook, fn, args); //				 │
-				if (callAdditional === false) //									 ├─ FoundryVTT Original
-					return false; //												 │
+				fns = fns.concat(Array.from(Hooks.events[hook])); //				─┘
+			for (const entry of fns) { //											─┐
+				const callAdditional = this.#call(entry, args); //					 ├─ FoundryVTT Original
+				if (callAdditional === false) return false; //						 │
 			} //																	 │
 			return true; //															─┘
+		}
+
+		private static #call(entry, args) {
+			const { hook, id, fn, once } = entry;
+			if (once) Hooks.off(hook, id);
+			try {
+				return entry.fn(...args);
+			} catch (err) {
+				const msg = `Error thrown in hooked function '${fn?.name}' for hook '${hook}'`;
+				console.warn(`${vtt} | ${msg}`);
+				if (hook !== "error") Hooks.onError("Hooks.#call", err, { msg, hook, fn, log: "error" });
+			}
 		}
 
 		/**
@@ -160,8 +146,18 @@ if (!(<any>globalThis).HooksExt) {
 
 	// If a HookExt has already been bound, do not execute the following
 	(<any>globalThis).HooksExt = _HooksExt;
-	Hooks.on = <any>_HooksExt.on.bind(_HooksExt);
-	Hooks.off = <any>_HooksExt.off.bind(_HooksExt);
+	Hooks.onRE = <any>_HooksExt.onRE.bind(_HooksExt);
+	Hooks.offRE = <any>_HooksExt.offRE.bind(_HooksExt);
 	Hooks.callAll = <any>_HooksExt.callAll.bind(_HooksExt);
 	Hooks.call = <any>_HooksExt.call.bind(_HooksExt);
+}
+
+declare namespace Hooks {
+	function on(hook: string, fn: (...args: any) => any): number;
+	function off(hook: string, fn: ((...args: any) => any) | number);
+	function onRE(hook: RegExp, fn: (...args: any) => any): number;
+	function offRE(hook: RegExp, fn: ((...args: any) => any) | number);
+	function call(hook: string, ...args: any);
+	function callAll(hook: string, ...args: any);
+	function once(hook: string, fn: (...args: any) => any): number;
 }
