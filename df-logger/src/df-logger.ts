@@ -8,7 +8,7 @@ SETTINGS.init('df-logger');
 Hooks.once('init', function () {
 	SETTINGS.registerMenu('message-manage', {
 		restricted: true,
-		type: DFLoggerMenu,
+		type: <any>DFLoggerMenu,
 		label: 'DF-LOGGER.Settings.ManageMessages',
 		icon: 'fas fa-comment-alt'
 	});

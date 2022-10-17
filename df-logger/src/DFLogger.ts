@@ -16,8 +16,8 @@ export default class DFLogger {
 	static SETTING_DELAY = 'delay';
 	static SETTING_SOUND = 'sound';
 	static get Persist() { return !SETTINGS.get(DFLogger.SETTING_SELF_DESTRUCT); }
-	static get LoginContent() { return game.i18n.localize('DF-LOGGER.Content.Login' + (DFLogger.Persist ? '_Persist' : '')); }
-	static get LogoutContent() { return game.i18n.localize('DF-LOGGER.Content.Logout' + (DFLogger.Persist ? '_Persist' : '')); }
+	static get LoginContent() { return game.i18n.localize('DF-LOGGER.Content.Login'); }
+	static get LogoutContent() { return game.i18n.localize('DF-LOGGER.Content.Logout'); }
 
 	static getMessageText(messages: Message[]): string {
 		messages = messages.filter(x => x.tog);
@@ -35,12 +35,15 @@ export default class DFLogger {
 				alias: alias
 			},
 			whisper: [game.user.id],
-			type: CONST.CHAT_MESSAGE_TYPES.OOC
+			type: CONST.CHAT_MESSAGE_TYPES.OOC,
+			flags: { 'df-logger': { destroy: !this.Persist } }
 		});
 
 		if (!DFLogger.Persist) {
 			setTimeout(async () => {
-				await chatMsg.delete();
+				try {
+					await chatMsg.delete();
+				} catch { /* ignore errors here, they only occur if the user deleted the message before our timer did */ }
 			}, Math.round(SETTINGS.get<number>('delay') * 1000));
 		}
 	}
@@ -85,9 +88,8 @@ export default class DFLogger {
 		if (DFLogger.Persist) return;
 		game.messages.forEach(async it => {
 			if (!it.isAuthor) return;
-			const alias = it.data.speaker.alias;
-			if (alias !== DFLogger.LoginContent && alias !== DFLogger.LogoutContent) return;
-			await it.delete();
+			if (it.getFlag(SETTINGS.MOD_NAME, 'destroy'))
+				await it.delete();
 		});
 	}
 }

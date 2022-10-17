@@ -1,5 +1,9 @@
 # DF User Logger
 
+## Release 1.7.0 (2022-10-17)
+- **UPDATE:** Migrated to v10.
+- **FIX #400:** Fixed error when user deletes message before timeout does.
+
 ## Release 1.6.8 (2022-01-04)
 - **FIX #283:** Localisation bugs.
 

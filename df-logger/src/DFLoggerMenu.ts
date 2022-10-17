@@ -3,7 +3,7 @@ import { Message, MessageProcessor } from "./MessageProcessor";
 
 export default class DFLoggerMenu extends FormApplication {
 	static get defaultOptions() {
-		return <any>mergeObject(super.defaultOptions as Partial<FormApplication.Options>, {
+		return <any>mergeObject(super.defaultOptions as Partial<FormApplicationOptions>, {
 			editable: true,
 			resizable: true,
 			submitOnChange: false,
