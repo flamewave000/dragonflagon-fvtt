@@ -5,6 +5,7 @@
 - **NEW:** Quick Roll button added to rolltable list items (in addition to the one still in the context menu).
 - **NEW #338:** Added Português (Brasil) Localization: Courtesy of [MagelaCE](https://github.com/MagelaCE).
 - **NEW #328:** Added special highlighting for attack buttons when Advantage or Disadvantage is highlighted.
+- **FIX #337:** Fixed issue with enabling/disabling transition progress option.
 
 ## Release 1.7.3 (2022-03-06)
 - Added a GM check for the migration prompt that I forgot to add previously.

@@ -9,8 +9,11 @@ export default class DayNightTransition {
 			default: true,
 			name: 'DF_QOL.DayNight.ProgressSettingName',
 			hint: 'DF_QOL.DayNight.ProgressSettingHint',
-			onChange: () => {
-				libWrapper.unregister(SETTINGS.MOD_NAME, 'LightingLayer.prototype.animateDarkness');
+			onChange: toggled => {
+				if (toggled)
+					libWrapper.register(SETTINGS.MOD_NAME, 'EffectsCanvasGroup.prototype.animateDarkness', DayNightTransition._animateDarkness, 'OVERRIDE');
+				else
+					libWrapper.unregister(SETTINGS.MOD_NAME, 'EffectsCanvasGroup.prototype.animateDarkness');
 			}
 		});
 		if (SETTINGS.get('day-night-progress')) {
