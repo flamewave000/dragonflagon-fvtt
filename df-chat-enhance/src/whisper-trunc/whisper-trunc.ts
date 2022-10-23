@@ -41,17 +41,17 @@ export default class WhisperTruncation {
 		});
 	}
 
-	private static _messageRender(message: ChatMessage, html: JQuery<HTMLElement>, _cmd: ChatMessageData) {
+	private static _messageRender(message: ChatMessageData, html: JQuery<HTMLElement>, _cmd: ChatMessageData) {
 		// ignore regular messages, or whispers with only 1 recipient
-		if (!SETTINGS.get(this.PREF_ENABLED) || !(message.data.whisper) || message.data.whisper.length <= 1) return;
-		const users = message.data.whisper.map(x => game.users.get(x));
-		let accum = users[0].data.name;
+		if (!SETTINGS.get(this.PREF_ENABLED) || !(message.whisper) || message.whisper.length <= 1) return;
+		const users = message.whisper.map(x => game.users.get(x));
+		let accum = users[0].name;
 		let title = this._formatTitle(accum, users.length - 1);
 		let c = 1;
 		const CHAR_LIMIT = SETTINGS.get<number>(this.PREF_CHAR_LIMIT);
 		for (; c < users.length; c++) {
 			// Append name to names string
-			const tmpNames = accum + ', ' + users[c].data.name;
+			const tmpNames = accum + ', ' + users[c].name;
 			// Generate a temp title
 			const tmpTitle = this._formatTitle(tmpNames, users.length - c - 1);
 			// If the potential title is too large, break so we can use the previous iteration's results
@@ -63,7 +63,7 @@ export default class WhisperTruncation {
 		// If we never ran out of room, exit
 		if (c === users.length) return;
 		// Update the HTML
-		const newHeader = `<span class="whisper-to" title="${users.slice(c).map(x => x.data.name).join(', ')}">${title}</span>`;
+		const newHeader = `<span class="whisper-to" title="${users.slice(c).map(x => x.name).join(', ')}">${title}</span>`;
 		html.find('span.whisper-to').replaceWith(newHeader);
 	}
 

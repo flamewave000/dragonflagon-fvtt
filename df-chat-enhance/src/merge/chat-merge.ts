@@ -186,7 +186,7 @@ export default class ChatMerge {
 		}
 	}
 
-	private static _renderChatMessage(message: ChatMessage, html: JQuery<HTMLElement>, _cmd: ChatMessageData) {
+	private static _renderChatMessage(message: ChatMessageData, html: JQuery<HTMLElement>, _cmd: ChatMessageData) {
 		if (!ChatMerge._enabled) return;
 		// Find the most recent message in the chat log
 		const partnerElem = $(`li.chat-message`).last()[0];
@@ -194,6 +194,7 @@ export default class ChatMerge {
 		if (partnerElem === null || partnerElem === undefined) return;
 		// get the ChatMessage document associated with the html
 		const partner = game.messages.get(partnerElem.getAttribute('data-message-id'));
+		if (!message || !partner) return;
 		// Update styling of the chat messages
 		ChatMerge._styleChatMessages(message, html[0], partner, partnerElem);
 	}
@@ -202,16 +203,16 @@ export default class ChatMerge {
 		return current > previous && (current - previous) < (this._epoch * 1000);
 	}
 
-	private static _isValidMessage(current: ChatMessage, previous: ChatMessage): boolean {
+	private static _isValidMessage(current: ChatMessageData, previous: ChatMessageData): boolean {
 		const rolls = this._allowRolls;
 		const splitSpeaker = SETTINGS.get<boolean>(this.PREF_SPLIT_SPEAKER);
 		let userCompare = false;
 
-		const currData = current.data ?? <ChatMessageData><any>current;
-		const prevData = previous.data ?? <ChatMessageData><any>previous;
+		const currData = current ?? <ChatMessageData><any>current;
+		const prevData = previous ?? <ChatMessageData><any>previous;
 
 		// If either message is a Midi-QoL message, ignore it
-		if ((currData.flags as Record<string, any>)['midi-qol'] || (prevData.flags as Record<string, any>)['midi-qol'])
+		if ((currData?.flags && (currData.flags as Record<string, any>)['midi-qol']) || (prevData?.flags && (prevData.flags as Record<string, any>)['midi-qol']))
 			return false;
 
 		if (splitSpeaker) {
@@ -237,7 +238,7 @@ export default class ChatMerge {
 				|| (rolls === 'none' && !current.isRoll && !previous.isRoll));
 	}
 
-	private static _styleChatMessages(curr: ChatMessage, currElem: HTMLElement, prev: ChatMessage, prevElem: HTMLElement) {
+	private static _styleChatMessages(curr: ChatMessageData, currElem: HTMLElement, prev: ChatMessageData, prevElem: HTMLElement) {
 		if (currElem.hasAttribute('style')) {
 			currElem.style.setProperty('--dfce-mc-border-color', currElem.style.borderColor);
 		}
@@ -246,10 +247,10 @@ export default class ChatMerge {
 			const logId = parseInt(/df-chat-log-(\d+)/.exec(currElem.parentElement.parentElement.id)[1]);
 			if (isNaN(logId)) return;
 			const chatLog = DFChatArchiveManager.chatViewers.get(logId);
-			curr = <ChatMessage>chatLog.messages.find(x =>
-				((x as ChatMessageData)._id ? (x as ChatMessageData)._id : (x as ChatMessage).id) == currElem.dataset.messageId);
-			prev = <ChatMessage>chatLog.messages.find(x =>
-				((x as ChatMessageData)._id ? (x as ChatMessageData)._id : (x as ChatMessage).id) == prevElem.dataset.messageId);
+			curr = <ChatMessageData>chatLog.messages.find(x =>
+				(x.id ?? x._id) == currElem.dataset.messageId);
+			prev = <ChatMessageData>chatLog.messages.find(x =>
+				(x.id ?? x._id) == prevElem.dataset.messageId);
 		}
 		if (!ChatMerge._isValidMessage(curr, prev)) return;
 		if (prevElem.classList.contains('dfce-cm-bottom')) {

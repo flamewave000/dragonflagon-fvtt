@@ -59,7 +59,7 @@ Access the config through the settings, or by entering `/log config` into the ch
 
 **It is NOT recommended for you to change anything in the section between the header and the horizontal line that denotes the end of the log**
 
-![](../.assets/df-chat-enhance-log-config.png) ![](../.assets/df-chat-enhance-log-config-select.png)
+![](../.assets/df-chat-enhance/log-config.png) ![](../.assets/df-chat-enhance/log-config-select.png)
 
 ### Log Command Help
 
@@ -80,9 +80,9 @@ Players can be assigned their own personal Adventure Log. This can be assigned i
 
 For any of the above commands, you can use `/gmlog` instead and the event/quote will be sent to the GM Only Adventure Log instead.
 
-![](../.assets/df-chat-enhance-log-entries.png)
-![](../.assets/df-chat-enhance-gmlog-entries.png)
-![](../.assets/df-chat-enhance-log-messages.png) ![](../.assets/df-chat-enhance-log-add-from-chat.png)
+![](../.assets/df-chat-enhance/log-entries.png)
+![](../.assets/df-chat-enhance/gmlog-entries.png)
+![](../.assets/df-chat-enhance/log-messages.png) ![](../.assets/df-chat-enhance/log-add-from-chat.png)
 
 #### Right-Click Add to Log
 
@@ -131,18 +131,18 @@ AdventureLog.gmevent("The players did something!", true)
 AdventureLog.gmquote("Bob", "Don't worry, be happy!", true)
 ```
 
-## Roll Selector Buttons ![Roll Types](../.assets/df-chat-enhance-privacy-roll-types.png)
+## Roll Selector Buttons ![Roll Types](../.assets/df-chat-enhance/privacy-roll-types.png)
 
 | Players | Game Masters |
 | :-: | :-: |
-| ![Roll buttons for players](../.assets/df-chat-enhance-privacy-pc.png) | ![Roll buttons for Game Master](../.assets/df-chat-enhance-privacy-gm.png) |
+| ![Roll buttons for players](../.assets/df-chat-enhance/privacy-pc.png) | ![Roll buttons for Game Master](../.assets/df-chat-enhance/privacy-gm.png) |
 
 | Roll Type | Button | Keyboard Shortcut |
 | - | - | :-: |
-| Public Rolls | ![](../.assets/df-chat-enhance-privacy-rt-public.png) | <kbd>Alt</kbd> `+` <kbd>Q</kbd> |
-| Private GM Rolls | ![](../.assets/df-chat-enhance-privacy-rt-gm.png) | <kbd>Alt</kbd> `+` <kbd>W</kbd> |
-| Blind GM Rolls | ![](../.assets/df-chat-enhance-privacy-rt-blind.png) | <kbd>Alt</kbd> `+` <kbd>E</kbd> |
-| Self Rolls | ![](../.assets/df-chat-enhance-privacy-rt-self.png) | <kbd>Alt</kbd> `+` <kbd>R</kbd> |
+| Public Rolls | ![](../.assets/df-chat-enhance/privacy-rt-public.png) | <kbd>Alt</kbd> `+` <kbd>Q</kbd> |
+| Private GM Rolls | ![](../.assets/df-chat-enhance/privacy-rt-gm.png) | <kbd>Alt</kbd> `+` <kbd>W</kbd> |
+| Blind GM Rolls | ![](../.assets/df-chat-enhance/privacy-rt-blind.png) | <kbd>Alt</kbd> `+` <kbd>E</kbd> |
+| Self Rolls | ![](../.assets/df-chat-enhance/privacy-rt-self.png) | <kbd>Alt</kbd> `+` <kbd>R</kbd> |
 
 ## Chat Archive
 
@@ -150,19 +150,19 @@ The chat archive is a large component of this module. It allows you to save eith
 
 ### Create Archive
 
-To create an archive, simply click the new "Archive chat log" button that is now beside the "save" and "delete" buttons in the chat sidebar. ![archive button](../.assets/df-chat-enhance-archive-new.png)
+To create an archive, simply click the new "Archive chat log" button that is now beside the "save" and "delete" buttons in the chat sidebar. ![archive button](../.assets/df-chat-enhance/archive-new.png)
 
 #### Create Chat Archive Window
 
 |All chats|Date range of chats|
 |:-:|:-:|
-|![Create chat archive window](../.assets/df-chat-enhance-archive-new-window.png)|![Create chat archive window](../.assets/df-chat-enhance-archive-new-window-date.png)|
+|![Create chat archive window](../.assets/df-chat-enhance/archive-new-window.png)|![Create chat archive window](../.assets/df-chat-enhance/archive-new-window-date.png)|
 
 The windows is fairly self explanatory, you can select all the current chat messages for archiving, or you can select a local date range.
 
 ### Manage Chat Archives
 
-You can view and delete archives from the archive manager. You'll find the ![manage chat archive](../.assets/df-chat-enhance-archive-manage-button.png) button in the sidebar settings tab. You can also see which ones are visible to your players
+You can view and delete archives from the archive manager. You'll find the ![manage chat archive](../.assets/df-chat-enhance/archive-manage-button.png) button in the sidebar settings tab. You can also see which ones are visible to your players
 
 #### Edit Archive Name
 
@@ -178,13 +178,13 @@ When viewing a Chat Archive, GMs will see a Merge button in the top right corner
 
 |Manage Archives|View Archive|Edit Archive Name|Archive Merge|
 |:-:|:-:|:-:|:-:|
-|![Manage archives](../.assets/df-chat-enhance-archive-manage.png)|![View archive](../.assets/df-chat-enhance-archive-viewer.png)|![Edit archive](../.assets/df-chat-enhance-archive-edit.png)|![Merge archive](../.assets/df-chat-enhance-archive-merge.png)|
+|![Manage archives](../.assets/df-chat-enhance/archive-manage.png)|![View archive](../.assets/df-chat-enhance/archive-viewer.png)|![Edit archive](../.assets/df-chat-enhance/archive-edit.png)|![Merge archive](../.assets/df-chat-enhance/archive-merge.png)|
 
 ## Chat Message Markdown
 
 You can now use all of your favourite Markdown in the Chat Log for formatting your messages in the way you want.
 
-![Chat Message Markdown](../.assets/df-chat-enhance-chat-edit-markdown.png)
+![Chat Message Markdown](../.assets/df-chat-enhance/chat-edit-markdown.png)
 
 ## Edit Sent Messages
 
@@ -194,7 +194,7 @@ You will now see a little edit button in the top right of messages you are allow
 
 A keyboard shortcut has now been added to allow you to quickly edit your most recent message you sent. While in the chat box, simply press `[Ctrl]+[Up]` on the keyboard. An edit message dialog will immediately appear for the most recent message you sent.
 
-![](../.assets/df-chat-enhance-edit-message.png)
+![](../.assets/df-chat-enhance/edit-message.png)
 
 ## Better Chat Log Scrolling
 
@@ -204,7 +204,7 @@ This feature prevents that auto-scroll and instead will give you a "Scroll To Bo
 
 |Scroll To Bottom Button|Scroll To Bottom with New Message|
 |:-:|:-:|
-|![Scroll To Bottom Button](../.assets/df-chat-enhance-scroll-manage.png)|![Scroll To Bottom with New Message](../.assets/df-chat-enhance-scroll-manage-new.png)|
+|![Scroll To Bottom Button](../.assets/df-chat-enhance/scroll-manage.png)|![Scroll To Bottom with New Message](../.assets/df-chat-enhance/scroll-manage-new.png)|
 
 ## Chat Message Merging
 
@@ -212,7 +212,7 @@ You will now be able to have messages merged in the chat. There are various sett
 
 |Chat Merging GM|Chat Merging PC|
 |:-:|:-:|
-|![Chat Merging GM](../.assets/df-chat-enhance-chat-merge-gm.png)|![Chat Merging PC](../.assets/df-chat-enhance-chat-merge-pc.png)|
+|![Chat Merging GM](../.assets/df-chat-enhance/chat-merge-gm.png)|![Chat Merging PC](../.assets/df-chat-enhance/chat-merge-pc.png)|
 
 ### Message Headers
 
@@ -224,13 +224,13 @@ There is an option for merged messages to display a thin divider between them. T
 
 |With Divider|Without Divider|
 |:-:|:-:|
-|![With Divider](../.assets/df-chat-enhance-chat-merge-divider-on.png)|![Without Divider](../.assets/df-chat-enhance-chat-merge-divider-off.png)|
+|![With Divider](../.assets/df-chat-enhance/chat-merge-divider-on.png)|![Without Divider](../.assets/df-chat-enhance/chat-merge-divider-off.png)|
 
 ### Hover Shadow
 
 Merged Messages are set to display a faint shadow when you hover over them. I recommend you keep this on if you have the [Message Divider](#Message-Divider) feature disabled.
 
-![Hover Shadow](../.assets/df-chat-enhance-chat-merge-hover.png)
+![Hover Shadow](../.assets/df-chat-enhance/chat-merge-hover.png)
 
 ### Roll Merging
 
@@ -238,7 +238,7 @@ Rolls can be merged in an independent way. You have three choices, No Merging, M
 
 |No Merging|Merge with other Rolls|Merge With Any|
 |:-:|:-:|:-:|
-|![No Merging](../.assets/df-chat-enhance-chat-merge-roll-none.png)|![Merge with other Rolls](../.assets/df-chat-enhance-chat-merge-roll-rolls.png)|![Merge With Any](../.assets/df-chat-enhance-chat-merge-roll-all.png)|
+|![No Merging](../.assets/df-chat-enhance/chat-merge-roll-none.png)|![Merge with other Rolls](../.assets/df-chat-enhance/chat-merge-roll-rolls.png)|![Merge With Any](../.assets/df-chat-enhance/chat-merge-roll-all.png)|
 
 ## Chat Box Send Button
 
@@ -254,7 +254,7 @@ There is an option that when enabled, you will see the chat message timestamp ch
 
 Now when you whisper a message to a list of users, the Recipient List at the top of the message is truncated if it is too long. There are some games that have many GM users and hitting up `/w gm ...` can make a very massive chat message. Instead it will truncate the list and say how many more names there are. You simply have to hover your mouse over the visible names and the rest will show in the mouse-over hint bubble.
 
-![Whisper Recipient List Truncation](../.assets/df-chat-enhance-whisper-trunc.png)
+![Whisper Recipient List Truncation](../.assets/df-chat-enhance/whisper-trunc.png)
 
 ## Formatted Message Text Selectable
 

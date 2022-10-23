@@ -3,7 +3,7 @@ import { DFChatArchive, DFChatArchiveEntry } from './DFChatArchive';
 
 export default class DFChatArchiveViewer extends Application {
 	archive: DFChatArchiveEntry;
-	messages: (ChatMessage | ChatMessageData)[];
+	messages: ChatMessageData[];
 	onCloseCallBack: (view: DFChatArchiveViewer) => void;
 	constructor(archive: DFChatArchiveEntry, onCloseCallBack: (view: DFChatArchiveViewer) => void) {
 		super();
@@ -108,6 +108,7 @@ export default class DFChatArchiveViewer extends Application {
 						title: 'DF_CHAT_ARCHIVE.ArchiveViewer_Merge_Title'.localize(),
 						default: 'merge',
 						content: await renderTemplate('modules/df-chat-enhance/templates/archive-merge.hbs', {
+							id: this.archive.id,
 							name: this.archive.name,
 							archives: DFChatArchive.getLogs().filter(x => x.id != this.archive.id)
 						}),
@@ -130,10 +131,10 @@ export default class DFChatArchiveViewer extends Application {
 									const mergedChats = (currentChats as ChatMessageData[])
 										.concat(sourceChats as ChatMessageData[])
 										.sort((a, b) => a.timestamp - b.timestamp);
-									DFChatArchive.updateChatArchive(this.archive, mergedChats);
-									this.render(false);
-									if (($(html).find('#delete')[0] as HTMLInputElement).checked) {
-										DFChatArchive.deleteChatArchive(id);
+									await DFChatArchive.updateChatArchive(this.archive, mergedChats);
+									this.render(true);
+									if (($(html).find('#delete-' + this.archive.id)[0] as HTMLInputElement).checked) {
+										await DFChatArchive.deleteChatArchive(id);
 									}
 								}
 							}

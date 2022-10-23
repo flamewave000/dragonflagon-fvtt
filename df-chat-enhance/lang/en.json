@@ -167,7 +167,11 @@
 		"ScrollIfYouName": "Scroll To Bottom When You Send Message",
 		"ScrollIfYouHint": "If you have scrolled up through the chat log, this will automatically scroll you back to the bottom when you send a message.",
 		"ScrollButton": "Scroll to Bottom",
-		"NewMessage": "New Message!"
+		"NewMessage": "New Message!",
+		"HistorySizeName": "Reduce Shown Chat Messages",
+		"HistorySizeHint": "Reduces the number of shown chat messages. Old messages will load in as you scroll up the chat log. This helps improve Foundry's performance when you have a vary long chat history.",
+		"HistoryFixEnabledName": "Maximum Chat Messages",
+		"HistoryFixEnabledHint": "The maximum number of chat messages to show when you are at the bottom of the chat log."
 	},
 	"DF_CHAT_WHISPER_TRUNC": {
 		"SettingEnabledName": "Enable Whisper Name List Truncation",

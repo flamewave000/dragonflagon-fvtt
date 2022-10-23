@@ -73,7 +73,7 @@ export function ready() {
 			allowProtoMethodsByDefault: true,
 			allowProtoPropertiesByDefault: true
 		}));
-		html.find('input[name="color"]').parent().after(journalSelection);
+		html.find('input[name="color"]').parent().parent().after(journalSelection);
 	});
 
 	libWrapperShared.register('UserConfig.prototype._updateObject',

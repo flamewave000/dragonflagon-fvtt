@@ -1,5 +1,6 @@
 
-import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
+import { JournalEntryData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import { ChatMessageData, ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 import SETTINGS from "../../../common/Settings";
 import DFChatEditor from "../edit/DFChatEditor";
 import DFAdventureLogConfig from './DFAdventureLogConfig';
@@ -103,7 +104,7 @@ export default class DFAdventureLogProcessor {
 				return enabled && (!gmOnly || isGM);
 			},
 			callback: (header) => {
-				const chatData = ui.chat.collection.get($(header).attr('data-message-id')).data;
+				const chatData = <ChatMessageData><any>ui.chat.collection.get($(header).attr('data-message-id'));
 				DFAdventureLogProcessor.commandProcessor(chatData.content, false, false);
 				return {};
 			}
@@ -118,7 +119,7 @@ export default class DFAdventureLogProcessor {
 				return enabled && (!gmOnly || isGM);
 			},
 			callback: (header) => {
-				const chatData = ui.chat.collection.get($(header).attr('data-message-id')).data;
+				const chatData = <ChatMessageData><any>ui.chat.collection.get($(header).attr('data-message-id'));
 				if (chatData.content.trimStart().startsWith('"'))
 					DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, false, false);
 				else
@@ -135,7 +136,7 @@ export default class DFAdventureLogProcessor {
 				return enabled && isGM;
 			},
 			callback: (header) => {
-				const chatData = ui.chat.collection.get($(header).attr('data-message-id')).data;
+				const chatData = <ChatMessageData><any>ui.chat.collection.get($(header).attr('data-message-id'));
 				DFAdventureLogProcessor.commandProcessor(chatData.content, true, false);
 				return {};
 			}
@@ -149,7 +150,7 @@ export default class DFAdventureLogProcessor {
 				return enabled && isGM;
 			},
 			callback: (header) => {
-				const chatData = ui.chat.collection.get($(header).attr('data-message-id')).data;
+				const chatData = <ChatMessageData><any>ui.chat.collection.get($(header).attr('data-message-id'));
 				if (chatData.content.trimStart().startsWith('"'))
 					DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, true, false);
 				else
@@ -443,13 +444,13 @@ export default class DFAdventureLogProcessor {
 				ui.notifications.warn('DF_CHAT_LOG.Error.NoJournalSet'.localize());
 			return;
 		}
-		const journal = game.journal.get(journalId);
-		let html = $(journal.data.content);
+		const journal = <JournalEntryData><any>game.journal.get(journalId);
+		let html = $(journal.content);
 		const messageHtml = $(messageText);
 		let section = html.find('section.df-adventure-log');
 		if (section.length == 0) {
 			await DFAdventureLogConfig.initializeJournal(journalId, false, gmLog, isPlayerLog);
-			html = $(journal.data.content);
+			html = $(journal.content);
 			section = html.find('section.df-adventure-log');
 		}
 		const descending = SETTINGS.get(this.PREF_SORTDESC) as boolean;
@@ -482,8 +483,8 @@ export default class DFAdventureLogProcessor {
 		const journalAll = SETTINGS.get(DFAdventureLogConfig.PREF_JOURNAL) as string;
 		const journalGM = SETTINGS.get(DFAdventureLogConfig.PREF_JOURNAL_GM) as string;
 
-		const journalSort = async (journal: JournalEntry) => {
-			const html = $(journal.data.content);
+		const journalSort = async (journal: JournalEntryData) => {
+			const html = $(journal.content);
 			const article = html.find('article.df-adventure-log');
 			const result = (article.find('p') as any).sort(function (a: HTMLElement, b: HTMLElement) {
 				return descending ?
@@ -496,8 +497,8 @@ export default class DFAdventureLogProcessor {
 		};
 
 		if (game.journal.has(journalAll))
-			await journalSort(game.journal.get(journalAll));
+			await journalSort(<JournalEntryData><any>game.journal.get(journalAll));
 		if (game.journal.has(journalGM))
-			await journalSort(game.journal.get(journalGM));
+			await journalSort(<JournalEntryData><any>game.journal.get(journalGM));
 	}
 }

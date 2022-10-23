@@ -1,3 +1,4 @@
+import { ChatMessageData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import SETTINGS from "../../../common/Settings";
 import DFChatEdit from "./df-chat-edit";
 
@@ -7,7 +8,7 @@ declare namespace marked {
 }
 
 export default class DFChatEditor extends FormApplication {
-	private chatMessage: ChatMessage;
+	private chatMessage: ChatMessageData & ChatMessage;
 	public static readonly PREF_MARKDOWN = 'edit-markdown';
 
 	/**
@@ -28,7 +29,7 @@ export default class DFChatEditor extends FormApplication {
 		}) as FormApplicationOptions;
 	}
 
-	constructor(chatMessage: ChatMessage) {
+	constructor(chatMessage: ChatMessageData & ChatMessage) {
 		super({});
 		this.chatMessage = chatMessage;
 	}
@@ -49,16 +50,16 @@ export default class DFChatEditor extends FormApplication {
 		}
 
 		let selected = '';
-		if (this.chatMessage.data.user)
-			selected = 'user-' + this.chatMessage.data.user;
-		if (this.chatMessage.data.speaker.token)
-			selected = 'token-' + this.chatMessage.data.speaker.token;
+		if (this.chatMessage.user)
+			selected = 'user-' + this.chatMessage.user;
+		if (this.chatMessage.speaker.token)
+			selected = 'token-' + this.chatMessage.speaker.token;
 
 		return mergeObject(options, {
 			selected,
 			players: game.users.map(x => ({ id: 'user-' + x.id, name: x.name })),
 			actorGroups: types.filter(x => x.actors.length > 0),
-			messageText: this.chatMessage.data.content
+			messageText: this.chatMessage.content
 				.replace(/< *br *\/?>/gm, '\n')
 				.replace(/<p +class="df-edited">.+/, '')
 		});

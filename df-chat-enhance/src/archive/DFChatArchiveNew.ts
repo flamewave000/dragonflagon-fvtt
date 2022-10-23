@@ -61,9 +61,7 @@ export default class DFChatArchiveNew extends FormApplication<FormApplicationOpt
 		// If we don't want to delete the messages, return
 		if (!formData.delete) return;
 
-		for (const chat of chats) {
-			chat.delete();
-		}
+		game.messages.flush();
 	}
 
 	_renderInner(data: { shouldDelete: boolean }): Promise<JQuery<HTMLElement>> {

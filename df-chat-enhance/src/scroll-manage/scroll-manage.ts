@@ -1,3 +1,4 @@
+import { ChatMessageData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import libWrapperShared from "../../../common/libWrapperShared";
 import SETTINGS from "../../../common/Settings";
 import ChatHistoryOptimizer from "./ChatHistoryOptimizer";
@@ -98,12 +99,12 @@ export default class ScrollManage {
 		else $('#chat #chat-log').trigger('scroll');
 	}
 
-	private static async _ChatLog_postOne(this: ChatLogExt, message: ChatMessage, notify = false) {
+	private static async _ChatLog_postOne(this: ChatLogExt, message: ChatMessageData & ChatMessage, notify = false) {
 		if (!message.visible) return;
 
 		// Track internal flags
 		if (!this._lastId) this._lastId = message.id; // Ensure that new messages don't result in batched scrolling
-		if ((message.data.whisper || []).includes(game.user.id) && !message.isRoll) {
+		if ((message.whisper || []).includes(game.user.id) && !message.isRoll) {
 			this._lastWhisper = message;
 		}
 

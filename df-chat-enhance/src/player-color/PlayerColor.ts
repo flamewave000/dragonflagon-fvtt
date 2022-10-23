@@ -34,7 +34,7 @@ export default class PlayerColor {
 
 		Hooks.on('renderUserConfig', (app: UserConfig, html: JQuery<HTMLElement>, data: UserConfig.Data<any>) => {
 			const color = data.user.getFlag(SETTINGS.MOD_NAME, PlayerColor.FLAG_CHAT_COLOR) ?? '';
-			html.find('input[name="color"]').parent().after(`
+			html.find('input[name="color"]').parent().parent().after(`
 <div class="form-group">
 	<label for="chat-color">${'DF_CHAT_PLAYER_COLOR.Label'.localize()}</label>
 	<input id="chat-color" type="text" name="chat-color" value="${color}" style="flex:1.35">

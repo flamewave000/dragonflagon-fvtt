@@ -1,3 +1,4 @@
+import { JournalEntryData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import SETTINGS from "../../../common/Settings";
 import DFAdventureLogProcessor from "./DFAdventureLogProcessor";
 
@@ -47,12 +48,12 @@ export default class DFAdventureLogConfig extends FormApplication {
 		for (const key of keys) {
 			logJournals.push({
 				id: key,
-				name: game.journal.get(key).data.name,
+				name: game.journal.get(key).name,
 				selected: key === selectedLog
 			});
 			gmlogJournals.push({
 				id: key,
-				name: game.journal.get(key).data.name,
+				name: game.journal.get(key).name,
 				selected: key === selectedGMLog
 			});
 		}
@@ -79,17 +80,17 @@ export default class DFAdventureLogConfig extends FormApplication {
 
 	static async initializeJournal(id: string, clear: boolean, isGMOnly: boolean, isPlayerLog: boolean) {
 		if (!game.journal.has(id)) return;
-		const journal = game.journal.get(id);
-		if (clear || journal.data.content === null)
-			journal.data.content = '';
-		const html = $(journal.data.content);
+		const journal = <Journal & JournalEntryData><any>game.journal.get(id);
+		if (clear || journal.content === null)
+			journal.content = '';
+		const html = $(journal.content);
 		const article = html.find('article[class="df-adventure-log"]');
 		if (article.length != 0) {
 			await DFAdventureLogProcessor.resortLog();
 			return;
 		}
 		await journal.update({
-			content: journal.data.content + `
+			content: journal.content + `
 			<section>
 				<h2>${game.i18n.localize(isGMOnly ? 'DF_CHAT_LOG.GMLog_Header' : isPlayerLog ? 'DF_CHAT_LOG.PLog_Header' : 'DF_CHAT_LOG.Log_Header')}</h2>
 				<section class="df-adventure-log"></section>

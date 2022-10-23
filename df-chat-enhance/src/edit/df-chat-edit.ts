@@ -1,3 +1,4 @@
+import { ChatMessageData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import SETTINGS from "../../../common/Settings";
 import DFChatEditor from './DFChatEditor';
 
@@ -55,10 +56,10 @@ export default class DFChatEdit {
 			// We have used the Shift+Up combo to edit previously sent message
 			if (event.code === "ArrowUp" && event.ctrlKey) {
 				event.preventDefault();
-				let messages = <ChatMessage[]>[...(ui.chat.collection.values())];
+				let messages = <(ChatMessageData & ChatMessage)[]><any[]>[...(ui.chat.collection.values())];
 				// Perform an inverted sort ( n<0 before, n=0 same, n>0 after )
-				messages = messages.sort((a, b) => b.data.timestamp - a.data.timestamp);
-				const message = messages.find(x => x.data.user === game.user.id);
+				messages = messages.sort((a, b) => b.timestamp - a.timestamp);
+				const message = messages.find(x => x.user === game.user.id);
 				if (!message) return;
 				DFChatEdit.editChatMessage.bind(message)();
 			}
@@ -108,11 +109,11 @@ export default class DFChatEdit {
 			name: 'DF_CHAT_EDIT.ContextOption',
 			icon: '<i class="fas fa-pencil-alt"></i>',
 			condition: (header) => {
-				const chatData: ChatMessage = ui.chat.collection.get($(header).attr('data-message-id'));
+				const chatData = <ChatMessageData & ChatMessage><any>ui.chat.collection.get($(header).attr('data-message-id'));
 				return this.processChatMessage(chatData);
 			},
 			callback: (header) => {
-				const chatData = ui.chat.collection.get($(header).attr('data-message-id'));
+				const chatData = <ChatMessageData & ChatMessage><any>ui.chat.collection.get($(header).attr('data-message-id'));
 				DFChatEdit.editChatMessage.bind(chatData)();
 				return {};
 			}
@@ -120,7 +121,7 @@ export default class DFChatEdit {
 	}
 
 	// Will be bound to the instance of ChatMessage we are observing
-	static async editChatMessage(this: ChatMessage) {
+	static async editChatMessage(this: ChatMessageData & ChatMessage) {
 		// Double check permissions
 		if (!SETTINGS.get(PREF_EDIT_ALLOWED)) {
 			ui.notifications.warn('DF_CHAT_EDIT.Error_NoPermission'.localize());
@@ -144,25 +145,16 @@ export default class DFChatEdit {
 		});
 	}
 
-	static processChatMessage(chatMessage: ChatMessage/*, html: JQuery<HTMLElement>*/): boolean {
+	static processChatMessage(chatMessage: ChatMessageData & ChatMessage/*, html: JQuery<HTMLElement>*/): boolean {
 		// If we are catching the render of an archived message
 		if (!ui.chat.collection.has(chatMessage.id))
 			return false;
-		// // If an edit button has already been placed
-		// if (html.find('a.button.message-edit').length != 0) {
-		// 	html.find('a.button.message-edit').remove();// remove the old edit button
-		// }
 		// Ignore rolls and other people's messages, unless we are the GM and PREF_GM_ALL is true
 		if (!SETTINGS.get(PREF_EDIT_ALLOWED) || chatMessage.isRoll
-			|| (chatMessage.data.user !== game.userId && !(game.user.isGM && SETTINGS.get(PREF_GM_ALL))))
+			|| (chatMessage.user.id !== game.userId && !(game.user.isGM && SETTINGS.get(PREF_GM_ALL))))
 			return false;
 		// If we ignore html and message contains html, return
-		if (SETTINGS.get(PREF_IGNORE_HTML) && DFChatEdit.isHTML(chatMessage.data.content)) return false;
-
+		if (SETTINGS.get(PREF_IGNORE_HTML) && DFChatEdit.isHTML(chatMessage.content)) return false;
 		return true;
-		// const header = html.find('header.message-header');
-		// const editButton = $(`<a class="button message-edit"><i class="fas fa-pencil-alt"></i></a>`);
-		// header.prepend(editButton);
-		// editButton.on('click', DFChatEdit.editChatMessage.bind(chatMessage));
 	}
 }
