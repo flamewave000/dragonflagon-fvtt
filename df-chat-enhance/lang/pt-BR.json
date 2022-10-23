@@ -84,7 +84,6 @@
 		"Config_Title": "Config. do Registro de Aventura",
 		"Config_JournalSelect": "Diário para Registro",
 		"Config_GMJournalSelect": "Diário do Mestre para Registro",
-		"Config_NoSelection": "---",
 		"Config_ClearContent": "Apagar conteúdo desse Diário",
 		"Config_GmClearContent": "Apagar conteúdo desse Diário",
 		"Config_JournalPermissions": "Qualquer pessoa que fizer o Registro de eventos precisará de permissão para editar o Diário selecionado.",

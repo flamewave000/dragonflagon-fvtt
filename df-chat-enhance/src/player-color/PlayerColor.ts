@@ -37,8 +37,10 @@ export default class PlayerColor {
 			html.find('input[name="color"]').parent().parent().after(`
 <div class="form-group">
 	<label for="chat-color">${'DF_CHAT_PLAYER_COLOR.Label'.localize()}</label>
-	<input id="chat-color" type="text" name="chat-color" value="${color}" style="flex:1.35">
-	<input type="color" value="${color}" data-edit="chat-color">
+	<div class="form-fields">
+		<input class="color" id="chat-color" type="text" name="chat-color" value="${color}">
+		<input type="color" value="${color}" data-edit="chat-color">
+	</div>
 </div>`);
 			const chatField = html.find('#chat-color');
 			const chatPicker = html.find('[data-edit="chat-color"]');

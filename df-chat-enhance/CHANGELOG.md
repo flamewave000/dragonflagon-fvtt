@@ -1,5 +1,8 @@
 # DF Chat Enhancements
 
+## Release 4.1.0 (2022-10-23)
+- **UPDATE:** Migrated to V10.
+
 ## Release 4.0.1 (2022-06-22)
 - **FIX:** Fixed a conflict with Z's Requestor module.
 

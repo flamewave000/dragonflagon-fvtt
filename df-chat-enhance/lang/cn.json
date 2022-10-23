@@ -88,7 +88,6 @@
 		"Config_Title": "冒险日志设定",
 		"Config_JournalSelect": "用于冒险日志的日志",
 		"Config_GMJournalSelect": "用于仅限 GM 的日志",
-		"Config_NoSelection": "---",
 		"Config_ClearContent": "清除日志的所有内容",
 		"Config_GmClearContent": "清除仅限 GM 的日志的所有内容",
 		"Config_JournalPermissions": "所有提交日志事件的玩家需要编辑选择的日志的权限。",

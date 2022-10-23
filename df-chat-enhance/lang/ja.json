@@ -100,7 +100,6 @@
 		"Config_Title": "アドベンチャーログの設定",
 		"Config_JournalSelect": "アドベンチャーログとして使用するジャーナル",
 		"Config_GMJournalSelect": "GM専用ログとして使用するジャーナル",
-		"Config_NoSelection": "---",
 		"Config_ClearContent": "ジャーナルのすべての内容をクリアする",
 		"Config_GmClearContent": "GM専用ジャーナルのすべての内容をクリアする",
 		"Config_JournalPermissions": "イベントをログに記録するプレイヤーは選択したジャーナルを編集するための権限が必要になります。",

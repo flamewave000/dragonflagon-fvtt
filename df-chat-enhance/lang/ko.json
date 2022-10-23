@@ -94,7 +94,6 @@
 		"Config_Title": "모험 기록 설정",
 		"Config_JournalSelect": "모험 기록으로 사용할 저널",
 		"Config_GMJournalSelect": "GM 전용 기록에 사용할 저널",
-		"Config_NoSelection": "---",
 		"Config_ClearContent": "저널의 모든 내용 삭제",
 		"Config_GmClearContent": "GM 전용 저널의 모든 내용을 삭제한다.",
 		"Config_JournalPermissions": "유저가 이벤트를 기록하려면 저널 편집 권한이 필요합니다.",

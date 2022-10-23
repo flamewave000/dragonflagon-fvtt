@@ -114,7 +114,6 @@
 		"Config_Title": "Adventure Log Settings",
 		"Config_JournalSelect": "Journal to use as the Adventure Log",
 		"Config_GMJournalSelect": "Journal to use as the GM Only Log",
-		"Config_NoSelection": "---",
 		"Config_ClearContent": "Clear all contents of the journal",
 		"Config_GmClearContent": "Clear all contents of the GM Only journal",
 		"Config_JournalPermissions": "Anyone who will log events will need permission to edit the selected Journal.",

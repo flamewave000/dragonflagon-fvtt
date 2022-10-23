@@ -54,31 +54,95 @@ export function ready() {
 	DFAdventureLogProcessor.setupSettings();
 
 	Hooks.on('renderUserConfig', (_app: UserConfig, html: JQuery<HTMLElement>, data: UserConfig.Data<any>) => {
-		const journal = data.user.getFlag(SETTINGS.MOD_NAME, DFAdventureLogProcessor.PREF_PLAYER_LOG_JOURNAL);
+		const journal = (<string>data.user.getFlag(SETTINGS.MOD_NAME, DFAdventureLogProcessor.PREF_PLAYER_LOG_JOURNAL))?.split('.');
 		const template = Handlebars.compile(`
 <div class="form-group">
 	<label for="dfce-player-log">Player Log Journal</label>
-	<select id="dfce-player-log" name="player-log">
-		{{#each journals}}
-		<option value="{{id}}" {{#if (eq ../selected id)}}selected{{/if}}>{{name}}</option>
-		{{/each}}
-	</select>
+	<div class="form-fields">
+		<select id="dfce-player-log" name="player-log">
+			{{#each journals}}
+			<option value="{{id}}" {{#if selected}} selected{{/if}}>{{name}}</option>
+			{{/each}}
+		</select>
+	</div>
+</div>
+<div class="form-group">
+	<label for="dfce-player-log-page">Player Log Journal Page</label>
+	<div class="form-fields">
+		<select id="dfce-player-log-page" name="player-log-page">
+			{{#each pages}}
+			<option value="{{id}}"{{#if selected}} selected{{/if}}>{{name}}</option>
+			{{/each}}
+		</select>
+	</div>
 </div>
 `);
-		const journals = ui.journal.documents.filter(x => x.testUserPermission(data.user, CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER));
+		const journals = ui.journal.documents
+			.filter(x => x.testUserPermission(data.user, CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER))
+			.filter(x => x.pages.contents.some(y => y.type === 'text'));
 		const journalSelection = $(template({
 			selected: journal ?? '',
-			journals: [{ id: '', name: '---' }].concat(journals as { id: string, name: string }[])
+			journals: [{ id: '', name: '---', selected: !journal }].concat(journals.map(x => ({
+				id: x.id,
+				name: x.name,
+				selected: x.id === journal[0]
+			}))),
+			pages: journal ? journals.find(x => x.id == journal[0]).pages.contents.filter(x => x.type === 'text').map(x => ({
+				id: x.id,
+				name: x.name,
+				selected: x.id === journal[1]
+			})) : []
 		}, {
 			allowProtoMethodsByDefault: true,
 			allowProtoPropertiesByDefault: true
 		}));
-		html.find('input[name="color"]').parent().parent().after(journalSelection);
+		html.find('#characters').parent().before(journalSelection);
+		journalSelection.find('#dfce-player-log').on('change', event => {
+			const journalId = (event.currentTarget as HTMLSelectElement).value;
+			const pageElement = journalSelection.find('#dfce-player-log-page');
+			pageElement.children().remove();
+			if (!journalId || journalId.length === 0) return;
+			for (const page of game.journal.get(journalId).pages.contents.filter(x => x.type === 'text')) {
+				pageElement.append(`<option value="${journalId}.${page.id}">${page.name}</option>`);
+			}
+		});
 	});
 
 	libWrapperShared.register('UserConfig.prototype._updateObject',
-		async function (this: UserConfig, wrapped: (...args: any) => any, event: any, formData: { "player-log": string }) {
-			await this.object.setFlag(SETTINGS.MOD_NAME, DFAdventureLogProcessor.PREF_PLAYER_LOG_JOURNAL, formData["player-log"]);
+		async function (this: UserConfig, wrapped: (...args: any) => any, event: any, formData: { "player-log-page": string }) {
+			await this.object.setFlag(SETTINGS.MOD_NAME, DFAdventureLogProcessor.PREF_PLAYER_LOG_JOURNAL, formData["player-log-page"]);
 			return await wrapped(event, formData);
 		});
+
+	migrateDataV9toV10();
+}
+
+async function migrateDataV9toV10() {
+	if (!game.user.isGM) return;
+	let journalId = SETTINGS.get<string>(DFAdventureLogConfig.PREF_JOURNAL);
+	if (checkJournal(journalId))
+		await SETTINGS.set<string>(DFAdventureLogConfig.PREF_JOURNAL, await migrateJournalV9toV10(journalId));
+	journalId = SETTINGS.get<string>(DFAdventureLogConfig.PREF_JOURNAL_GM);
+	if (checkJournal(journalId))
+		await SETTINGS.set<string>(DFAdventureLogConfig.PREF_JOURNAL_GM, await migrateJournalV9toV10(journalId));
+
+	for (const user of game.users) {
+		journalId = <string>user.getFlag(SETTINGS.MOD_NAME, DFAdventureLogProcessor.PREF_PLAYER_LOG_JOURNAL);
+		if (!checkJournal(journalId)) continue;
+		journalId = await migrateJournalV9toV10(journalId);
+		if (!journalId)
+			await user.unsetFlag(SETTINGS.MOD_NAME, DFAdventureLogProcessor.PREF_PLAYER_LOG_JOURNAL);
+		else
+			await user.setFlag(SETTINGS.MOD_NAME, DFAdventureLogProcessor.PREF_PLAYER_LOG_JOURNAL, journalId);
+	}
+}
+
+function checkJournal(id: string) { return id && id.split('.').length < 2; }
+
+async function migrateJournalV9toV10(id: string): Promise<string | null> {
+	const journal = game.journal.get(id);
+	if (!journal) return null;
+	const page = journal.pages.contents.find(x => x.type == 'text');
+	if (!page) return null;
+	return journal.id + '.' + page.id;
 }

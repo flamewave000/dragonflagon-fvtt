@@ -60,5 +60,6 @@ export default class SendButton {
 		// @ts-expect-error
 		textarea[0].dfce_handler = handler;
 		textarea.on('input', handler);
+		textarea.on('change', handler);
 	}
 }

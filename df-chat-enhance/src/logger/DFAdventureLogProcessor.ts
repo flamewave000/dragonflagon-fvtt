@@ -1,5 +1,4 @@
 
-import { JournalEntryData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import { ChatMessageData, ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 import SETTINGS from "../../../common/Settings";
 import DFChatEditor from "../edit/DFChatEditor";
@@ -392,6 +391,7 @@ export default class DFAdventureLogProcessor {
 						return;
 					}
 					source = messageText.slice(0, index + 1);
+					messageText = messageText.slice(index + 1).trimStart();
 				}
 				else
 					source = tokens[1];
@@ -433,9 +433,10 @@ export default class DFAdventureLogProcessor {
 		}
 
 		// fetch the log to submit to
-		const journalId = isPlayerLog ? game.user.getFlag(SETTINGS.MOD_NAME, this.PREF_PLAYER_LOG_JOURNAL) as string :
-			SETTINGS.get<string>(gmLog ? DFAdventureLogConfig.PREF_JOURNAL_GM : DFAdventureLogConfig.PREF_JOURNAL);
-		if (!game.journal.has(journalId)) {
+		const journalId = (isPlayerLog ? game.user.getFlag(SETTINGS.MOD_NAME, this.PREF_PLAYER_LOG_JOURNAL) as string :
+			SETTINGS.get<string>(gmLog ? DFAdventureLogConfig.PREF_JOURNAL_GM : DFAdventureLogConfig.PREF_JOURNAL))
+			?.split('.');
+		if (!journalId || !game.journal.has(journalId[0])) {
 			if (isPlayerLog)
 				ui.notifications.error('DF_CHAT_LOG.Error.NoPlayerJournalSet'.localize());
 			else if (game.user.isGM)
@@ -444,18 +445,18 @@ export default class DFAdventureLogProcessor {
 				ui.notifications.warn('DF_CHAT_LOG.Error.NoJournalSet'.localize());
 			return;
 		}
-		const journal = <JournalEntryData><any>game.journal.get(journalId);
-		let html = $(journal.content);
+		const journal = game.journal.get(journalId[0]).pages.get(journalId[1]);
+		let html = $(journal.text.content);
 		const messageHtml = $(messageText);
 		let section = html.find('section.df-adventure-log');
 		if (section.length == 0) {
-			await DFAdventureLogConfig.initializeJournal(journalId, false, gmLog, isPlayerLog);
-			html = $(journal.content);
+			await DFAdventureLogConfig.initializeJournal(journalId.join('.'), false, gmLog, isPlayerLog);
+			html = $(journal.text.content);
 			section = html.find('section.df-adventure-log');
 		}
 		const descending = SETTINGS.get(this.PREF_SORTDESC) as boolean;
 		if (descending) section.prepend(messageHtml); else section.append(messageHtml);
-		await journal.update({ content: $('<div></div>').append(html).html() });
+		await journal.update({ 'text.content': $('<div></div>').append(html).html() });
 		const rollType = game.settings.get("core", "rollMode");
 		if (game.user.isGM) {
 			if (
@@ -480,11 +481,11 @@ export default class DFAdventureLogProcessor {
 
 	static async resortLog() {
 		const descending = SETTINGS.get(this.PREF_SORTDESC) as boolean;
-		const journalAll = SETTINGS.get(DFAdventureLogConfig.PREF_JOURNAL) as string;
-		const journalGM = SETTINGS.get(DFAdventureLogConfig.PREF_JOURNAL_GM) as string;
+		const journalAll = (SETTINGS.get(DFAdventureLogConfig.PREF_JOURNAL) as string)?.split('.');
+		const journalGM = (SETTINGS.get(DFAdventureLogConfig.PREF_JOURNAL_GM) as string)?.split('.');
 
-		const journalSort = async (journal: JournalEntryData) => {
-			const html = $(journal.content);
+		const journalSort = async (journal: JournalEntryPage) => {
+			const html = $(journal.text?.content);
 			const article = html.find('article.df-adventure-log');
 			const result = (article.find('p') as any).sort(function (a: HTMLElement, b: HTMLElement) {
 				return descending ?
@@ -493,12 +494,12 @@ export default class DFAdventureLogProcessor {
 
 			});
 			article.html(result);
-			await journal.update({ content: $('<div></div>').append(html).html() });
+			await journal.update({ 'text.content': $('<div></div>').append(html).html() });
 		};
 
-		if (game.journal.has(journalAll))
-			await journalSort(<JournalEntryData><any>game.journal.get(journalAll));
-		if (game.journal.has(journalGM))
-			await journalSort(<JournalEntryData><any>game.journal.get(journalGM));
+		if (game.journal.has(journalAll[0]))
+			await journalSort(game.journal.get(journalAll[0]).pages.get(journalAll[1]));
+		if (game.journal.has(journalGM[0]))
+			await journalSort(game.journal.get(journalGM[0]).pages.get(journalGM[1]));
 	}
 }
