@@ -41,7 +41,7 @@ export class TemplateConfig extends FormApplication<any, Data> {
 		return this._options;
 	}
 
-	static get defaultOptions(): FormApplication.Options {
+	static get defaultOptions(): FormApplicationOptions {
 		const options = mergeObject(super.defaultOptions, {
 			resizable: false,
 			submitOnChange: false,
@@ -93,13 +93,13 @@ export class TemplateConfig extends FormApplication<any, Data> {
 				rect: old5ePatch ? HighlightMode.TOUCH : HighlightMode.CENTER,
 				ray: old5ePatch ? HighlightMode.TOUCH : HighlightMode.CENTER
 			},
-			onChange: () => canvas.templates?.placeables.filter((t: MeasuredTemplate) => t.data.t === "circle")
+			onChange: () => canvas.templates?.placeables.filter((t: MeasuredTemplate) => t.document.t === "circle")
 				.forEach((t: MeasuredTemplate) => t.draw())
 		});
 
 		SETTINGS.registerMenu('template-config', {
 			restricted: true,
-			type: TemplateConfig,
+			type: <any>TemplateConfig,
 			label: "DF_TEMPLATES.TemplateConfig.Title"
 		});
 	}

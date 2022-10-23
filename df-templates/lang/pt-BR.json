@@ -1,0 +1,28 @@
+{
+	"DF_TEMPLATES": {
+		"errorLibWrapperMissing": "'DF Template Enhancements' requer o módulo 'libWrapper'. Instale e ative 'libWrapper'.",
+		"ToggleTitle": "Selecionar Tokens Automáticamente",
+		"AutoTargetName": "Modelos Selecionam Tokens Automáticamente",
+		"AutoTargetHint": "Se ativado, irá automaticamente selecionar tokens que são atingidos por um Modelo de Medida",
+		"SnapIntersectName": "Encaixe os modelos nas interseções da grade",
+		"SnapIntersectHint": "Alguns sistemas de regras (como D&D 5e) afirmam que os modelos de magia devem se originar de uma interseção do grid.",
+		"GridlessPointResolutionName": "Resolução para Seleção Automática Sem Grid (Padrão: 3)",
+		"GridlessPointResolutionHint": "Quantos pontos ao longo de cada eixo devem ser gerados para seleção automática em cenas sem grid (Exemplo: para 3, haverá 3 x 3 = 9 pontos sobre cada quadrado). Um número mais alto pode causar desempenho mais lento com muitos tokens em uma cena.",
+		"PreviewName": "Pré-visualizar Realce/Seleção do Modelo",
+		"PreviewHint": "Mostra o realce da grade e executa a seleção automática ao mover ou criar um modelo.",
+		"SquareRotateName": "Corrigir a Rotação do Modelo Quadrado",
+		"SquareRotateHint": "Os modelos quadrados não mantêm sua forma ao girar. Isso corrigirá a rotação para que um modelo quadrado mantenha sua forma enquanto gira em torno do ponto de origem do modelo.",
+		"DebugName": "[DEBUG Somente] Exibir Pontos do Grid de Segleção Automática e Testa Grids",
+		"DebugHint": "Para fins de depuração do recurso de selecão automática, esta opção exibirá os pontos usados para detectar a seleção de token em uma cena sem grid. Ou exibirá toda a zona de teste para realce do grid.",
+		"Patch5e_Name": "Use Modelos no Estilo D&D 5e",
+		"Patch5e_Hint": "O padrão do Foundry requer que o centro de um quadrado do grid esteja dentro de um modelo para ser afetado. Isso ajusta os modelos para seguir as regras D&D5e para selecionar quadrados do grid onde qualquer quadrado TOCADO por um modelo é atingido (com exceção de círculos).",
+		"Patch5e_Circle_Name": "Tornar os Modelos de Círculo Gananciosos (Requer os Modelos no Estilo D&D 5e)",
+		"Patch5e_Circle_Hint": "Se você quiser que os modelos de círculo não sejam uma exceção às regras do estilo D&D 5e acima, habilite isso e qualquer quadrado tocado por um círculo será atingido.",
+		"AngleSnap": {
+			"MacroName": "Contagem de Pontos de Encaixe do Ângulo do Modelo (Padrão do FoundryVTT: 24)",
+			"MacroHint": "Quantos pontos de encaixe estão disponíveis para girar um modelo. Isso pode ser usado para reduzir o número de ângulos que um jogador tem que escolher para acelerar o combate",
+			"MicroName": "Multiplicador de Rotação Pequeno (Padrão do FoundryVTT: 3)",
+			"MicroHint": "Ao segurar Ctrl, você pode realizar encaixes de rotação menores. Isso basicamente multiplica a configuração acima por esse valor para gerar um subconjunto de encaixes de ângulo. Definir isso para 1 desativa efetivamente as etapas de micro ângulo."
+		}
+	}
+}

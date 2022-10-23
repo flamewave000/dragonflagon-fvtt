@@ -53,11 +53,11 @@ export default class SquareTemplate {
 	private static MeasuredTemplate_refreshRulerText(this: MeasuredTemplate, wrapped: () => void): void {
 		wrapped();
 		// Overwrite the text for the "rect" type
-		if (this.data.t === "rect") {
+		if (this.document.t === "rect") {
 			// Use simple Pythagoras to calculate the square's size from the diagonal "distance".
-			const size = Math.sqrt((this.data.distance * this.data.distance) / 2).toFixed(1);
-			const text = `${size}${canvas.scene.data.gridUnits}`;
-			(<any>this).hud.ruler.text = text;
+			const size = Math.sqrt((this.document.distance * this.document.distance) / 2).toFixed(1);
+			const text = `${size}${canvas.scene.grid.units}`;
+			(<any>this).ruler.text = text;
 		}
 	}
 }

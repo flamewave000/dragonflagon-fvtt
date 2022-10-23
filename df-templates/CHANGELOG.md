@@ -1,5 +1,9 @@
 # DragonFlagon Template Enhancements
 
+## Release 1.3.0 (2022-10-23)
+- **UPDATE:** Migrated to v10.
+- **NEW #339:** Brazillian Portuguese Localization: Courtesy of [MagelaCE](https://github.com/MagelaCE).
+
 ## Release 1.2.1 (2022-04-05)
 - **FIX #350:** Error when opening config while on a language other than English.
 

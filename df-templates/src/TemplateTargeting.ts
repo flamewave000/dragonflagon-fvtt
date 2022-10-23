@@ -58,7 +58,7 @@ export default class TemplateTargeting {
 			default: true,
 			onChange: () => { if (SETTINGS.get(TemplateTargeting.TARGETING_MODE_PREF) !== 'toggle') return; }
 		});
-		SETTINGS.register(TemplateTargeting.TARGETING_MODE_PREF, {
+		SETTINGS.register<string>(TemplateTargeting.TARGETING_MODE_PREF, {
 			config: true,
 			scope: 'world',
 			name: 'DF_TEMPLATES.AutoTargetName',
@@ -173,9 +173,9 @@ export default class TemplateTargeting {
 	private static _MeasuredTemplate_highlightGrid(this: MeasuredTemplate) {
 		const mode = SETTINGS.get<string>(TemplateTargeting.TARGETING_MODE_PREF);
 		const shouldAutoSelect = mode === 'always' || (mode === 'toggle' && SETTINGS.get<boolean>(TemplateTargeting.TARGETING_TOGGLE_PREF));
-		const isOwner = this.document.author.id === game.userId;
+		const isOwner = this.document.user.id === game.userId;
 		// Release all previously targeted tokens
-		if (isOwner && shouldAutoSelect && canvas.tokens.objects) {
+		if ((this.hover || !this.id) && isOwner && shouldAutoSelect && canvas.tokens.objects) {
 			for (const t of game.user.targets) {
 				t.setTarget(false, { releaseOthers: false, groupSelection: true });
 			}
@@ -224,11 +224,11 @@ export default class TemplateTargeting {
 		const DEBUG = SETTINGS.get('template-debug');
 
 		// Only highlight for objects which have a defined shape
-		const id: string = this.id ?? (<any>this)['_original']?.id;
+		const id: string = this.highlightId ?? (<any>this)['_original']?.highlightId;
 		if ((!this.id && !SETTINGS.get(TemplateTargeting.PREVIEW_PREF)) || !this.shape) return;
 
 		// Clear existing highlight
-		const hl = grid.getHighlightLayer(`Template.${id ?? null}`);
+		const hl = grid.getHighlightLayer(id);
 		hl?.clear();
 
 		// If we are in gridless mode, highlight the shape directly
@@ -249,7 +249,7 @@ export default class TemplateTargeting {
 			}// eslint-disable-next-line no-empty
 			catch (error) { }
 			grid.grid.highlightGridPosition(hl, { border, color: <any>color, shape: <any>shape });
-			TemplateTargeting._selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this.data, <PIXI.Polygon>this.shape, true);
+			TemplateTargeting._selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this, <PIXI.Polygon>this.shape, true);
 			return;
 		}
 
@@ -259,14 +259,14 @@ export default class TemplateTargeting {
 		const rowCount = Math.ceil(shapeBounds.height() / grid.h) + 2; //? Add a padding ring around for any outlier cases
 
 		// Get the offset of the template origin relative to the top-left grid space
-		const [tx, ty] = canvas.grid.getTopLeft(this.data.x, this.data.y);
+		const [tx, ty] = canvas.grid.getTopLeft(this.document.x, this.document.y);
 		const [row0, col0] = grid.grid.getGridPositionFromPixels(shapeBounds.left + tx, shapeBounds.top + ty);
 		const hx = canvas.grid.w / 2;
 		const hy = canvas.grid.h / 2;
 
 		/***** START OF CODE EDIT *****/
 		// Extract and prepare data
-		let { direction, distance, angle, width } = this.data;
+		let { direction, distance, angle, width } = this.document;
 		distance *= (d.size / d.distance);
 		width *= (d.size / d.distance);
 		angle = Math.toRadians(angle);
@@ -282,31 +282,31 @@ export default class TemplateTargeting {
 			if (coneInitialized) return;
 			coneInitialized = true;
 			[ax1, ay1, bx1, by1] = [
-				this.data.x,
-				this.data.y,
-				this.data.x + (Math.cos(direction - (angle / 2)) * rayLength),
-				this.data.y + (Math.sin(direction - (angle / 2)) * rayLength)
+				this.document.x,
+				this.document.y,
+				this.document.x + (Math.cos(direction - (angle / 2)) * rayLength),
+				this.document.y + (Math.sin(direction - (angle / 2)) * rayLength)
 			];
 			[ax2, ay2, bx2, by2] = [
-				this.data.x,
-				this.data.y,
-				this.data.x + (Math.cos(direction + (angle / 2)) * rayLength),
-				this.data.y + (Math.sin(direction + (angle / 2)) * rayLength)
+				this.document.x,
+				this.document.y,
+				this.document.x + (Math.cos(direction + (angle / 2)) * rayLength),
+				this.document.y + (Math.sin(direction + (angle / 2)) * rayLength)
 			];
 		};
 		const generateRayData = () => {
 			if (coneInitialized) return;
 			[ax1, ay1] = [
-				this.data.x + (Math.cos(direction - (Math.PI / 2)) * (width / 2)),
-				this.data.y + (Math.sin(direction - (Math.PI / 2)) * (width / 2))
+				this.document.x + (Math.cos(direction - (Math.PI / 2)) * (width / 2)),
+				this.document.y + (Math.sin(direction - (Math.PI / 2)) * (width / 2))
 			];
 			[bx1, by1] = [
 				ax1 + (Math.cos(direction) * distance),
 				ay1 + (Math.sin(direction) * distance)
 			];
 			[ax2, ay2] = [
-				this.data.x + (Math.cos(direction + (Math.PI / 2)) * (width / 2)),
-				this.data.y + (Math.sin(direction + (Math.PI / 2)) * (width / 2))
+				this.document.x + (Math.cos(direction + (Math.PI / 2)) * (width / 2)),
+				this.document.y + (Math.sin(direction + (Math.PI / 2)) * (width / 2))
 			];
 			[bx2, by2] = [
 				ax2 + (Math.cos(direction) * distance),
@@ -321,12 +321,12 @@ export default class TemplateTargeting {
 				const [gx, gy] = canvas.grid.grid.getPixelsFromGridPosition(row0 + r, col0 + c);
 				const testX = gx + hx;
 				const testY = gy + hy;
-				const testRect = new NormalizedRectangle(gx, gy, canvas.grid.w, canvas.grid.h);
+				const testRect = new PIXI.Rectangle(gx, gy, canvas.grid.w, canvas.grid.h).normalize();
 				let contains = false;
-				switch (this.data.t) {
+				switch (this.document.t) {
 					case "circle": {
 						// Calculate the vector from the PoI to the grid square center
-						const [rcx, rcy] = [testX - this.data.x, testY - this.data.y];
+						const [rcx, rcy] = [testX - this.document.x, testY - this.document.y];
 						// If the distance between the centres is <= the circle's radius
 						contains = ((rcx * rcx) + (rcy * rcy)) <= (distance * distance);
 						if (contains || TemplateConfig.config.circle === HighlightMode.CENTER) break;
@@ -334,7 +334,7 @@ export default class TemplateTargeting {
 						const sqrDistance = distance * distance;
 						let [vx, vy] = [0, 0];
 						const testPoint = (x: number, y: number) => {
-							[vx, vy] = [x - this.data.x, y - this.data.y];
+							[vx, vy] = [x - this.document.x, y - this.document.y];
 							return (vx * vx + vy * vy) < sqrDistance;
 						};
 
@@ -347,7 +347,7 @@ export default class TemplateTargeting {
 					case "rect": {
 						const rect = (this as any)._getRectShape(direction, distance, true);
 						if (rect instanceof PIXI.Polygon) {
-							contains = this.shape.contains(testX - this.data.x, testY - this.data.y);
+							contains = this.shape.contains(testX - this.document.x, testY - this.document.y);
 							if (contains || TemplateConfig.config.rect === HighlightMode.CENTER) break;
 							/* Rectangle vertex data order
 								A1───▶B1
@@ -356,7 +356,7 @@ export default class TemplateTargeting {
 								A2◀───B2
 							*/
 							// Translate points to the position of the MeasuredTemplate and map the points to the dataset
-							[ax1, ay1, bx1, by1, bx2, by2, ax2, ay2] = rect.points.map((e, i) => e + (i % 2 ? this.data.y : this.data.x));
+							[ax1, ay1, bx1, by1, bx2, by2, ax2, ay2] = rect.points.map((e, i) => e + (i % 2 ? this.document.y : this.document.x));
 							// check the top line
 							contains = LineToBoxCollision.cohenSutherlandLineClipAndDraw(ax1, ay1, bx1, by1, testRect)
 								// check the right line
@@ -366,8 +366,8 @@ export default class TemplateTargeting {
 								// check the left line
 								|| LineToBoxCollision.cohenSutherlandLineClipAndDraw(ax2, ay2, ax1, ay1, testRect);
 						} else {
-							rect.x += this.data.x;
-							rect.y += this.data.y;
+							rect.x += this.document.x;
+							rect.y += this.document.y;
 							// The normalized rectangle always adds 1 to the width and height
 							rect.width -= 1;
 							rect.height -= 1;
@@ -378,7 +378,7 @@ export default class TemplateTargeting {
 						break;
 					}
 					case "cone": {
-						contains = this.shape.contains(testX - this.data.x, testY - this.data.y);
+						contains = this.shape.contains(testX - this.document.x, testY - this.document.y);
 						if (contains || TemplateConfig.config.cone === HighlightMode.CENTER) break;
 						generateConeData();
 						// check the top line
@@ -394,7 +394,7 @@ export default class TemplateTargeting {
 							let mag = 0;
 							let vecAngle = 0;
 							const testPoint = (x: number, y: number) => {
-								[vx, vy] = [x - this.data.x, y - this.data.y];
+								[vx, vy] = [x - this.document.x, y - this.document.y];
 								return (vx * vx + vy * vy) < sqrDistance;
 							};
 							const testAngle: () => boolean = () => {
@@ -433,7 +433,7 @@ export default class TemplateTargeting {
 						break;
 					}
 					case "ray": {
-						contains = this.shape.contains(testX - this.data.x, testY - this.data.y);
+						contains = this.shape.contains(testX - this.document.x, testY - this.document.y);
 						if (contains || TemplateConfig.config.ray === HighlightMode.CENTER) break;
 						generateRayData();
 						// check the top line
@@ -457,16 +457,16 @@ export default class TemplateTargeting {
 				if (!contains) continue;
 
 				// Ignore changing the target selection if we don't own the template, or `shouldAutoSelect` is false
-				if (!isOwner || !shouldAutoSelect) continue;
+				if ((!this.hover && this.id) || !isOwner || !shouldAutoSelect) continue;
 
 				// If we are using Point based targetting for this template
-				if (TemplateConfig.config[this.data.t] === HighlightMode.POINTS) {
-					TemplateTargeting._selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this.data, <PIXI.Polygon>this.shape, true);
+				if (TemplateConfig.config[this.document.t] === HighlightMode.POINTS) {
+					TemplateTargeting._selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this.document, <PIXI.Polygon>this.shape, true);
 					continue;
 				}
 				// Iterate over all existing tokens and target the ones within the template area
 				for (const token of canvas.tokens.placeables) {
-					const tokenRect = new NormalizedRectangle(token.x, token.y, token.w, token.h);
+					const tokenRect = new PIXI.Rectangle(token.x, token.y, token.w, token.h).normalize();
 					if (testRect.left >= tokenRect.right || testRect.right <= tokenRect.left
 						|| testRect.top >= tokenRect.bottom || testRect.bottom <= tokenRect.top) continue;
 					token.setTarget(true, { user: game.user, releaseOthers: false, groupSelection: true });

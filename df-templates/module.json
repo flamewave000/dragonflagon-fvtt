@@ -1,17 +1,30 @@
 {
-	"name": "df-templates",
-	"version": "1.2.1",
+	"id": "df-templates",
+	"version": "1.3.0",
 	"title": "DF Template Enhancements",
 	"description": "Enhanced templates for different types of grid targetting.",
 	"author": "flamewave000#0001",
-	"minimumCoreVersion": "9",
-	"compatibleCoreVersion": "9",
-	"dependencies": [ { "name": "lib-wrapper" } ],
+	"compatibility": {
+		"minimum": 10,
+		"verified": 10.288
+	},
+	"relationships": {
+		"requires": [
+			{
+				"id": "lib-wrapper",
+				"type": "module",
+				"compatibility": {
+					"verified": "1.12.10.0"
+				}
+			}
+		]
+	},
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [
 		{ "lang": "en", "path": "lang/en.json", "name": "English" },
-		{ "lang": "ja", "path": "lang/ja.json", "name": "日本語" }
+		{ "lang": "ja", "path": "lang/ja.json", "name": "日本語" },
+		{ "lang": "pt-BR", "path": "lang/pt-BR.json", "name": "Português (Brasil)" }
 	],
 	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-templates",
 	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/LICENSE",
@@ -23,6 +36,13 @@
 	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues",
 	"authors": [ { "name": "flamewave000", "discord": "flamewave000#0001", "url": "https://github.com/flamewave000" } ],
 	"media": [
-		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" }
+		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" },
+		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-templates/templates-dnd5e.png" },
+		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-templates/auto-target.gif" },
+		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-templates/grid-intersect-snapping.gif" },
+		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-templates/square-rotate-core.gif" },
+		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-templates/square-rotate-corrected.gif" },
+		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-templates/square-rotate-corrected-5e.gif" },
+		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-templates/template-preview.gif" }
 	]
 }

@@ -7,6 +7,7 @@ Various enhancements to the FoundryVTT Templates layer. This brings different fo
 ## Contributers
 
 - Touge & [BrotherSharper](https://github.com/BrotherSharper): Japanese Localization
+- [MagelaCE](https://github.com/MagelaCE): Brazillian Portuguese Localization
 
 ## Auto-Target Tokens with Template
 
