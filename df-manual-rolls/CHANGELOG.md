@@ -1,5 +1,8 @@
 # DF Manual Rolls
 
+## Release 2.4.0 (2022-10-23)
+- **UPDATE:** Migrated to V10.
+
 ## Release 2.3.1 (2022-04-10)
 - **FIX #307:** Fixed conflict with Monk's Little Details where round messages do not have a `user` bound.
 - **FIX #302:** Custom Roll implementations courtesy of [JustNoon](https://github.com/JustNoon).

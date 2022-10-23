@@ -24,24 +24,28 @@ export default class RollSettings {
 			const rollType = app.object.getFlag(SETTINGS.MOD_NAME, ManualRolls.FLAG_ROLL_TYPE);
 			const rollConfig = $(`<div class="form-group">
 	<label>${'Manual Roll Override'.localize()}</label>
-	<select name="flags.df-manual-rolls.roll-type">
-		<option value="" ${!rollType ? 'selected' : ''}></option>
-		<option value="disabled" ${rollType === 'disabled' ? 'selected' : ''}>${'DF_MANUAL_ROLLS.Setting_Options.Disabled'.localize()}</option>
-		<option value="always" ${rollType === 'always' ? 'selected' : ''}>${'DF_MANUAL_ROLLS.Setting_Options.Always'.localize()}</option>
-		<option value="toggle" ${rollType === 'toggle' ? 'selected' : ''}>${'DF_MANUAL_ROLLS.Setting_Options.Toggle'.localize()}</option>
-	</select>
+	<div class="form-fields" style="width:${html.find('#characters').parent().outerWidth()}px">
+		<select name="flags.df-manual-rolls.roll-type">
+			<option value="" ${!rollType ? 'selected' : ''}></option>
+			<option value="disabled" ${rollType === 'disabled' ? 'selected' : ''}>${'DF_MANUAL_ROLLS.Setting_Options.Disabled'.localize()}</option>
+			<option value="always" ${rollType === 'always' ? 'selected' : ''}>${'DF_MANUAL_ROLLS.Setting_Options.Always'.localize()}</option>
+			<option value="toggle" ${rollType === 'toggle' ? 'selected' : ''}>${'DF_MANUAL_ROLLS.Setting_Options.Toggle'.localize()}</option>
+		</select>
+	</div>
 </div>`);
-			html.find('input[name="color"]').parent().after(rollConfig);
+			html.find('#characters').parent().before(rollConfig);
 			// Resize the window
 			app.element[0].style.height = '';
 			app.element[0].style.width = '';
 			app.setPosition({});
-			(app as any)._updateObject_ORIG = (app as any)._updateObject;
-			(app as any)._updateObject = async function (...args: any) {
-				const result = await (this as any)._updateObject_ORIG(...args);
-				ui.controls.initialize();
-				return result;
-			};
+			if (!(app as any)._updateObject_ORIG) {
+				(app as any)._updateObject_ORIG = (app as any)._updateObject;
+				(app as any)._updateObject = async function (...args: any) {
+					const result = await (this as any)._updateObject_ORIG(...args);
+					ui.controls.initialize();
+					return result;
+				};
+			}
 		});
 	}
 }
