@@ -178,7 +178,6 @@ export default class ControlManager extends Application implements IControlManag
 
 	private async _onClickGroup(event: JQuery.ClickEvent) {
 		event.preventDefault();
-		if (!canvas.ready) return;
 		const li = event.currentTarget;
 		const groupName = li.dataset.group;
 		const group = this.groups.find(c => c.name === groupName);
@@ -237,7 +236,7 @@ export default class ControlManager extends Application implements IControlManag
 			this.hooksRegister['collapseSidebarPre'] = Hooks.on('collapseSidebarPre', this._handleSidebarCollapse.bind(this));
 			this.hooksRegister['activateGroupByName'] = Hooks.on('activateGroupByName', this.activateGroupByName);
 			this.hooksRegister['activateToolByName'] = Hooks.on('activateToolByName', this.activateToolByName);
-			this.hooksRegister['reloadModuleButtons'] = Hooks.on('reloadModuleButtons', this.reloadModuleButtons);
+			this.hooksRegister['reloadModuleButtons'] = Hooks.on('reloadModuleButtons', this.reloadModuleButtons.bind(this));
 			this.hooksRegister['renderSceneControls'] = Hooks.on('renderSceneControls', this._handleWindowResize);
 			this.hooksRegister['collapseSceneNavigation'] = Hooks.on('collapseSceneNavigation', this._handleWindowResize);
 			this.hooksRegister['renderPlayerList'] = Hooks.on('renderPlayerList', this._handleWindowResize);
