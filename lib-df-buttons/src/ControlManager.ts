@@ -122,7 +122,10 @@ export default class ControlManager extends Application implements IControlManag
 		if (this.groups.length == 0) return { groups: [], singleGroup: false };
 		const groups: ToolGroupUI[] = [];
 		for (const group of this._groups) {
-			if (!await ControlManager.checkBoolean(group.visible, true)) continue;
+			if (
+				!await ControlManager.checkBoolean(group.visible, true) ||
+				(game.settings.get('core', 'noCanvas') && !await ControlManager.checkBoolean(group.noCanvas, false))
+			) continue;
 			const groupUI: ToolGroupUI = {
 				name: group.name,
 				icon: group.icon,
@@ -134,7 +137,10 @@ export default class ControlManager extends Application implements IControlManag
 				tools: []
 			};
 			for (const tool of (group.tools ?? [])) {
-				if (!await ControlManager.checkBoolean(tool.visible, true)) continue;
+				if (
+					!await ControlManager.checkBoolean(tool.visible, true) ||
+					(game.settings.get('core', 'noCanvas') && !await ControlManager.checkBoolean(group.noCanvas, false))
+				) continue;
 				groupUI.tools.push({
 					name: tool.name,
 					icon: tool.icon,
@@ -178,7 +184,6 @@ export default class ControlManager extends Application implements IControlManag
 
 	private async _onClickGroup(event: JQuery.ClickEvent) {
 		event.preventDefault();
-		if (!canvas.ready) return;
 		const li = event.currentTarget;
 		const groupName = li.dataset.group;
 		const group = this.groups.find(c => c.name === groupName);
@@ -202,7 +207,6 @@ export default class ControlManager extends Application implements IControlManag
 	}
 	private async _onClickTool(event: JQuery.ClickEvent) {
 		event.preventDefault();
-		if (!canvas.ready) return;
 		const li = event.currentTarget;
 		const group = this.activeGroup;
 		const toolName = li.dataset.tool;
@@ -235,13 +239,14 @@ export default class ControlManager extends Application implements IControlManag
 		if (this.initializationIncomplete) await this.completeInitialization();
 		if (this._state !== Application.RENDER_STATES.RENDERED) {
 			this.hooksRegister['collapseSidebarPre'] = Hooks.on('collapseSidebarPre', this._handleSidebarCollapse.bind(this));
-			this.hooksRegister['activateGroupByName'] = Hooks.on('activateGroupByName', this.activateGroupByName);
-			this.hooksRegister['activateToolByName'] = Hooks.on('activateToolByName', this.activateToolByName);
-			this.hooksRegister['reloadModuleButtons'] = Hooks.on('reloadModuleButtons', this.reloadModuleButtons);
-			this.hooksRegister['renderSceneControls'] = Hooks.on('renderSceneControls', this._handleWindowResize);
-			this.hooksRegister['collapseSceneNavigation'] = Hooks.on('collapseSceneNavigation', this._handleWindowResize);
-			this.hooksRegister['renderPlayerList'] = Hooks.on('renderPlayerList', this._handleWindowResize);
-			window.addEventListener('resize', this._handleWindowResize);
+			this.hooksRegister['activateGroupByName'] = Hooks.on('activateGroupByName', this.activateGroupByName.bind(this));
+			this.hooksRegister['activateToolByName'] = Hooks.on('activateToolByName', this.activateToolByName.bind(this));
+			this.hooksRegister['reloadModuleButtons'] = Hooks.on('reloadModuleButtons', this.reloadModuleButtons.bind(this));
+			this.hooksRegister['refreshModuleButtons'] = Hooks.on('refreshModuleButtons', this.refresh.bind(this));
+			this.hooksRegister['renderSceneControls'] = Hooks.on('renderSceneControls', () => { this.refresh(); this._handleWindowResize(); });
+			this.hooksRegister['collapseSceneNavigation'] = Hooks.on('collapseSceneNavigation', this._handleWindowResize.bind(this));
+			this.hooksRegister['renderPlayerList'] = Hooks.on('renderPlayerList', this._handleWindowResize.bind(this));
+			window.addEventListener('resize', this._handleWindowResize.bind(this));
 		}
 		await super._render(force, options);
 		if ((<any>ui.sidebar)._collapsed) {
@@ -311,48 +316,46 @@ export default class ControlManager extends Application implements IControlManag
 		return top;
 	}
 	private _handleWindowResize() {
-		const self = <ControlManager>(<any>ui).moduleControls;
-		if (self.element.length === 0) return;
+		if (this.element.length === 0) return;
 		let max: number;
 		let cols: number;
 
 		const position = SETTINGS.get<string>('position');
-		self.element.addClass(position);
+		this.element.addClass(position);
 		switch (position) {
 			case 'top': {
-				self.element[0].style.marginTop = self.getTopHeight(false) + 'px';
-				self.element[0].style.marginLeft = self.getLeftWidth() + 'px';
+				this.element[0].style.marginTop = this.getTopHeight(false) + 'px';
+				this.element[0].style.marginLeft = this.getLeftWidth() + 'px';
 				break;
 			}
 			case 'left': {
 				const controls = document.querySelector<HTMLElement>('#ui-left > #controls');
-				self.element[0].style.height = `${controls.offsetHeight}px`;
+				this.element[0].style.height = `${controls.offsetHeight}px`;
 				max = Math.floor(controls.offsetHeight / ControlManager.CONTROL_WIDTH);
-				cols = Math.ceil(self.groups.length / max);
-				self.element.find('.group-tools').css('margin-left', `${(cols - 1) * (ControlManager.CONTROL_WIDTH + 2)}px`);
-				self.element[0].style.marginTop = self.getTopHeight(true) + 'px';
-				self.element[0].style.marginLeft = self.getLeftWidth() + 'px';
+				cols = Math.ceil(this.groups.length / max);
+				this.element.find('.group-tools').css('margin-left', `${(cols - 1) * (ControlManager.CONTROL_WIDTH + 2)}px`);
+				this.element[0].style.marginTop = this.getTopHeight(true) + 'px';
+				this.element[0].style.marginLeft = this.getLeftWidth() + 'px';
 				break;
 			}
 			case 'bottom': {
-				self.element[0].style.left = (document.getElementById("ui-middle").offsetLeft +
+				this.element[0].style.left = (document.getElementById("ui-middle").offsetLeft +
 					document.getElementById("hotbar-directory-controls").offsetLeft) + 'px';
-				self.element[0].style.bottom = (document.getElementById('hotbar').offsetHeight + 10) + 'px';
+				this.element[0].style.bottom = (document.getElementById('hotbar').offsetHeight + 10) + 'px';
 				break;
 			}
 			case 'right': default: {
-				max = Math.floor(self.element[0].offsetHeight / ControlManager.CONTROL_WIDTH);
-				cols = Math.ceil(self.groups.length / max);
-				self.element.find('.group-tools').css('margin-right', `${(cols - 1) * (ControlManager.CONTROL_WIDTH + 2)}px`);
-				self.element[0].style.top = document.getElementById("sidebar-tabs").offsetTop + 'px';
+				max = Math.floor(this.element[0].offsetHeight / ControlManager.CONTROL_WIDTH);
+				cols = Math.ceil(this.groups.length / max);
+				this.element.find('.group-tools').css('margin-right', `${(cols - 1) * (ControlManager.CONTROL_WIDTH + 2)}px`);
+				this.element[0].style.top = document.getElementById("sidebar-tabs").offsetTop + 'px';
 				break;
 			}
 		}
 	}
 
 	async activateGroupByName(groupName: string) {
-		const self = <ControlManager>(<any>ui).moduleControls;
-		const group = self.groups.find(x => x.name === groupName);
+		const group = this.groups.find(x => x.name === groupName);
 		if (!group) {
 			console.warn(`ControlManager::activateGroupByName > Attempted to activate ToolGroup with non-existant name '${groupName}'`);
 			return;
@@ -362,7 +365,7 @@ export default class ControlManager extends Application implements IControlManag
 			return;
 		}
 		if (this.activeGroupName === groupName) {
-			self.refresh();
+			this.refresh();
 			return;
 		}
 		const prevGroup = this.activeGroup;
@@ -375,12 +378,11 @@ export default class ControlManager extends Application implements IControlManag
 		// Activate new group
 		group.isActive = true;
 		await this._invokeHandler(group.onClick, group, true);
-		self.refresh();
+		this.refresh();
 		Hooks.callAll("toolGroupActivated", this, group);
 	}
 	async activateToolByName(groupName: string, toolName: string, activateGroup: boolean = true) {
-		const self = <ControlManager>(<any>ui).moduleControls;
-		const group = self.groups.find(x => x.name === groupName);
+		const group = this.groups.find(x => x.name === groupName);
 		if (!group) {
 			console.warn(`ControlManager::activateToolByName > Attempted to activate ToolGroup with non-existant name '${groupName}'`);
 			return;
@@ -395,7 +397,7 @@ export default class ControlManager extends Application implements IControlManag
 			return;
 		}
 		if (group.activeTool === toolName) {
-			self.refresh();
+			this.refresh();
 			return;
 		}
 		const prevTool = group.tools.find(x => x.name === group.activeTool);
@@ -408,11 +410,11 @@ export default class ControlManager extends Application implements IControlManag
 		// Activate new group
 		tool.isActive = true;
 		await this._invokeHandler(tool.onClick, tool, true);
-		if (activateGroup && self.activeGroupName !== groupName) {
+		if (activateGroup && this.activeGroupName !== groupName) {
 			this.activateGroupByName(groupName);
 		}
-		else if (self.activeGroupName === groupName) {
-			self.refresh();
+		else if (this.activeGroupName === groupName) {
+			this.refresh();
 		}
 		Hooks.callAll("toolActivated", this, group, tool);
 	}

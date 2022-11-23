@@ -79,6 +79,11 @@ export interface Tool {
 	 */
 	class?: string | null;
 	/**
+	 * (default: false) Indicates your button or {@link ToolGroup} should be
+	 * allowed to render when there is no game board canvas.
+	 */
+	noCanvas?: boolean;
+	/**
 	 * (default: false) If {@link toggle} is true, this holds the toggle
 	 * button's state. If {@link toggle} and {@link button} are false, this
 	 * holds the activation state of the control and will be overridden by the
@@ -181,4 +186,6 @@ Hooks.call('activateToolByName', "my-group-name", "my-tool-name", true);
  * and `getModuleToolGroupsPost` as before. It then renders the new list of ToolGroups.
  */
 Hooks.call('reloadModuleButtons');
+/* Invoking this Hook will refresh the button UI to reflect any external changes made. */
+Hooks.call('refreshModuleButtons');
 ```

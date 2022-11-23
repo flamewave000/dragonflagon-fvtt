@@ -51,6 +51,9 @@ Hooks.once('setup', () => {
 Hooks.once('ready', () => {
 	(<ControlManagerImpl>(<any>ui).moduleControls).render(true);
 });
+Hooks.on('renderSceneControls', async (_: any) => {
+	(<ControlManagerImpl>(<any>ui).moduleControls).refresh();
+});
 /* Example code for appending ToolGroups and Tools */
 /**
 //import { Tool, ToolGroup } from "./ToolType";
