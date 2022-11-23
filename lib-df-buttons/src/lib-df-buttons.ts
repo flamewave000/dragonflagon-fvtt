@@ -51,9 +51,6 @@ Hooks.once('setup', () => {
 Hooks.once('ready', () => {
 	(<ControlManagerImpl>(<any>ui).moduleControls).render(true);
 });
-Hooks.on('renderSceneControls', async (_: any) => {
-	(<ControlManagerImpl>(<any>ui).moduleControls).refresh();
-});
 /* Example code for appending ToolGroups and Tools */
 /**
 //import { Tool, ToolGroup } from "./ToolType";
@@ -68,6 +65,7 @@ Hooks.on('getModuleToolGroups', (app: ControlManager, groups: ToolGroup[]) => {
 		name: 'radial1',
 		icon: '<i class="fas fa-dice-one"></i>',
 		title: 'radial1',
+		visible: () => ui.controls.activeControl === 'token',
 		onClick: handleClick,
 		tools: [
 			{ name: 'tool1-1', title: 'tool1-1', onClick: handleClick, icon: '<i class="fas fa-dice-one"></i>' },
@@ -80,6 +78,7 @@ Hooks.on('getModuleToolGroups', (app: ControlManager, groups: ToolGroup[]) => {
 		name: 'radial2',
 		icon: '<i class="fas fa-dice-two"></i>',
 		title: 'radial2',
+		visible: () => ui.controls.activeControl === 'walls',
 		onClick: handleClick,
 		tools: [
 			{ name: 'tool2-1', title: 'tool2-1', onClick: handleClick, icon: '<i class="fas fa-dice-two"></i>' },

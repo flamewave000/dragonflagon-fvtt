@@ -81,6 +81,15 @@ export default class ControlManager extends Application implements IControlManag
 	}
 	private async completeInitialization() {
 		this.initializationIncomplete = false;
+		this.hooksRegister['collapseSidebarPre'] = Hooks.on('collapseSidebarPre', this._handleSidebarCollapse.bind(this));
+		this.hooksRegister['activateGroupByName'] = Hooks.on('activateGroupByName', this.activateGroupByName.bind(this));
+		this.hooksRegister['activateToolByName'] = Hooks.on('activateToolByName', this.activateToolByName.bind(this));
+		this.hooksRegister['reloadModuleButtons'] = Hooks.on('reloadModuleButtons', this.reloadModuleButtons.bind(this));
+		this.hooksRegister['refreshModuleButtons'] = Hooks.on('refreshModuleButtons', this.refresh.bind(this));
+		this.hooksRegister['renderSceneControls'] = Hooks.on('renderSceneControls', () => { this.refresh(); this._handleWindowResize(); });
+		this.hooksRegister['collapseSceneNavigation'] = Hooks.on('collapseSceneNavigation', this._handleWindowResize.bind(this));
+		this.hooksRegister['renderPlayerList'] = Hooks.on('renderPlayerList', this._handleWindowResize.bind(this));
+		window.addEventListener('resize', this._handleWindowResize.bind(this));
 		for (const group of this._groups) {
 			// Initialize all unset fields to their defaults
 			ControlManager.initializeFields(group);
@@ -153,7 +162,14 @@ export default class ControlManager extends Application implements IControlManag
 			}
 			groups.push(groupUI);
 		}
-		return { groups, singleGroup: groups.length === 1 && !groups[0].button && !groups[0].toggle };
+		const singleGroup = groups.length === 1 && !groups[0].button && !groups[0].toggle;
+		if (groups.every(x => !x.active)) {
+			const firstGroup = groups.find(x => !x.button && !x.toggle);
+			firstGroup.active = true;
+			if (firstGroup)
+				this.activateGroupByName(firstGroup.name);
+		}
+		return { groups, singleGroup };
 	}
 
 	/** @inheritdoc */
@@ -237,22 +253,11 @@ export default class ControlManager extends Application implements IControlManag
 	async _render(force = false, options = {}): Promise<void> {
 		// If initialization needs to be completed, invoke the completion
 		if (this.initializationIncomplete) await this.completeInitialization();
-		if (this._state !== Application.RENDER_STATES.RENDERED) {
-			this.hooksRegister['collapseSidebarPre'] = Hooks.on('collapseSidebarPre', this._handleSidebarCollapse.bind(this));
-			this.hooksRegister['activateGroupByName'] = Hooks.on('activateGroupByName', this.activateGroupByName.bind(this));
-			this.hooksRegister['activateToolByName'] = Hooks.on('activateToolByName', this.activateToolByName.bind(this));
-			this.hooksRegister['reloadModuleButtons'] = Hooks.on('reloadModuleButtons', this.reloadModuleButtons.bind(this));
-			this.hooksRegister['refreshModuleButtons'] = Hooks.on('refreshModuleButtons', this.refresh.bind(this));
-			this.hooksRegister['renderSceneControls'] = Hooks.on('renderSceneControls', () => { this.refresh(); this._handleWindowResize(); });
-			this.hooksRegister['collapseSceneNavigation'] = Hooks.on('collapseSceneNavigation', this._handleWindowResize.bind(this));
-			this.hooksRegister['renderPlayerList'] = Hooks.on('renderPlayerList', this._handleWindowResize.bind(this));
-			window.addEventListener('resize', this._handleWindowResize.bind(this));
-		}
+		if (!game.ready) return;
 		await super._render(force, options);
 		if ((<any>ui.sidebar)._collapsed) {
 			this.element.css('right', '35px');
 		}
-
 		this.element[0].removeAttribute('class');
 		this.element[0].classList.add('app');
 		switch (SETTINGS.get('position')) {

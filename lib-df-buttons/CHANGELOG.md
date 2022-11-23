@@ -1,5 +1,8 @@
 # DragonFlagon Module Buttons Library
 
+## Release 1.4.2 (2022-11-23)
+- **FIX:** Buttons were disappearing when only one group was available.
+
 ## Release 1.4.1 (2022-11-23)
 - **UPDATE #391:** You can now declare your button/group as being displayable when there is no canvas. Just add the `"noCanvas": true` to your Tool and ToolGroup declarations.
 - **FIX:** The buttons will now automatically refresh when ever the sacene layer changes. This way modules that are trying to display buttons for only certain layers will not need to manually tell the buttons to refresh.
