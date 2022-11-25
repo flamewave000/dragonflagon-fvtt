@@ -1,12 +1,12 @@
 {
 	"id": "df-active-lights",
-	"version": "1.3.0",
+	"version": "1.3.1",
 	"title": "DF Active Lights",
 	"description": "Lights can now have complex animations attached to their various properties such as the direction or colour.",
 	"author": "flamewave000#0001",
 	"compatibility": {
-		"minimum": 10,
-		"verified": 10.288
+		"minimum": 10.290,
+		"verified": 10.290
 	},
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",

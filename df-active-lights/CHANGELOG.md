@@ -1,5 +1,8 @@
 # DragonFlagon Active Lights
 
+## Release 1.3.1 (2022-11-25) (Requires v10.290)
+- **FIX #424:** FoundryVTT v10.290 fixed HTML injection for Active Lights button.
+
 ## Release 1.3.0 (2022-10-15)
 - **UPDATE:** Migrated to v10.
 - **FIX:** Colour transitions work again.

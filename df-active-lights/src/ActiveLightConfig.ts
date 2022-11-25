@@ -36,7 +36,7 @@ export default class ActiveLightConfig extends Application {
 	private _data: AnimatorData;
 
 	constructor(app: AmbientLightConfig) {
-		const obj = app.original;
+		const obj = app.object;
 		super({
 			id: obj.id + '-anims',
 			title: game.i18n.localize('DF_ACTIVE_LIGHTS.Config.Title') + obj.id,
