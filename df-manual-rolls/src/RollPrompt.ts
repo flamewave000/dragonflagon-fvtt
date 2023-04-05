@@ -11,7 +11,8 @@ interface RenderData {
 	idx: number;
 	faces: string;
 	hasTotal: boolean;
-	term: DiceTerm
+	term: DiceTerm;
+	supportExplodingDice: boolean;
 }
 
 export default class RollPrompt extends FormApplication<FormApplicationOptions, { terms: RenderData[] }> {
@@ -23,6 +24,7 @@ export default class RollPrompt extends FormApplication<FormApplicationOptions, 
 	private _rolled = false;
 
 	static get focusInput(): boolean { return SETTINGS.get(RollPrompt.PREF_FOCUS_INPUT); }
+	static get supportExplodingDice(): boolean { return SETTINGS.get(ManualRolls.PREF_EXPLODING_DICE); }
 
 	static get defaultOptions(): FormApplicationOptions {
 		return <FormApplicationOptions>mergeObject(
@@ -45,7 +47,8 @@ export default class RollPrompt extends FormApplication<FormApplicationOptions, 
 					idx: c,
 					faces: c == 0 ? `${die.number}d${die.faces}${die.modifiers.length > 0 ? ' [' + die.modifiers.join(',') + ']' : ''}` : '',
 					hasTotal: c == 0 && die.modifiers.length == 0 && die.number > 1,
-					term: die
+					term: die,
+					supportExplodingDice: RollPrompt.supportExplodingDice
 				});
 			}
 		}

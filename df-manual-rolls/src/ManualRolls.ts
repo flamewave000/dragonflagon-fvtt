@@ -13,6 +13,7 @@ export default class ManualRolls {
 	static PREF_PC_STATE = 'pc';
 	static PREF_FLAGGED = 'flagged';
 	static PREF_TOGGLED = 'toggled';
+	static PREF_EXPLODING_DICE = 'exploding';
 	static FLAG_ROLL_TYPE = 'roll-type';
 
 	static get flagged(): boolean { return SETTINGS.get(ManualRolls.PREF_FLAGGED); }

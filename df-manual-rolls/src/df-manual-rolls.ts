@@ -92,6 +92,15 @@ Hooks.on('init', function () {
 		}
 	});
 
+	SETTINGS.register(ManualRolls.PREF_EXPLODING_DICE, {
+		name: "DF_MANUAL_ROLLS.Settings.ExplodingDice_Name",
+		hint: "DF_MANUAL_ROLLS.Settings.ExplodingDice_Hint",
+		scope: 'world',
+		config: true,
+		type: Boolean,
+		default: false
+	});
+
 	RollSettings.init();
 });
 Hooks.on('ready', function () {
