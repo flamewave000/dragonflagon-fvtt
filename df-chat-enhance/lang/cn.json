@@ -8,7 +8,11 @@
 		"ChatEnhanceSettingGroup": "聊天增强",
 		"ExportButtonTitle": "归档聊天记录",
 		"OpenChatArchive": "管理聊天归档",
-		"Settings.HideExport": "聊天归档：隐藏导出聊天记录按钮",
+		"Settings": {
+			"HideExport": "聊天归档：隐藏导出聊天记录按钮",
+			"ArchiveFolder_Name": "归档文件夹",
+			"ArchiveFolder_Hint": "用来存放聊天档案的目录位置"
+		},
 		"ArchiveNew_Title": "DF 创建聊天归档",
 		"ArchiveNew_Name": "归档名称：",
 		"ArchiveNew_NameHint": "未命名归档",
@@ -41,6 +45,7 @@
 		"ArchiveViewer_Visible": "玩家可见",
 		"ArchiveViewer_DeleteTitle": "删除归档消息",
 		"ArchiveViewer_DeleteContent": "你确定你想要应用所有刚才消息的删除吗？",
+		"ArchiveViewer_Html": "以 html 格式保存日志。",
 		"ArchiveViewer_Print": "打印该归档",
 		"ArchiveViewer_Merge": "合并一条归档到该归档中",
 		"ArchiveViewer_Merge_Title": "合并聊天归档",
@@ -48,7 +53,8 @@
 		"ArchiveViewer_Merge_Delete": "删除被合并的归档？",
 		"ArchiveViewer_Merge_Cancel": "取消",
 		"ArchiveViewer_Merge_Merge": "合并",
-		"ArchiveViewer_Merge_OnlyOneArchive": "没有其他可用于合并的归档"
+		"ArchiveViewer_Merge_OnlyOneArchive": "没有其他可用于合并的归档",
+		"ArchiveViewer_Error_Delete_All": "无法删除归档中的所有聊天记录，如果你想删除某个归档，请在归档管理器中进行。"
 	},
 	"DF_CHAT_PRIVACY": {
 		"Settings_EnableTitle": "掷骰按钮：将所有掷骰类型选项替换为按钮",
@@ -58,6 +64,7 @@
 	},
 	"DF_CHAT_LOG": {
 		"CommandDescription": "向冒险日志提交事件",
+		"PCCommandDescription": "向玩家日志提交事件",
 		"GMCommandDescription": "向 GM 冒险日志提交事件",
 		"HelpDialog_Title": "冒险日志命令帮助",
 		"Setting": {
@@ -67,24 +74,43 @@
 			"GmOnlyHint": "设定冒险日志的命令仅限 GM 可用。",
 			"GmOnlyWhisperName": "冒险日志：(如果仅限 GM) 所有日志设为私聊",
 			"GmOnlyWhisperHint": "如果仅限 GM 可用，这项设定可以令所有日志条目的聊天消息设为私聊。",
+			"UseTimeName": "冒险日志：包含当前时间",
+			"UseTimeHint": "在时间戳中包括当前时间（hh:mm:ss）。",
 			"PrintMessagesName": "冒险日志：将日志发布到聊天",
 			"PrintMessagesHint": "为新的冒险日志条目发布一条聊天消息。",
+			"DisableFormatName": "冒险日志：禁用条目格式",
+			"DisableFormatHint": "在向冒险日志添加条目时，禁用字体格式。",
+			"DisableEntryAuthorName": "冒险日志: 隐藏条目作者",
+			"DisableEntryAuthorHint": "在记录事件和引述时，不将作者的名字记录到冒险日志中。",
 			"SortDescendingName": "冒险日志：按新消息在顶端排序",
-			"SortDescendingHint": "冒险日志以最新的消息置于日志顶端来排序，最旧的消息会在日志底端。"
+			"SortDescendingHint": "冒险日志以最新的消息置于日志顶端来排序，最旧的消息会在日志底端。",
+			"SimpleCalendarName": "冒险日志: 使用 SimpleCalendar 时间戳",
+			"SimpleCalendarHint": "不使用真实时间的时间戳，而使用 SimpleCalendar 所生成的虚拟时间的时间戳"
 		},
 		"Error": {
 			"LibWrapperMissing": "你没有启用 libWrapper 。冒险日志功能依赖于此模组，无法起效。",
 			"ConfigGmOnly": "仅 GM 可以修改冒险日志的配置。",
 			"Disabled": "GM 已经禁用冒险日志",
 			"NoJournalSet": "GM 还没有为冒险日志设定一个使用的日志",
+			"NoPlayerJournalSet": "个人冒险日志尚未与你的用户账户绑定",
 			"NoJournalSetGM": "没有为冒险日志设定使用的日志。使用 \"<code>/log config</code>\" 来设置",
 			"MissingQuote": "你漏掉了 {0} 的引号",
 			"MissingMessage": "你没有提供一条消息"
+			"ApiLog_NotGm": "你必须是一名 GM，才能将事件记录到GM冒险日志中"
 		},
 		"Log_Header": "冒险日志",
+		"PLog_Header": "玩家日志",
 		"GMLog_Header": "冒险日志 (仅限 GM)",
 		"Log_Event": "<p><code><span class=\"dfal-ts\">{0}</span></code>&nbsp;(<span class=\"dfal-na\">{1}</span>)&nbsp;<span class=\"dfal-ev\">{2}</span></p>",
 		"Log_Quote": "<p><code><span class=\"dfal-ts\">{0}</span></code>&nbsp;(<span class=\"dfal-na\">{1}</span>)&nbsp;<span class=\"dfal-qu-src\">{2} said:</span>&nbsp;<span class=\"dfal-qu\">\"{3}\"</span></p>",
+		"Log_Event_Bland": "<p><span>{0}</span>&nbsp;(<span>{1}</span>)&nbsp;<span>{2}</span></p>",
+		"Log_Quote_Bland": "<p><span>{0}</span>&nbsp;(<span>{1}</span>)&nbsp;<span>{2} said:</span>&nbsp;<span>\"{3}\"</span></p>",
+
+		"Log_Event_NoAuth": "<p><code><span class=\"dfal-ts\">[{0}]</span></code>&nbsp;<span class=\"dfal-ev\">{2}</span></p>",
+		"Log_Quote_NoAuth": "<p><code><span class=\"dfal-ts\">[{0}]</span></code>&nbsp;<span class=\"dfal-qu-src\">{2} said:</span>&nbsp;<span class=\"dfal-qu\">\"{3}\"</span></p>",
+		"Log_Event_Bland_NoAuth": "<p><span>({0})</span>&nbsp;<span>{2}</span></p>",
+		"Log_Quote_Bland_NoAuth": "<p><span>({0})</span>&nbsp;<span>{2} said:</span>&nbsp;<span>\"{3}\"</span></p>",
+		
 		"Config_Title": "冒险日志设定",
 		"Config_JournalSelect": "用于冒险日志的日志",
 		"Config_GMJournalSelect": "用于仅限 GM 的日志",
@@ -103,7 +129,81 @@
 		"Settings_AllowEditHint": "允许玩家编辑他们发送的消息",
 		"Settings_GMEditAllName": "聊天编辑：GM 可以编辑所有消息",
 		"Settings_GMEditAllHint": "允许 GM 除了自己的消息外，还可以编辑任何人的消息",
+		"Settings_IgnoreHtmlName": "聊天编辑: 含 HTML 消息不可编辑",
+		"Settings_IgnoreHtmlHint": "不允许编辑含有 HTML 的消息。",
+		"Settings_MarkdownName": "聊天编辑: 启用 Markdown",
+		"Settings_MarkdownHint": "在聊天日志中启用 Markdown 风格。",
+		"Settings_ShowEditedLabelName": "聊天编辑: 已编辑标签",
+		"Settings_ShowEditedLabelHint": "在编辑过的信息的底部添加一个小标签，上面写着 \"(已编辑)\"",
 		"EditedFlag": "(已编辑)",
-		"Error_NoPermission": "GM 已禁用编辑"
+		"Error_NoPermission": "GM 已禁用编辑",
+		"ContextOption": "编辑消息"
+	},
+	"DF_CHAT_MERGE": {
+		"EnableName": "聊天合并：启用聊天信息合并功能",
+		"EnableHint": "将同一用户所发的时间相近的信息合并在一起。",
+		"ShowHeaderName": "聊天合并：展示消息版头",
+		"ShowHeaderHint": "若启用，将会展示每则已合并消息的版头。",
+		"AllowRollsName": "聊天合并：合并时如何处理掷骰消息",
+		"AllowRollsHint": "掷骰消息该如何处理",
+		"SeparateName": "聊天合并：显示合并分隔线",
+		"SeparateHint": "在已合并的信息之间，显示一条薄薄的分隔线。",
+		"SplitSpeakerName": "按发言者进行分组",
+		"SplitSpeakerHint": "若启用，消息将根据发言的具体角色进行分组；否则，来自同一用户的所有信息将被分组在一起。",
+		"HoverName": "聊天合并：显示边界阴影",
+		"HoverHint": "当鼠标悬停在已合并的消息上时，将显示一圈边界阴影。",
+		"EpochName": "聊天合并：最大时间间隔",
+		"EpochHint": "合并信息时，用来确定是否合并的最大间隔时间。",
+		"AllowRollsOptions": {
+			"none": "禁止合并",
+			"rolls": "与其它掷骰消息合并",
+			"all": "与其它任何消息合并"
+		}
+	},
+	"DF_CHAT_SCROLL": {
+		"EnableName": "启用滚动改进",
+		"EnableHint": "若在你查看上端的聊天日志时有新消息发布，此选项禁止聊天框自动滚动到最下端，并且一则“滚动至底部”的按钮将显示在聊天框的最底部。",
+		"ScrollIfYouName": "当你发送消息时，聊天框滚动到最下端",
+		"ScrollIfYouHint": "若你在查看上端聊天日志时，自己又发送了一则消息，那么此选项会将你的聊天框滚动到最下端。",
+		"ScrollButton": "滚动至底部",
+		"NewMessage": "新消息！",
+		"HistorySizeName": "减少聊天消息",
+		"HistorySizeHint": "减少聊天消息的显示数量。旧消息将会在你向上滚动聊天框的过程中加载。如果你的聊天记录很长，此选项将有助于提高 Foundry 的性能。",
+		"HistoryFixEnabledName": "最大聊天消息数量",
+		"HistoryFixEnabledHint": "当你在聊天框最下端时，允许显示的聊天消息的最大数量。"
+	},
+	"DF_CHAT_WHISPER_TRUNC": {
+		"SettingEnabledName": "启用私聊名称列表分隔",
+		"SettingEnabledHint": "将把私聊消息中由收件人名称所组成的过长列表进行分隔。",
+		"SettingCharLimitName": "私聊消息分隔字数",
+		"SettingCharLimitHint": "所允许的收件人名称列表的最大字符数量，若大于此，将对名称进行分隔。"
+	},
+	"DF_CHAT_PLAYER_COLOR": {
+		"Label": "玩家聊天颜色",
+		"SettingTintBackgroundName": "聊天消息的背景着色",
+		"SettingTintBackgroundHint": "将聊天消息框的背景染成玩家所对应的颜色。",
+		"SettingBorderStyleName": "选择要着色的聊天消息框",
+		"SettingBorderStyleHint": "决定哪些聊天消息应当有染色过的消息框",
+		"BorderStyle": {
+			"all": "所有消息（默认）",
+			"mine": "仅自身消息",
+			"none": "禁止消息框着色"
+		}
+	},
+	"DF_CHAT_SEND_BUTTON": {
+		"EnabledName": "在聊天框中显示发送按钮",
+		"EnabledHint": "在聊天框中显示一个发送按钮，可以点击它来发送消息。",
+		"ButtonTitle": "发送"
+	},
+	"DF_CHAT_FONT_SIZE": {
+		"FontSizeName": "聊天消息字体大小",
+		"FontSizeHint": "聊天消息与文本框的字体大小。(默认：14)"
+	},
+	"DF_CHAT_TIME": {
+		"EnabledName": "使用 Simple Calendar 时间戳",
+		"EnabledHint": "(需启用 Simple Calendar）若启用，聊天消息将会显示当前的游戏内时间，而不是现实世界的时间。重要的是! 改变此选项将会导致聊天记录重新渲染。",
+		"FormatName": "聊天消息时间戳格式",
+		"FormatHint": "聊天消息中所显示的 Simple Calendar 时间戳的格式。需要上述选项处于启用状态。(默认格式: \"YYYY, MMM DD, HH:mm\")",
+		"ErrorSimpleCalendarMissing": "必须安装并激活 Simple Calendar，以便将其用于聊天消息的时间戳。"
 	}
 }
