@@ -1,5 +1,8 @@
 # DF Chat Enhancements
 
+## Release 5.0.1 (2025-03-01)
+- **UPDATE #468:** Update Chinese Localization: Courtesy of [LiyuNodream](https://github.com/LiyuNodream).
+
 ## Release 5.0.0 (2025-02-28)
 - **UPDATE:** Migrated to v12.
 - **UPDATE:** Downgraded TS -> JS (such sad).

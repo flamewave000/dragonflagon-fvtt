@@ -8,9 +8,10 @@ Multiple improvements to the chat system feature set. Brings a new Chat Archive 
 
 - Code Contributions: [zeteticl](https://github.com/zeteticl).
 - Code Contributions: [hmqgg](https://github.com/hmqgg)
-- Japanese Localization: Tonishi & [BrotherSharper](https://github.com/BrotherSharper)
-- Korean Localization: [drdwing](https://github.com/drdwing)
-- Portuguese (Brazil) Localization: [Brn086](https://github.com/Brn086) and [Matheus Clemente](https://github.com/mclemente)
+- Localization (Japanese): Tonishi & [BrotherSharper](https://github.com/BrotherSharper)
+- Localization (Korean): [drdwing](https://github.com/drdwing)
+- Localization (Portuguese (Brazil)): [Brn086](https://github.com/Brn086) and [Matheus Clemente](https://github.com/mclemente)
+- Localization (Simplified Chinese): [LiyuNodream](https://github.com/LiyuNodream)
 - Helping me Fix my dumb mistakes with libWrapper 🤣: [ruipin](https://github.com/ruipin)
 
 ## Table of Contents
