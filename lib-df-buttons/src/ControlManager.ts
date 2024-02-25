@@ -165,9 +165,10 @@ export default class ControlManager extends Application implements IControlManag
 		const singleGroup = groups.length === 1 && !groups[0].button && !groups[0].toggle;
 		if (groups.every(x => !x.active)) {
 			const firstGroup = groups.find(x => !x.button && !x.toggle);
-			firstGroup.active = true;
-			if (firstGroup)
+			if (firstGroup) {
+				firstGroup.active = true;
 				this.activateGroupByName(firstGroup.name);
+			}
 		}
 		return { groups, singleGroup };
 	}
