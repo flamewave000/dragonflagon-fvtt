@@ -135,7 +135,7 @@ export class DFChatArchive {
 		// Replace special characters in name to underscores
 		const safeName = name.replace(/[^ a-z0-9-_()[\]<>]/gi, '_');
 		// Generate the system safe filename
-		const fileName = encodeURI(`${id}_${safeName}.json`);
+		const fileName = (`${id}_${safeName}.json`);
 		// Create the File and contents
 		const file = new File([JSON.stringify(chats, null, '')], fileName, { type: 'application/json' });
 		const response: { path?: string; message?: string } = <any>await FilePicker.upload(this.DATA_FOLDER, folderPath, file);
