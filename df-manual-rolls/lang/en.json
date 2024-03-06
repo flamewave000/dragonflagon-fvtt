@@ -9,7 +9,9 @@
 			"Flagged_Name": "Flag manual rolls",
 			"Flagged_Hint": "Add a flag to chat rolls that use manual dice.",
 			"FocusInput_Name": "Auto-Focus First Input Field",
-			"FocusInput_Hint": "If enabled, will set the focus to the first input field in the roll request window."
+			"FocusInput_Hint": "If enabled, will set the focus to the first input field in the roll request window.",
+			"ExplodingDice_Name": "Support Exploding Dice",
+			"ExplodingDice_Hint": "If enabled, allows entry of a roll that is higher the number of dice sides."
 		},
 		"Setting_Options": {
 			"Disabled": "Manual Rolls Disabled",
