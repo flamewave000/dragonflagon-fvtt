@@ -3,7 +3,11 @@
 	"title": "Module Name",
 	"version": "1.0.0",
 	"description": "Description",
-	"author": "flamewave000#0001",
+	"author": [
+		{
+			"name": "flamewave000#0001"
+		}
+],
 	"minimumCoreVersion": "0.8.9",
 	"compatibleCoreVersion": "0.8.9",
 	"esmodules": "{{sources}}",
@@ -17,7 +21,6 @@
 	"download":	"https://dragonflagon.cafe/mods/pak/df-module-name",
 	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-module-name/README.md",
 	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-module-name/CHANGELOG.md",
-	"manifestPlusVersion": "1.0.0",
 	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues/new/choose",
 	"authors": [ { "name": "flamewave000", "discord": "flamewave000#0001", "url": "https://github.com/flamewave000" } ],
 	"media": [
