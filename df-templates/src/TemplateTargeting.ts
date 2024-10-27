@@ -45,6 +45,7 @@ export default class TemplateTargeting {
 	private static readonly TARGETING_MODE_PREF = "template-targeting";
 	private static readonly GRIDLESS_RESOLUTION_PREF = "template-gridless-resolution";
 	private static readonly GRIDLESS_PERCENTAGE_PREF = "template-gridless-percentage";
+	private static readonly INTERACTION_MODE_GRABBED = 4;
 
 	private static readonly PointGraphContainer = new PIXI.Graphics();
 
@@ -177,7 +178,7 @@ export default class TemplateTargeting {
 		const isOwner = this.document.author.id === game.userId;
 		// Release all previously targeted tokens
 		// @ts-ignore
-		if ((this.hover || !this.id) && isOwner && shouldAutoSelect && canvas.tokens.objects) {
+		if ((this.interactionState === TemplateTargeting.INTERACTION_MODE_GRABBED || !this.id) && isOwner && shouldAutoSelect && canvas.tokens.objects) {
 			for (const t of game.user.targets) {
 				t.setTarget(false, { releaseOthers: false, groupSelection: true });
 			}
@@ -210,10 +211,6 @@ export default class TemplateTargeting {
 			if (points[c + 1] < shapeBounds.top) shapeBounds.top = points[c + 1];
 			if (points[c + 1] > shapeBounds.bottom) shapeBounds.bottom = points[c + 1];
 		}
-		// @ts-ignore
-		// const snappedTopLeft = canvas.grid.getSnappedPosition(shapeBounds.left, shapeBounds.top, 1);
-		// @ts-ignore
-		// const snappedBottomRight = canvas.grid.getSnappedPosition(shapeBounds.right, shapeBounds.bottom, 1);
 
 		// @ts-ignore
 		const snappedTopLeft = canvas.grid.getSnappedPoint({x:shapeBounds.left, y:shapeBounds.top}, {mode: CONST.GRID_SNAPPING_MODES.CORNER , interval: 1});
@@ -482,7 +479,7 @@ export default class TemplateTargeting {
 
 				// Ignore changing the target selection if we don't own the template, or `shouldAutoSelect` is false
 				// @ts-ignore
-				if ((!this.hover && this.id) || !isOwner || !shouldAutoSelect) continue;
+				if ((this.interactionState !== TemplateTargeting.INTERACTION_MODE_GRABBED && this.id) || !isOwner || !shouldAutoSelect) continue;
 
 				// If we are using Point based targetting for this template
 				// @ts-ignore
