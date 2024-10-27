@@ -18,18 +18,19 @@ export default class SquareTemplate {
 	}
 
 	private static patch() {
-		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype._getRectShape', SquareTemplate.MeasuredTemplate_getRectShape, 'OVERRIDE');
+		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.getRectShape', SquareTemplate.MeasuredTemplate_getRectShape, 'OVERRIDE');
 		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype._refreshRulerText', SquareTemplate.MeasuredTemplate_refreshRulerText, 'WRAPPER');
 	}
 	private static unpatch() {
-		libWrapper.unregister(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype._getRectShape', false);
+		libWrapper.unregister(SETTINGS.MOD_NAME, 'MeasuredTemplate.getRectShape', false);
 		libWrapper.unregister(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype._refreshRulerText', false);
 	}
 
-	static MeasuredTemplate_getRectShape(this: MeasuredTemplate, direction: number, distance: number, adjustForRoundingError = false): PIXI.Polygon {
+	static MeasuredTemplate_getRectShape(this: MeasuredTemplate, distance: number, direction: number, adjustForRoundingError = false): PIXI.Polygon {
+		distance *= 10;
 		// Generate a rotation matrix to apply the rect against. The base rotation must be rotated
 		// CCW by 45° before applying the real direction rotation.
-		const matrix = PIXI.Matrix.IDENTITY.rotate((-45 * (Math.PI / 180)) + direction);
+		const matrix = PIXI.Matrix.IDENTITY.rotate((-45 * (Math.PI / 180)) + Math.toRadians(direction));
 		// If the shape will be used for collision, shrink the rectangle by a fixed EPSILON amount to account for rounding errors
 		const EPSILON = adjustForRoundingError ? 0.0001 : 0;
 		// Use simple Pythagoras to calculate the square's size from the diagonal "distance".

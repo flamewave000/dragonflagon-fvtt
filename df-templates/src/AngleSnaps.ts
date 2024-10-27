@@ -33,7 +33,7 @@ export default class AngleSnaps {
 	static ready() {
 		libWrapper.register(SETTINGS.MOD_NAME, 'canvas.templates._onMouseWheel', function (this: TemplateLayer, event: MouseEvent): any {
 			// Determine whether we have a hovered template?
-			const template = this.hover;
+			const template = this._hover;
 			if (!template) return;
 			// Determine the incremental angle of rotation from event data
 			const snapCount = SETTINGS.get<number>('angle-snap-macro');

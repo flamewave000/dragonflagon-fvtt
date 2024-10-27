@@ -160,7 +160,8 @@ export default class TemplateTargeting {
 		// Register for the regular template creation completion and cancellation
 		const handleTemplateCreation = function (this: TemplateLayer, wrapper: AnyFunction, ...args: any) {
 			// clear the highlight preview layer
-			canvas.grid.getHighlightLayer('Template.null')?.clear();
+			// @ts-ignore
+			canvas.interface.grid.getHighlightLayer('Template.null')?.clear();
 			return wrapper(...args);
 		};
 		libWrapper.register(SETTINGS.MOD_NAME, 'TemplateLayer.prototype._onDragLeftDrop', handleTemplateCreation, 'WRAPPER');
@@ -173,8 +174,9 @@ export default class TemplateTargeting {
 	private static _MeasuredTemplate_highlightGrid(this: MeasuredTemplate) {
 		const mode = SETTINGS.get<string>(TemplateTargeting.TARGETING_MODE_PREF);
 		const shouldAutoSelect = mode === 'always' || (mode === 'toggle' && SETTINGS.get<boolean>(TemplateTargeting.TARGETING_TOGGLE_PREF));
-		const isOwner = this.document.user.id === game.userId;
+		const isOwner = this.document.author.id === game.userId;
 		// Release all previously targeted tokens
+		// @ts-ignore
 		if ((this.hover || !this.id) && isOwner && shouldAutoSelect && canvas.tokens.objects) {
 			for (const t of game.user.targets) {
 				t.setTarget(false, { releaseOthers: false, groupSelection: true });
@@ -208,8 +210,16 @@ export default class TemplateTargeting {
 			if (points[c + 1] < shapeBounds.top) shapeBounds.top = points[c + 1];
 			if (points[c + 1] > shapeBounds.bottom) shapeBounds.bottom = points[c + 1];
 		}
-		const snappedTopLeft = canvas.grid.grid.getSnappedPosition(shapeBounds.left, shapeBounds.top, 1);
-		const snappedBottomRight = canvas.grid.grid.getSnappedPosition(shapeBounds.right, shapeBounds.bottom, 1);
+		// @ts-ignore
+		// const snappedTopLeft = canvas.grid.getSnappedPosition(shapeBounds.left, shapeBounds.top, 1);
+		// @ts-ignore
+		// const snappedBottomRight = canvas.grid.getSnappedPosition(shapeBounds.right, shapeBounds.bottom, 1);
+
+		// @ts-ignore
+		const snappedTopLeft = canvas.grid.getSnappedPoint({x:shapeBounds.left, y:shapeBounds.top}, {mode: CONST.GRID_SNAPPING_MODES.CORNER , interval: 1});
+		// @ts-ignore
+		const snappedBottomRight = canvas.grid.getSnappedPoint({x:shapeBounds.right, y:shapeBounds.bottom}, {mode: CONST.GRID_SNAPPING_MODES.CORNER , interval: 1});
+
 		[shapeBounds.left, shapeBounds.top] = [snappedTopLeft.x, snappedTopLeft.y];
 		[shapeBounds.right, shapeBounds.bottom] = [snappedBottomRight.x, snappedBottomRight.y];
 		return shapeBounds;
@@ -219,16 +229,18 @@ export default class TemplateTargeting {
 		/************** THIS CODE IS DIRECTLY COPIED FROM 'MeasuredTemplate.prototype.highlightGrid' ****************/
 		const grid = canvas.grid;
 		const d = canvas.dimensions;
-		const border = <number>this.borderColor;
-		const color = <number>this.fillColor;
+		const border = <number>this.document.borderColor;
+		const color = <number>this.document.fillColor;
 		const DEBUG = SETTINGS.get('template-debug');
 
 		// Only highlight for objects which have a defined shape
+		// @ts-ignore
 		const id: string = this.highlightId ?? (<any>this)['_original']?.highlightId;
 		if ((!this.id && !SETTINGS.get(TemplateTargeting.PREVIEW_PREF)) || !this.shape) return;
 
 		// Clear existing highlight
-		const hl = grid.getHighlightLayer(id);
+		// @ts-ignore
+		const hl = canvas.interface.grid.getHighlightLayer(id);
 		hl?.clear();
 
 		// If we are in gridless mode, highlight the shape directly
@@ -248,21 +260,27 @@ export default class TemplateTargeting {
 				}
 			}// eslint-disable-next-line no-empty
 			catch (error) { }
-			grid.grid.highlightGridPosition(hl, { border, color: <any>color, shape: <any>shape });
+			// @ts-ignore
+			canvas.interface.grid.highlightPosition(id, { border, color: <any>color, shape: <any>shape });
 			TemplateTargeting._selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this, <PIXI.Polygon>this.shape, true);
 			return;
 		}
 
 		// Get number of rows and columns
 		const shapeBounds = TemplateTargeting._calculateGridTestArea.apply(this);
-		const colCount = Math.ceil(shapeBounds.width() / grid.w) + 2; //? Add a padding ring around for any outlier cases
-		const rowCount = Math.ceil(shapeBounds.height() / grid.h) + 2; //? Add a padding ring around for any outlier cases
+		// @ts-ignore
+		const colCount = Math.ceil(shapeBounds.width() / grid.sizeX) + 2; //? Add a padding ring around for any outlier cases
+		// @ts-ignore
+		const rowCount = Math.ceil(shapeBounds.height() / grid.sizeY) + 2; //? Add a padding ring around for any outlier cases
 
 		// Get the offset of the template origin relative to the top-left grid space
-		const [tx, ty] = canvas.grid.getTopLeft(this.document.x, this.document.y);
-		const [row0, col0] = grid.grid.getGridPositionFromPixels(shapeBounds.left + tx, shapeBounds.top + ty);
-		const hx = canvas.grid.w / 2;
-		const hy = canvas.grid.h / 2;
+		// @ts-ignore
+		const docOffset = canvas.grid.getOffset(new PIXI.Point(shapeBounds.left + this.document.x, shapeBounds.top + this.document.y));
+		const [row0, col0] = [docOffset.i, docOffset.j];
+		// @ts-ignore
+		const hx = canvas.grid.sizeX / 2;
+		// @ts-ignore
+		const hy = canvas.grid.sizeY / 2;
 
 		/***** START OF CODE EDIT *****/
 		// Extract and prepare data
@@ -270,7 +288,8 @@ export default class TemplateTargeting {
 		distance *= (d.size / d.distance);
 		width *= (d.size / d.distance);
 		angle = Math.toRadians(angle);
-		direction = Math.toRadians((direction % 360) + 360);
+		//direction = Math.toRadians((direction % 360) + 360);
+		direction = Math.toRadians(direction % 360);
 		// If we are round, the side is of length `distance`, otherwise calculate the true length of the hypotenouse
 		const isRound = game.settings.get("core", "coneTemplateType") === 'round';
 		const rayLength = isRound ? distance : (distance / Math.sin((Math.PI / 2) - (angle / 2))) * Math.sin(Math.PI / 2);
@@ -318,10 +337,13 @@ export default class TemplateTargeting {
 		for (let r = -1; r < rowCount; r++) {
 			//? Start on -1 to account for padding ring of cells around test area
 			for (let c = -1; c < colCount; c++) {
-				const [gx, gy] = canvas.grid.grid.getPixelsFromGridPosition(row0 + r, col0 + c);
+				// @ts-ignore
+				const topLeftPoint = canvas.grid.getTopLeftPoint({i: row0 + r, j: col0 + c});
+				const [gx, gy] = [topLeftPoint.x, topLeftPoint.y];
 				const testX = gx + hx;
 				const testY = gy + hy;
-				const testRect = new PIXI.Rectangle(gx, gy, canvas.grid.w, canvas.grid.h).normalize();
+				// @ts-ignore
+				const testRect = new PIXI.Rectangle(gx, gy, canvas.grid.sizeX, canvas.grid.sizeY).normalize();
 				let contains = false;
 				switch (this.document.t) {
 					case "circle": {
@@ -345,7 +367,9 @@ export default class TemplateTargeting {
 						break;
 					}
 					case "rect": {
-						const rect = (this as any)._getRectShape(direction, distance, true);
+						//const rect = (this as any).getRectShape(direction, distance, true);
+						// @ts-ignore
+						const rect = MeasuredTemplate.getRectShape(direction, distance, true);
 						if (rect instanceof PIXI.Polygon) {
 							contains = this.shape.contains(testX - this.document.x, testY - this.document.y);
 							if (contains || TemplateConfig.config.rect === HighlightMode.CENTER) break;
@@ -449,23 +473,27 @@ export default class TemplateTargeting {
 				}
 
 				if (!DEBUG && !contains) continue;
-				try { grid.grid.highlightGridPosition(hl, { x: gx, y: gy, border, color: DEBUG ? (contains ? 0x00FF00 : 0xFF0000) : color }); }
+				// @ts-ignore
+				try { canvas.interface.grid.highlightPosition(id, { x: gx, y: gy, border, color: DEBUG ? (contains ? 0x00FF00 : 0xFF0000) : color }); }
 				catch (error) {
-					// Catches a specific "highlight" error that will randomly occur inside of `grid.grid.highlightGridPosition()`
+					// Catches a specific "highlight" error that will randomly occur inside of `grid.highlightPosition()`
 					if (!(error instanceof Error) || !error.message.includes("'highlight'")) throw error;
 				}
 				if (!contains) continue;
 
 				// Ignore changing the target selection if we don't own the template, or `shouldAutoSelect` is false
+				// @ts-ignore
 				if ((!this.hover && this.id) || !isOwner || !shouldAutoSelect) continue;
 
 				// If we are using Point based targetting for this template
+				// @ts-ignore
 				if (TemplateConfig.config[this.document.t] === HighlightMode.POINTS) {
 					TemplateTargeting._selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this.document, <PIXI.Polygon>this.shape, true);
 					continue;
 				}
 				// Iterate over all existing tokens and target the ones within the template area
 				for (const token of canvas.tokens.placeables) {
+					// @ts-ignore
 					const tokenRect = new PIXI.Rectangle(token.x, token.y, token.w, token.h).normalize();
 					if (testRect.left >= tokenRect.right || testRect.right <= tokenRect.left
 						|| testRect.top >= tokenRect.bottom || testRect.bottom <= tokenRect.top) continue;
