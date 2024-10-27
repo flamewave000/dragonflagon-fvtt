@@ -367,9 +367,8 @@ export default class TemplateTargeting {
 						break;
 					}
 					case "rect": {
-						//const rect = (this as any).getRectShape(direction, distance, true);
 						// @ts-ignore
-						const rect = MeasuredTemplate.getRectShape(direction, distance, true);
+						const rect = MeasuredTemplate.getRectShape(distance, direction, true, true, true);
 						if (rect instanceof PIXI.Polygon) {
 							contains = this.shape.contains(testX - this.document.x, testY - this.document.y);
 							if (contains || TemplateConfig.config.rect === HighlightMode.CENTER) break;

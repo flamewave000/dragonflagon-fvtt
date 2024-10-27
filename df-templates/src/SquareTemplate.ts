@@ -26,11 +26,19 @@ export default class SquareTemplate {
 		libWrapper.unregister(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype._refreshRulerText', false);
 	}
 
-	static MeasuredTemplate_getRectShape(this: MeasuredTemplate, distance: number, direction: number, adjustForRoundingError = false): PIXI.Polygon {
-		distance *= 10;
+	static MeasuredTemplate_getRectShape(this: MeasuredTemplate, distance: number, direction: number, adjustForRoundingError = false, directionInRadians = false, distanceAdjusted = false): PIXI.Polygon {
+		// This is a quick fix. In Foundry v12 the distance is provided a tenth, of what was provided in v10.
+		// Need to do more testing to find out why.
+		if(!distanceAdjusted)
+			distance *= 10;
+
+		// This is a quick fix. In Foundry v12 the direction is provided in radians, in v10 this was provided in degrees.
+		if(!directionInRadians)
+			direction = Math.toRadians(direction);
+
 		// Generate a rotation matrix to apply the rect against. The base rotation must be rotated
 		// CCW by 45° before applying the real direction rotation.
-		const matrix = PIXI.Matrix.IDENTITY.rotate((-45 * (Math.PI / 180)) + Math.toRadians(direction));
+		const matrix = PIXI.Matrix.IDENTITY.rotate((-45 * (Math.PI / 180)) + direction);
 		// If the shape will be used for collision, shrink the rectangle by a fixed EPSILON amount to account for rounding errors
 		const EPSILON = adjustForRoundingError ? 0.0001 : 0;
 		// Use simple Pythagoras to calculate the square's size from the diagonal "distance".
