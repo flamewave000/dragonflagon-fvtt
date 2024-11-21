@@ -11,7 +11,9 @@
 			"Flagged_Name": "Oznaczaj rzuty ręczne",
 			"Flagged_Hint": "Dodaje znacznik na czacie do rzutów wykonanych ręcznie.",
 			"FocusInput_Name": "Automatycznie wybieraj pierwsze pole tekstowe",
-			"FocusInput_Hint": "Po wyświetleniu dialogu z prośbą o rzuty kursor automatycznie przeniesiony zostanie na pierwsze pole tekstowe."
+			"FocusInput_Hint": "Po wyświetleniu dialogu z prośbą o rzuty kursor automatycznie przeniesiony zostanie na pierwsze pole tekstowe.",
+			"ExplodingDice_Name": "Wspieraj eksplodujące kości",
+			"ExplodingDice_Hint": "Jeśli ta opcja jest włączona, umożliwia wprowadzenie rzutu, który jest większy niż liczba ścianek kości."
 		},
 		"Setting_Options": {
 			"Disabled": "Wyłączone",
