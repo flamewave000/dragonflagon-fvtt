@@ -1,5 +1,9 @@
 # DF User Logger
 
+## Release 2.0.0 (2025-01-30)
+- **UPDATE:** Migrated to v12.
+- **UPDATE:** Downgraded TS -> JS (such sad).
+
 ## Release 1.7.0 (2022-10-17)
 - **UPDATE:** Migrated to v10.
 - **FIX #400:** Fixed error when user deletes message before timeout does.

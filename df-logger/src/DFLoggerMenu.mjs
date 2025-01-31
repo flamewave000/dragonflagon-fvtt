@@ -1,9 +1,9 @@
-import { Message, MessageProcessor } from "./MessageProcessor";
+import MessageProcessor from "./MessageProcessor.mjs";
 
 
 export default class DFLoggerMenu extends FormApplication {
 	static get defaultOptions() {
-		return <any>mergeObject(super.defaultOptions as Partial<FormApplicationOptions>, {
+		return mergeObject(super.defaultOptions, {
 			editable: true,
 			resizable: true,
 			submitOnChange: false,
@@ -17,21 +17,26 @@ export default class DFLoggerMenu extends FormApplication {
 		});
 	}
 
-	async _updateObject(_event: Event, _formData?: object) {
+	/**
+	 * 
+	 * @param {Event} _event 
+	 * @param {object|undefined} _formData 
+	 */
+	async _updateObject(_event, _formData) {
 		const loginEntryElements = this.element.find('div[data-tab="login"]>div.message-entry');
-		const loginEntries: Message[] = [];
+		/**@type {Message[]}*/const loginEntries = [];
 		loginEntryElements.each((_, elem) => {
 			loginEntries.push({
-				tog: elem.querySelector<HTMLInputElement>('input[type="checkbox"]').checked,
-				msg: elem.querySelector<HTMLInputElement>('input[type="text"]').value
+				tog: elem.querySelector('input[type="checkbox"]').checked,
+				msg: elem.querySelector('input[type="text"]').value
 			});
 		});
 		const logoutEntryElements = this.element.find('div[data-tab="logout"]>div.message-entry');
-		const logoutEntries: Message[] = [];
+		/**@type {Message[]}*/const logoutEntries = [];
 		logoutEntryElements.each((_, elem) => {
 			logoutEntries.push({
-				tog: elem.querySelector<HTMLInputElement>('input[type="checkbox"]').checked,
-				msg: elem.querySelector<HTMLInputElement>('input[type="text"]').value
+				tog: elem.querySelector('input[type="checkbox"]').checked,
+				msg: elem.querySelector('input[type="text"]').value
 			});
 		});
 		MessageProcessor.loginMessages = loginEntries;
@@ -39,15 +44,21 @@ export default class DFLoggerMenu extends FormApplication {
 		await MessageProcessor.saveMessages();
 	}
 
-	getData(_options?: Application.RenderOptions): any {
+	/**
+	 * @param {Application.RenderOptions} _options 
+	 * @returns {object}
+	 */
+	getData(_options) {
 		return {
 			login: MessageProcessor.loginMessages,
 			logout: MessageProcessor.logoutMessages
 		};
 	}
 
-	/** @override */
-	activateListeners(html: JQuery<HTMLElement>) {
+	/**
+	 * @param {JQuery} html 
+	 */
+	activateListeners(html) {
 		html.find('div.message-entry').each((_, elem) => this._processEntry($(elem)));
 		html.find('button[name="add"]').on('click', async () => {
 			const entry = $(await renderTemplate('modules/df-logger/templates/message-template.hbs', { tog: true, msg: '' }));
@@ -69,14 +80,17 @@ export default class DFLoggerMenu extends FormApplication {
 		});
 	}
 
-	private _processEntry(element: JQuery<HTMLElement>) {
+	/**
+	 * @param {JQuery} element 
+	 */
+	_processEntry(element) {
 		const textBlock = element.find('input[type="text"]');
 		element.find('input[type="checkbox"]').on('change', (event) => {
-			const input = event.currentTarget as HTMLInputElement;
+			/**@type {HTMLInputElement}*/const input = event.currentTarget;
 			if (input.checked) textBlock.removeAttr('disabled');
 			else textBlock.attr('disabled', '');
 		});
-		element.find('button').on('click', (event: JQuery.ClickEvent) => {
+		element.find('button').on('click', (/**@type {JQuery.ClickEvent}*/event) => {
 			$(event.currentTarget).parent('.message-entry').remove();
 		});
 	}

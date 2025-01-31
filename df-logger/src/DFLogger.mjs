@@ -1,11 +1,5 @@
-import { Message, MessageProcessor } from "./MessageProcessor";
-import SETTINGS from "../../common/Settings";
-
-interface Payload {
-	type: string,
-	id: string,
-	msg: string
-}
+import MessageProcessor from "./MessageProcessor.mjs";
+import SETTINGS from "./common/Settings.mjs";
 
 export default class DFLogger {
 	static EV_LOGIN = 'login';
@@ -19,14 +13,23 @@ export default class DFLogger {
 	static get LoginContent() { return game.i18n.localize('DF-LOGGER.Content.Login'); }
 	static get LogoutContent() { return game.i18n.localize('DF-LOGGER.Content.Logout'); }
 
-	static getMessageText(messages: Message[]): string {
+	/**
+	 * @param {Message[]} messages 
+	 * @returns {string}
+	 */
+	static getMessageText(messages) {
 		messages = messages.filter(x => x.tog);
 		return messages[Math.round(Math.random() * (messages.length * 100)) % messages.length].msg;
 	}
 
-	static async displayMessage(user: User, alias: any, msg: string) {
+	/**
+	 * @param {User} user 
+	 * @param {any} alias 
+	 * @param {string} msg 
+	 */
+	static async displayMessage(user, alias, msg) {
 		const chatMsg = await ChatMessage.create({
-			sound: SETTINGS.get<string>(DFLogger.SETTING_SOUND),
+			sound: SETTINGS.get(DFLogger.SETTING_SOUND),
 			content: msg.replace(/\{\{username\}\}/g, user.name),
 			speaker: {
 				scene: null,
@@ -35,7 +38,7 @@ export default class DFLogger {
 				alias: alias
 			},
 			whisper: [game.user.id],
-			type: CONST.CHAT_MESSAGE_TYPES.OOC,
+			type: CONST.CHAT_MESSAGE_STYLES.OOC,
 			flags: { 'df-logger': { destroy: !this.Persist } }
 		});
 
@@ -44,17 +47,26 @@ export default class DFLogger {
 				try {
 					await chatMsg.delete();
 				} catch { /* ignore errors here, they only occur if the user deleted the message before our timer did */ }
-			}, Math.round(SETTINGS.get<number>('delay') * 1000));
+			}, Math.round(SETTINGS.get('delay') * 1000));
 		}
 	}
 
-	static onEvent(data: Payload) {
+	/**
+	 * @param {Payload} data
+	 * @returns 
+	 */
+	static onEvent(data) {
 		// ignore message if GM-Only and we are not a GM
 		if (SETTINGS.get(DFLogger.SETTING_GM_ONLY) && !game.user.isGM) return;
 		if (data.type === DFLogger.EV_LOGIN) DFLogger.onLogin(data);
 		else if (data.type === DFLogger.EV_LOGOUT) DFLogger.onLogout(data);
 	}
-	static onUserActivity(userId: string, activityData: { active?: boolean } = {}) {
+	/**
+	 * 
+	 * @param {string} userId 
+	 * @param { {active?: boolean} } activityData
+	 */
+	static onUserActivity(userId, activityData = {}) {
 		if (!("active" in activityData) || activityData.active === true) return;
 		DFLogger.onLogout({
 			type: DFLogger.EV_LOGOUT,
@@ -64,7 +76,7 @@ export default class DFLogger {
 	}
 
 	static performLogin() {
-		const payload: Payload = {
+		/** @type {Payload} */const payload = {
 			type: DFLogger.EV_LOGIN,
 			id: game.user.id,
 			msg: DFLogger.getMessageText(MessageProcessor.loginMessages)
@@ -74,11 +86,17 @@ export default class DFLogger {
 			DFLogger.onEvent(payload);
 	}
 
-	static async onLogin(data: Payload) {
+	/**
+	 * @param {Payload} data 
+	 */
+	static async onLogin(data) {
 		await DFLogger.displayMessage(game.users.get(data.id), DFLogger.LoginContent, data.msg);
 	}
 
-	static async onLogout(data: Payload) {
+	/**
+	 * @param {Payload} data 
+	 */
+	static async onLogout(data) {
 		// do not display a logout message for ourselves
 		if (game.user.id === data.id) return;
 		await DFLogger.displayMessage(game.users.get(data.id), DFLogger.LogoutContent, data.msg);

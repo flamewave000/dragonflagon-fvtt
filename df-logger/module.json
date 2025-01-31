@@ -1,15 +1,12 @@
 {
 	"id": "df-logger",
 	"title": "DF User Logger",
-	"version": "1.7.0",
+	"version": "2.0.0",
 	"description": "Prints a simple message whenever a user logs-in/out of FoundryVTT",
-	"author": "flamewave000#0001",
-	"compatibility": {
-		"minimum": 10,
-		"verified": 10.288
-	},
-	"esmodules": "{{sources}}",
-	"styles": "{{css}}",
+	"authors": [ { "name": "flamewave000", "discord": "flamewave000", "url": "https://github.com/flamewave000" } ],
+	"compatibility": { "minimum": 12, "verified": 12.331 },
+	"esmodules": "src/df-logger.mjs",
+	"styles": "css/df-logger.css",
 	"languages": [
 		{ "lang": "en", "name": "English", "path": "lang/en.json" },
 		{ "lang": "es", "name": "Español", "path": "lang/es.json" },
@@ -25,7 +22,6 @@
 	"socket": true,
 	"manifestPlusVersion": "1.0.0",
 	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues/new/choose",
-	"authors": [ { "name": "flamewave000", "discord": "flamewave000#0001", "url": "https://github.com/flamewave000" } ],
 	"media": [
 		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" },
 		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-logger/message.png" },
