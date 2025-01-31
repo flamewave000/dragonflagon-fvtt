@@ -1,16 +1,11 @@
 
-export interface Message {
-	tog: boolean;
-	msg: string;
-}
+export default class MessageProcessor {
+	/** @type {Promise<void>} */static messageLoadJob = null;
+	/** @type {Message[]} */static loginMessages = [];
+	/** @type {Message[]} */static logoutMessages = [];
 
-export class MessageProcessor {
-
-	static messageLoadJob: Promise<void> = null;
-	static loginMessages: Message[] = [];
-	static logoutMessages: Message[] = [];
-
-	static loadMessages(): Promise<void> {
+	/** @returns { Promise<void> } */
+	static loadMessages() {
 		this.messageLoadJob = new Promise(async (res, rej) => {
 			const response = await fetch('user-logger-messages.json');
 			if (response.ok) {
@@ -36,13 +31,13 @@ export class MessageProcessor {
 			login: this.loginMessages,
 			logout: this.logoutMessages
 		})], 'user-logger-messages.json', { type: 'application/json' });
-		const response: { path?: string; message?: string } = <any>await FilePicker.upload('data', '', file);
+		/** @type {FilePickerResponse}*/const response = await FilePicker.upload('data', '', file);
 		if (!response.path)
 			throw new Error('Could not upload the login.json to server');
 	}
 
 	static async initializeMessages() {
-		const i18n: { LoginMsg: string[], LogoutMsg: string[] } = <any>game.i18n.translations['DF-LOGGER'];
+		/** @type {Messages}*/const i18n = game.i18n.translations['DF-LOGGER'];
 		for (const msg of i18n.LoginMsg) {
 			this.loginMessages.push({ tog: true, msg });
 		}

@@ -1,18 +1,18 @@
-import DFLogger from './DFLogger';
-import DFLoggerMenu from './DFLoggerMenu';
-import { MessageProcessor } from './MessageProcessor';
-import SETTINGS from "../../common/Settings";
+import DFLogger from './DFLogger.mjs';
+import DFLoggerMenu from './DFLoggerMenu.mjs';
+import MessageProcessor from './MessageProcessor.mjs';
+import SETTINGS from "./common/Settings.mjs";
 
 SETTINGS.init('df-logger');
 
 Hooks.once('init', function () {
 	SETTINGS.registerMenu('message-manage', {
 		restricted: true,
-		type: <any>DFLoggerMenu,
+		type: DFLoggerMenu,
 		label: 'DF-LOGGER.Settings.ManageMessages',
 		icon: 'fas fa-comment-alt'
 	});
-	SETTINGS.register<string>(DFLogger.SETTING_SOUND, {
+	SETTINGS.register(DFLogger.SETTING_SOUND, {
 		name: 'DF-LOGGER.Settings.Sound_Name',
 		hint: 'DF-LOGGER.Settings.Sound_Hint',
 		scope: 'world',
@@ -38,7 +38,7 @@ Hooks.once('init', function () {
 		type: Boolean,
 		default: true
 	});
-	SETTINGS.register<number>(DFLogger.SETTING_DELAY, {
+	SETTINGS.register(DFLogger.SETTING_DELAY, {
 		name: "DF-LOGGER.Settings.Delay_Name",
 		hint: "DF-LOGGER.Settings.Delay_Hint",
 		scope: "client",
