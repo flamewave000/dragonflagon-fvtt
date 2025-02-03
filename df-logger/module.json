@@ -5,8 +5,8 @@
 	"description": "Prints a simple message whenever a user logs-in/out of FoundryVTT",
 	"authors": [ { "name": "flamewave000", "discord": "flamewave000", "url": "https://github.com/flamewave000" } ],
 	"compatibility": { "minimum": 12, "verified": 12.331 },
-	"esmodules": "src/df-logger.mjs",
-	"styles": "css/df-logger.css",
+	"esmodules": "{{sources}}",
+	"styles": "{{css}}",
 	"languages": [
 		{ "lang": "en", "name": "English", "path": "lang/en.json" },
 		{ "lang": "es", "name": "Español", "path": "lang/es.json" },

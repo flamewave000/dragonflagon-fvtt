@@ -6,3 +6,5 @@
 .devenv*
 .vscode/settings.json
 *foundry-reference*
+release/
+.doit/

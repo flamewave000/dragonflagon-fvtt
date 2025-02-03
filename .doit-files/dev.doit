@@ -1,0 +1,63 @@
+doit_utl = "doit -t .doit-files/utl.doit"
+doit_dev = "doit -t .doit-files/dev.doit"
+
+dev {
+	@ Copy the targetted module's data to the set foundry data directory
+	$$$
+	module=`jq -r .module .devenv`
+	fdata="$$(jq -r .foundry.data .devenv)/Data/modules/$$module"
+	if [ -e "$$fdata" ] ; then
+		rm -R "$$fdata"
+	fi
+	cp -R "./$$module" "$$fdata"
+	$doit_dev proc_module "$$fdata/module.json"
+	echo "Copied $$module to $$fdata"
+	$$$
+}
+pack {
+	@ Package the targetted module for release
+	$$$
+	module=`jq -r .module .devenv`
+	version=`jq -r .version "$$module/module.json"`
+	dir="release/$${module}_$$version"
+	if [ -e "$$dir" ]; then
+		rm -R "$$dir" || exit
+	fi
+	if [ -e "release/bundle" ]; then
+		rm -R "release/bundle" || exit
+	fi
+	mkdir -p "release/bundle" || exit
+	cp -r "$$module"/* "release/bundle/" || exit
+	$doit_dev proc_module "release/bundle" || exit
+
+	mkdir -p "$$dir" && \
+		cp "release/bundle/module.json" "$$dir" && \
+	 	(cd "release/bundle" ; zip -r "../../$$dir/$$module.zip" "./") || exit
+	rm -R "release/bundle" || exit
+
+	# $doit_utl confirm "\"Open bundle in explorer?\"" Y && explorer.exe $$(wslpath -w "$$(pwd)/$$dir/")
+	if [ ! "$$(which wslpath)" = "" ]; then
+		wslpath -w $$(pwd)/$$dir
+	fi
+	$$$
+}
+proc_module {
+%%%
+import sys
+import glob
+in_file = '$1'
+out_file = '$2'
+src_files = ',\n\t\t'.join([f'"{x}"' for x in glob.glob(in_file + "/src/**/*.*js", recursive=True)])
+css_files = ',\n\t'.join([f'"{x}"' for x in glob.glob(in_file + "/css/**/*.css", recursive=True)])
+if len(out_file) == 0:
+	out_file = in_file
+file = ''
+with open(in_file + "/module.json", "r") as manifest:
+	file = manifest.read()
+file = file.replace("\"{{sources}}\"", f"[\n\t\t{src_files}\n\t]")
+file = file.replace("\"{{css}}\"", f"[\n\t\t{css_files}\n\t]")
+with open(out_file + "/module.json", "w") as manifest:
+	manifest.write(file)
+%%%
+	# python3 .doit-files/module.py $@ > release/module.json
+}

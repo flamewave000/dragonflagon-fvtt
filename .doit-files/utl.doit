@@ -1,0 +1,41 @@
+doit_utl = "doit -t .doit-files/utl.doit"
+
+gen_env_file: if [ ! -e ".devenv" ] ; then echo '{"module":"","foundry":{"path":"","data":""}}' | jq --tab > .devenv ; fi
+set_json_value: contents=`jq --tab '$2 = $3' '$1'` && echo "$$contents" > '$1'
+test: echo "success" "$@"
+glob_ls: cd $1 && find . -type f -name "$2" -exec ls {} \; | sed 's/^.\///'
+quoted_ls: $doit_utl glob_ls $1 $2 | awk '{printf("\"%s\", ", $$0)}' | sed 's/, $$//'
+confirm {
+	$$$
+	__exec() {
+		# https://djm.me/ask
+		local prompt default reply
+		while true; do
+			if [ "$${2:-}" = "Y" ]; then
+				prompt="Y/n"
+				default=Y
+			elif [ "$${2:-}" = "N" ]; then
+				prompt="y/N"
+				default=N
+			else
+				prompt="y/n"
+				default=
+			fi
+			# Ask the question (not using "read -p" as it uses stderr not stdout)
+			printf "$$1 [$$prompt] "
+			# Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
+			read reply </dev/tty
+			# Default?
+			if [ -z "$$reply" ]; then
+				reply=$$default
+			fi
+			# Check if the reply is valid
+			case "$$reply" in
+			Y* | y*) return 0 ;;
+			N* | n*) return 1 ;;
+			esac
+		done
+	}
+	__exec $@ && exit 0 || exit 1
+	$$$
+}

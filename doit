@@ -1,0 +1,36 @@
+doit_dev = "doit -t .doit-files/dev.doit"
+doit_env = "doit -t .doit-files/env.doit"
+doit_utl = "doit -t .doit-files/utl.doit"
+
+dev {
+	@ Copy the targetted module's data to the set foundry data directory
+	$ $doit_dev dev $@
+}
+
+pack {
+	@ Package the targetted module for release
+	$ $doit_dev pack $@
+}
+
+tgt {
+	@ Set the target module for development/release
+	req name @ Name of the target for building (ie. df-logger)
+	$ $doit_env tgt $@
+}
+
+env {
+	@ Set the foundry environment
+	req f-path @ Path to the Foundry Install directory
+	req f-data @ Path to the Foundry Data directory
+	$ $doit_env env $@
+}
+
+clean {
+	@ Remove build files and release packages
+	$ rm -R release
+}
+
+launch {
+	@ Launch the foundry server
+	$ sudo $$(which node) "$$(jq -r .foundry.path .devenv)/resources/app/main.js" --dataPath="$$(jq -r .foundry.data .devenv)"
+}
