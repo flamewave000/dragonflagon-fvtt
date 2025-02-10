@@ -36,6 +36,27 @@ export default class ManualRolls {
 		libWrapper.unregister(SETTINGS.MOD_NAME, 'DiceTerm.prototype.roll', false);
 	}
 
+	static async setRollPromptRecursively(obj: any, rollPrompt: RollPrompt, termsToRoll: RollTerm[]) {
+		if (obj instanceof RollTerm) {
+			termsToRoll.push(obj);
+		}
+		if (obj instanceof PoolTerm){
+			return;
+		}
+		// If the object is a DiceTerm, set the rollPrompt
+		if (obj instanceof DiceTerm) {
+			(<any>obj).rollPrompt = rollPrompt;
+
+		} else if (typeof obj === 'object') {
+			// If the object is an object, recursively check its properties
+			for (const key in obj) {
+				if (obj.hasOwnProperty(key)) {
+					await ManualRolls.setRollPromptRecursively(obj[key], rollPrompt, termsToRoll);
+				}
+			}
+		}
+	}
+
 	private static async _Roll_evaluate(this: Roll, wrapper: (arg: any) => any, { minimize = false, maximize = false } = {}): Promise<Roll> {
 		// Ignore Min/Max requests and if we are disabled
 		if (!ManualRolls.shouldRollManually || minimize || maximize) {
@@ -65,15 +86,14 @@ export default class ManualRolls {
 		/****** DF MANUAL ROLLS MODIFICATION ******/
 		// @ts-ignore
 		const rollPrompt = new RollPrompt({}, this.options.flavor ? { title: this.options.flavor } : {});
-
+		const termsToRoll: (RollTerm)[] = [];
 		for (const term of this.terms) {
-			if (!(term instanceof DiceTerm)) continue;
-			(<any>term).rollPrompt = rollPrompt;
+			await ManualRolls.setRollPromptRecursively(term, rollPrompt, termsToRoll);
 		}
 
 		// Step 3 - Evaluate remaining terms
 		const promises: Promise<RollTerm>[] = [];
-		for (const term of this.terms) {
+		for (const term of termsToRoll) {
 			// @ts-ignore
 			if (term._evaluated) continue;
 			promises.push(term.evaluate({ minimize, maximize, async: true }));
@@ -81,6 +101,7 @@ export default class ManualRolls {
 		await rollPrompt.render(true);
 		await Promise.all(promises);
 		/************ END MODIFICATION ************/
+		
 
 		// Step 4 - Evaluate the final expression
 		this._total = this._evaluateTotal();
