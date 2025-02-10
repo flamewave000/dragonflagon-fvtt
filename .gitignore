@@ -6,3 +6,4 @@
 .devenv*
 .vscode/settings.json
 *foundry-reference*
+.idea/*
