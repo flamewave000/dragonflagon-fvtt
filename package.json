@@ -1,0 +1,9 @@
+{
+	"name": "dragonflagon-fvtt",
+	"description": "DragonFlagon FVTT Mods",
+	"devDependencies": {
+		"@types/jquery": "^3.5.32",
+		"eslint": "^9.20.1",
+		"globals": "^15.15.0"
+	}
+}

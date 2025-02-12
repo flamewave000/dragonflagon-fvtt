@@ -8,5 +8,5 @@ jobs:
     - name: Install modules
       run: npm i
     - name: Run ESLint
-      run: npx eslint --ext .ts,.tsx '**/src/**/*.ts'
+      run: npx eslint '**/{src,common}/**/*.{js,mjs}'
 #eslint . --ext .js,.jsx,.ts,.tsx
