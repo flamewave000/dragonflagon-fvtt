@@ -2,6 +2,24 @@ doit_dev = "doit -t .doit-files/dev.doit"
 doit_env = "doit -t .doit-files/env.doit"
 doit_utl = "doit -t .doit-files/utl.doit"
 
+init {
+	@ Initializes the currently targetted module
+	opt -s @ This is for my own environment to swap filesystems within WSL2
+	$$$
+	if [ "$1" = "-s" ] && [ ! "$(pwd)" = "/mnt/c/Projects/dragonflagon-fvtt" ] ; then
+		cd "/mnt/c/Projects/dragonflagon-fvtt"
+	fi
+	cd $$($doit_env tgt -r) || exit
+	if [ ! -e "include" ]; then exit 0 ; fi
+	rm -Rf common/ || exit
+	mkdir common/ || exit
+	echo "Updating referenced common files"
+	for item in $$(cat include || exit); do
+		ln -s ../../common/$$item common/$$item || exit
+	done
+	$$$
+}
+
 dev {
 	@ Copy the targetted module's data to the set foundry data directory
 	$ $doit_dev dev $@
@@ -13,8 +31,9 @@ pack {
 }
 
 tgt {
-	@ Set the target module for development/release
-	req name @ Name of the target for building (ie. df-logger)
+	@ Get/Set the target module for development/release. If no target name is provided, it will print the current target.
+	opt name @ name of the target to be set
+	opt -r @ If you omit a name, this will print the current target raw.
 	$ $doit_env tgt $@
 }
 
@@ -23,11 +42,6 @@ env {
 	req f-path @ Path to the Foundry Install directory
 	req f-data @ Path to the Foundry Data directory
 	$ $doit_env env $@
-}
-
-clean {
-	@ Remove build files and release packages
-	$ rm -R release
 }
 
 launch {

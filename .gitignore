@@ -1,10 +1,13 @@
 *.zip
-**/node_modules/
-**/dist/
-**/bundle/
-**/package-lock.json
+dist/
+bundle/
+package-lock.json
 .devenv*
 .vscode/settings.json
 *foundry-reference*
 release/
 .doit/
+node_modules/
+**/common/*.ts
+**/tsconfig.json
+**/package.json

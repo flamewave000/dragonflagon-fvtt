@@ -6,10 +6,10 @@
 			"type": "chrome",
 			"request": "launch",
 			"url": "http://localhost:30000/game",
-			"webRoot": "${workspaceFolder}/${config:TARGET}",
-			"cwd": "${workspaceFolder}/${config:TARGET}",
-			"sourceMapPathOverrides": {
-				"webpack:///./*": "${workspaceFolder}/${config:TARGET}/*"
+			"webRoot": "${workspaceFolder}",
+			"cwd": "${workspaceFolder}",
+			"pathMapping": {
+				"modules": "${workspaceFolder}"
 			}
 		}
 	]

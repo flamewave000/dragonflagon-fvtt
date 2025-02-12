@@ -1,10 +1,10 @@
 doit_utl = "doit -t .doit-files/utl.doit"
 
-gen_env_file: if [ ! -e ".devenv" ] ; then echo '{"module":"","foundry":{"path":"","data":""}}' | jq --tab > .devenv ; fi
-set_json_value: contents=`jq --tab '$2 = $3' '$1'` && echo "$$contents" > '$1'
-test: echo "success" "$@"
-glob_ls: cd $1 && find . -type f -name "$2" -exec ls {} \; | sed 's/^.\///'
-quoted_ls: $doit_utl glob_ls $1 $2 | awk '{printf("\"%s\", ", $$0)}' | sed 's/, $$//'
+gen_env_file:$ if [ ! -e ".devenv" ] ; then echo '{"module":"","foundry":{"path":"","data":""}}' | jq --tab > .devenv ; fi
+set_json_value:$ contents=`jq --tab '$2 = $3' '$1'` && echo "$$contents" > '$1'
+test:$ echo "success" "$@"
+glob_ls:$ cd $1 && find . -type f -name "$2" -exec ls {} \; | sed 's/^.\///'
+quoted_ls:$ $doit_utl glob_ls $1 $2 | awk '{printf("\"%s\", ", $$0)}' | sed 's/, $$//'
 confirm {
 	$$$
 	__exec() {

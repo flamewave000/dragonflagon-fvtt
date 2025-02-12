@@ -1,0 +1,12 @@
+#!/bin/bash
+swap() {
+	if [ "$(pwd)" = "/home/flame/projs/dragonflagon-fvtt" ]; then
+		cd "/mnt/c/Projects/dragonflagon-fvtt"
+	elif [ "$(pwd)" = "/mnt/projs/dragonflagon-fvtt" ]; then
+		cd "/mnt/c/Projects/dragonflagon-fvtt"
+	elif [ "$(pwd)" = "/mnt/c/Projects/dragonflagon-fvtt" ]; then
+		cd "/home/flame/projs/dragonflagon-fvtt"
+	else
+		echo "invalid directory"
+	fi
+}
