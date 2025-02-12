@@ -31,7 +31,7 @@ pack {
 	rm -R "release/bundle" || exit
 
 	if command -v -- explorer.exe > /dev/null 2>&1; then
-		$doit_utl confirm '"Do you want to open the bundle in explorer?"' Y && explorer.exe "$$dir"
+		$doit_utl confirm '"Do you want to open the bundle in explorer?"' Y && explorer.exe "$$(wslpath -w "$$dir")"
 	elif command -v -- browse > /dev/null 2>&1; then
 		$doit_utl confirm '"Do you want to open the bundle in file browser?"' Y && browse "$$dir"
 	elif command -v -- open > /dev/null 2>&1; then
@@ -46,7 +46,7 @@ import sys
 import glob
 in_file = '$1'
 out_file = '$2'
-src_files = ',\n\t\t'.join([f'"{os.path.relpath(x, in_file)}"' for x in glob.glob(in_file + "/src/**/*.*js", recursive=True)])
+src_files = ',\n\t\t'.join([f'"{os.path.relpath(x, in_file)}"' for x in glob.glob(in_file + "/src/**/*.*js", recursive=True)] + [f'"{os.path.relpath(x, in_file)}"' for x in glob.glob(in_file + "/common/**/*.*js", recursive=True)])
 css_files = ',\n\t'.join([f'"{os.path.relpath(x, in_file)}"' for x in glob.glob(in_file + "/css/**/*.css", recursive=True)])
 if len(out_file) == 0:
 	out_file = in_file
@@ -58,4 +58,16 @@ file = file.replace("\"{{css}}\"", f"[\n\t\t{css_files}\n\t]")
 with open(out_file + "/module.json", "w") as manifest:
 	manifest.write(file)
 %%%
+}
+
+tag {
+	$$$
+	MODULE_NAME=`jq -r .module .devenv`
+	MODULE_VERS=`jq -r .version "$$MODULE_NAME/module.json"`
+	TAG_NAME="$${MODULE_NAME}_$$MODULE_VERS"
+	echo "Tagging $$TAG_NAME"
+	git tag -d $$TAG_NAME 2>/dev/null
+	git tag $$TAG_NAME && git push -f origin $$TAG_NAME
+	echo "Tagged current commit as \"$$TAG_NAME\""
+	$$$
 }

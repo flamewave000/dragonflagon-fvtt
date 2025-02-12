@@ -1,12 +1,12 @@
 {
 	"id": "df-settings-clarity",
-	"version": "3.3.0",
+	"version": "4.0.0",
 	"title": "DF Settings Clarity",
 	"description": "Displays a tag next to each module setting, indicating if it is a World setting (GM Only) or a client setting (Per User).",
 	"author": "flamewave000#0001",
 	"compatibility": {
-		"minimum": 10,
-		"verified": 10.288
+		"minimum": 12,
+		"verified": 12.331
 	},
 	"scripts": [ "libs/fuzzysort.js" ],
 	"relationships": {
@@ -15,7 +15,8 @@
 				"id": "lib-wrapper",
 				"type": "module",
 				"compatibility": {
-					"verified": "1.12.10.0"
+					"verified": "1.13.2.0",
+					"minimum": "1.12.15.0"
 				}
 			}
 		]

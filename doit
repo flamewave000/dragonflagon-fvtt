@@ -30,11 +30,16 @@ pack {
 	$ $doit_dev pack $@
 }
 
+tag {
+	@ Tag the current commit for release of the currently targetted module
+	$ $doit_dev tag $@
+}
+
 tgt {
 	@ Get/Set the target module for development/release. If no target name is provided, it will print the current target.
 	opt name @ name of the target to be set
 	opt -r @ If you omit a name, this will print the current target raw.
-	$ $doit_env tgt $@
+	$ $doit_dev tgt $@
 }
 
 env {

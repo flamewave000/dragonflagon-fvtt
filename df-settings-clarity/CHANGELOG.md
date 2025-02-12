@@ -1,5 +1,9 @@
 # DF Settings Clarity
 
+## Release 4.0.0 (2025-02-12)
+- **UPDATE:** Migrated to v12.
+- **UPDATE:** Downgraded TS -> JS (such sad).
+
 ## Release 3.3.0 (2022-10-15)
 - **UPDATE:** Migrated to v10.
 

@@ -8,6 +8,6 @@ package-lock.json
 release/
 .doit/
 node_modules/
-**/common/*.ts
+**/common/
 **/tsconfig.json
 **/package.json
