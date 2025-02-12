@@ -1,5 +1,5 @@
 import MessageProcessor from "./MessageProcessor.mjs";
-import SETTINGS from "./common/Settings.mjs";
+import SETTINGS from "../common/Settings.mjs";
 
 export default class DFLogger {
 	static EV_LOGIN = 'login';

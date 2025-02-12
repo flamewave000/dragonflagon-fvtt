@@ -9,5 +9,6 @@ release/
 .doit/
 node_modules/
 **/common/
+!/common/
 **/tsconfig.json
 **/package.json

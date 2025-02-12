@@ -5,9 +5,14 @@ doit_utl = "doit -t .doit-files/utl.doit"
 init {
 	@ Initializes the currently targetted module
 	opt -s @ This is for my own environment to swap filesystems within WSL2
+	opt -g @ This is to initlaize the global environment
 	$$$
-	if [ "$1" = "-s" ] && [ ! "$(pwd)" = "/mnt/c/Projects/dragonflagon-fvtt" ] ; then
+	if ( [ "$1" = "-s" ] || [ "$2" = "-s" ] ) && [ ! "$(pwd)" = "/mnt/c/Projects/dragonflagon-fvtt" ] ; then
 		cd "/mnt/c/Projects/dragonflagon-fvtt"
+	fi
+	if [ "$1" = "-g" ] || [ "$2" = "-g" ]; then
+		npm install
+		exit
 	fi
 	cd $$($doit_env tgt -r) || exit
 	if [ ! -e "include" ]; then exit 0 ; fi
@@ -17,6 +22,23 @@ init {
 	for item in $$(cat include || exit); do
 		ln -s ../../common/$$item common/$$item || exit
 	done
+	$$$
+}
+clean {
+	@ Cleans up the target module directory
+	opt -g @ If specified, will remove the global build files/directories
+	$$$
+	if [ "$1" = "-g" ]; then
+		echo "Cleaning global"
+		rm -Rf node_modules
+		rm -Rf release
+		rm -f package-lock.json
+		sleep 0.5 && rm -Rf .doit || echo "This failure may be due to a doit programming still running. Maybe you have 'doit launch' running in the background?" &
+	else
+		echo "Cleaning $$($doit_env tgt -r)"
+		cd $$($doit_env tgt -r) || exit
+		rm -Rf common
+	fi
 	$$$
 }
 
@@ -39,7 +61,7 @@ tgt {
 	@ Get/Set the target module for development/release. If no target name is provided, it will print the current target.
 	opt name @ name of the target to be set
 	opt -r @ If you omit a name, this will print the current target raw.
-	$ $doit_dev tgt $@
+	$ $doit_env tgt $@
 }
 
 env {
