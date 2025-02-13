@@ -23,10 +23,6 @@ This is a very feature that adds a "Roll on the table" option to the context men
 
 ![Quick Roll Option](../.assets/df-qol/roll-table.png)
 
-## ~~Auto-Focus Text Box When Creating Entities~~ (Autofocus is now part of Core FoundryVTT)
-
-~~When creating an Entity (Actors, Items, Tables, Scenes, Folders, etc.) this will auto-select the Name text box so you don't have to click it. Just open the dialog and start typing! This will also affect any generic dialog that contains a Text box in it.~~
-
 ## Custom Folder Text Colours
 
 Folders for the various entities can have custom background colours, but sometimes that colour does not contrast well with the unchanging text colour. This feature allows you to customize the text colour as well.

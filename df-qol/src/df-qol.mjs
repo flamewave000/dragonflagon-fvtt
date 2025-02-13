@@ -1,7 +1,6 @@
 // import TableQuickRoll from './TableQuickRoll.mjs';
 // import FolderColours from './FolderColours.mjs';
-// import TextboxAutoFocus from './TextboxAutoFocus';
-// import BetterToggle from './BetterToggle.mjs';
+import BetterToggle from './BetterToggle.mjs';
 import DayNightTransition from './DayNightTransition.mjs';
 // import DnD5eBetterAttackDialog from './DnD5eBetterAttackDialog.mjs';
 // import DnD5eVehicleCapacity from './DnD5eVehicleCapacity.mjs';
@@ -14,8 +13,7 @@ SETTINGS.init('df-qol');
 Hooks.once('init', function () {
 	// TableQuickRoll.init();
 	// FolderColours.init();
-	// TextboxAutoFocus.init();
-	// BetterToggle.init();
+	BetterToggle.init();
 	DayNightTransition.init();
 	// DnD5eBetterAttackDialog.init();
 	// DnD5eVehicleCapacity.init();
