@@ -65,7 +65,7 @@ with open(out_file + "/module.json", "w") as manifest:
 proc_sass {
 	$$$
 	if [ -e "$1/css" ]; then
-		for file in $$(ls "$1"/css/*.scss); do
+		for file in $$(ls "$1"/css/*.scss > /dev/null 2>&1 || echo ''); do
 			npx sass --no-source-map "$$file" "$1"/css/$$(basename "$$file" .scss).css
 			rm -f "$$file"
 		done
