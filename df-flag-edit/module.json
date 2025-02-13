@@ -1,27 +1,23 @@
 {
 	"id": "df-flag-edit",
 	"title": "DF Flags Editor",
-	"version": "1.2.0",
-	"description": "Foundry Document Flags Editor",
-	"author": "flamewave000#0001",
-	"compatibility": {
-		"minimum": 10,
-		"verified": 10.288
-	},
+	"version": "2.0.0",
+	"description": "FoundryVTT Document Flags Editor",
+	"authors": [ { "name": "flamewave000", "discord": "flamewave000", "url": "https://github.com/flamewave000" } ],
+	"compatibility": { "minimum": 12, "verified": 12.331 },
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [
 		{ "lang": "en", "name": "English", "path": "lang/en.json" }
 	],
-	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-flag-edit",
-	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/LICENSE",
+	"url":		"https://dragonflagon.cafe/mods/url/df-flag-edit",
+	"license":	"https://dragonflagon.cafe/mods/lic/df-flag-edit",
 	"manifest":	"https://dragonflagon.cafe/mods/man/df-flag-edit",
 	"download":	"https://dragonflagon.cafe/mods/pak/df-flag-edit",
-	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-flag-edit/README.md",
-	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-flag-edit/CHANGELOG.md",
+	"readme":	"https://dragonflagon.cafe/mods/doc/df-flag-edit",
+	"changelog":"https://dragonflagon.cafe/mods/chg/df-flag-edit",
+	"bugs":		"https://dragonflagon.cafe/mods/bug/df-flag-edit",
 	"manifestPlusVersion": "1.0.0",
-	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues/new/choose",
-	"authors": [ { "name": "flamewave000", "discord": "flamewave000#0001", "url": "https://github.com/flamewave000" } ],
 	"media": [
 		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/cover.png" },
 		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" }

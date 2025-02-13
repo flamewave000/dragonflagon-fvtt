@@ -1,13 +1,14 @@
-import '../../common/HooksExt.shim';
-import SETTINGS from "../../common/Settings";
-import FlagEditor from "./FlagEditor";
+/// <reference path="../../node_modules/@types/jquery/index.d.ts" />
+import '../common/HooksExt.shim.mjs';
+import SETTINGS from "../common/Settings.mjs";
+import FlagEditor from "./FlagEditor.mjs";
 SETTINGS.init('df-flag-edit');
 
 Hooks.once('init', function () {
 	FlagEditor.init();
 });
 
-function launchFlagEditorForEvent(event: JQuery.ClickEvent) {
+function launchFlagEditorForEvent(/**@type {JQuery.ClickEvent}*/event) {
 	const id = $(event.currentTarget).parents('.window-app').attr('id').split('-').pop();
 	if (!id) return;
 	SETTINGS.set(FlagEditor.PREF_LAST_OBJ, id);
@@ -15,7 +16,7 @@ function launchFlagEditorForEvent(event: JQuery.ClickEvent) {
 }
 Hooks.once('ready', function () {
 	if (!game.user.isGM) return;
-	Hooks.onRE(/get.*HeaderButtons/, (app: Application, buttons: Application.HeaderButton[]) => {
+	Hooks.onRE(/get.*HeaderButtons/, (/**@type {Application}*/app, /**@type {Application.HeaderButton[]}*/buttons) => {
 		if (buttons.find(x => x.class === 'edit-flags')) return;
 		if (app instanceof DocumentSheet) {
 			buttons.unshift({
@@ -28,7 +29,7 @@ Hooks.once('ready', function () {
 	});
 });
 
-Hooks.on('editFlags', (id: string) => {
+Hooks.on('editFlags', (/**@type {string}*/id) => {
 	id = id?.trim();
 	if (!id) return false;
 	SETTINGS.set(FlagEditor.PREF_LAST_OBJ, id);

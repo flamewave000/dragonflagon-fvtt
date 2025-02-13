@@ -8,7 +8,8 @@ dev {
 	module=`$doit_env tgt -r`
 	fdata="$$(jq -r .foundry.data .devenv)/Data/modules/$$module"
 	rm -Rf "$$fdata"
-	cp -R "./$$module" "$$fdata"
+	cp -Lr "./$$module" "$$fdata"
+	$doit_dev proc_sass "$$fdata"
 	$doit_dev proc_module "$$fdata"
 	echo "Copied $$module to $$fdata"
 	$$$
@@ -23,6 +24,7 @@ pack {
 	rm -Rf "release/bundle"
 	mkdir -p "release/bundle" || exit
 	cp -Lr "$$module"/* "release/bundle/" || exit
+	$doit_dev proc_sass "release/bundle" || exit
 	$doit_dev proc_module "release/bundle" || exit
 
 	mkdir -p "$$dir" && \
@@ -58,6 +60,17 @@ file = file.replace("\"{{css}}\"", f"[\n\t\t{css_files}\n\t]")
 with open(out_file + "/module.json", "w") as manifest:
 	manifest.write(file)
 %%%
+}
+
+proc_sass {
+	$$$
+	if [ -e "$1/css" ]; then
+		for file in $$(ls "$1"/css/*.scss); do
+			npx sass --no-source-map "$$file" "$1"/css/$$(basename "$$file" .scss).css
+			rm -f "$$file"
+		done
+	fi
+	$$$
 }
 
 tag {

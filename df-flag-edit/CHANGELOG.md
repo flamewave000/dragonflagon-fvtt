@@ -1,5 +1,9 @@
 # DragonFlagon Flag Editor
 
+## Release 2.0.0 (2025-02-13)
+- **UPDATE:** Migrated to v12.
+- **UPDATE:** Downgraded TS -> JS (such sad).
+
 ## Release 1.2.0 (2022-10-17)
 - **UPDATE:** Migrated to v10.
 - **UPDATE:** Improved flag deletion. You can now properly delete root flags, and if a root has no properties or is null, it will be automatically deleted to keep the flags clean.

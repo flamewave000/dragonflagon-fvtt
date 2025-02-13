@@ -4,6 +4,7 @@
 	"devDependencies": {
 		"@types/jquery": "^3.5.32",
 		"eslint": "^9.20.1",
-		"globals": "^15.15.0"
+		"globals": "^15.15.0",
+		"sass": "^1.84.0"
 	}
 }
