@@ -3,19 +3,14 @@
 	"version": "1.8.0",
 	"title": "DF Quality of Life",
 	"description": "A set of various small Quality of Life changes that don't quite fit in my other larger modules.",
-	"author": "flamewave000#0001",
-	"compatibility": {
-		"minimum": 10,
-		"verified": 10.288
-	},
+	"authors": [ { "name": "flamewave000", "discord": "flamewave000", "url": "https://github.com/flamewave000" } ],
+	"compatibility": { "minimum": 12, "verified": 12.331 },
 	"relationships": {
 		"requires": [
 			{
 				"id": "lib-wrapper",
 				"type": "module",
-				"compatibility": {
-					"verified": "1.12.10.0"
-				}
+				"compatibility": { "verified": "1.13.2.0", "minimum": "1.12.15.0" }
 			}
 		]
 	},
@@ -26,15 +21,14 @@
 		{ "lang": "ja", "name": "日本語", "path": "lang/ja.json" },
 		{ "lang": "pt-BR", "path": "lang/pt-BR.json", "name": "Português (Brasil)"}
 	],
-	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-qol",
-	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/LICENSE",
+	"url":		"https://dragonflagon.cafe/mods/url/df-qol",
+	"license":	"https://dragonflagon.cafe/mods/lic/df-qol",
 	"manifest":	"https://dragonflagon.cafe/mods/man/df-qol",
 	"download":	"https://dragonflagon.cafe/mods/pak/df-qol",
-	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-qol/README.md",
-	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-qol/CHANGELOG.md",
+	"readme":	"https://dragonflagon.cafe/mods/doc/df-qol",
+	"changelog":"https://dragonflagon.cafe/mods/chg/df-qol",
+	"bugs":		"https://dragonflagon.cafe/mods/bug/df-qol",
 	"manifestPlusVersion": "1.0.0",
-	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues",
-	"authors": [ { "name": "flamewave000", "discord": "flamewave000#0001", "url": "https://github.com/flamewave000" } ],
 	"media": [
 		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" },
 		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-qol/better-toggle.gif" },

@@ -1,4 +1,4 @@
-import SETTINGS from "../../common/Settings";
+import SETTINGS from "../common/Settings.mjs";
 
 /** @deprecated */
 function apply(shouldApply: boolean, hookName: string, func: AnyFunction) {

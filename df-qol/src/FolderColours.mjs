@@ -1,5 +1,5 @@
 import { FolderData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
-import SETTINGS from "../../common/Settings";
+import SETTINGS from "../common/Settings.mjs";
 
 function apply(shouldApply: boolean, hookName: string, func: AnyFunction) {
 	if (shouldApply) Hooks.on(hookName, func);

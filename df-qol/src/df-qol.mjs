@@ -1,13 +1,13 @@
-import TableQuickRoll from './TableQuickRoll';
-import FolderColours from './FolderColours';
+import TableQuickRoll from './TableQuickRoll.mjs';
+import FolderColours from './FolderColours.mjs';
 // import TextboxAutoFocus from './TextboxAutoFocus';
-import BetterToggle from './BetterToggle';
-import DayNightTransition from './DayNightTransition';
-import DnD5eBetterAttackDialog from './DnD5eBetterAttackDialog';
-import DnD5eVehicleCapacity from './DnD5eVehicleCapacity';
+import BetterToggle from './BetterToggle.mjs';
+import DayNightTransition from './DayNightTransition.mjs';
+import DnD5eBetterAttackDialog from './DnD5eBetterAttackDialog.mjs';
+import DnD5eVehicleCapacity from './DnD5eVehicleCapacity.mjs';
 
-import SETTINGS from "../../common/Settings";
-import TokenLock from './TokenLock';
+import SETTINGS from "../common/Settings.mjs";
+import TokenLock from './TokenLock.mjs';
 SETTINGS.init('df-qol');
 
 

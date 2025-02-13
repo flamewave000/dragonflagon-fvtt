@@ -1,4 +1,4 @@
-import SETTINGS from "../../common/Settings";
+import SETTINGS from "../common/Settings.mjs";
 
 
 async function requestReload() {

@@ -1,5 +1,5 @@
 import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
-import SETTINGS from "../../common/Settings";
+import SETTINGS from "../common/Settings.mjs";
 
 interface DND5E {
 	encumbrance: {

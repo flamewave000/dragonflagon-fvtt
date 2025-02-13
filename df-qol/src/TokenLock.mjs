@@ -1,4 +1,4 @@
-import SETTINGS from "../../common/Settings";
+import SETTINGS from "../common/Settings.mjs";
 
 export default class TokenLock {
 	private static readonly TokenLockFlag = 'locked';
