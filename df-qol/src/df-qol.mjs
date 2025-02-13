@@ -1,4 +1,4 @@
-// import TableQuickRoll from './TableQuickRoll.mjs';
+import TableQuickRoll from './TableQuickRoll.mjs';
 import FolderColours from './FolderColours.mjs';
 import BetterToggle from './BetterToggle.mjs';
 import DayNightTransition from './DayNightTransition.mjs';
@@ -11,7 +11,7 @@ SETTINGS.init('df-qol');
 
 
 Hooks.once('init', function () {
-	// TableQuickRoll.init();
+	TableQuickRoll.init();
 	FolderColours.init();
 	BetterToggle.init();
 	DayNightTransition.init();

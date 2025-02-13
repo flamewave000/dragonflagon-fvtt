@@ -6,7 +6,7 @@ async function requestReload() {
 		title: game.i18n.localize("DF_QOL.ReloadGame.Title"),
 		content: game.i18n.localize("DF_QOL.ReloadGame.Content"),
 		defaultYes: true
-	} as any) as any as boolean) {
+	})) {
 		window.location.reload();
 	}
 }
@@ -20,38 +20,26 @@ export default class TableQuickRoll {
 			type: Boolean,
 			default: true,
 			config: true,
-			onChange: async () => await requestReload()
+			onChange: async (enabled) => {
+				if (enabled) Hooks.on('renderRollTableDirectory', TableQuickRoll.DF_QUICK_ROLL);
+				else Hooks.off('renderRollTableDirectory', TableQuickRoll.DF_QUICK_ROLL);
+				ui.tables.render(true);
+			}
 		});
-		if (SETTINGS.get('quick-roll')) Hooks.on('getRollTableDirectoryEntryContext', TableQuickRoll.DF_QUICK_ROLL);
-		else Hooks.off('getRollTableDirectoryEntryContext', TableQuickRoll.DF_QUICK_ROLL);
-
-		Hooks.on('renderRollTableDirectory', (_app: RollTableDirectory, html: JQuery<HTMLElement>, _data: any) => {
-			html.find(".rolltable").each((_idx, element) => {
-				const button = $(`<a title="${'DF_QOL.QuickRoll.MenuItem'.localize()}" class="button df-qol-quickroll"><i class="fas fa-dice-d20"/></a>`);
-				button.on('click', async function () {
-					const table = game.tables.get(this.parentElement.getAttribute('data-document-id'));
-					if (!table) return;
-					if (table.description === undefined)
-						table.description = '';
-					await table.draw();
-				});
-				$(element).append(button);
-			});
-		});
+		if (SETTINGS.get('quick-roll')) Hooks.on('renderRollTableDirectory', TableQuickRoll.DF_QUICK_ROLL);
 	}
 
-	static DF_QUICK_ROLL(_html: any, entryOptions: any) {
-		entryOptions.unshift({
-			name: "DF_QOL.QuickRoll.MenuItem",
-			icon: '<i class="fas fa-dice-d20"></i>',
-			condition: () => true,
-			callback: async (header: any) => {
-				const table = game.tables.get(header.data('documentId'));
+	static DF_QUICK_ROLL(/**@type {RollTableDirectory}*/ _app, /**@type {JQuery<HTMLElement>}*/ html, _data) {
+		html.find(".rolltable").each((_idx, element) => {
+			const button = $(`<a title="${'DF_QOL.QuickRoll.MenuItem'.localize()}" class="button df-qol-quickroll"><i class="fas fa-dice-d20"/></a>`);
+			button.on('click', async function () {
+				const table = game.tables.get(this.parentElement.getAttribute('data-document-id'));
 				if (!table) return;
 				if (table.description === undefined)
 					table.description = '';
 				await table.draw();
-			}
+			});
+			$(element).append(button);
 		});
 	}
 }

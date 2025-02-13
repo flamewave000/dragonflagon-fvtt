@@ -28,7 +28,6 @@
 	"readme":	"https://dragonflagon.cafe/mods/doc/df-qol",
 	"changelog":"https://dragonflagon.cafe/mods/chg/df-qol",
 	"bugs":		"https://dragonflagon.cafe/mods/bug/df-qol",
-	"manifestPlusVersion": "1.0.0",
 	"media": [
 		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" },
 		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-qol/better-toggle.gif" },
