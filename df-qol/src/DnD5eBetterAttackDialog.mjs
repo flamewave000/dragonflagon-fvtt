@@ -13,10 +13,13 @@ export default class DnD5eBetterAttackDialog {
 				config: true,
 				onChange: newValue => {
 					const style = `<style id="dfqol-better-attack">
-	.dialog-button.default.advantage {
+	.roll-configuration .dialog-buttons [data-action="advantage"] {
 		border: 2px groove green !important;
 	}
-	.dialog-button.default.disadvantage {
+	.roll-configuration .dialog-buttons [data-action="normal"] {
+		border: 2px groove grey !important;
+	}
+	.roll-configuration .dialog-buttons [data-action="disadvantage"] {
 		border: 2px groove red !important;
 	}
 </style>`;

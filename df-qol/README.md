@@ -58,7 +58,7 @@ The toggle buttons in the scene controls have the same look for both Hovering ov
 
 ## (D&D 5e Only) Better Attack Button Highlighting
 
-When using automation like DAE or Midi QoL, the styling for the Advantage and Disadvantage buttons will be adjusted so they have a brighter border when they are set to the default option. This should help to avoid clicking the wrong button.
+Adjusts the styling for the Advantage and Disadvantage buttons so they have a brighter border so they stand out a little more visually. This should help to avoid clicking the wrong button.
 
 ## Contributors
 
