@@ -1,23 +1,17 @@
 {
 	"id": "df-settings-clarity",
-	"version": "4.0.0",
 	"title": "DF Settings Clarity",
+	"version": "4.0.0",
 	"description": "Displays a tag next to each module setting, indicating if it is a World setting (GM Only) or a client setting (Per User).",
-	"author": "flamewave000#0001",
-	"compatibility": {
-		"minimum": 12,
-		"verified": 12.331
-	},
+	"authors": [ { "name": "flamewave000", "discord": "flamewave000", "url": "https://github.com/flamewave000" } ],
+	"compatibility": { "minimum": 12, "verified": 12.331 },
 	"scripts": [ "libs/fuzzysort.js" ],
 	"relationships": {
 		"requires": [
 			{
 				"id": "lib-wrapper",
 				"type": "module",
-				"compatibility": {
-					"verified": "1.13.2.0",
-					"minimum": "1.12.15.0"
-				}
+				"compatibility": { "verified": "1.13.2.0", "minimum": "1.12.15.0" }
 			}
 		]
 	},
@@ -28,15 +22,14 @@
 		{ "lang": "fr", "name": "French", "path": "lang/fr.json" },
 		{ "lang": "es", "name": "Español", "path": "lang/es.json" }
 	],
-	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-settings-clarity",
-	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/LICENSE",
+	"url":		"https://dragonflagon.cafe/mods/url/df-settings-clarity",
+	"license":	"https://dragonflagon.cafe/mods/lic/df-settings-clarity",
 	"manifest":	"https://dragonflagon.cafe/mods/man/df-settings-clarity",
 	"download":	"https://dragonflagon.cafe/mods/pak/df-settings-clarity",
-	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-settings-clarity/README.md",
-	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-settings-clarity/CHANGELOG.md",
+	"readme":	"https://dragonflagon.cafe/mods/doc/df-settings-clarity",
+	"changelog":"https://dragonflagon.cafe/mods/chg/df-settings-clarity",
+	"bugs":		"https://dragonflagon.cafe/mods/bug/df-settings-clarity",
 	"manifestPlusVersion": "1.0.0",
-	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues/new/choose",
-	"authors": [ { "name": "flamewave000", "discord": "flamewave000#0001", "url": "https://github.com/flamewave000" } ],
 	"media": [
 		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-settings-clarity/cover.png" },
 		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" }
