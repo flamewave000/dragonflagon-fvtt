@@ -6,7 +6,7 @@ import DnD5eBetterAttackDialog from './DnD5eBetterAttackDialog.mjs';
 // import DnD5eVehicleCapacity from './DnD5eVehicleCapacity.mjs';
 
 import SETTINGS from "../common/Settings.mjs";
-// import TokenLock from './TokenLock.mjs';
+import TokenLock from './TokenLock.mjs';
 SETTINGS.init('df-qol');
 
 
@@ -17,7 +17,7 @@ Hooks.once('init', function () {
 	DayNightTransition.init();
 	DnD5eBetterAttackDialog.init();
 	// DnD5eVehicleCapacity.init();
-	// TokenLock.init();
+	TokenLock.init();
 });
 
 Hooks.once('ready', function () {
@@ -28,5 +28,5 @@ Hooks.once('ready', function () {
 		return;
 	}
 	// DnD5eVehicleCapacity.ready();
-	// TokenLock.ready();
+	TokenLock.ready();
 });

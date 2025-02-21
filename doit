@@ -47,6 +47,11 @@ dev {
 	$ $doit_dev dev $@
 }
 
+watch {
+	@ Watches the current target module for file changes and executes `dev` if a change occurs
+	$ $doit_dev watch $@
+}
+
 pack {
 	@ Package the targetted module for release
 	$ $doit_dev pack $@

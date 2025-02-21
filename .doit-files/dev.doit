@@ -14,6 +14,12 @@ dev {
 	echo "Copied $$module to $$fdata"
 	$$$
 }
+watch {
+	$$$
+	module=`$doit_env tgt -r`
+	find "$$module"/**/* | entr $doit_dev dev
+	$$$
+}
 pack {
 	@ Package the targetted module for release
 	$$$
