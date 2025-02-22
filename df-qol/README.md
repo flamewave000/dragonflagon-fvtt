@@ -5,7 +5,7 @@ Adds various Quality of Life improvements. These are all small, light-weight, ad
 
 Each feature is not only self-contained, but when disabled will completely and cleanly remove itself from Foundry. This is so that if any one feature happens to conflict with another module, disabling it guarantees the conflict will be resolved. There are currently no reported conflicts though, so have fun!
 
-##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
+**[![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!**
 
 ## Token Locking
 

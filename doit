@@ -4,13 +4,9 @@ doit_utl = "doit -t .doit-files/utl.doit"
 
 init {
 	@ Initializes the currently targetted module
-	opt -s @ This is for my own environment to swap filesystems within WSL2
 	opt -g @ This is to initlaize the global environment
 	$$$
-	if ( [ "$1" = "-s" ] || [ "$2" = "-s" ] ) && [ ! "$(pwd)" = "/mnt/c/Projects/dragonflagon-fvtt" ] ; then
-		cd "/mnt/c/Projects/dragonflagon-fvtt"
-	fi
-	if [ "$1" = "-g" ] || [ "$2" = "-g" ]; then
+	if [ "$1" = "-g" ]; then
 		npm install
 		exit
 	fi
@@ -74,6 +70,18 @@ env {
 	req f-path @ Path to the Foundry Install directory
 	req f-data @ Path to the Foundry Data directory
 	$ $doit_env env $@
+}
+
+getref {
+	@@@
+	Create a sym-link to the foundry.js file found in the set environment.
+	This reference is used for type hinting and for checking on how Foundry does
+	certain things.
+	@@@
+	$$$
+	rm -f fvtt-scripts
+	ln -s "$$(jq -r .foundry.path .devenv)/resources/app/public/scripts/" fvtt-scripts
+	$$$
 }
 
 launch {

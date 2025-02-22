@@ -21,7 +21,6 @@
 	"changelog":"https://dragonflagon.cafe/mods/chg/df-logger",
 	"bugs":		"https://dragonflagon.cafe/mods/bug/df-logger",
 	"socket": true,
-	"manifestPlusVersion": "1.0.0",
 	"media": [
 		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" },
 		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-logger/message.png" },

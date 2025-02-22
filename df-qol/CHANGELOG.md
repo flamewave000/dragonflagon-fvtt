@@ -1,5 +1,9 @@
 # DragonFlagon Quality of Life
 
+## Release 2.0.0 (2025-02-22)
+- **UPDATE:** Migrated to v12.
+- **UPDATE:** Downgraded TS -> JS (such sad).
+
 ## Release 1.8.0 (2022-10-16)
 - **UPDATE:** Migrated to v10.
 - **NEW:** Quick Roll button added to rolltable list items (in addition to the one still in the context menu).

@@ -1,4 +1,5 @@
-/// <reference path="../../foundry-reference-v12.331.js" />
+/// <reference path="../../fvtt-scripts/foundry.js" />
+/// <reference path="../../fvtt-scripts/foundry-esm.js" />
 
 import SETTINGS from "../common/Settings.mjs";
 

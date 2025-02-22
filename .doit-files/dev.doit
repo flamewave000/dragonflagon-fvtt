@@ -11,13 +11,13 @@ dev {
 	cp -Lr "./$$module" "$$fdata"
 	$doit_dev proc_sass "$$fdata"
 	$doit_dev proc_module "$$fdata"
-	echo "Copied $$module to $$fdata"
+	echo "$$(date --iso-8601=seconds) Copied $$module to $$fdata"
 	$$$
 }
 watch {
 	$$$
 	module=`$doit_env tgt -r`
-	find "$$module"/**/* | entr $doit_dev dev
+	find "$$module"/* | entr $doit_dev dev
 	$$$
 }
 pack {
@@ -71,7 +71,8 @@ with open(out_file + "/module.json", "w") as manifest:
 proc_sass {
 	$$$
 	if [ -e "$1/css" ]; then
-		for file in $$(ls "$1"/css/*.scss > /dev/null 2>&1 || echo ''); do
+		for file in $$(find "$1"/css/ -name '*.scss'); do
+			echo "Processing SASS: $$file"
 			npx sass --no-source-map "$$file" "$1"/css/$$(basename "$$file" .scss).css
 			rm -f "$$file"
 		done
