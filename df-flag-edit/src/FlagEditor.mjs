@@ -19,33 +19,6 @@ export default class FlagEditor extends Application {
 		});
 	}
 
-	/**
-	 * @param {string} id
-	 * @returns {Promise<FoundryDocument | null>}
-	 */
-	static async _findObject(id) {
-		if (typeof id !== 'string' && !(id instanceof String)) return Promise.reject("Invalid parameter: id must be type 'string'");
-		return await new Promise((res, rej) => {
-			// Search the collections
-			const collections = game.collections;
-			for (const [key, map] of collections.entries()) {
-				if (FlagEditor.IGNORED_COLLECTIONS.includes(key) || !map.has(id)) continue;
-				res(map.get(id));
-				break;
-			}
-			rej();
-		}).catch(() => new Promise((res, rej) => {
-			// Search the layers
-			for (const layer of canvas.layers) {
-				if (!(layer instanceof PlaceablesLayer)) continue;
-				if (!layer.documentCollection.has(id)) continue;
-				res(layer.documentCollection.get(id));
-				break;
-			}
-			rej();
-		})).catch(() => Promise.resolve(null));
-	}
-
 	static init() {
 		SETTINGS.register(FlagEditor.PREF_LAST_OBJ, { scope: 'client', type: String, default: '', config: false });
 		Hooks.on('renderSettings', (/**@type {Settings}*/ _, /**@type {JQuery<HTMLElement>}*/ html) => {
@@ -221,7 +194,7 @@ export default class FlagEditor extends Application {
 		try {
 			// If we are an ID
 			if (FlagEditor.isID(data))
-				document = await FlagEditor.extractID(data);
+				document = await fromUuid(data);
 			// we are an object path
 			else {
 				let temp = FlagEditor.evaluateDocument(data);
@@ -229,7 +202,7 @@ export default class FlagEditor extends Application {
 				if (!FlagEditor.isDocument(temp)) {
 					// If the Object Path result is an ID
 					if ((temp instanceof String || typeof temp === 'string') && FlagEditor.isID(temp)) {
-						temp = await FlagEditor.extractID(temp);
+						temp = await fromUuid(temp);
 					} else throw 'Invalid object from path';
 				}
 				document = temp;
@@ -253,7 +226,7 @@ export default class FlagEditor extends Application {
 	 * @returns {boolean}
 	 */
 	static isID(target) {
-		return /^['"`]?[a-z0-9]+['"`]?$/im.test(target);
+		return !!fromUuidSync(target);
 	}
 	/**
 	 * @param {any} target 
@@ -261,13 +234,6 @@ export default class FlagEditor extends Application {
 	 */
 	static isDocument(target) {
 		return target?.data !== undefined || target?.document !== undefined;
-	}
-	/**
-	 * @param {string} target 
-	 * @returns {Promise<FoundryDocument | null>}
-	 */
-	static extractID(target) {
-		return FlagEditor._findObject(target.match(/^['"`]?([a-z0-9]+)['"`]?$/im)[1]);
 	}
 	/**
 	 * @param {string} target 
@@ -281,7 +247,7 @@ window.showFlagEditorForDocument = async (document) => {
 	if (document.data === undefined) {
 		if (document.document === undefined) {
 			if (document instanceof String || typeof document === 'string') {
-				document = FlagEditor._findObject(document);
+				document = await fromUuid(document);
 			}
 			else throw Error("Invalid object: document must be of type 'string', 'Document', or 'DocumentData'");
 		}

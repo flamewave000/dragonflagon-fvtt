@@ -9,9 +9,10 @@ Hooks.once('init', function () {
 });
 
 function launchFlagEditorForEvent(/**@type {JQuery.ClickEvent}*/event) {
-	const id = $(event.currentTarget).parents('.window-app').attr('id').split('-').pop();
+	const id = $(event.currentTarget).parents('.window-app').attr('id').split('-');
+	id.shift();
 	if (!id) return;
-	SETTINGS.set(FlagEditor.PREF_LAST_OBJ, id);
+	SETTINGS.set(FlagEditor.PREF_LAST_OBJ, id.join('.'));
 	new FlagEditor().render(true);
 }
 Hooks.once('ready', function () {
