@@ -1,6 +1,6 @@
 {
 	"id": "df-qol",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"title": "DF Quality of Life",
 	"description": "A set of various small Quality of Life changes that don't quite fit in my other larger modules.",
 	"authors": [ { "name": "flamewave000", "discord": "flamewave000", "url": "https://github.com/flamewave000" } ],

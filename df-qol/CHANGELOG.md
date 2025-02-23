@@ -1,5 +1,8 @@
 # DragonFlagon Quality of Life
 
+## Release 2.0.1 (2025-02-23)
+- **UPDATE:** Better Toggle styling now applies more generically.
+
 ## Release 2.0.0 (2025-02-22)
 - **UPDATE:** Migrated to v12.
 - **UPDATE:** Downgraded TS -> JS (such sad).
