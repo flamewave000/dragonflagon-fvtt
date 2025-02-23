@@ -2,6 +2,8 @@ doit_utl = "doit -t .doit-files/utl.doit"
 doit_dev = "doit -t .doit-files/dev.doit"
 doit_env = "doit -t .doit-files/env.doit"
 
+date_string = "$(date +'%Y-%m-%d %H:%M:%S')"
+
 dev {
 	@ Copy the targetted module's data to the set foundry data directory
 	$$$
@@ -11,7 +13,7 @@ dev {
 	cp -Lr "./$$module" "$$fdata"
 	$doit_dev proc_sass "$$fdata"
 	$doit_dev proc_module "$$fdata"
-	echo "$$(date --iso-8601=seconds) Copied $$module to $$fdata"
+	echo "\e[90m$date_string\e[32m Copied \e[33m$$module\e[32m to \e[33m$$fdata"
 	$$$
 }
 watch {
@@ -70,13 +72,14 @@ with open(out_file + "/module.json", "w") as manifest:
 
 proc_sass {
 	$$$
-	if [ -e "$1/css" ]; then
-		for file in $$(find "$1"/css/ -name '*.scss'); do
-			echo "Processing SASS: $$file"
-			npx sass --no-source-map "$$file" "$1"/css/$$(basename "$$file" .scss).css
-			rm -f "$$file"
-		done
-	fi
+	find "$1"/css/ -name '*.scss' | grep -qz . || exit 0
+	echo -n "\e[90m$date_string\e[32m Processing SASS:\e[0m"
+	for file in $$(find "$1"/css/ -name '*.scss'); do
+		echo -n " $$(realpath --relative-to="$1/css" "$$file")"
+		npx sass --no-source-map "$$file" "$1"/css/$$(basename "$$file" .scss).css
+		rm -f "$$file"
+	done
+	echo
 	$$$
 }
 

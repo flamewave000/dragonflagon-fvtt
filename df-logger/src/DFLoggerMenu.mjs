@@ -18,9 +18,8 @@ export default class DFLoggerMenu extends FormApplication {
 	}
 
 	/**
-	 * 
-	 * @param {Event} _event 
-	 * @param {object|undefined} _formData 
+	 * @param {Event} _event
+	 * @param {object} [_formData]
 	 */
 	async _updateObject(_event, _formData) {
 		const loginEntryElements = this.element.find('div[data-tab="login"]>div.message-entry');

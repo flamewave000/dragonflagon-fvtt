@@ -109,7 +109,7 @@ export default class DnD5eVehicleCapacity {
 		app.setPosition(foundry.utils.mergeObject(app.position, { height: app.position.height + newHeight }));
 
 		const core = app._updateObject.bind(app);
-		app._updateObject = async function (/**@type {Event|undefined}*/event, /**@type {any|undefined}*/formData) {
+		app._updateObject = /** @param {Event} [event] @param {object} [formData] @returns {Promise<any>}*/ async function (event, formData) {
 			const current = this.object.getFlag(SETTINGS.MOD_NAME, 'unit') || DEFAULT_UNIT;
 			// Only update if the unit has been changed
 			if (current !== formData.units)

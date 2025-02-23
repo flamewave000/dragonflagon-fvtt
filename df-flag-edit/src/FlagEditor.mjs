@@ -46,8 +46,8 @@ export default class FlagEditor extends Application {
 
 	/**
 	 * 
-	 * @param {boolean|undefined} force 
-	 * @param {any|undefined} options 
+	 * @param {boolean} [force]
+	 * @param {any} [options]
 	 * @returns {Promise<void>}
 	 */
 	async _render(force, options) {
@@ -160,7 +160,10 @@ export default class FlagEditor extends Application {
 		return this._loadEditorPromise;
 	}
 
-	_showError(/**@type {string|undefined}*/error) {
+	/**
+	 * @param {string} [error]
+	 */
+	_showError(error) {
 		const el = this.element.find('.error');
 		el.attr('title', error || game.i18n.localize('DF_FLAG_EDIT.ErrorObjectNotFound'));
 		el.show();

@@ -22,7 +22,7 @@ confirm {
 				default=
 			fi
 			# Ask the question (not using "read -p" as it uses stderr not stdout)
-			printf "$$1 [$$prompt] "
+			printf "\e[33m$$1 \e[32m[$$prompt] \e[0m"
 			# Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
 			read reply </dev/tty
 			# Default?

@@ -14,7 +14,7 @@ init {
 	if [ ! -e "include" ]; then exit 0 ; fi
 	rm -Rf common/ || exit
 	mkdir common/ || exit
-	echo "Updating referenced common files"
+	echo "\e[32mUpdating referenced common files\e[0m"
 	for item in $$(cat include || exit); do
 		ln -s ../../common/$$item common/$$item || exit
 	done
@@ -29,7 +29,7 @@ clean {
 		rm -Rf node_modules
 		rm -Rf release
 		rm -f package-lock.json
-		sleep 0.5 && rm -Rf .doit || echo "This failure may be due to a doit programming still running. Maybe you have 'doit launch' running in the background?" &
+		sleep 0.5 && rm -Rf .doit || echo "\e[91mThis failure may be due to a doit programming still running. Maybe you have 'doit launch' running in the background?\e[0m" &
 	else
 		echo "Cleaning $$($doit_env tgt -r)"
 		cd $$($doit_env tgt -r) || exit
