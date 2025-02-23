@@ -1,14 +1,14 @@
 
 /** Standard single parameter handler */
-export type Handler<T> = (value?: T) => (Promise<void> | void);
+declare type Handler<T> = (value?: T) => (Promise<void> | void);
 
 /** Standard boolean logic predicate */
-export type Predicate = () => (Promise<boolean> | boolean);
+declare type Predicate = () => (Promise<boolean> | boolean);
 /**
  * Tool Configuration for tools that appear on the secondary bar when their
  * parent group is active.
  */
-export interface Tool {
+declare interface Tool {
 	/** Unique name ID of the Tool */
 	name: string;
 	/** Plain Text or a Localization Key */
@@ -63,7 +63,7 @@ export interface Tool {
 /**
  * A collection of Tools that appear on the main bar
  */
-export interface ToolGroup extends Tool {
+declare interface ToolGroup extends Tool {
 	/** {@link Tool} collection */
 	tools?: Tool[];
 	/**
@@ -74,7 +74,7 @@ export interface ToolGroup extends Tool {
 }
 
 /** Manages the button UI, Hooks, and User Interactions. */
-export interface ControlManager {
+declare interface ControlManager {
 	/** Complete list of {@link ToolGroup} objects. */
 	get groups(): ToolGroup[];
 	/** Name of currently active {@link ToolGroup}. */

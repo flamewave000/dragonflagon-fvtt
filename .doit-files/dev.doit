@@ -13,7 +13,7 @@ dev {
 	cp -Lr "./$$module" "$$fdata"
 	$doit_dev proc_sass "$$fdata"
 	$doit_dev proc_module "$$fdata"
-	echo "\e[90m$date_string\e[32m Copied \e[33m$$module\e[32m to \e[33m$$fdata"
+	echo "\e[90m$date_string\e[32m Copied \e[34m$$module\e[32m to \e[33m$$fdata"
 	$$$
 }
 watch {

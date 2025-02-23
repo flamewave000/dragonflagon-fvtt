@@ -1,39 +1,52 @@
-import SETTINGS from "../../common/Settings";
-import { Tool, ToolGroup, ControlManager as IControlManager, Predicate, Handler } from "./ToolType";
+/// <reference path="./ToolType.d.ts" />
+/// <reference path="../../fvtt-scripts/foundry.js" />
+/// <reference path="../../fvtt-scripts/foundry-esm.js" />
 
-interface ToolUI {
-	name: string;
-	title: string;
-	icon: string;
-	class: string | false;
-	active: boolean;
-	button: boolean;
-	toggle: boolean;
-}
+import SETTINGS from "../common/Settings.mjs";
 
-interface ToolGroupUI extends ToolUI {
-	tools: Partial<ToolUI>[];
-}
+/**
+ * @typedef {object} ToolUI
+ * @property {string} name
+ * @property {string} title
+ * @property {string} icon
+ * @property {string | false} class
+ * @property {boolean} active
+ * @property {boolean} button
+ * @property {boolean} toggle
+ */
 
-type CMData = {
-	groups: Partial<ToolGroupUI>[];
-	singleGroup: boolean;
-};
+/**
+ * @typedef {ToolUI} ToolGroupUI
+ * @property {Partial<ToolUI>[]} tools
+ */
 
-export default class ControlManager extends Application implements IControlManager {
-	static async checkBoolean(field?: Predicate | boolean | null, invertFalsey = false): Promise<boolean> {
+/**
+ * @typedef {object} CMData
+ * @property {Partial<ToolGroupUI>[]} groups
+ * @property {boolean} singleGroup
+ */
+
+/**
+ * @implements {IControlManager}
+ */
+export default class ControlManager extends Application {
+	/**
+	 * 
+	 * @param {Predicate | boolean | null} [field]
+	 * @param {*} invertFalsey 
+	 * @returns {Promise<boolean>}
+	 */
+	static async checkBoolean(field, invertFalsey = false) {
 		return field instanceof Function ? await field() :
 			((invertFalsey && (field === null || field === undefined || field)) || (!invertFalsey && !!field));
 	}
 
-	private initializationIncomplete = false;
-	private _groups: ToolGroup[];
-	private magnetMenu: JQuery<HTMLElement> | null = null;
-	private hooksRegister: Record<string, number> = {};
-	get groups(): ToolGroup[] { return this._groups; }
-	private _activeGroupName: string;
-	get activeGroupName(): string { return this._activeGroupName; }
-	set activeGroupName(value: string) { this._activeGroupName = value; }
+	#initializationIncomplete = false;
+	/**@type {ToolGroup[]}*/ #_groups = [];
+	/**@type {JQuery<HTMLElement> | null}*/ #magnetMenu = null;
+	/**@type {Record<string, number>}*/ #hooksRegister = {};
+	/**@type {ToolGroup[]}*/ get groups() { return this.#_groups; }
+	/**@type {string|null}*/ activeGroupName = null;
 
 	get activeToolName() {
 		const group = this.activeGroup;
@@ -49,7 +62,8 @@ export default class ControlManager extends Application implements IControlManag
 		const tool = group.tools.find(t => t.name === group.activeTool);
 		return tool || null;
 	}
-	static get defaultOptions(): ApplicationOptions {
+	/**@type {ApplicationOptions}*/
+	static get defaultOptions() {
 		return mergeObject(super.defaultOptions, {
 			width: 100,
 			id: "moduleControls",
@@ -60,11 +74,14 @@ export default class ControlManager extends Application implements IControlManag
 		});
 	}
 
-	private static initializeFields(control: Tool) {
+	/**
+	 * @param {Tool} control
+	 */
+	static #initializeFields(control) {
 		// TODO: Remove this block in the future!
 		//! Handle deprecated `active` field
-		if ((<any>control).active !== undefined)
-			control.isActive = (<any>control).active;
+		if (control.active !== undefined)
+			control.isActive = control.active;
 		// TODO: END OF BLOCK
 		control.toggle = !!control.toggle;
 		control.button = !!control.button;
@@ -74,68 +91,75 @@ export default class ControlManager extends Application implements IControlManag
 	}
 
 	async initialize() {
-		this._groups = <any>this._getModuleToolGroups();
-		this.activeGroupName = null;
+		this.#_groups = this.#_getModuleToolGroups();
 		// Defer initialization completion to the first render call
-		this.initializationIncomplete = true;
+		this.#initializationIncomplete = true;
 	}
-	private async completeInitialization() {
-		this.initializationIncomplete = false;
-		this.hooksRegister['collapseSidebarPre'] = Hooks.on('collapseSidebarPre', this._handleSidebarCollapse.bind(this));
-		this.hooksRegister['activateGroupByName'] = Hooks.on('activateGroupByName', this.activateGroupByName.bind(this));
-		this.hooksRegister['activateToolByName'] = Hooks.on('activateToolByName', this.activateToolByName.bind(this));
-		this.hooksRegister['reloadModuleButtons'] = Hooks.on('reloadModuleButtons', this.reloadModuleButtons.bind(this));
-		this.hooksRegister['refreshModuleButtons'] = Hooks.on('refreshModuleButtons', this.refresh.bind(this));
-		this.hooksRegister['renderSceneControls'] = Hooks.on('renderSceneControls', () => { this.refresh(); this._handleWindowResize(); });
-		this.hooksRegister['collapseSceneNavigation'] = Hooks.on('collapseSceneNavigation', this._handleWindowResize.bind(this));
-		this.hooksRegister['renderPlayerList'] = Hooks.on('renderPlayerList', this._handleWindowResize.bind(this));
-		window.addEventListener('resize', this._handleWindowResize.bind(this));
-		for (const group of this._groups) {
+	async #completeInitialization() {
+		this.#initializationIncomplete = false;
+		this.#hooksRegister['collapseSidebarPre'] = Hooks.on('collapseSidebarPre', this.#_handleSidebarCollapse.bind(this));
+		this.#hooksRegister['activateGroupByName'] = Hooks.on('activateGroupByName', this.activateGroupByName.bind(this));
+		this.#hooksRegister['activateToolByName'] = Hooks.on('activateToolByName', this.activateToolByName.bind(this));
+		this.#hooksRegister['reloadModuleButtons'] = Hooks.on('reloadModuleButtons', this.reloadModuleButtons.bind(this));
+		this.#hooksRegister['refreshModuleButtons'] = Hooks.on('refreshModuleButtons', this.refresh.bind(this));
+		this.#hooksRegister['renderSceneControls'] = Hooks.on('renderSceneControls', () => { this.refresh(); this.#_handleWindowResize(); });
+		this.#hooksRegister['collapseSceneNavigation'] = Hooks.on('collapseSceneNavigation', this.#_handleWindowResize.bind(this));
+		this.#hooksRegister['renderPlayerList'] = Hooks.on('renderPlayerList', this.#_handleWindowResize.bind(this));
+		window.addEventListener('resize', this.#_handleWindowResize.bind(this));
+		for (const group of this.#_groups) {
 			// Initialize all unset fields to their defaults
-			ControlManager.initializeFields(group);
+			ControlManager.#initializeFields(group);
 			// Detect if this group should be the default active group
 			if (!this.activeGroupName && !group.toggle && !group.button && await ControlManager.checkBoolean(group.visible)) {
 				this.activeGroupName = group.name;
 				group.isActive = true;
 				// Notify the auto-selected group they are now selected
 				const currentGroup = this.activeGroup;
-				this._invokeHandler(currentGroup?.onClick, currentGroup, false);
+				this.#_invokeHandler(currentGroup?.onClick, currentGroup, false);
 			}
 			// Initialize the tools for the group
 			for (const tool of (group.tools ?? [])) {
-				ControlManager.initializeFields(tool);
+				ControlManager.#initializeFields(tool);
 				if (!group.activeTool && !tool.toggle && !tool.button && await ControlManager.checkBoolean(tool.visible)) {
 					group.activeTool = tool.name;
 					tool.isActive = true;
 					// Notify the auto-selected tool they are now selected
 					const currentTool = this.activeTool;
-					this._invokeHandler(currentTool?.onClick, currentTool, false);
+					this.#_invokeHandler(currentTool?.onClick, currentTool, false);
 				}
 			}
 		}
 	}
 
-	refresh(): void {
+	refresh() {
 		this.render();
 	}
 
-	private _getModuleToolGroups(): ToolGroup[] {
-		const groups: ToolGroup[] = [];
+	/**
+	 * @returns {ToolGroup[]}
+	 */
+	#_getModuleToolGroups() {
+		/**@type {ToolGroup[]}*/ const groups = [];
 		Hooks.callAll(`getModuleToolGroupsPre`, this, groups);
 		Hooks.callAll(`getModuleToolGroups`, this, groups);
 		Hooks.callAll(`getModuleToolGroupsPost`, this, groups);
 		return groups;
 	}
 
-	async getData(_?: Application.RenderOptions): Promise<CMData> {
+	/**
+	 * 
+	 * @param {Application.RenderOptions} [_]
+	 * @returns {Promise<CMData>}
+	 */
+	async getData(_) {
 		if (this.groups.length == 0) return { groups: [], singleGroup: false };
-		const groups: ToolGroupUI[] = [];
-		for (const group of this._groups) {
+		/**@type {ToolGroupUI[]}*/ const groups = [];
+		for (const group of this.#_groups) {
 			if (
 				!await ControlManager.checkBoolean(group.visible, true) ||
 				(game.settings.get('core', 'noCanvas') && !await ControlManager.checkBoolean(group.noCanvas, false))
 			) continue;
-			const groupUI: ToolGroupUI = {
+			/**@type {ToolGroupUI}*/ const groupUI = {
 				name: group.name,
 				icon: group.icon,
 				title: group.title,
@@ -172,33 +196,45 @@ export default class ControlManager extends Application implements IControlManag
 		return { groups, singleGroup };
 	}
 
-	/** @inheritdoc */
-	activateListeners(html: JQuery<HTMLElement>) {
-		html.find('.control-tool[data-group]').on('click', this._onClickGroup.bind(this));
-		html.find('.control-tool[data-tool]').on('click', this._onClickTool.bind(this));
+	/**
+	 * @param {JQuery<HTMLElement} html
+	 */
+	activateListeners(html) {
+		html.find('.control-tool[data-group]').on('click', this.#_onClickGroup.bind(this));
+		html.find('.control-tool[data-tool]').on('click', this.#_onClickTool.bind(this));
 		html.find('#magnet').on('click', async () => {
-			if (this.magnetMenu) return;
-			this.magnetMenu = $(await renderTemplate(`/modules/${SETTINGS.MOD_NAME}/templates/magnet.hbs`, {}));
-			this.magnetMenu.find('button').on('click', async event => {
-				this.magnetMenu.remove();
-				this.magnetMenu = null;
+			if (this.#magnetMenu) return;
+			this.#magnetMenu = $(await renderTemplate(`/modules/${SETTINGS.MOD_NAME}/templates/magnet.hbs`, {}));
+			this.#magnetMenu.find('button').on('click', async event => {
+				this.#magnetMenu.remove();
+				this.#magnetMenu = null;
 				await SETTINGS.set('position', event.currentTarget.classList[0]);
 			});
-			this.magnetMenu.find('.close').on('click', () => {
-				this.magnetMenu.remove();
-				this.magnetMenu = null;
+			this.#magnetMenu.find('.close').on('click', () => {
+				this.#magnetMenu.remove();
+				this.#magnetMenu = null;
 			});
-			$('body').append(this.magnetMenu);
+			$('body').append(this.#magnetMenu);
 		});
 	}
 
-	private async _invokeHandler(handler: Handler<boolean> | null | undefined, owner: Tool, active?: boolean) {
+	/**
+	 * 
+	 * @param {Handler<boolean> | null | undefined} handler
+	 * @param {Tool} owner
+	 * @param {boolean} [active]
+	 * @returns 
+	 */
+	async #_invokeHandler(handler, owner, active) {
 		if (handler === null || handler === undefined) return;
 		if (!handler.prototype) await handler(active);
 		else await handler.bind(owner)(active);
 	}
 
-	private async _onClickGroup(event: JQuery.ClickEvent) {
+	/**
+	 * @param {JQuery.ClickEvent} event 
+	 */
+	async #_onClickGroup(event) {
 		event.preventDefault();
 		const li = event.currentTarget;
 		const groupName = li.dataset.group;
@@ -209,19 +245,22 @@ export default class ControlManager extends Application implements IControlManag
 			// If the group's active state is not a function, use it to store state
 			if (!(group.isActive instanceof Function))
 				group.isActive = newState;
-			this._invokeHandler(group.onClick, group, newState);
+			this.#_invokeHandler(group.onClick, group, newState);
 			// Render the controls
 			this.refresh();
 		}
 		// Handle Buttons
 		else if (group.button) {
-			await this._invokeHandler(group.onClick, group);
+			await this.#_invokeHandler(group.onClick, group);
 		}
 		// Handle Groups
 		else
 			this.activateGroupByName(groupName);
 	}
-	private async _onClickTool(event: JQuery.ClickEvent) {
+	/**
+	 * @param {JQuery.ClickEvent} event
+	 */
+	async #_onClickTool(event) {
 		event.preventDefault();
 		const li = event.currentTarget;
 		const group = this.activeGroup;
@@ -233,31 +272,41 @@ export default class ControlManager extends Application implements IControlManag
 			// If the tool's active state is not a function, use it to store state
 			if (!(tool.isActive instanceof Function))
 				tool.isActive = newState;
-			this._invokeHandler(tool.onClick, tool, newState);
+			this.#_invokeHandler(tool.onClick, tool, newState);
 			// Render the controls
 			this.refresh();
 		}
 		// Handle Buttons
 		else if (tool.button)
-			this._invokeHandler(tool.onClick, tool);
+			this.#_invokeHandler(tool.onClick, tool);
 		// Handle Tools
 		else
 			this.activateToolByName(this.activeGroupName, toolName, true);
 	}
 
-	protected _injectHTML(html: JQuery<HTMLElement>): void {
+	/**
+	 * @param {JQuery<HTMLElement>} html
+	 */
+	_injectHTML(html) {
 		$('body').append(html);
 		this._element = html;
 	}
 
-	async _render(force = false, options = {}): Promise<void> {
+	/**
+	 * @param {boolean} [force]
+	 * @param {object} [options]
+	 * @returns {Promise<void>}
+	 */
+	async _render(force = false, options = {}) {
 		// If initialization needs to be completed, invoke the completion
-		if (this.initializationIncomplete) await this.completeInitialization();
+		if (this.#initializationIncomplete) await this.#completeInitialization();
 		if (!game.ready) return;
 		await super._render(force, options);
-		if ((<any>ui.sidebar)._collapsed) {
+		if (ui.sidebar._collapsed) {
 			this.element.css('right', '35px');
 		}
+		if (!this.element || !this.element[0])
+			return
 		this.element[0].removeAttribute('class');
 		this.element[0].classList.add('app');
 		switch (SETTINGS.get('position')) {
@@ -267,22 +316,31 @@ export default class ControlManager extends Application implements IControlManag
 			case 'right': default: break;
 		}
 
-		this._handleSidebarCollapse(ui.sidebar, (<any>ui.sidebar)._collapsed);
-		this._handleWindowResize();
+		this.#_handleSidebarCollapse(ui.sidebar, ui.sidebar._collapsed);
+		this.#_handleWindowResize();
 	}
-	close(options?: Application.CloseOptions): Promise<void> {
-		Hooks.off('collapseSidebarPre', this.hooksRegister['collapseSidebarPre']);
-		Hooks.off('activateGroupByName', this.hooksRegister['activateGroupByName']);
-		Hooks.off('activateToolByName', this.hooksRegister['activateToolByName']);
-		Hooks.off('reloadModuleButtons', this.hooksRegister['reloadModuleButtons']);
-		Hooks.off('renderSceneControls', this.hooksRegister['renderSceneControls']);
-		Hooks.off('collapseSceneNavigation', this.hooksRegister['collapseSceneNavigation']);
-		Hooks.off('renderPlayerList', this.hooksRegister['renderPlayerList']);
-		window.removeEventListener('resize', this._handleWindowResize);
+	/**
+	 * @param {Application.CloseOptions} [options]
+	 * @returns {Promise<void>}
+	 */
+	close(options) {
+		Hooks.off('collapseSidebarPre', this.#hooksRegister['collapseSidebarPre']);
+		Hooks.off('activateGroupByName', this.#hooksRegister['activateGroupByName']);
+		Hooks.off('activateToolByName', this.#hooksRegister['activateToolByName']);
+		Hooks.off('reloadModuleButtons', this.#hooksRegister['reloadModuleButtons']);
+		Hooks.off('renderSceneControls', this.#hooksRegister['renderSceneControls']);
+		Hooks.off('collapseSceneNavigation', this.#hooksRegister['collapseSceneNavigation']);
+		Hooks.off('renderPlayerList', this.#hooksRegister['renderPlayerList']);
+		window.removeEventListener('resize', this.#_handleWindowResize);
 		return super.close(options);
 	}
 
-	private _handleSidebarCollapse(sideBar: Sidebar, collapsed: boolean) {
+	/**
+	 * @param {Sidebar} sideBar
+	 * @param {boolean} collapsed
+	 * @returns 
+	 */
+	#_handleSidebarCollapse(sideBar, collapsed) {
 		const collapsedSize = '40px';
 		const expandedSize = '310px';
 		const shouldAnimate = collapsed ? sideBar.element[0].offsetWidth !== 32 : sideBar.element[0].offsetWidth !== 300;
@@ -297,50 +355,57 @@ export default class ControlManager extends Application implements IControlManag
 		else this.element[0].style.right = collapsed ? collapsedSize : expandedSize;
 	}
 
-	private static readonly CONTROL_WIDTH = 38 + 5;
-	private static readonly CONTROL_HEIGHT = 48;
+	static #CONTROL_WIDTH = 38 + 5;
+	static #CONTROL_HEIGHT = 48;
 
-	private getLeftWidth(): number {
+	/**
+	 * @returns {number}
+	 */
+	#getLeftWidth() {
 		//? This may need to be reintroduced for ardittristan's Button Overflow module
-		// const sceneLayers = document.querySelector<HTMLElement>('#controls > ol.main-controls.app.control-tools.flexcol');
-		// max = Math.floor(sceneLayers.offsetHeight / ControlManager.CONTROL_WIDTH);
+		// /**@type {HTMLElement}*/const sceneLayers = document.querySelector('#controls > ol.main-controls.app.control-tools.flexcol');
+		// max = Math.floor(sceneLayers.offsetHeight / ControlManager.#CONTROL_WIDTH);
 		// cols = Math.ceil(sceneLayers.childElementCount / max);
 		let cols = 1;
-		const sceneTools = document.querySelector<HTMLElement>('#controls > ol.sub-controls.app.control-tools.flexcol.active');
-		const max = Math.floor(sceneTools.offsetHeight / ControlManager.CONTROL_HEIGHT);
+		/**@type {HTMLElement}*/const sceneTools = document.querySelector('#controls > ol.sub-controls.app.control-tools.flexcol.active');
+		const max = Math.floor(sceneTools.offsetHeight / ControlManager.#CONTROL_HEIGHT);
 		cols += Math.ceil(sceneTools.childElementCount / max);
-		return cols * ControlManager.CONTROL_WIDTH + 20;
+		return cols * ControlManager.#CONTROL_WIDTH + 25;
 	}
-	private getTopHeight(magnetToSceneControls: boolean): number {
-		const uiTop = document.querySelector<HTMLElement>('#ui-middle #ui-top #navigation');
+	/**
+	 * @param {boolean} magnetToSceneControls
+	 * @returns {number}
+	 */
+	#getTopHeight(magnetToSceneControls) {
+		/**@type {HTMLElement}*/const uiTop = document.querySelector('#ui-middle #ui-top #navigation');
 		let top = uiTop.offsetHeight + uiTop.offsetTop;
 		if (magnetToSceneControls) {
-			const layers = document.querySelector<HTMLElement>('#ui-left > #controls > ol.main-controls.app.control-tools.flexcol');
+			/**@type {HTMLElement}*/const layers = document.querySelector('#ui-left > #controls > ol.main-controls.app.control-tools.flexcol');
 			top = Math.max(top, layers.offsetTop);
 		}
 		return top;
 	}
-	private _handleWindowResize() {
+	#_handleWindowResize() {
 		if (this.element.length === 0) return;
-		let max: number;
-		let cols: number;
+		/**@type {number}*/ let max;
+		/**@type {number}*/ let cols;
 
-		const position = SETTINGS.get<string>('position');
+		const position = SETTINGS.get('position');
 		this.element.addClass(position);
 		switch (position) {
 			case 'top': {
-				this.element[0].style.marginTop = this.getTopHeight(false) + 'px';
-				this.element[0].style.marginLeft = this.getLeftWidth() + 'px';
+				this.element[0].style.marginTop = this.#getTopHeight(false) + 'px';
+				this.element[0].style.marginLeft = this.#getLeftWidth() + 'px';
 				break;
 			}
 			case 'left': {
-				const controls = document.querySelector<HTMLElement>('#ui-left > #controls');
+				/**@type {HTMLElement}*/const controls = document.querySelector('#ui-left > #controls');
 				this.element[0].style.height = `${controls.offsetHeight}px`;
-				max = Math.floor(controls.offsetHeight / ControlManager.CONTROL_WIDTH);
+				max = Math.floor(controls.offsetHeight / ControlManager.#CONTROL_WIDTH);
 				cols = Math.ceil(this.groups.length / max);
-				this.element.find('.group-tools').css('margin-left', `${(cols - 1) * (ControlManager.CONTROL_WIDTH + 2)}px`);
-				this.element[0].style.marginTop = this.getTopHeight(true) + 'px';
-				this.element[0].style.marginLeft = this.getLeftWidth() + 'px';
+				this.element.find('.group-tools').css('margin-left', `${(cols - 1) * (ControlManager.#CONTROL_WIDTH + 2)}px`);
+				this.element[0].style.marginTop = this.#getTopHeight(true) + 'px';
+				this.element[0].style.marginLeft = this.#getLeftWidth() + 'px';
 				break;
 			}
 			case 'bottom': {
@@ -350,16 +415,20 @@ export default class ControlManager extends Application implements IControlManag
 				break;
 			}
 			case 'right': default: {
-				max = Math.floor(this.element[0].offsetHeight / ControlManager.CONTROL_WIDTH);
+				max = Math.floor(this.element[0].offsetHeight / ControlManager.#CONTROL_WIDTH);
 				cols = Math.ceil(this.groups.length / max);
-				this.element.find('.group-tools').css('margin-right', `${(cols - 1) * (ControlManager.CONTROL_WIDTH + 2)}px`);
+				this.element.find('.group-tools').css('margin-right', `${(cols - 1) * (ControlManager.#CONTROL_WIDTH + 2)}px`);
 				this.element[0].style.top = document.getElementById("sidebar-tabs").offsetTop + 'px';
 				break;
 			}
 		}
 	}
 
-	async activateGroupByName(groupName: string) {
+	/**
+	 * @param {string} groupName
+	 * @returns {Promise<void>}
+	 */
+	async activateGroupByName(groupName) {
 		const group = this.groups.find(x => x.name === groupName);
 		if (!group) {
 			console.warn(`ControlManager::activateGroupByName > Attempted to activate ToolGroup with non-existant name '${groupName}'`);
@@ -378,15 +447,21 @@ export default class ControlManager extends Application implements IControlManag
 		// Deactivate previous group
 		if (prevGroup) {
 			prevGroup.isActive = false;
-			await this._invokeHandler(prevGroup.onClick, prevGroup, false);
+			await this.#_invokeHandler(prevGroup.onClick, prevGroup, false);
 		}
 		// Activate new group
 		group.isActive = true;
-		await this._invokeHandler(group.onClick, group, true);
+		await this.#_invokeHandler(group.onClick, group, true);
 		this.refresh();
 		Hooks.callAll("toolGroupActivated", this, group);
 	}
-	async activateToolByName(groupName: string, toolName: string, activateGroup: boolean = true) {
+	/**
+	 * @param {string} groupName
+	 * @param {string} toolName
+	 * @param {boolean} [activateGroup]
+	 * @returns 
+	 */
+	async activateToolByName(groupName, toolName, activateGroup = true) {
 		const group = this.groups.find(x => x.name === groupName);
 		if (!group) {
 			console.warn(`ControlManager::activateToolByName > Attempted to activate ToolGroup with non-existant name '${groupName}'`);
@@ -410,11 +485,11 @@ export default class ControlManager extends Application implements IControlManag
 		// Deactivate previous group
 		if (prevTool) {
 			prevTool.isActive = false;
-			await this._invokeHandler(prevTool.onClick, prevTool, false);
+			await this.#_invokeHandler(prevTool.onClick, prevTool, false);
 		}
 		// Activate new group
 		tool.isActive = true;
-		await this._invokeHandler(tool.onClick, tool, true);
+		await this.#_invokeHandler(tool.onClick, tool, true);
 		if (activateGroup && this.activeGroupName !== groupName) {
 			this.activateGroupByName(groupName);
 		}
@@ -427,13 +502,13 @@ export default class ControlManager extends Application implements IControlManag
 		Hooks.callAll("moduleButtonsReloading", this);
 		// Notify the current group that they are now disabled before we rebuild
 		const currentGroup = this.activeGroup;
-		this._invokeHandler(currentGroup?.onClick, currentGroup, false);
+		this.#_invokeHandler(currentGroup?.onClick, currentGroup, false);
 		// Notify all selected tools of being deactivated
-		for (const group of this._groups) {
+		for (const group of this.#_groups) {
 			const currentTool = group.activeTool && group.tools ? group.tools.find(x => x.name === group.activeTool) : undefined;
-			this._invokeHandler(currentTool?.onClick, currentTool, false);
+			this.#_invokeHandler(currentTool?.onClick, currentTool, false);
 		}
-		(<ControlManager>(<any>ui).moduleControls).initialize();
-		(<ControlManager>(<any>ui).moduleControls).render();
+		ui.moduleControls.initialize();
+		ui.moduleControls.render();
 	}
 }

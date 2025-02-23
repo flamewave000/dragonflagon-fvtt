@@ -31,8 +31,9 @@ clean {
 		rm -f package-lock.json
 		sleep 0.5 && rm -Rf .doit || echo "\e[91mThis failure may be due to a doit programming still running. Maybe you have 'doit launch' running in the background?\e[0m" &
 	else
-		echo "Cleaning $$($doit_env tgt -r)"
+		target="$$($doit_env tgt -r)"
 		cd $$($doit_env tgt -r) || exit
+		echo "\e[32mCleaning: \e[34m$$target\e[0m"
 		rm -Rf common
 	fi
 	$$$

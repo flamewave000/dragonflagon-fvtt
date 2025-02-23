@@ -1,10 +1,12 @@
-import SETTINGS from "../../common/Settings";
-import ControlManagerImpl from "./ControlManager";
+/// <reference path="./ToolType.d.ts" />
+
+import SETTINGS from "../common/Settings.mjs";
+import ControlManagerImpl from "./ControlManager.mjs";
 
 SETTINGS.init('lib-df-buttons');
 
 Hooks.once('init', () => {
-	(<any>ui).moduleControls = new ControlManagerImpl();
+	ui.moduleControls = new ControlManagerImpl();
 
 	SETTINGS.register('position', {
 		scope: 'client',
@@ -18,44 +20,40 @@ Hooks.once('init', () => {
 		hint: 'LIB_DF_BUTTONS.hint',
 		config: false,
 		default: 'left',
-		onChange: () => (<ControlManagerImpl>(<any>ui).moduleControls).render()
+		onChange: () => ui.moduleControls.render()
 	});
 
 	// Soft Dependency on `libwrapper`. Only use it if it already exists
 	if (game.modules.get('libWrapper')?.active) {
-		libWrapper.register(SETTINGS.MOD_NAME, 'Sidebar.prototype.expand', function (this: Sidebar, wrapped: AnyFunction) {
+		libWrapper.register(SETTINGS.MOD_NAME, 'Sidebar.prototype.expand', /**@this {Sidebar}*/function (/**@type {Function}*/wrapped) {
 			Hooks.callAll('collapseSidebarPre', this, !this._collapsed);
 			wrapped();
 		}, 'WRAPPER');
-		libWrapper.register(SETTINGS.MOD_NAME, 'Sidebar.prototype.collapse', function (this: Sidebar, wrapped: AnyFunction) {
+		libWrapper.register(SETTINGS.MOD_NAME, 'Sidebar.prototype.collapse', /**@this {Sidebar}*/function (/**@type {Function}*/wrapped) {
 			Hooks.callAll('collapseSidebarPre', this, !this._collapsed);
 			wrapped();
 		}, 'WRAPPER');
 	}// Otherwise do the traditional style of monkey-patch wrapper
 	else {
-		(<any>Sidebar.prototype).expand_ORIG = Sidebar.prototype.expand;
-		Sidebar.prototype.expand = function (this: Sidebar) {
+		Sidebar.prototype.expand_ORIG = Sidebar.prototype.expand;
+		Sidebar.prototype.expand = /**@this {Sidebar}*/function() {
 			Hooks.callAll('collapseSidebarPre', this, !this._collapsed);
-			(<any>Sidebar.prototype).expand_ORIG.bind(this)();
+			Sidebar.prototype.expand_ORIG.bind(this)();
 		};
-		(<any>Sidebar.prototype).collapse_ORIG = Sidebar.prototype.collapse;
-		Sidebar.prototype.collapse = function (this: Sidebar) {
+		Sidebar.prototype.collapse_ORIG = Sidebar.prototype.collapse;
+		Sidebar.prototype.collapse = /**@this {Sidebar}*/function() {
 			Hooks.callAll('collapseSidebarPre', this, !this._collapsed);
-			(<any>Sidebar.prototype).collapse_ORIG.bind(this)();
+			Sidebar.prototype.collapse_ORIG.bind(this)();
 		};
 	}
 });
-Hooks.once('setup', () => {
-	(<ControlManagerImpl>(<any>ui).moduleControls).initialize();
-});
-Hooks.once('ready', () => {
-	(<ControlManagerImpl>(<any>ui).moduleControls).render(true);
-});
+Hooks.once('setup', () => ui.moduleControls.initialize());
+Hooks.once('ready', () => ui.moduleControls.render(true));
 /* Example code for appending ToolGroups and Tools */
-/**
+/**/
 //import { Tool, ToolGroup } from "./ToolType";
-Hooks.on('getModuleToolGroups', (app: ControlManager, groups: ToolGroup[]) => {
-	const handleClick = function (this: Tool, active?: boolean) {
+Hooks.on('getModuleToolGroups', (/**@type {ControlManager}*/app, /**@type {ToolGroup[]}*/groups) => {
+	const handleClick = /**@this {Tool} @param {Boolean} [active]*/function(active) {
 		if (active !== undefined)
 			console.log(`${this.name}: active=${active}`);
 		else

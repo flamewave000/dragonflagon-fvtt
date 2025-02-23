@@ -1,5 +1,9 @@
 # DragonFlagon Module Buttons Library
 
+## Release 2.0.0 (2022-02-23)
+- **UPDATE:** Migrated to v12.
+- **UPDATE:** Downgraded TS -> JS (such sad).
+
 ## Release 1.4.2 (2022-11-23)
 - **FIX:** Buttons were disappearing when only one group was available.
 
