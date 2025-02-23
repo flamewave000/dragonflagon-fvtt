@@ -1,16 +1,5 @@
 import SETTINGS from "../common/Settings.mjs";
 
-
-async function requestReload() {
-	if (await Dialog.confirm({
-		title: game.i18n.localize("DF_QOL.ReloadGame.Title"),
-		content: game.i18n.localize("DF_QOL.ReloadGame.Content"),
-		defaultYes: true
-	})) {
-		window.location.reload();
-	}
-}
-
 export default class TableQuickRoll {
 	static init() {
 		SETTINGS.register('quick-roll', {

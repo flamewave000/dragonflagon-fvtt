@@ -17,7 +17,7 @@ const WEIGHTS = {
 	lt: { factor: 2240, shortLabel: 'L.Ton', longLabel: 'DF_QOL.VehicleUnit.Units_LongTon' },
 	st: { factor: 2000, shortLabel: 'S.Ton', longLabel: 'DF_QOL.VehicleUnit.Units_ShortTon' },
 	lb: { factor: 1, shortLabel: 'lb.', longLabel: 'DF_QOL.VehicleUnit.Units_Pounds' }
-}
+};
 const DEFAULT_UNIT = 'st';
 
 export default class DnD5eVehicleCapacity {
@@ -69,7 +69,7 @@ export default class DnD5eVehicleCapacity {
 
 		const unit = WEIGHTS[unitSelection || DEFAULT_UNIT];
 		const originalField = html.find('input[name="system.attributes.capacity.cargo"]').hide();
-		originalField.attr('step', '0.1')
+		originalField.attr('step', '0.1');
 		$(`<input type="number" value="${(app.object.system.attributes.capacity.cargo / unit.factor).toNearest(0.01)}" min="0" step="0.01">`)
 			.on("change", el => {
 				const unit = WEIGHTS[app.object.getFlag(SETTINGS.MOD_NAME, 'unit') || DEFAULT_UNIT];

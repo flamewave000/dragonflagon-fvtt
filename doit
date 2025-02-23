@@ -72,6 +72,11 @@ env {
 	$ $doit_env env $@
 }
 
+lint {
+	@ Run ESLint to check validity of files
+	$ npx eslint '**/{src,common}/**/*.{js,mjs}'
+}
+
 getref {
 	@@@
 	Create a sym-link to the foundry.js file found in the set environment.

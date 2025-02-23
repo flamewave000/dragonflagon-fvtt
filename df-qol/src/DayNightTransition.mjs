@@ -75,7 +75,7 @@ export default class DayNightTransition {
 				last = now;
 				// const loader = document.getElementById("loading");
 				const pct = Math.ceil((elapsed / duration) * 100);
-				SceneNavigation.displayProgressBar({label:'Day/Night Transitioning...', pct})
+				SceneNavigation.displayProgressBar({label:'Day/Night Transitioning...', pct});
 				// loader.querySelector("#context").textContent = 'Day/Night Transitioning...';
 				// loader.querySelector("#loading-bar").style.width = `${pct}%`;
 				// loader.querySelector("#progress").textContent = `${Math.round(elapsed / 1000)}/${Math.ceil(duration / 1000)} sec`;

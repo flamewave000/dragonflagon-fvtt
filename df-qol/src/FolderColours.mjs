@@ -47,7 +47,7 @@ export default class FolderColours {
 		}
 	}
 
-	static DF_FOLDER_TEXT_COLOUR(/**@type {FolderConfig}*/ app, /**@type {JQuery}*/ html, /**@type { { folder: FolderData, sortingModes: { a: string, m: string }, submitText: string } }*/ data) {
+	static DF_FOLDER_TEXT_COLOUR(/**@type {FolderConfig}*/ app, /**@type {JQuery}*/ html, /**@type { { folder: FolderData, sortingModes: { a: string, m: string }, submitText: string } }*/ _data) {
 		/**@type {string}*/ const textColour = app.object.getFlag(SETTINGS.MOD_NAME, FolderColours.FLAG_COLOUR) ?? "";
 		html.find('button[type="submit"]').before(`<div class="form-group">
 	<label>${'Text Color'}</label>

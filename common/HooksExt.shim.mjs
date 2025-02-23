@@ -10,9 +10,6 @@
  * * HooksExt.shim.ts, HooksExt.shim.js, HooksExt.shim.min.js, HooksExt.shim.js.map
  */
 
-/* eslint-disable no-prototype-builtins */
-// @ts-nocheck
-
 if (!globalThis.HooksExt) {
 	/**
 	 * A simple event framework used throughout Foundry Virtual Tabletop.
