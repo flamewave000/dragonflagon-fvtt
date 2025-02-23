@@ -1,26 +1,25 @@
 {
-	"name": "df-module-name",
+	"id": "df-module-name",
 	"title": "Module Name",
 	"version": "1.0.0",
 	"description": "Description",
-	"author": "flamewave000#0001",
-	"minimumCoreVersion": "0.8.9",
-	"compatibleCoreVersion": "0.8.9",
+	"authors": [ { "name": "flamewave000", "discord": "flamewave000", "url": "https://github.com/flamewave000" } ],
+	"compatibility": { "minimum": 12, "verified": 12.331 },
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [
 		{ "lang": "en", "name": "English", "path": "lang/en.json" }
 	],
-	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-module-name",
-	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/LICENSE",
+	"url":		"https://dragonflagon.cafe/mods/url/df-module-name",
+	"license":	"https://dragonflagon.cafe/mods/lic/df-module-name",
 	"manifest":	"https://dragonflagon.cafe/mods/man/df-module-name",
 	"download":	"https://dragonflagon.cafe/mods/pak/df-module-name",
-	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-module-name/README.md",
-	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-module-name/CHANGELOG.md",
-	"manifestPlusVersion": "1.0.0",
-	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues/new/choose",
-	"authors": [ { "name": "flamewave000", "discord": "flamewave000#0001", "url": "https://github.com/flamewave000" } ],
+	"readme":	"https://dragonflagon.cafe/mods/doc/df-module-name",
+	"changelog":"https://dragonflagon.cafe/mods/chg/df-module-name",
+	"bugs":		"https://dragonflagon.cafe/mods/bug/df-module-name",
 	"media": [
-		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" }
+		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" },
+		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png"},
+		{ "type": "screenshot", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" }
 	]
 }

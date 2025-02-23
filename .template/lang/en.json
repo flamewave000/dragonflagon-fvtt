@@ -1,3 +1,5 @@
 {
-	"MODULE_NAME.Name": "Text"
+	"MODULE_NAME": {
+		"Name": "Text"
+	}
 }

@@ -1,21 +1,18 @@
 {
 	"files.exclude": {
-		"**/node_modules": true,
-		"**/package-lock.json": true,
 		"**/.devenv*": true,
 		"**/.editorconfig": true,
-		"**/.cmds": true,
 		"**/.gitignore": true,
-		"**/gulpfile.js": true,
-		"**/tsconfig.json": true,
-		"**/package.json": true,
-		"**/.github": true
+		"**/.github": true,
+		"**/.doit": true,
+		"**/package*.json": true,
+		"**/node_modules": true,
+		"**/.doit-files": true
 	},
 	"cSpell.words": [
 		"falsey",
 		"beziercirc",
 		"unpatch",
 		"unsetters"
-	],
-	"TARGET": ""
+	]
 }
