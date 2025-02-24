@@ -1,9 +1,12 @@
 # DragonFlagon Module Buttons Library
 
-## Release 2.0.1 (2022-02-23)
+## Release 2.0.2 (2025-02-24)
+- **FIX:** Small fix for issue that popped up during development of DF Curvy Walls
+
+## Release 2.0.1 (2025-02-23)
 - **FIX:** Disabled test code accidentally left in.
 
-## Release 2.0.0 (2022-02-23)
+## Release 2.0.0 (2025-02-23)
 - **UPDATE:** Migrated to v12.
 - **UPDATE:** Downgraded TS -> JS (such sad).
 

@@ -41,6 +41,7 @@ clean {
 
 dev {
 	@ Copy the targetted module's data to the set foundry data directory
+	opt module_name @ Provide the module name you wish to deploy instead of the current target
 	$ $doit_dev dev $@
 }
 

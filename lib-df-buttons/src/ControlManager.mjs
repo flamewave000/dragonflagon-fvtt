@@ -64,7 +64,7 @@ export default class ControlManager extends Application {
 	}
 	/**@type {ApplicationOptions}*/
 	static get defaultOptions() {
-		return mergeObject(super.defaultOptions, {
+		return foundry.utils.mergeObject(super.defaultOptions, {
 			width: 100,
 			id: "moduleControls",
 			template: `modules/lib-df-buttons/templates/controls.hbs`,
@@ -187,7 +187,7 @@ export default class ControlManager extends Application {
 			groups.push(groupUI);
 		}
 		const singleGroup = groups.length === 1 && !groups[0].button && !groups[0].toggle;
-		if (groups.every(x => !x.active)) {
+		if (groups.length > 0 && groups.every(x => !x.active)) {
 			const firstGroup = groups.find(x => !x.button && !x.toggle);
 			firstGroup.active = true;
 			if (firstGroup)

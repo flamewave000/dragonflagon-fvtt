@@ -6,7 +6,17 @@ date_string = "$(date +'%Y-%m-%d %H:%M:%S')"
 
 dev {
 	@ Copy the targetted module's data to the set foundry data directory
+	opt module_name @ Provide the module name you wish to deploy instead of the current target
 	$$$
+
+	if [ "$#" -gt 1 ]; then
+		echo "Too many arguments: $# arguments were provided when only 1 expected."
+		exit 1
+	elif [ "$#" -eq 1 ]; then
+		original=`$doit_env tgt -r`
+		$doit_env tgt "$1" > /dev/null
+		echo "\e[90m$date_string\e[32m Override Target: \e[34m$$($doit_env tgt -r)\e[0m"
+	fi
 	module=`$doit_env tgt -r`
 	fdata="$$(jq -r .foundry.data .devenv)/Data/modules/$$module"
 	rm -Rf "$$fdata"
@@ -14,6 +24,7 @@ dev {
 	$doit_dev proc_sass "$$fdata"
 	$doit_dev proc_module "$$fdata"
 	echo "\e[90m$date_string\e[32m Copied \e[34m$$module\e[32m to \e[33m$$fdata"
+	[ "$#" -eq 1 ] && $doit_env tgt "$$original" > /dev/null
 	$$$
 }
 watch {
@@ -52,7 +63,6 @@ pack {
 proc_module {
 %%%
 import os
-import sys
 import glob
 in_file = '$1'
 out_file = '$2'
@@ -71,16 +81,22 @@ with open(out_file + "/module.json", "w") as manifest:
 }
 
 proc_sass {
-	$$$
-	find "$1"/css/ -name '*.scss' | grep -qz . || exit 0
-	echo -n "\e[90m$date_string\e[32m Processing SASS:\e[0m"
-	for file in $$(find "$1"/css/ -name '*.scss'); do
-		echo -n " $$(realpath --relative-to="$1/css" "$$file")"
-		npx sass --no-source-map "$$file" "$1"/css/$$(basename "$$file" .scss).css
-		rm -f "$$file"
-	done
-	echo
-	$$$
+%%%
+import glob
+import subprocess
+from pathlib import Path
+files = glob.glob("$1/css/*.scss", recursive=False)
+if len(files) == 0:
+	exit(0)
+print("\033[90m$date_string\033[32m Processing SASS:\033[0m", end='')
+args = ['npx', 'sass', '--no-source-map']
+for file in files:
+	filename = Path(file).stem
+	args.append(f"{file}:$1/css/{filename}.css")
+	print(f" {filename}.scss", end='')
+print('')
+subprocess.run(args)
+%%%
 }
 
 tag {
