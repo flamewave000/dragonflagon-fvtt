@@ -5,7 +5,7 @@
 			"name": "Launch Foundry",
 			"type": "chrome",
 			"request": "launch",
-			"url": "http://localhost:30000/game",
+			"url": "https://localhost:30000/game",
 			"webRoot": "${workspaceFolder}",
 			"cwd": "${workspaceFolder}",
 			"pathMapping": {

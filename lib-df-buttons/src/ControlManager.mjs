@@ -70,7 +70,6 @@ export default class ControlManager extends Application {
 			template: `modules/lib-df-buttons/templates/controls.hbs`,
 			popOut: false,
 			resizable: false,
-
 		});
 	}
 
@@ -97,7 +96,6 @@ export default class ControlManager extends Application {
 	}
 	async #completeInitialization() {
 		this.#initializationIncomplete = false;
-		this.#hooksRegister['collapseSidebarPre'] = Hooks.on('collapseSidebarPre', this.#_handleSidebarCollapse.bind(this));
 		this.#hooksRegister['activateGroupByName'] = Hooks.on('activateGroupByName', this.activateGroupByName.bind(this));
 		this.#hooksRegister['activateToolByName'] = Hooks.on('activateToolByName', this.activateToolByName.bind(this));
 		this.#hooksRegister['reloadModuleButtons'] = Hooks.on('reloadModuleButtons', this.reloadModuleButtons.bind(this));
@@ -288,8 +286,9 @@ export default class ControlManager extends Application {
 	 * @param {JQuery<HTMLElement>} html
 	 */
 	_injectHTML(html) {
-		$('body').append(html);
+		// $('body').append(html);
 		this._element = html;
+		// this.#_handleWindowResize();
 	}
 
 	/**
@@ -315,7 +314,6 @@ export default class ControlManager extends Application {
 			case 'right': default: break;
 		}
 
-		this.#_handleSidebarCollapse(ui.sidebar, ui.sidebar._collapsed);
 		this.#_handleWindowResize();
 	}
 	/**
@@ -323,7 +321,6 @@ export default class ControlManager extends Application {
 	 * @returns {Promise<void>}
 	 */
 	close(options) {
-		Hooks.off('collapseSidebarPre', this.#hooksRegister['collapseSidebarPre']);
 		Hooks.off('activateGroupByName', this.#hooksRegister['activateGroupByName']);
 		Hooks.off('activateToolByName', this.#hooksRegister['activateToolByName']);
 		Hooks.off('reloadModuleButtons', this.#hooksRegister['reloadModuleButtons']);
@@ -332,26 +329,6 @@ export default class ControlManager extends Application {
 		Hooks.off('renderPlayerList', this.#hooksRegister['renderPlayerList']);
 		window.removeEventListener('resize', this.#_handleWindowResize);
 		return super.close(options);
-	}
-
-	/**
-	 * @param {Sidebar} sideBar
-	 * @param {boolean} collapsed
-	 * @returns 
-	 */
-	#_handleSidebarCollapse(sideBar, collapsed) {
-		const collapsedSize = '40px';
-		const expandedSize = '310px';
-		const shouldAnimate = collapsed ? sideBar.element[0].offsetWidth !== 32 : sideBar.element[0].offsetWidth !== 300;
-		if (SETTINGS.get('position') !== 'right') {
-			this.element.css('right', 'unset');
-			return;
-		}
-		if (shouldAnimate) {
-			if (collapsed) this.element.delay(250).animate({ right: collapsedSize }, 150);
-			else this.element.animate({ right: expandedSize }, 150);
-		}
-		else this.element[0].style.right = collapsed ? collapsedSize : expandedSize;
 	}
 
 	static #CONTROL_WIDTH = 38 + 5;
@@ -376,48 +353,64 @@ export default class ControlManager extends Application {
 	 * @returns {number}
 	 */
 	#getTopHeight(magnetToSceneControls) {
-		/**@type {HTMLElement}*/const uiTop = document.querySelector('#ui-middle #ui-top #navigation');
-		let top = uiTop.offsetHeight + uiTop.offsetTop;
 		if (magnetToSceneControls) {
+			/**@type {HTMLElement}*/const uiTop = document.querySelector('#ui-middle #ui-top #navigation');
 			/**@type {HTMLElement}*/const layers = document.querySelector('#ui-left > #controls > ol.main-controls.app.control-tools.flexcol');
-			top = Math.max(top, layers.offsetTop);
+			return Math.max(uiTop.offsetTop + uiTop.offsetHeight, layers.offsetTop);
+		} else {
+			/**@type {HTMLElement}*/const loadBar = document.querySelector('#ui-middle #ui-top #loading');
+			//* The 4 is a small padding to give the loading bar some space and also happens to align with the scene controls
+			return loadBar.offsetHeight + 4;
 		}
-		return top;
 	}
 	#_handleWindowResize() {
-		if (this.element.length === 0) return;
+		/**@type {JQuery<HTMLElement>}*/ const element = this._element;
+		if (element.length === 0) return;
 		/**@type {number}*/ let max;
 		/**@type {number}*/ let cols;
 
 		const position = SETTINGS.get('position');
-		this.element.addClass(position);
+		// element.removeAttr('class');
+		// element.addClass('app');
+		element.addClass(position);
 		switch (position) {
 			case 'top': {
-				this.element[0].style.marginTop = this.#getTopHeight(false) + 'px';
-				this.element[0].style.marginLeft = this.#getLeftWidth() + 'px';
+				element.detach().insertBefore('#ui-top #loading');
+				element[0].style.marginTop = this.#getTopHeight(false) + 'px';
+				element[0].style.marginLeft = -element[0].querySelector("#magnet").offsetWidth + 'px';
+				element[0].style.height = undefined;
 				break;
 			}
 			case 'left': {
+				element.detach().appendTo('#ui-left');
 				/**@type {HTMLElement}*/const controls = document.querySelector('#ui-left > #controls');
-				this.element[0].style.height = `${controls.offsetHeight}px`;
+				element[0].style.height = `${controls.offsetHeight}px`;
 				max = Math.floor(controls.offsetHeight / ControlManager.#CONTROL_WIDTH);
 				cols = Math.ceil(this.groups.length / max);
-				this.element.find('.group-tools').css('margin-left', `${(cols - 1) * (ControlManager.#CONTROL_WIDTH + 2)}px`);
-				this.element[0].style.marginTop = this.#getTopHeight(true) + 'px';
-				this.element[0].style.marginLeft = this.#getLeftWidth() + 'px';
+				element.find('.group-tools').css('margin-left', `${(cols - 1) * (ControlManager.#CONTROL_WIDTH + 2)}px`);
+				element[0].style.marginTop = this.#getTopHeight(true) + 'px';
+				element[0].style.marginLeft = this.#getLeftWidth() + 'px';
 				break;
 			}
 			case 'bottom': {
-				this.element[0].style.left = (document.getElementById("ui-middle").offsetLeft +
-					document.getElementById("hotbar-directory-controls").offsetLeft) + 'px';
-				this.element[0].style.bottom = (document.getElementById('hotbar').offsetHeight + 10) + 'px';
+				element.detach().appendTo('#ui-bottom');
+
+				/**@type {HTMLElement}*/ const magnet = element[0].querySelector("#magnet");
+				/**@type {HTMLElement}*/ const folder = document.querySelector('#hotbar > #hotbar-directory-controls');
+				/**@type {HTMLElement}*/ const action = document.querySelector('#hotbar > #action-bar');
+
+				const left = 2 + action.offsetLeft - magnet.offsetWidth;
+				element[0].style.left = left + 'px';
+				element[0].style.bottom = (folder.offsetHeight + 10) + 'px';
 				break;
 			}
 			case 'right': default: {
-				max = Math.floor(this.element[0].offsetHeight / ControlManager.#CONTROL_WIDTH);
+				element.detach().appendTo('#ui-right');
+				max = Math.floor(element[0].offsetHeight / ControlManager.#CONTROL_WIDTH);
 				cols = Math.ceil(this.groups.length / max);
-				this.element.find('.group-tools').css('margin-right', `${(cols - 1) * (ControlManager.#CONTROL_WIDTH + 2)}px`);
-				this.element[0].style.top = document.getElementById("sidebar-tabs").offsetTop + 'px';
+				element.find('.group-tools').css('margin-right', `${(cols - 1) * (ControlManager.#CONTROL_WIDTH + 2)}px`);
+				element[0].style.top = document.getElementById("sidebar-tabs").offsetTop + 'px';
+				element[0].style.left = -element[0].offsetWidth + 'px';
 				break;
 			}
 		}

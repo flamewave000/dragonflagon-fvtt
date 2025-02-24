@@ -1,5 +1,8 @@
 # DragonFlagon Module Buttons Library
 
+## Release 2.0.3 (2025-02-24)
+- **FIX #459:** Greatly improved module button positioning in the UI system.
+
 ## Release 2.0.2 (2025-02-24)
 - **FIX:** Small fix for issue that popped up during development of DF Curvy Walls
 
