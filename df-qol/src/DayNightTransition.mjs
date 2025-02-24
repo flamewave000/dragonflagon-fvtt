@@ -42,7 +42,7 @@ export default class DayNightTransition {
 		const animationData = [{
 			parent: { darkness: canvas.darknessLevel },
 			attribute: "darkness",
-			to: Math.clamped(target, 0, 1)
+			to: Math.clamp(target, 0, 1)
 		}];
 
 		/***************************/

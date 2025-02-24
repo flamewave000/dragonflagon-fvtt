@@ -3,7 +3,7 @@ import MessageProcessor from "./MessageProcessor.mjs";
 
 export default class DFLoggerMenu extends FormApplication {
 	static get defaultOptions() {
-		return mergeObject(super.defaultOptions, {
+		return foundry.utils.mergeObject(super.defaultOptions, {
 			editable: true,
 			resizable: true,
 			submitOnChange: false,

@@ -1,5 +1,8 @@
 # DragonFlagon Quality of Life
 
+## Release 
+- **FIX:** Deprecation fix: `Math.clamped` -> `Math.clamp`
+
 ## Release 2.0.1 (2025-02-23)
 - **UPDATE:** Better Toggle styling now applies more generically.
 

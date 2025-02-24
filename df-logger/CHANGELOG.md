@@ -1,5 +1,8 @@
 # DF User Logger
 
+## Release 
+- **FIX:** Deprecation fix: `mergeObject` -> `foundry.utils.mergeObject`
+
 ## Release 2.0.0 (2025-01-30)
 - **UPDATE:** Migrated to v12.
 - **UPDATE:** Downgraded TS -> JS (such sad).
