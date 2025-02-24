@@ -50,82 +50,80 @@ Hooks.once('init', () => {
 Hooks.once('setup', () => ui.moduleControls.initialize());
 Hooks.once('ready', () => ui.moduleControls.render(true));
 /* Example code for appending ToolGroups and Tools */
-/**/
-//import { Tool, ToolGroup } from "./ToolType";
-Hooks.on('getModuleToolGroups', (/**@type {ControlManager}*/app, /**@type {ToolGroup[]}*/groups) => {
-	const handleClick = /**@this {Tool} @param {Boolean} [active]*/function(active) {
-		if (active !== undefined)
-			console.log(`${this.name}: active=${active}`);
-		else
-			console.log(this.name);
-	};
-	groups.push({
-		name: 'radial1',
-		icon: '<i class="fas fa-dice-one"></i>',
-		title: 'radial1',
-		visible: () => ui.controls.activeControl === 'token',
-		onClick: handleClick,
-		tools: [
-			{ name: 'tool1-1', title: 'tool1-1', onClick: handleClick, icon: '<i class="fas fa-dice-one"></i>' },
-			{ name: 'tool1-2', title: 'tool1-2', onClick: handleClick, icon: '<i class="fas fa-dice-one"></i>' },
-			{ name: 'tool1-3', title: 'tool1-3', onClick: handleClick, icon: '<i class="fas fa-dice-one"></i>', button: true },
-			{ name: 'tool1-4', title: 'tool1-4', onClick: handleClick, icon: '<i class="fas fa-dice-one"></i>', toggle: true },
-		]
-	});
-	groups.push({
-		name: 'radial2',
-		icon: '<i class="fas fa-dice-two"></i>',
-		title: 'radial2',
-		visible: () => ui.controls.activeControl === 'walls',
-		onClick: handleClick,
-		tools: [
-			{ name: 'tool2-1', title: 'tool2-1', onClick: handleClick, icon: '<i class="fas fa-dice-two"></i>' },
-			{ name: 'tool2-2', title: 'tool2-2', onClick: handleClick, icon: '<i class="fas fa-dice-two"></i>' },
-			{ name: 'tool2-3', title: 'tool2-3', onClick: handleClick, icon: '<i class="fas fa-dice-two"></i>', button: true },
-			{ name: 'tool2-4', title: 'tool2-4', onClick: handleClick, icon: '<i class="fas fa-dice-two"></i>', toggle: true },
-		]
-	});
-	groups.push({
-		name: 'radial3',
-		icon: '<i class="fas fa-dice-three"></i>',
-		title: 'radial3',
-		onClick: handleClick,
-		tools: [
-			{ name: 'tool3-1', title: 'tool3-1', onClick: handleClick, icon: '<i class="fas fa-dice-three"></i>' },
-			{ name: 'tool3-2', title: 'tool3-2', onClick: handleClick, icon: '<i class="fas fa-dice-three"></i>' },
-			{ name: 'tool3-3', title: 'tool3-3', onClick: handleClick, icon: '<i class="fas fa-dice-three"></i>', button: true },
-			{ name: 'tool3-4', title: 'tool3-4', onClick: handleClick, icon: '<i class="fas fa-dice-three"></i>', toggle: true },
-		]
-	});
-	groups.push({
-		name: 'button1',
-		icon: '<i class="fas fa-dice-one"></i>',
-		title: 'button1',
-		button: true,
-		onClick: handleClick,
-	});
-	groups.push({
-		name: 'button2',
-		icon: '<i class="fas fa-dice-two"></i>',
-		title: 'button2',
-		button: true,
-		onClick: handleClick,
-	});
+/// <reference path="ToolType.d.ts" />
+// Hooks.on('getModuleToolGroups', (/**@type {ControlManager}*/app, /**@type {ToolGroup[]}*/groups) => {
+// 	const handleClick = /**@this {Tool} @param {Boolean} [active]*/function(active) {
+// 		if (active !== undefined)
+// 			console.log(`${this.name}: active=${active}`);
+// 		else
+// 			console.log(this.name);
+// 	};
+// 	groups.push({
+// 		name: 'radial1',
+// 		icon: '<i class="fas fa-dice-one"></i>',
+// 		title: 'radial1',
+// 		visible: () => ui.controls.activeControl === 'token',
+// 		onClick: handleClick,
+// 		tools: [
+// 			{ name: 'tool1-1', title: 'tool1-1', onClick: handleClick, icon: '<i class="fas fa-dice-one"></i>' },
+// 			{ name: 'tool1-2', title: 'tool1-2', onClick: handleClick, icon: '<i class="fas fa-dice-one"></i>' },
+// 			{ name: 'tool1-3', title: 'tool1-3', onClick: handleClick, icon: '<i class="fas fa-dice-one"></i>', button: true },
+// 			{ name: 'tool1-4', title: 'tool1-4', onClick: handleClick, icon: '<i class="fas fa-dice-one"></i>', toggle: true },
+// 		]
+// 	});
+// 	groups.push({
+// 		name: 'radial2',
+// 		icon: '<i class="fas fa-dice-two"></i>',
+// 		title: 'radial2',
+// 		visible: () => ui.controls.activeControl === 'walls',
+// 		onClick: handleClick,
+// 		tools: [
+// 			{ name: 'tool2-1', title: 'tool2-1', onClick: handleClick, icon: '<i class="fas fa-dice-two"></i>' },
+// 			{ name: 'tool2-2', title: 'tool2-2', onClick: handleClick, icon: '<i class="fas fa-dice-two"></i>' },
+// 			{ name: 'tool2-3', title: 'tool2-3', onClick: handleClick, icon: '<i class="fas fa-dice-two"></i>', button: true },
+// 			{ name: 'tool2-4', title: 'tool2-4', onClick: handleClick, icon: '<i class="fas fa-dice-two"></i>', toggle: true },
+// 		]
+// 	});
+// 	groups.push({
+// 		name: 'radial3',
+// 		icon: '<i class="fas fa-dice-three"></i>',
+// 		title: 'radial3',
+// 		onClick: handleClick,
+// 		tools: [
+// 			{ name: 'tool3-1', title: 'tool3-1', onClick: handleClick, icon: '<i class="fas fa-dice-three"></i>' },
+// 			{ name: 'tool3-2', title: 'tool3-2', onClick: handleClick, icon: '<i class="fas fa-dice-three"></i>' },
+// 			{ name: 'tool3-3', title: 'tool3-3', onClick: handleClick, icon: '<i class="fas fa-dice-three"></i>', button: true },
+// 			{ name: 'tool3-4', title: 'tool3-4', onClick: handleClick, icon: '<i class="fas fa-dice-three"></i>', toggle: true },
+// 		]
+// 	});
+// 	groups.push({
+// 		name: 'button1',
+// 		icon: '<i class="fas fa-dice-one"></i>',
+// 		title: 'button1',
+// 		button: true,
+// 		onClick: handleClick,
+// 	});
+// 	groups.push({
+// 		name: 'button2',
+// 		icon: '<i class="fas fa-dice-two"></i>',
+// 		title: 'button2',
+// 		button: true,
+// 		onClick: handleClick,
+// 	});
 
-	groups.push({
-		name: 'toggle1',
-		icon: '<i class="fas fa-dice-one"></i>',
-		title: 'toggle1',
-		toggle: true,
-		onClick: handleClick,
-	});
-	groups.push({
-		name: 'toggle2',
-		icon: '<i class="fas fa-dice-two"></i>',
-		title: 'toggle2',
-		toggle: true,
-		isActive: true,
-		onClick: handleClick,
-	});
-});
-/**/
+// 	groups.push({
+// 		name: 'toggle1',
+// 		icon: '<i class="fas fa-dice-one"></i>',
+// 		title: 'toggle1',
+// 		toggle: true,
+// 		onClick: handleClick,
+// 	});
+// 	groups.push({
+// 		name: 'toggle2',
+// 		icon: '<i class="fas fa-dice-two"></i>',
+// 		title: 'toggle2',
+// 		toggle: true,
+// 		isActive: true,
+// 		onClick: handleClick,
+// 	});
+// });

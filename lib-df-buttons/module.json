@@ -1,7 +1,7 @@
 {
 	"id": "lib-df-buttons",
 	"title": "Library: DF Module Buttons",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "Library that provides a way for modules to register controls outside of the scene layer controls",
 	"authors": [ { "name": "flamewave000", "discord": "flamewave000", "url": "https://github.com/flamewave000" } ],
 	"compatibility": { "minimum": 12, "verified": 12.331 },
