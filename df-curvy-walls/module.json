@@ -15,7 +15,7 @@
 			{
 				"id": "lib-df-buttons",
 				"type": "module",
-				"compatibility": { "verified": "2.0.1", "minimum": "2.0.1" }
+				"compatibility": { "verified": "2.0.2", "minimum": "2.0.1" }
 			}
 		]
 	},

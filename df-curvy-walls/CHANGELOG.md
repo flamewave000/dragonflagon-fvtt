@@ -3,6 +3,7 @@
 ## Release 4.0.0 (2025-02-24)
 - **UPDATE:** Migrated to v12.
 - **UPDATE:** Downgraded TS -> JS (such sad).
+- **FIX #369:** Fix tool crash when tool is being placed and user switches canvas layers.
 
 ## Release 3.4.0 (2022-10-15)
 - **UPDATE:** Migrated to FoundryVTT v10.

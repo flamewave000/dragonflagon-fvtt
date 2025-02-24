@@ -3,6 +3,7 @@
 /// <reference path="./types.d.ts" />
 /// <reference path="./tools/BezierTool.mjs" />
 /// <reference path="./tools/ToolInputHandler.mjs" />
+/// <reference path="../common/libWrapper.d.ts" />
 
 import { ToolMode } from './tools/BezierTool.mjs';
 import CircleTool from './tools/CircleTool.mjs';
@@ -347,6 +348,10 @@ export class CurvyWallToolManager {
 		libWrapper.register(SETTINGS.MOD_NAME, 'Wall.prototype._onDragLeftStart', (/**@type {any}*/wrapper,/**@type {any[]}*/...args) => {
 			this.clearTool();
 			wrapper(...args);
+		}, 'WRAPPER');
+		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype.clearPreviewContainer', (/**@type {Function}*/wrapped) => {
+			this.clearTool();
+			return wrapped();
 		}, 'WRAPPER');
 	}
 
