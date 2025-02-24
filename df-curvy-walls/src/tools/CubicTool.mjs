@@ -1,17 +1,27 @@
-import { CurvyWallControl } from '../CurvyWallsToolBar';
-import { Bezier } from '../../libs/bezier';
-import { BezierTool, ToolMode } from './BezierTool';
-import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler, MagnetPointInputHandler } from "./ToolInputHandler";
+/// <reference path="../CurvyWallsToolBar.mjs" />
+/// <reference path="./ToolInputHandler.mjs" />
+import { Bezier } from '../../libs/bezier.js';
+import { BezierTool, ToolMode } from './BezierTool.mjs';
+import { PointArrayInputHandler, PointInputHandler, InitializerInputHandler, MagnetPointInputHandler } from "./ToolInputHandler.mjs";
 
 const pointNearPoint = BezierTool.pointNearPoint;
-declare type Point = PIXI.Point;
 
 class InitializerIH extends InitializerInputHandler {
-	private get cubicTool(): CubicTool { return this.tool as CubicTool; }
-	constructor(tool: CubicTool, success: () => void, fail: () => void) {
+	/**@type {CubicTool}*/ get #cubicTool() { return this.tool; }
+	/**
+	 * @param {CubicTool} tool
+	 * @param {() => void} success
+	 * @param {() => void} fail
+	 */
+	constructor(tool, success, fail) {
 		super(tool, false, tool.lineA, tool.lineB, success, fail);
 	}
-	move(origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
+	/**
+	 * @param {PIXI.Point} origin
+	 * @param {PIXI.Point} destination
+	 * @param {PIXI.InteractionEvent} event
+	 */
+	move(origin, destination, event) {
 		super.move(origin, destination, event);
 		let dx = this.tool.lineB.x - this.tool.lineA.x;
 		let dy = this.tool.lineB.y - this.tool.lineA.y;
@@ -19,21 +29,23 @@ class InitializerIH extends InitializerInputHandler {
 		dx /= length;
 		dy /= length;
 		const barLength = length * (2 / 3);
-		this.cubicTool.controlA.set(this.tool.lineA.x + (dy * barLength), this.tool.lineA.y + (-dx * barLength));
-		this.cubicTool.controlB.set(this.tool.lineB.x + (dy * barLength), this.tool.lineB.y + (-dx * barLength));
+		this.#cubicTool.controlA.set(this.tool.lineA.x + (dy * barLength), this.tool.lineA.y + (-dx * barLength));
+		this.#cubicTool.controlB.set(this.tool.lineB.x + (dy * barLength), this.tool.lineB.y + (-dx * barLength));
 	}
 }
 
 export default class CubicTool extends BezierTool {
 	static lockHandles = true;
-	private bezier: Bezier;
+	/**@type {Bezier}*/ #bezier;
 	lineA = new PIXI.Point();
 	lineB = new PIXI.Point();
 	controlA = new PIXI.Point();
 	controlB = new PIXI.Point();
 
-	get handles(): Point[] { return [this.lineA, this.controlA, this.controlB, this.lineB]; }
-	get bounds(): PIXI.Bounds {
+	/**@type {PIXI.Point[]}*/
+	get handles() { return [this.lineA, this.controlA, this.controlB, this.lineB]; }
+	/**@type {PIXI.Bounds}*/
+	get bounds() {
 		const b = new PIXI.Bounds();
 		b.addPoint(this.lineA);
 		b.addPoint(this.lineB);
@@ -41,19 +53,27 @@ export default class CubicTool extends BezierTool {
 		b.addPoint(this.controlB);
 		return b;
 	}
-	get polygon(): PIXI.Polygon { return new PIXI.Polygon([this.lineA, this.lineB, this.controlA, this.controlB]); }
+	get polygon() { return new PIXI.Polygon([this.lineA, this.lineB, this.controlA, this.controlB]); }
 
-	constructor(segments: number = 10) {
+	constructor(segments = 10) {
 		super(segments);
 		this.bezier = new Bezier([0, 0, 0, 0, 0, 0, 0, 0]);
 	}
-	getSegments(count: number): PIXI.Point[] | PIXI.Point[][] {
+	/**
+	 * @param {number} count
+	 * @returns {PIXI.Point[] | PIXI.Point[][]}
+	 */
+	getSegments(count) {
 		if (this.mode == ToolMode.NotPlaced) return [];
 		this.bezier.points = this.handles;
 		this.bezier.update();
-		return (this.lastSegmentFetch = this.bezier.getLUT(count + 2).map((e: { x: number, y: number }) => new PIXI.Point(e.x, e.y)));
+		return (this.lastSegmentFetch = this.bezier.getLUT(count + 2).map((/**@type {PIXI.Point}*/ e) => new PIXI.Point(e.x, e.y)));
 	}
-	drawHandles(context: PIXI.Graphics): void {
+	/**
+	 * @param {PIXI.Graphics} context
+	 * @returns {void}
+	 */
+	drawHandles(context) {
 		if (this.mode == ToolMode.NotPlaced) return;
 		this.drawBoundingBox(context);
 		context.beginFill(0xffaacc)
@@ -69,7 +89,12 @@ export default class CubicTool extends BezierTool {
 		this.drawHandle(context, 0xaaff44, this.controlA);
 		this.drawHandle(context, 0xaaff44, this.controlB);
 	}
-	checkPointForDrag(point: Point): InputHandler | null {
+	/**
+	 * 
+	 * @param {PIXI.Point} point 
+	 * @returns {InputHandler | null}
+	 */
+	checkPointForDrag(point) {
 		if (this.mode == ToolMode.NotPlaced) {
 			this.setMode(ToolMode.Placing);
 			return new InitializerIH(this, () => this.setMode(ToolMode.Placed), () => this.setMode(ToolMode.NotPlaced));
@@ -91,7 +116,10 @@ export default class CubicTool extends BezierTool {
 		return null;
 	}
 
-	getTools(): Record<string, CurvyWallControl> {
+	/**
+	 * @returns {Record<string, CurvyWallControl>}
+	 */
+	getTools() {
 		return {
 			cubiclock: {
 				icon: 'fas fa-lock',
@@ -102,7 +130,11 @@ export default class CubicTool extends BezierTool {
 			}
 		};
 	}
-	placeTool(point: PIXI.Point, data: { l1: number[], l2: number[], c1: number[], c2: number[] }) {
+	/**
+	 * @param {PIXI.Point} point 
+	 * @param { { l1: number[], l2: number[], c1: number[], c2: number[] } } data 
+	 */
+	placeTool(point, data) {
 		this.lineA.set(data.l1[0] + point.x, data.l1[1] + point.y);
 		this.lineB.set(data.l2[0] + point.x, data.l2[1] + point.y);
 		this.controlA.set(data.c1[0] + point.x, data.c1[1] + point.y);

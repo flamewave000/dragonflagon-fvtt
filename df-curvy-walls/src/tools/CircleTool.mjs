@@ -1,22 +1,28 @@
-import { BezierTool, ToolMode } from './BezierTool';
-import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler";
-import { CurvyWallControl } from '../CurvyWallsToolBar';
+/// <reference path="../types.d.ts" />
+import { BezierTool, ToolMode } from './BezierTool.mjs';
+import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler.mjs";
 
 const pointNearPoint = BezierTool.pointNearPoint;
 const PI2 = Math.PI * 2;
-declare type Point = PIXI.Point;
+
 
 // Helper function log outputs
 // function degrees(radians: number) { return (radians / Math.PI) * 180.0; }
 
 class InitializerIH extends InitializerInputHandler {
-	constructor(tool: CircleTool, success: () => void, fail: () => void) {
+	/**
+	 * @param {CircleTool} tool
+	 * @param {() => void} success
+	 * @param {() => void} fail
+	 */
+	constructor(tool, success, fail) {
 		super(tool, true, tool.lineA, tool.lineB, success, fail);
 	}
 }
 
 export default class CircleTool extends BezierTool {
-	static readonly ANGLE_SNAP_STEPS = [Math.PI / 4, Math.PI / 6, Math.PI / 12, Math.PI / 24, Math.PI / 48];
+	/**@readonly @type {[number,number,number,number,number]}*/
+	static ANGLE_SNAP_STEPS = [Math.PI / 4, Math.PI / 6, Math.PI / 12, Math.PI / 24, Math.PI / 48];
 	static snapSetIndex = 2;
 	static finishSliceIfShort = true;
 	static closeLoopIfSliced = false;
@@ -25,14 +31,17 @@ export default class CircleTool extends BezierTool {
 	arcHandle = new RotatorHandle(100);
 	sliceHandle = new RotatorHandle(75, this.arcHandle);
 
-	get handles(): Point[] { return [this.lineA, this.lineB]; }
-	get bounds(): PIXI.Bounds {
+	/**@type {PIXI.Point[]}*/
+	get handles() { return [this.lineA, this.lineB]; }
+	/**@type {PIXI.Bounds}*/
+	get bounds() {
 		const b = new PIXI.Bounds();
 		b.addPoint(this.lineA);
 		b.addPoint(this.lineB);
 		return b;
 	}
-	get polygon(): PIXI.Polygon {
+	/**@type {PIXI.Polygon}*/
+	get polygon() {
 		const bounds = this.bounds;
 		return new PIXI.Polygon([
 			bounds.minX, bounds.minY,
@@ -41,7 +50,8 @@ export default class CircleTool extends BezierTool {
 			bounds.maxX, bounds.maxY]);
 	}
 
-	private _tools: Record<string, CurvyWallControl> = {
+	/**@type {Record<string, CurvyWallControl>}*/
+	#_tools = {
 		ellipseclose: {
 			icon: 'fas fa-adjust',
 			title: 'df-curvy-walls.ellipse_close',
@@ -66,7 +76,7 @@ export default class CircleTool extends BezierTool {
 			icon: 'dfcw ellipseinc',
 			title: 'df-curvy-walls.ellipse_increment',
 			onClick: () => {
-				CircleTool.snapSetIndex = Math.clamped(CircleTool.snapSetIndex + 1, 0, CircleTool.ANGLE_SNAP_STEPS.length - 1);
+				CircleTool.snapSetIndex = Math.clamp(CircleTool.snapSetIndex + 1, 0, CircleTool.ANGLE_SNAP_STEPS.length - 1);
 				Hooks.call('requestCurvyWallsRedraw');
 			}
 		},
@@ -74,13 +84,20 @@ export default class CircleTool extends BezierTool {
 			icon: 'dfcw ellipsedec',
 			title: 'df-curvy-walls.ellipse_decrement',
 			onClick: () => {
-				CircleTool.snapSetIndex = Math.clamped(CircleTool.snapSetIndex - 1, 0, CircleTool.ANGLE_SNAP_STEPS.length - 1);
+				CircleTool.snapSetIndex = Math.clamp(CircleTool.snapSetIndex - 1, 0, CircleTool.ANGLE_SNAP_STEPS.length - 1);
 				Hooks.call('requestCurvyWallsRedraw');
 			}
 		}
 	};
-	getTools(): Record<string, CurvyWallControl> { return this._tools; }
-	placeTool(point: PIXI.Point, data: { l1: number[], l2: number[], a1: number, a2: number }) {
+	/**
+	 * @returns {Record<string, CurvyWallControl>}
+	 */
+	getTools() { return this.#_tools; }
+	/**
+	 * @param {PIXI.Point} point
+	 * @param { { l1: number[], l2: number[], a1: number, a2: number } } data
+	 */
+	placeTool(point, data) {
 		this.lineA.set(data.l1[0] + point.x, data.l1[1] + point.y);
 		this.lineB.set(data.l2[0] + point.x, data.l2[1] + point.y);
 		this.arcHandle.angle = data.a1;
@@ -96,7 +113,10 @@ export default class CircleTool extends BezierTool {
 		};
 	}
 
-	getCenter(): PIXI.Point {
+	/**
+	 * @returns PIXI.Point
+	 */
+	getCenter() {
 		const bounds = this.bounds;
 		const rect = bounds.getRectangle(PIXI.Rectangle.EMPTY);
 		const halfWidth = rect.width / 2;
@@ -104,14 +124,24 @@ export default class CircleTool extends BezierTool {
 		return new PIXI.Point(bounds.minX + halfWidth, bounds.minY + halfHeight);
 	}
 
-	private createVector(theta: number, magnitude: Point, origin: Point): Point {
+	/**
+	 * @param {number} theta
+	 * @param {PIXI.Point} magnitude
+	 * @param {PIXI.Point} origin
+	 * @returns {PIXI.Point}
+	 */
+	#createVector(theta, magnitude, origin) {
 		return new PIXI.Point(
 			origin.x + (Math.cos(theta) * magnitude.x),
 			origin.y + (Math.sin(theta) * magnitude.y)
 		);
 	}
 
-	getSegments(count: number): PIXI.Point[] {
+	/**
+	 * @param {number} count
+	 * @returns {PIXI.Point[]}
+	 */
+	getSegments(count) {
 		if (this.mode == ToolMode.NotPlaced) return [];
 		const bounds = this.bounds;
 		const rect = bounds.getRectangle(PIXI.Rectangle.EMPTY);
@@ -121,20 +151,20 @@ export default class CircleTool extends BezierTool {
 		// Find the exact middle point of the circle
 		const origin = new PIXI.Point(bounds.minX + magnitude.x, bounds.minY + magnitude.y);
 		// initialize with the first point
-		const points: PIXI.Point[] = [];
+		/**@type {PIXI.Point[]}*/const points = [];
 		// Start at full rotation and work our way back CCW
 		let angle = PI2;
 		const sliceAngle = this.sliceHandle.rawAngle != PI2 ? this.sliceHandle.rawAngle : 0.0;
-		// console.log(`Slice: ${degrees(sliceAngle)}, Arc: ${degrees(this.arcHandle.rawAngle)}`);
+		// console.log(`Slice: ${degrees(sliceAngle)}, Arc: ${degrees(this.#arcHandle.rawAngle)}`);
 		while (angle >= sliceAngle) {
-			points.push(this.createVector(this.arcHandle.rawAngle + angle, magnitude, origin));
+			points.push(this.#createVector(this.arcHandle.rawAngle + angle, magnitude, origin));
 			angle -= deltaTheta;
 			if (angle < 1e-10 && angle > -1e-10)
 				angle = 0;
 		}
 		// If we stopped short of the slice handle, add a small step to go the rest of the way
 		if (CircleTool.finishSliceIfShort && angle != sliceAngle && sliceAngle != 0) {
-			points.push(this.createVector(this.arcHandle.rawAngle + sliceAngle, magnitude, origin));
+			points.push(this.#createVector(this.arcHandle.rawAngle + sliceAngle, magnitude, origin));
 		}
 		// Close loop if there is no slice, or if the user has locked loop closing
 		if (CircleTool.closeLoopIfSliced && sliceAngle != 0)
@@ -142,8 +172,15 @@ export default class CircleTool extends BezierTool {
 		return (this.lastSegmentFetch = points);
 	}
 
-	initialPoints(): number[] { return [0, 0, 0, 0, 0, 0]; }
-	drawHandles(context: PIXI.Graphics): void {
+	/**
+	 * @returns {number[]}
+	 */
+	initialPoints() { return [0, 0, 0, 0, 0, 0]; }
+	/**
+	 * @param {PIXI.Graphics} context 
+	 * @returns {void}
+	 */
+	drawHandles(context) {
 		if (this.mode == ToolMode.NotPlaced) return;
 		this.drawBoundingBox(context);
 		const middle = this.getCenter();
@@ -162,19 +199,27 @@ export default class CircleTool extends BezierTool {
 		const snapAngle = Math.toDegrees(CircleTool.ANGLE_SNAP_STEPS[CircleTool.snapSetIndex]).toFixed(2);
 		const arcLabel = BezierTool.createText(`⇲${snapAngle}°   ◶${180 / parseFloat(snapAngle)}`);
 		arcLabel.position.copyFrom(this.lineCenter);
-		arcLabel.position.y += BezierTool.TEXT_STYLE.fontSize as number + 4;
+		arcLabel.position.y += BezierTool.TEXT_STYLE.fontSize + 4;
 		context.addChild(arcLabel);
 		this.drawHandle(context, 0xff4444, this.lineA);
 		this.drawHandle(context, 0xff4444, this.lineB);
 		this.drawHandle(context, 0x44ff44, this.arcHandle.getHandlePoint(this.getCenter()));
 		this.drawHandle(context, 0x4444ff, this.sliceHandle.getHandlePoint(this.getCenter()));
 	}
-	protected drawSegmentLabel(context: PIXI.Graphics) {
+	/**
+	 * @protected
+	 * @param {PIXI.Graphics} context
+	 */
+	drawSegmentLabel(context) {
 		const text = BezierTool.createText(`⊷${this.lastSegmentFetch.length - 1}`);
 		text.position = this.lineCenter;
 		context.addChild(text);
 	}
-	checkPointForDrag(point: Point): InputHandler | null {
+	/**
+	 * @param {PIXI.Point} point
+	 * @returns {InputHandler | null}
+	 */
+	checkPointForDrag(point) {
 		if (this.mode == ToolMode.NotPlaced) {
 			this.setMode(ToolMode.Placing);
 			return new InitializerIH(this, () => this.setMode(ToolMode.Placed), () => this.setMode(ToolMode.NotPlaced));
@@ -194,43 +239,58 @@ export default class CircleTool extends BezierTool {
 }
 
 class RotatorHandle {
-	private _angle: number = 0.0;
-	get rawAngle(): number { return this._angle; }
-	set rawAngle(value: number) { this._angle = value; }
-	get angle(): number {
-		return this.magnet ? this._angle + this.magnet._angle : this._angle;
-	}
-	set angle(value: number) {
-		this._angle = this.magnet ? value - this.magnet._angle : this._angle = value;
-	}
-	private length: number = 0.0;
-	magnet: RotatorHandle;
-	constructor(length: number, magnet?: RotatorHandle) {
-		this.length = length;
+	/**@type {number}*/#_angle = 0.0;
+	/**@type {number}*/
+	get rawAngle() { return this.#_angle; }
+	set rawAngle(value) { this.#_angle = value; }
+	/**@type {number}*/
+	get angle() { return this.magnet ? this.#_angle + this.magnet.#_angle : this.#_angle; }
+	set angle(value) { this.#_angle = this.magnet ? value - this.magnet.#_angle : this.#_angle = value; }
+	/**@type {number}*/#length = 0.0;
+	/**@type {RotatorHandle}*/magnet;
+	/**
+	 * @param {number} length
+	 * @param {RotatorHandle} [magnet]
+	 */
+	constructor(length, magnet) {
+		this.#length = length;
 		this.magnet = magnet;
 	}
-	getHandlePoint(center: PIXI.Point): PIXI.Point {
-		const magnet = this.magnet ? this.magnet._angle : 0;
-		const ax = Math.cos(magnet + this._angle) * this.length;
-		const ay = Math.sin(magnet + this._angle) * this.length;
+	/**
+	 * @param {PIXI.Point} center
+	 * @returns {PIXI.Point}
+	 */
+	getHandlePoint(center) {
+		const magnet = this.magnet ? this.magnet.#_angle : 0;
+		const ax = Math.cos(magnet + this.#_angle) * this.#length;
+		const ay = Math.sin(magnet + this.#_angle) * this.#length;
 		return new PIXI.Point(center.x + ax, center.y + ay);
 	}
 }
 
 class PointRotationHandler extends InputHandler {
-	private original: number;
-	private arcHandle: RotatorHandle;
-	private center: PIXI.Point;
-	constructor(tool: BezierTool, arcHandle: RotatorHandle, center: PIXI.Point) {
+	/**@type {number}*/#original;
+	/**@type {RotatorHandle}*/#arcHandle;
+	/**@type {PIXI.Point}*/#center;
+	/**
+	 * @param {BezierTool} tool 
+	 * @param {RotatorHandle} arcHandle 
+	 * @param {PIXI.Point} center 
+	 */
+	constructor(tool, arcHandle, center) {
 		super(tool);
-		this.arcHandle = arcHandle;
-		this.original = this.arcHandle.angle;
-		this.center = center;
+		this.#arcHandle = arcHandle;
+		this.#original = this.#arcHandle.angle;
+		this.#center = center;
 	}
 
-	setAngle(to: PIXI.Point, event: PIXI.InteractionEvent) {
-		const vecX = to.x - this.center.x;
-		const vecY = to.y - this.center.y;
+	/**
+	 * @param {PIXI.Point} to
+	 * @param {PIXI.InteractionEvent} event
+	 */
+	setAngle(to, event) {
+		const vecX = to.x - this.#center.x;
+		const vecY = to.y - this.#center.y;
 		// calculate the reference angle theta bar (͞θ)
 		let angle = Math.atan(vecY / vecX);
 		// If on the -X axis (2nd and 3rd quadrants)
@@ -247,20 +307,35 @@ class PointRotationHandler extends InputHandler {
 				? whole * snapAngle
 				: (whole + 1) * snapAngle;
 		}
-		const magnet = this.arcHandle.magnet ? (PI2 - this.arcHandle.magnet.rawAngle) : 0;
-		this.arcHandle.rawAngle = (magnet + angle) % PI2;
+		const magnet = this.#arcHandle.magnet ? (PI2 - this.#arcHandle.magnet.rawAngle) : 0;
+		this.#arcHandle.rawAngle = (magnet + angle) % PI2;
 	}
 
-	start(_origin: PIXI.Point, destination: PIXI.Point, event: PIXI.InteractionEvent): void {
+	/**
+	 * @param {PIXI.Point} _origin
+	 * @param {PIXI.Point} destination
+	 * @param {PIXI.InteractionEvent} event
+	 */
+	start(_origin, destination, event) {
 		this.setAngle(destination, event);
 	}
-	move(_origin: PIXI.Point, destination: PIXI.Point, event: PIXI.InteractionEvent): void {
+	/**
+	 * @param {PIXI.Point} _origin
+	 * @param {PIXI.Point} destination
+	 * @param {PIXI.InteractionEvent} event
+	 */
+	move(_origin, destination, event) {
 		this.setAngle(destination, event);
 	}
-	stop(_origin: PIXI.Point, destination: PIXI.Point, event: PIXI.InteractionEvent): void {
+	/**
+	 * @param {PIXI.Point} _origin
+	 * @param {PIXI.Point} destination
+	 * @param {PIXI.InteractionEvent} event
+	 */
+	stop(_origin, destination, event) {
 		this.setAngle(destination, event);
 	}
-	cancel(): void {
-		this.arcHandle.angle = this.original;
+	cancel() {
+		this.#arcHandle.angle = this.#original;
 	}
 }

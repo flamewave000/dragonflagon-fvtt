@@ -1,18 +1,29 @@
+/// <reference path="../types.d.ts" />
+/// <reference path="./ToolInputHandler.mjs" />
 
-import { BezierTool, ToolMode } from './BezierTool';
-import { PointArrayInputHandler, InputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler";
-import { CurvyWallControl } from '../CurvyWallsToolBar';
-import { Bezier } from '../../libs/bezier';
+import { BezierTool, ToolMode } from './BezierTool.mjs';
+import { PointArrayInputHandler, PointInputHandler, InitializerInputHandler } from "./ToolInputHandler.mjs";
+import { Bezier } from '../../libs/bezier.js';
 
 const pointNearPoint = BezierTool.pointNearPoint;
-declare type Point = PIXI.Point;
 
 class InitializerIH extends InitializerInputHandler {
-	private get quadTool(): QuadTool { return this.tool as QuadTool; }
-	constructor(tool: QuadTool, success: () => void, fail: () => void) {
+	/**@type {QuadTool}*/
+	get #quadTool() { return this.tool; }
+	/**
+	 * @param {QuadTool} tool
+	 * @param {() => void} success
+	 * @param {() => void} fail
+	 */
+	constructor(tool, success, fail) {
 		super(tool, false, tool.lineA, tool.lineB, success, fail);
 	}
-	move(origin: Point, destination: Point, event: PIXI.InteractionEvent): void {
+	/**
+	 * @param {PIXI.Point} origin
+	 * @param {PIXI.Point} destination
+	 * @param {PIXI.InteractionEvent} event
+	 */
+	move(origin, destination, event) {
 		super.move(origin, destination, event);
 		const cX = (this.tool.lineB.x + this.tool.lineA.x) / 2;
 		const cY = (this.tool.lineB.y + this.tool.lineA.y) / 2;
@@ -21,39 +32,47 @@ class InitializerIH extends InitializerInputHandler {
 		// const length = Math.sqrt((nX * nX) + (nY * nY));
 		nX *= 0.25;
 		nY *= 0.25;
-		this.quadTool.control.set(cX + nX, cY + nY);
+		this.#quadTool.control.set(cX + nX, cY + nY);
 	}
 }
 
 export default class QuadTool extends BezierTool {
-	private bezier: Bezier;
+	/**@type {Bezier}*/#bezier;
 	lineA = new PIXI.Point();
 	lineB = new PIXI.Point();
 	control = new PIXI.Point();
 
-	get handles(): Point[] { return [this.lineA, this.control, this.lineB]; }
-	get bounds(): PIXI.Bounds {
+	/**@type {Point[]}*/
+	get handles() { return [this.lineA, this.control, this.lineB]; }
+	/**@type {PIXI.Bounds}*/
+	get bounds() {
 		const b = new PIXI.Bounds();
 		b.addPoint(this.lineA);
 		b.addPoint(this.lineB);
 		b.addPoint(this.control);
 		return b;
 	}
-	get polygon(): PIXI.Polygon { return new PIXI.Polygon([this.lineA, this.lineB, this.control]); }
+	/**@type {PIXI.Polygon}*/
+	get polygon() { return new PIXI.Polygon([this.lineA, this.lineB, this.control]); }
 
-	constructor(segments: number = 10) {
+	constructor(segments = 10) {
 		super(segments);
-		// this.bezier = new Bezier([0, 0, 0, 0, 0, 0]);
+		// this.#bezier = new Bezier([0, 0, 0, 0, 0, 0]);
 	}
 
-	getSegments(count: number): PIXI.Point[] | PIXI.Point[][] {
+	/**
+	 * @param {number} count
+	 * @returns {PIXI.Point[] | PIXI.Point[][]}
+	 */
+	getSegments(count) {
 		if (this.mode == ToolMode.NotPlaced) return [];
-		this.bezier = Bezier.quadraticFromPoints(this.lineA, this.control, this.lineB);
-		// this.bezier.points = this.handles;
-		// this.bezier.update();
-		return (this.lastSegmentFetch = this.bezier.getLUT(count + 2).map((e: { x: number, y: number }) => new PIXI.Point(e.x, e.y)));
+		this.#bezier = Bezier.quadraticFromPoints(this.lineA, this.control, this.lineB);
+		// this.#bezier.points = this.handles;
+		// this.#bezier.update();
+		return (this.lastSegmentFetch = this.#bezier.getLUT(count + 2).map((/**@type {PIXI.Point}*/e) => new PIXI.Point(e.x, e.y)));
 	}
-	drawHandles(context: PIXI.Graphics): void {
+	/** @param {PIXI.Graphics} context*/
+	drawHandles(context) {
 		if (this.mode == ToolMode.NotPlaced) return;
 		this.drawBoundingBox(context);
 		// context.beginFill(0xffaacc)
@@ -68,7 +87,11 @@ export default class QuadTool extends BezierTool {
 		this.drawHandle(context, 0xff4444, this.lineB);
 		this.drawHandle(context, 0xaaff44, this.control);
 	}
-	checkPointForDrag(point: Point): InputHandler | null {
+	/**
+	 * @param {PIXI.Point} point
+	 * @returns {InputHandler | null}
+	 */
+	checkPointForDrag(point) {
 		if (this.mode == ToolMode.NotPlaced) {
 			this.setMode(ToolMode.Placing);
 			return new InitializerIH(this, () => this.setMode(ToolMode.Placed), () => this.setMode(ToolMode.NotPlaced));
@@ -84,8 +107,13 @@ export default class QuadTool extends BezierTool {
 		return null;
 	}
 
-	getTools(): Record<string, CurvyWallControl> { return {}; }
-	placeTool(point: PIXI.Point, data: { l1: number[], l2: number[], c: number[] }) {
+	/** @returns {Record<string, CurvyWallControl>}*/
+	getTools() { return {}; }
+	/**
+	 * @param {PIXI.Point} point
+	 * @param { { l1: number[], l2: number[], c: number[] } } data
+	 */
+	placeTool(point, data) {
 		this.lineA.set(data.l1[0] + point.x, data.l1[1] + point.y);
 		this.lineB.set(data.l2[0] + point.x, data.l2[1] + point.y);
 		this.control.set(data.c[0] + point.x, data.c[1] + point.y);

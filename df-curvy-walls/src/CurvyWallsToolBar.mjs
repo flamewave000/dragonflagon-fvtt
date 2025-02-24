@@ -1,33 +1,11 @@
-
-import { CurvyWallToolManager, Mode } from './CurvyWallToolManager';
-import SETTINGS from "../../common/Settings";
-import { ToolMode } from './tools/BezierTool';
-
-export interface CurvyWallControl {
-	title: string;
-	icon: string;
-	toggleable?: boolean;
-	class?: string;
-	isActive?: () => boolean;
-	onClick: (enabled?: boolean) => void;
-}
-interface CurvyWallControlUI {
-	name: string;
-	title: string;
-	icon: string;
-	toggleable?: boolean;
-	class?: string;
-	isActive?: boolean;
-}
-interface CurvyWallsToolsOptions {
-	tools: CurvyWallControlUI[];
-	general: CurvyWallControlUI[];
-	controls: CurvyWallControlUI[];
-}
+/// <reference path="./types.d.ts" />
+import { CurvyWallToolManager, Mode } from './CurvyWallToolManager.mjs';
+import SETTINGS from "../common/Settings.mjs";
+import { ToolMode } from './tools/BezierTool.mjs';
 
 export class CurvyWallsToolBar extends Application {
 	static init() {
-		Hooks.on('getModuleToolGroups', (controlManager: ControlManager, groups: ToolGroup[]) => {
+		Hooks.on('getModuleToolGroups', (/**@type {ControlManager}*/controlManager, /**@type {ToolGroup[]}*/groups) => {
 			groups.push(
 				{
 					name: SETTINGS.MOD_NAME,
@@ -75,18 +53,19 @@ export class CurvyWallsToolBar extends Application {
 		});
 	}
 
-	static readonly PREF_PRESERVE = 'preserve-tool';
+	/** @readonly */static PREF_PRESERVE = 'preserve-tool';
 
-	static get defaultOptions(): ApplicationOptions {
-		return mergeObject(super.defaultOptions, {
+	/**@type {ApplicationOptions}*/
+	static get defaultOptions() {
+		return foundry.utils.mergeObject(super.defaultOptions, {
 			popOut: false,
 			template: 'modules/df-curvy-walls/templates/curvy-walls-controls.hbs'
 		});
 	}
 
-	private _closing = false;
+	#_closing = false;
 
-	private _tools: Record<string, CurvyWallControl> = {
+	/**@type {Record<string, CurvyWallControl>}*/#_tools = {
 		beziercube: {
 			title: "df-curvy-walls.cubic",
 			icon: "fas fa-bezier-curve",
@@ -112,7 +91,8 @@ export class CurvyWallsToolBar extends Application {
 			onClick: function () { return CurvyWallToolManager.instance.mode = this.isActive() ? Mode.None : Mode.Rect; }
 		}
 	};
-	private _generalControls: Record<string, CurvyWallControl> = {
+	/**@type {Record<string, CurvyWallControl>}*/
+	#_generalControls = {
 		increment: {
 			title: 'df-curvy-walls.increment',
 			icon: 'fas fa-plus',
@@ -136,7 +116,8 @@ export class CurvyWallsToolBar extends Application {
 			onClick: CurvyWallToolManager.instance.clearTool.bind(CurvyWallToolManager.instance)
 		}
 	};
-	private _placementControls: Record<string, CurvyWallControl> = {
+	/**@type {Record<string, CurvyWallControl>}*/
+	#_placementControls = {
 		pointconstruct: {
 			title: 'df-curvy-walls.trace_curve_with_points',
 			icon: 'fas fa-route',
@@ -155,52 +136,61 @@ export class CurvyWallsToolBar extends Application {
 		}
 	};
 
-	constructor(options?: ApplicationOptions) {
+	/**
+	 * @param {ApplicationOptions} [options]
+	 */
+	constructor(options) {
 		super(options);
 		CurvyWallToolManager.instance.setModeListener(() => {
-			if (this._closing) {
-				this._closing = false;
+			if (this.#_closing) {
+				this.#_closing = false;
 				return;
 			}
 			this.render(false);
 		});
 	}
 
-	getData(): CurvyWallsToolsOptions {
+	/**
+	 * @returns {CurvyWallsToolsOptions}
+	 */
+	getData() {
 		const toolIsPlaced = CurvyWallToolManager.instance.mode != Mode.None && CurvyWallToolManager.instance.activeTool.mode != ToolMode.NotPlaced;
 		const toolControls = CurvyWallToolManager.instance.activeTool?.getTools();
-		const placementControls: CurvyWallControlUI[] = [{
+		/**@type {CurvyWallControlUI[]}*/
+		const placementControls = [{
 			name: 'pointconstruct',
-			title: this._placementControls.pointconstruct.title,
-			icon: this._placementControls.pointconstruct.icon,
-			class: this._placementControls.pointconstruct.class,
+			title: this.#_placementControls.pointconstruct.title,
+			icon: this.#_placementControls.pointconstruct.icon,
+			class: this.#_placementControls.pointconstruct.class,
 			toggleable: true,
-			isActive: this._placementControls.pointconstruct.isActive()
+			isActive: this.#_placementControls.pointconstruct.isActive()
 		}];
-		if (CurvyWallToolManager.instance.currentlyMappingPoints && CurvyWallToolManager.instance.canApplyPointMapping)
+		if (CurvyWallToolManager.instance.currentlyMappingPoints && CurvyWallToolManager.instance.canApplyPointMapping) {
 			placementControls.push({
 				name: 'applyplacement',
-				title: this._placementControls.applyplacement.title,
-				icon: this._placementControls.applyplacement.icon,
-				class: this._placementControls.applyplacement.class
+				title: this.#_placementControls.applyplacement.title,
+				icon: this.#_placementControls.applyplacement.icon,
+				class: this.#_placementControls.applyplacement.class
 			});
+		}
 
-		const data: CurvyWallsToolsOptions = {
-			tools: Object.keys(this._tools).map(it => {
+		/**@type {CurvyWallsToolsOptions}*/
+		const data = {
+			tools: Object.keys(this.#_tools).map(it => {
 				return {
 					name: it,
-					title: this._tools[it].title,
-					icon: this._tools[it].icon,
+					title: this.#_tools[it].title,
+					icon: this.#_tools[it].icon,
 					toggleable: true,
-					isActive: this._tools[it].isActive()
+					isActive: this.#_tools[it].isActive()
 				};
 			}),
-			general: toolIsPlaced ? Object.keys(this._generalControls).map(it => {
+			general: toolIsPlaced ? Object.keys(this.#_generalControls).map(it => {
 				return {
 					name: it,
-					title: this._generalControls[it].title,
-					icon: this._generalControls[it].icon,
-					class: this._generalControls[it].class
+					title: this.#_generalControls[it].title,
+					icon: this.#_generalControls[it].icon,
+					class: this.#_generalControls[it].class
 				};
 			}) : [Mode.Quad, Mode.Circ, Mode.Rect].includes(CurvyWallToolManager.instance.mode) ? placementControls : [],
 			controls: toolIsPlaced && !!toolControls ? Object.keys(toolControls).map(it => {
@@ -218,7 +208,10 @@ export class CurvyWallsToolBar extends Application {
 		return data;
 	}
 
-	activateListeners(html: JQuery<HTMLElement>) {
+	/**
+	 * @param {JQuery<HTMLElement>} html
+	 */
+	activateListeners(html) {
 		const toolbarPosition = game.settings.get('lib-df-buttons', 'position');
 		switch (toolbarPosition) {
 			case 'top':
@@ -236,24 +229,24 @@ export class CurvyWallsToolBar extends Application {
 			case 'bottom':
 				html.remove();
 				$(document.querySelector('body')).append(html);
-				html.css('left', ((ui as any).moduleControls.getLeftWidth() + 5) + 'px');
-				html.css('top', (ui as any).moduleControls.getTopHeight(true) + 'px');
+				html.css('left', (ui.moduleControls.getLeftWidth() + 5) + 'px');
+				html.css('top', ui.moduleControls.getTopHeight(true) + 'px');
 				break;
 		}
-		html.find('li').on("click", (event: JQuery.ClickEvent) => {
+		html.find('li').on("click", (/**@type {JQuery.ClickEvent}*/event) => {
 			const element = $(event.currentTarget);
 			const name = element.attr('data-tool');
 
-			const tool = this._tools[name];
+			const tool = this.#_tools[name];
 			if (tool !== undefined) {
 				tool.onClick();
 				return;
 			}
 
-			const generalControl = this._generalControls[name];
+			const generalControl = this.#_generalControls[name];
 			if (generalControl !== undefined) generalControl.onClick();
 
-			const placementControl = this._placementControls[name];
+			const placementControl = this.#_placementControls[name];
 			if (placementControl !== undefined) placementControl.onClick();
 
 			const toolControl = CurvyWallToolManager.instance.activeTool?.getTools()[name];
@@ -266,9 +259,13 @@ export class CurvyWallsToolBar extends Application {
 		});
 	}
 
-	close(options?: Application.CloseOptions): Promise<void> {
+	/**
+	 * @param {Application.CloseOptions} [options]
+	 * @returns {Promise<void>}
+	 */
+	close(options) {
 		if (!SETTINGS.get(CurvyWallsToolBar.PREF_PRESERVE)) {
-			this._closing = true;
+			this.#_closing = true;
 			CurvyWallToolManager.instance.mode = Mode.None;
 		}
 		return super.close(options);

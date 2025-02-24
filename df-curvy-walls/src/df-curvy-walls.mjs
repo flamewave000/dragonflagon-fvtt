@@ -1,7 +1,7 @@
-import { CurvyWallsToolBar } from './CurvyWallsToolBar';
-import { CurvyWallToolManager, Mode } from './CurvyWallToolManager';
-import SETTINGS from "../../common/Settings";
-import { BezierTool } from './tools/BezierTool';
+import { CurvyWallsToolBar } from './CurvyWallsToolBar.mjs';
+import { CurvyWallToolManager, Mode } from './CurvyWallToolManager.mjs';
+import SETTINGS from "../common/Settings.mjs";
+import { BezierTool } from './tools/BezierTool.mjs';
 
 const curvyWallApp = new CurvyWallsToolBar();
 SETTINGS.init('df-curvy-walls');
@@ -15,7 +15,7 @@ Hooks.once('init', function () {
 		name: 'df-curvy-walls.SettingPreserve_Name',
 		hint: 'df-curvy-walls.SettingPreserve_Hint',
 	});
-	SETTINGS.register<string>(CurvyWallToolManager.PREF_DROP_KEY, {
+	SETTINGS.register(CurvyWallToolManager.PREF_DROP_KEY, {
 		name: 'df-curvy-walls.SettingDropKey_Name',
 		hint: 'df-curvy-walls.SettingDropKey_Hint',
 		config: true,
@@ -77,20 +77,20 @@ Hooks.once("ready", function () {
 	CurvyWallToolManager.instance.patchWallsLayer();
 });
 
-let moduleControls: ControlManager;
+/**@type {ControlManager}*/let moduleControls;
 
-Hooks.on('renderSceneControls', async (controls: SceneControls) => {
+Hooks.on('renderSceneControls', async (/**@type {SceneControls}*/controls) => {
 	// Exit if we do not have a canvas
 	if (game.settings.get('core', 'noCanvas')) return;
 	if (!game.modules.get('lib-wrapper')?.active) return;
 	if (!game.user.isGM) return;
 	if (controls.activeControl !== 'walls') {
 		await curvyWallApp.close();
-		if ((moduleControls as any)._state === 2)
+		if (moduleControls._state === 2)
 			moduleControls.refresh();
 		return;
 	}
-	else if ((moduleControls as any)._state === 2)
+	else if (moduleControls._state === 2)
 		moduleControls.activateGroupByName(SETTINGS.MOD_NAME);
 	curvyWallApp.render(true);
 	if (CurvyWallToolManager.instance.mode != Mode.None)
@@ -98,4 +98,4 @@ Hooks.on('renderSceneControls', async (controls: SceneControls) => {
 });
 // Refresh the curvy wall controls when the button bar re-renders
 Hooks.on('renderControlManager', () => curvyWallApp.render());
-Hooks.on('getModuleToolGroupsPre', (app: ControlManager) => { moduleControls = app; });
+Hooks.on('getModuleToolGroupsPre', (/**@type {ControlManager}*/app) => { moduleControls = app; });

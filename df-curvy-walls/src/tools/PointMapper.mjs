@@ -1,25 +1,31 @@
-import { CurvyWallControl } from "../CurvyWallsToolBar";
-import { CurvyWallToolManager, Mode } from "../CurvyWallToolManager";
-import { Bezier } from "../../libs/bezier";
-import { BezierTool } from "./BezierTool";
-import { InputHandler, PointInputHandler } from "./ToolInputHandler";
+/// <reference path="../types.d.ts" />
+/// <reference path="./ToolInputHandler.mjs" />
+import { CurvyWallToolManager, Mode } from "../CurvyWallToolManager.mjs";
+import { Bezier } from "../../libs/bezier.js";
+import { BezierTool } from "./BezierTool.mjs";
+import { PointInputHandler } from "./ToolInputHandler.mjs";
 
 const pointNearPoint = BezierTool.pointNearPoint;
 
 export default class PointMapper extends BezierTool {
-	get handles(): PIXI.Point[] {
+	/**@type {PIXI.Point[]}*/
+	get handles() {
 		throw new Error("Method not implemented.");
 	}
-	get bounds(): PIXI.Bounds {
+	/**@type {PIXI.Bounds}*/
+	get bounds() {
 		const b = new PIXI.Bounds();
 		this.points.forEach(x => b.addPoint(x));
 		return b;
 	}
 	lineA = new PIXI.Point();
 	lineB = new PIXI.Point();
-	points: PIXI.Point[] = [];
+	/**@type {PIXI.Point[]}*/ points = [];
 
-	drawHandles(context: PIXI.Graphics): void {
+	/**
+	 * @param {PIXI.Graphics} context
+	 */
+	drawHandles(context) {
 		this.drawBoundingBox(context);
 		switch (CurvyWallToolManager.instance.mode) {
 			// case Mode.Cube:
@@ -35,7 +41,7 @@ export default class PointMapper extends BezierTool {
 			case Mode.Quad:
 				if (this.points.length < 3) break;
 				const lines = Bezier.quadraticFromPoints(this.points[0], this.points[1], this.points[2])
-					.getLUT().map((p: { x: number, y: number }) => new PIXI.Point(p.x, p.y));
+					.getLUT().map((/**@type {PIXI.Point}*/p) => new PIXI.Point(p.x, p.y));
 				context.beginFill(0, 0).lineStyle(6, 0xffaacc, 1, 0.5);
 				context.moveTo(lines[0].x, lines[0].y);
 				for (let c = 1; c < lines.length; c++)
@@ -44,7 +50,7 @@ export default class PointMapper extends BezierTool {
 				break;
 			case Mode.Circ:
 				if (this.points.length < 2) break;
-				const dimensions = this._calculateCircle();
+				const dimensions = this.#_calculateCircle();
 				context.beginFill(0, 0)
 					.lineStyle(6, 0xffaacc, 1, 0.5)
 					.drawEllipse(dimensions.x, dimensions.y, dimensions.w, dimensions.h)
@@ -62,7 +68,12 @@ export default class PointMapper extends BezierTool {
 		const fill = [0x44ffaa, 0xff4444, 0x4444ff, 0xdd44dd, 0xdddd44];
 		this.points.forEach((x, idx) => this.drawHandle(context, fill[idx], x));
 	}
-	checkPointForClick(point: PIXI.Point, event: PIXI.InteractionEvent): boolean {
+	/**
+	 * @param {PIXI.Point} point
+	 * @param {PIXI.InteractionEvent} event
+	 * @returns {boolean}
+	 */
+	checkPointForClick(point, event) {
 		const utility = new PointInputHandler(this, point);
 		const snap = utility.shouldSnap(event);
 
@@ -93,13 +104,18 @@ export default class PointMapper extends BezierTool {
 		}
 		return false;
 	}
-	checkPointForDrag(point: PIXI.Point): InputHandler | null {
+	/**
+	 * @param {PIXI.Point} point
+	 * @returns {InputHandler|null}
+	 */
+	checkPointForDrag(point) {
 		const target = this.points.find(x => pointNearPoint(point, x, BezierTool.HANDLE_RADIUS));
 		if (!target) return null;
 		return new PointInputHandler(this, target);
 	}
 
-	getTooltipMessage(): string {
+	/** @returns {string} */
+	getTooltipMessage() {
 		switch (CurvyWallToolManager.instance.mode) {
 			// case Mode.Cube:
 			// 	return "You need to place 3 points to generate a Bezier Cubic Curve.";
@@ -109,7 +125,8 @@ export default class PointMapper extends BezierTool {
 		}
 		return "";
 	}
-	hasEnoughData(): boolean {
+	/** @returns {boolean}*/
+	hasEnoughData() {
 		switch (CurvyWallToolManager.instance.mode) {
 			// case Mode.Cube:
 			case Mode.Quad:
@@ -121,7 +138,8 @@ export default class PointMapper extends BezierTool {
 		return false;
 	}
 
-	bindData(tool: BezierTool) {
+	/** @param {BezierTool} tool */
+	bindData(tool) {
 		switch (CurvyWallToolManager.instance.mode) {
 			// case Mode.Cube:
 			// 	curve = Bezier.cubicFromPoints(this.points[0], this.points[1], this.points[2]);
@@ -133,10 +151,10 @@ export default class PointMapper extends BezierTool {
 			case Mode.Quad:
 				tool.lineA.copyFrom(this.points[0]);
 				tool.lineB.copyFrom(this.points[2]);
-				(<PIXI.Point>(<any>tool).control).copyFrom(this.points[1]);
+				tool.control.copyFrom(this.points[1]);
 				break;
 			case Mode.Circ:
-				const dimens = this._calculateCircle();
+				const dimens = this.#_calculateCircle();
 				tool.lineA.set(dimens.x - dimens.w, dimens.y - dimens.h);
 				tool.lineB.set(dimens.x + dimens.w, dimens.y + dimens.h);
 				break;
@@ -148,8 +166,11 @@ export default class PointMapper extends BezierTool {
 		}
 	}
 
-	private _calculateCircle(): { x: number, y: number, w: number, h: number } {
-		const result: { x: number, y: number, w: number, h: number } = { x: 0, y: 0, w: 0, h: 0 };
+	/**
+	 * @returns { { x: number, y: number, w: number, h: number } }
+	 */
+	#_calculateCircle() {
+		const result = { x: 0, y: 0, w: 0, h: 0 };
 		if (this.points.length == 2) {
 			result.x = this.points[0].x;
 			result.y = this.points[0].y;
@@ -175,17 +196,27 @@ export default class PointMapper extends BezierTool {
 		return result;
 	}
 
-	getSegments(_count: number): PIXI.Point[] | PIXI.Point[][] { throw new Error("Method not implemented."); }
-	placeTool(_point: PIXI.Point, _data: object): void { throw new Error("Method not implemented."); }
-	getData(): object { throw new Error("Method not implemented."); }
-	getTools(): Record<string, CurvyWallControl> { throw new Error("Method not implemented."); }
+	/** @abstract @param {number} _count @returns {PIXI.Point[] | PIXI.Point[][]} */
+	getSegments(_count) { throw new Error("Method not implemented."); }
+	/** @abstract @param {PIXI.Point} _point @param {object} _data */
+	placeTool(_point, _data) { throw new Error("Method not implemented."); }
+	/** @abstract @returns {object} */
+	getData() { throw new Error("Method not implemented."); }
+	/** @abstract @returns {Record<string, CurvyWallControl>} */
+	getTools() { throw new Error("Method not implemented."); }
 }
 
-function isPerpendicular(p1: Point, p2: Point, p3: Point): boolean {
-	const yDelta_a: number = p2.y - p1.y;
-	const xDelta_a: number = p2.x - p1.x;
-	const yDelta_b: number = p3.y - p2.y;
-	const xDelta_b: number = p3.x - p2.x;
+/**
+ * @param {PIXI.Point} p1
+ * @param {PIXI.Point} p2
+ * @param {PIXI.Point} p3
+ * @returns {boolean}
+ */
+function isPerpendicular(p1, p2, p3) {
+	const yDelta_a = p2.y - p1.y;
+	const xDelta_a = p2.x - p1.x;
+	const yDelta_b = p3.y - p2.y;
+	const xDelta_b = p3.x - p2.x;
 	// checking whether the line of the two pts are vertical
 	if (Math.abs(xDelta_a) <= 0.000000001 && Math.abs(yDelta_b) <= 0.000000001) {
 		return false;
@@ -196,7 +227,13 @@ function isPerpendicular(p1: Point, p2: Point, p3: Point): boolean {
 	else if (Math.abs(xDelta_b) <= 0.000000001) return true;
 	else return false;
 }
-function calcCircle(pt1: Point, pt2: Point, pt3: Point): { center: Point, radius: number } {
+/**
+ * @param {PIXI.Point} pt1
+ * @param {PIXI.Point} pt2
+ * @param {PIXI.Point} pt3
+ * @returns { { center: Point, radius: number } }
+ */
+function calcCircle(pt1, pt2, pt3) {
 	const yDelta_a = pt2.y - pt1.y;
 	const xDelta_a = pt2.x - pt1.x;
 	const yDelta_b = pt3.y - pt2.y;
@@ -226,7 +263,13 @@ function calcCircle(pt1: Point, pt2: Point, pt3: Point): { center: Point, radius
 	return { center, radius };
 }
 
-function generateCircle(pt1: Point, pt2: Point, pt3: Point): { center: Point, radius: number } {
+/**
+ * @param {PIXI.Point} pt1
+ * @param {PIXI.Point} pt2
+ * @param {PIXI.Point} pt3
+ * @returns { { center: Point, radius: number } }
+ */
+function generateCircle(pt1, pt2, pt3) {
 	if (!isPerpendicular(pt1, pt2, pt3)) return calcCircle(pt1, pt2, pt3);
 	else if (!isPerpendicular(pt1, pt3, pt2)) return calcCircle(pt1, pt3, pt2);
 	else if (!isPerpendicular(pt2, pt1, pt3)) return calcCircle(pt2, pt1, pt3);

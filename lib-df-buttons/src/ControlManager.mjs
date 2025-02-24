@@ -305,8 +305,7 @@ export default class ControlManager extends Application {
 		if (ui.sidebar._collapsed) {
 			this.element.css('right', '35px');
 		}
-		if (!this.element || !this.element[0])
-			return
+		if (!this.element || !this.element[0]) return;
 		this.element[0].removeAttribute('class');
 		this.element[0].classList.add('app');
 		switch (SETTINGS.get('position')) {
