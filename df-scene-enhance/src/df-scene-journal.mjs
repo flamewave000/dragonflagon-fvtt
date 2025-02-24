@@ -1,23 +1,30 @@
-import SETTINGS from "../../common/Settings";
+/// <reference path="../../fvtt-scripts/foundry.js" />
+import SETTINGS from "../common/Settings.mjs";
 
-interface Button {
-	icon: string,
-	label: string,
-	callback: AnyFunction
-}
-
+/**
+ * @typedef {object} Button
+ * @property {string} icon
+ * @property {string} label
+ * @property {Function} callback
+ */
+/** */
 export default class DFSceneJournal {
 	static ON_CLICK_JOURNAL = 'nav-on-click-journal';
 	static ON_CLICK_JOURNAL_ONLY_ONE = 'nav-on-click-journal-only-one';
 
-	static async displayDialog(scene: Scene) {
+	/**
+	 * @param {Scene} scene
+	 * @returns {Promise<any>}
+	 */
+	static async displayDialog(scene) {
 		const permScene = scene.testUserPermission(game.user, "LIMITED");
 		const hasConfig = game.user.isGM;
 		const hasJournal = !!scene.journal && scene.journal.testUserPermission(game.user, "OBSERVER");
 		if (!permScene && !hasConfig && !hasJournal)
 			return ui.notifications.warn(`You do not have permission to view this ${scene.documentName}.`);
 
-		const buttons: Record<string, Button> = {};
+		/**@type {Record<string, Button>}*/
+		const buttons = {};
 		let defaultButton = '';
 		if (hasConfig) {
 			defaultButton = 'config';
@@ -52,7 +59,7 @@ export default class DFSceneJournal {
 		return (new Dialog({
 			title: game.i18n.localize("DF-SCENE-ENHANCE.Dialog.JournalTitle") + scene.name,
 			content: "<p>" + game.i18n.localize("DF-SCENE-ENHANCE.Dialog.JournalMessage") + "</p>",
-			buttons: buttons as any,
+			buttons: buttons,
 			default: defaultButton,
 		})).render(true);
 	}
@@ -60,8 +67,9 @@ export default class DFSceneJournal {
 	/**
 	 * This is copied directly from the `TextEditor._onClickContentLink` static method. It is only
 	 * modified to display a dialog for scene links.
+	 * @param {JQuery.ClickEvent} event
 	 */
-	static async _onClickContentLink(event: JQuery.ClickEvent) {
+	static async _onClickContentLink(event) {
 		event.preventDefault();
 		const doc = await fromUuid(event.currentTarget.dataset.uuid);
 		if (doc instanceof Scene)
@@ -70,19 +78,20 @@ export default class DFSceneJournal {
 		return doc?._onClickDocumentLink(event);
 	}
 
-	static patchTextEditor(newValue?: boolean) {
+	/** @param {boolean} [newValue] */
+	static patchTextEditor(newValue) {
 		let journalClick = SETTINGS.get(DFSceneJournal.ON_CLICK_JOURNAL);
 		if (newValue !== undefined) {
 			journalClick = newValue;
 		}
 		const body = $("body");
 		if (journalClick) {
-			body.off("click", "a.content-link", (TextEditor as any)._onClickContentLink);
-			body.on("click", "a.content-link", DFSceneJournal._onClickContentLink);
+			body.off("click", "a[data-link]", TextEditor._onClickContentLink);
+			body.on("click", "a[data-link]", DFSceneJournal._onClickContentLink);
 		}
 		else {
-			body.off("click", "a.content-link", DFSceneJournal._onClickContentLink);
-			body.on("click", "a.content-link", (TextEditor as any)._onClickContentLink);
+			body.on("click", "a[data-link]", TextEditor._onClickContentLink);
+			body.off("click", "a[data-link]", DFSceneJournal._onClickContentLink);
 		}
 	}
 
@@ -94,7 +103,7 @@ export default class DFSceneJournal {
 			config: true,
 			type: Boolean,
 			default: true,
-			onChange: (value: boolean) => DFSceneJournal.patchTextEditor(value)
+			onChange: (/**@type {boolean}*/value) => DFSceneJournal.patchTextEditor(value)
 		});
 		SETTINGS.register(DFSceneJournal.ON_CLICK_JOURNAL_ONLY_ONE, {
 			name: "DF-SCENE-ENHANCE.Nav.SettingOnClickJournalOnlyOne",

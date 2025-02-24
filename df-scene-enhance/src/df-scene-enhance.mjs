@@ -1,7 +1,7 @@
-import DFSceneJournal from './df-scene-journal';
-import DFSceneNav from './df-scene-nav';
-import DFSceneThumb from './df-scene-thumb';
-import SETTINGS from "../../common/Settings";
+import DFSceneJournal from './df-scene-journal.mjs';
+import DFSceneNav from './df-scene-nav.mjs';
+import DFSceneThumb from './df-scene-thumb.mjs';
+import SETTINGS from "../common/Settings.mjs";
 SETTINGS.init('df-scene-enhance');
 
 Hooks.once('init', function() {

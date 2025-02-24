@@ -1,9 +1,10 @@
 <div class="form-group" id="df-thumb-group">
 	<label>{{localize 'DF-SCENE-ENHANCE.Thumbnail.Label'}}</label>
 	<div class="form-fields">
-		<button id="df-thumb-btn" type="button" class="file-picker" data-type="image" data-target="df-thumb-img" title="{{localize 'DF-SCENE-ENHANCE.Thumbnail.Button'}}" tabindex="-1">
-			<i class="fas fa-file-import fa-fw"></i>
-		</button>
-		<input id="df-thumb-img" class="image" type="text" name="df-thumb-img" placeholder="{{localize 'DF-SCENE-ENHANCE.Thumbnail.Hint'}}" value="{{thumbPath}}">
+		<file-picker name="thumbnail" type="imagevideo">
+			<input class="image" type="text" placeholder="{{localize 'DF-SCENE-ENHANCE.Thumbnail.Hint'}}">
+			<button class="file-picker fa-solid fa-file-import fa-fw" type="button" data-tooltip="{{localize 'DF-SCENE-ENHANCE.Thumbnail.Button'}}" aria-label="{{localize 'DF-SCENE-ENHANCE.Thumbnail.Button'}}" tabindex="-1"></button>
+		</file-picker>
 	</div>
+	<p class="notes">An optional custom thumbnail override image.</p>
 </div>

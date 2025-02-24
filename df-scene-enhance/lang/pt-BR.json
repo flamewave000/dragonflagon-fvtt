@@ -1,30 +1,39 @@
 {
-	"DF-SCENE-ENHANCE.errorLibWrapperMissing": "'DF Scene Enhancements' requires the 'libWrapper' module. Please install and activate 'libWrapper'.",
-	"DF-SCENE-ENHANCE.Thumbnail.Label": "Substituir imagem da miniatura",
-	"DF-SCENE-ENHANCE.Thumbnail.Hint": "Caminho da Miniatura",
-	"DF-SCENE-ENHANCE.Thumbnail.Button": "Buscar Arquivo",
-	
-	"DF-SCENE-ENHANCE.Nav.NavigateMenuItem": "Navegar",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClick": "Navegar quando a cena for clicada",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickHint": "Quando uma Cena for clicada na barra lateral, ela será aberta para navegação (sempre verdadeiro para jogadores). ATUALIZAÇÕES NA PRÓXIMA ALTERAÇÃO DE CENA",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickPC": "Ativar Diretório de Cenas para jogadores",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickPCHint": "(requer atualização) Permite que os jogadores acessem a aba Cenas para navegar entre elas.",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickJournal": "Navegar quando uma referência de Cena é clicada em um Diário",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickJournalHint": "Se um registro de Diário contiver um link de Cena, clicar nele permitirá que você navegue até ela.",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickJournalOnlyOne": "Execute o link da Cena imediatamente se apenas uma opção estiver disponível",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickJournalOnlyOneHint": "Se apenas uma opção estiver disponível, não exiba a caixa de diálogo e apenas execute a ação imediatamente.",
-	
-	"DF-SCENE-ENHANCE.Dialog.JournalTitle": "Navegação de Cena: ",
-	"DF-SCENE-ENHANCE.Dialog.JournalMessage": "Como você gostaria de abrir esta Cena?",
-	"DF-SCENE-ENHANCE.Dialog.JournalNavigate": "Navegar",
-	"DF-SCENE-ENHANCE.Dialog.JournalJournal": "Diário",
-	"DF-SCENE-ENHANCE.Dialog.JournalConfig": "Config",
-	
-	"DF-SCENE-ENHANCE.Ratio.Denominator": "Denominador",
-	"DF-SCENE-ENHANCE.Ratio.Numerator": "Numerador",
-	"DF-SCENE-ENHANCE.Ratio.LockRatio": "Travar razão",
-	"DF-SCENE-ENHANCE.Ratio.SizeRatio": "Razão",
-	"DF-SCENE-ENHANCE.Ratio.ApplyRatio": "Aplicar razão customizada para largura/altura",
-	"DF-SCENE-ENHANCE.Ratio.Scale": "Escala",
-	"DF-SCENE-ENHANCE.Ratio.ApplyScale": "Multiplicar largura/altura pela escala"
+	"DF-SCENE-ENHANCE": {
+		"errorLibWrapperMissing": "'DF Scene Enhancements' requires the 'libWrapper' module. Please install and activate 'libWrapper'.",
+		"Thumbnail":{
+			"Label": "Substituir imagem da miniatura",
+			"Hint": "Caminho da Miniatura",
+			"Button": "Buscar Arquivo"
+		},
+		"Nav": {
+			"NavigateMenuItem": "Navegar",
+			"SettingOnClick": "Navegar quando a cena for clicada",
+			"SettingOnClickHint": "Quando uma Cena for clicada na barra lateral, ela será aberta para navegação (sempre verdadeiro para jogadores). ATUALIZAÇÕES NA PRÓXIMA ALTERAÇÃO DE CENA",
+			"SettingOnClickPC": "Ativar Diretório de Cenas para jogadores",
+			"SettingOnClickPCHint": "(requer atualização) Permite que os jogadores acessem a aba Cenas para navegar entre elas.",
+			"SettingOnClickJournal": "Navegar quando uma referência de Cena é clicada em um Diário",
+			"SettingOnClickJournalHint": "Se um registro de Diário contiver um link de Cena, clicar nele permitirá que você navegue até ela.",
+			"SettingOnClickJournalOnlyOne": "Execute o link da Cena imediatamente se apenas uma opção estiver disponível",
+			"SettingOnClickJournalOnlyOneHint": "Se apenas uma opção estiver disponível, não exiba a caixa de diálogo e apenas execute a ação imediatamente.",
+			"SettingShowTitle": "Mostrar nome da cena na dica de navegação ao passar o mouse",
+			"SettingShowTitleHint": "Exibe uma dica quando você passa o mouse sobre um botão na Barra de Navegação que exibe o nome da cena. Se \"Exibir Nomes Completos\" estiver ativado e um Nome de Navegação estiver definido, exibirá isso em vez disso."
+		},
+		"Dialog": {
+			"JournalTitle": "Navegação de Cena: ",
+			"JournalMessage": "Como você gostaria de abrir esta Cena?",
+			"JournalNavigate": "Navegar",
+			"JournalJournal": "Diário",
+			"JournalConfig": "Config"
+		},
+		"Ratio": {
+			"Denominator": "Denominador",
+			"Numerator": "Numerador",
+			"LockRatio": "Travar razão",
+			"SizeRatio": "Razão",
+			"ApplyRatio": "Aplicar razão customizada para largura/altura",
+			"Scale": "Escala",
+			"ApplyScale": "Multiplicar largura/altura pela escala"
+		}
+	}
 }

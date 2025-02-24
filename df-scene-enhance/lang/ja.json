@@ -1,31 +1,40 @@
 {
-	"Localization Provided By": "touge",
-	"DF-SCENE-ENHANCE.errorLibWrapperMissing": "「DF Scene Enhancements」には「libWrapper」モジュールが必要です。libWrapperをインストールして有効化してください。",
-	"DF-SCENE-ENHANCE.Thumbnail.Label": "プレビュー画像の上書き",
-	"DF-SCENE-ENHANCE.Thumbnail.Hint": "サムネイルのパス",
-	"DF-SCENE-ENHANCE.Thumbnail.Button": "ファイルを参照",
-
-	"DF-SCENE-ENHANCE.Nav.NavigateMenuItem": "シーン移動",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClick": "シーンをクリックしたときの挙動",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickHint": "サイドバーでシーンがクリックされたとき、そのシーンに移動します（プレイヤーの場合は常に有効）。次のシーン変更時に更新されます。",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickPC": "プレイヤーのシーンタブを有効にする",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickPCHint": "（要再読込）プレイヤーがシーンタブを使って移動を行えるようになります。",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickJournal": "資料のシーン参照クリック時の挙動",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickJournalHint": "資料内のシーンリンクをクリックしたとき、そのシーンに移動できるようになります。",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickJournalOnlyOne": "選択肢が一つの場合、すぐにシーンリンクを実行する",
-	"DF-SCENE-ENHANCE.Nav.SettingOnClickJournalOnlyOneHint": "選択肢が一つしかない場合はダイアログを表示せず、すぐにアクションを実行します。",
-
-	"DF-SCENE-ENHANCE.Dialog.JournalTitle": "シーン遷移：",
-	"DF-SCENE-ENHANCE.Dialog.JournalMessage": "このシーンをどのように開きますか？",
-	"DF-SCENE-ENHANCE.Dialog.JournalNavigate": "移動",
-	"DF-SCENE-ENHANCE.Dialog.JournalJournal": "資料",
-	"DF-SCENE-ENHANCE.Dialog.JournalConfig": "設定",
-
-	"DF-SCENE-ENHANCE.Ratio.Denominator": "分母",
-	"DF-SCENE-ENHANCE.Ratio.Numerator": "分子",
-	"DF-SCENE-ENHANCE.Ratio.LockRatio": "アスペクト比を固定",
-	"DF-SCENE-ENHANCE.Ratio.SizeRatio": "アスペクト比",
-	"DF-SCENE-ENHANCE.Ratio.ApplyRatio": "幅/高さにカスタム比率を適用",
-	"DF-SCENE-ENHANCE.Ratio.Scale": "倍率",
-	"DF-SCENE-ENHANCE.Ratio.ApplyScale": "幅/高さに倍率を適用"
+	"DF-SCENE-ENHANCE": {
+		"Localization Provided By": "touge",
+		"errorLibWrapperMissing": "「DF Scene Enhancements」には「libWrapper」モジュールが必要です。libWrapperをインストールして有効化してください。",
+		"Thumbnail": {
+			"Label": "プレビュー画像の上書き",
+			"Hint": "サムネイルのパス",
+			"Button": "ファイルを参照"
+		},
+		"Nav": {
+			"NavigateMenuItem": "シーン移動",
+			"SettingOnClick": "シーンをクリックしたときの挙動",
+			"SettingOnClickHint": "サイドバーでシーンがクリックされたとき、そのシーンに移動します（プレイヤーの場合は常に有効）。次のシーン変更時に更新されます。",
+			"SettingOnClickPC": "プレイヤーのシーンタブを有効にする",
+			"SettingOnClickPCHint": "（要再読込）プレイヤーがシーンタブを使って移動を行えるようになります。",
+			"SettingOnClickJournal": "資料のシーン参照クリック時の挙動",
+			"SettingOnClickJournalHint": "資料内のシーンリンクをクリックしたとき、そのシーンに移動できるようになります。",
+			"SettingOnClickJournalOnlyOne": "選択肢が一つの場合、すぐにシーンリンクを実行する",
+			"SettingOnClickJournalOnlyOneHint": "選択肢が一つしかない場合はダイアログを表示せず、すぐにアクションを実行します。",
+			"SettingShowTitle": "ホバー時のナビヒントにシーン名を表示",
+			"SettingShowTitleHint": "シーンの名前を表示するナビゲーション バーのボタンにマウスを移動すると、ヒントが表示されます。\"フル ネームを表示\" がオンで、ナビゲーション名が設定されている場合は、代わりにそれが表示されます。"
+		},
+		"Dialog": {
+			"JournalTitle": "シーン遷移：",
+			"JournalMessage": "このシーンをどのように開きますか？",
+			"JournalNavigate": "移動",
+			"JournalJournal": "資料",
+			"JournalConfig": "設定"
+		},
+		"Ratio": {
+			"Denominator": "分母",
+			"Numerator": "分子",
+			"LockRatio": "アスペクト比を固定",
+			"SizeRatio": "アスペクト比",
+			"ApplyRatio": "幅/高さにカスタム比率を適用",
+			"Scale": "倍率",
+			"ApplyScale": "幅/高さに倍率を適用"
+		}
+	}
 }

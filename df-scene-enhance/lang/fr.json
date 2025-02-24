@@ -18,6 +18,8 @@
 			"SettingOnClickJournalOnlyOneHint": "Si une seule option est disponible, n'affichez pas la boîte de dialogue et exécutez simplement l'action immédiatement.",
 			"SettingRealName": "Afficher les noms complets dans la barre de navigation pour GM",
 			"SettingRealNameHint": "Remplace la barre de navigation de la scène pour afficher le nom complet de la scène pour les utilisateurs GM.",
+			"SettingShowTitle": "Afficher le nom de la scène dans l'indice de navigation lors du survol",
+			"SettingShowTitleHint": "Affiche un indice lorsque vous passez la souris sur un bouton dans la barre de navigation qui affiche le nom de la scène. Si «Afficher les noms complets» est activé et qu'un nom de navigation est défini, ce dernier s'affiche à la place.",
 			"Tooltip_PC": "Nom de nav: "
 		},
 		"Dialog": {

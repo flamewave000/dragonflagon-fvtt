@@ -1,5 +1,11 @@
 # DF Scene Enhancement Changes
 
+## Release 2.0.3 (2025-02-24)
+- **UPDATE:** Migrated to v12.
+- **UPDATE:** Downgraded TS -> JS (such sad).
+- **UPDATE:** Improved Scene Nav button hover-hints.
+- **FIX #436:** Fix issue with players seeing real scene names.
+
 ## Release 3.6.0 (2022-10-15)
 - **UPDATED:** Migrated to FoundryVTT v10.
 - **UPDATED #363:** Spanish Localization: Courtesy of [José E. Lozano (Viriato139ac#0342)](https://github.com/lozalojo).

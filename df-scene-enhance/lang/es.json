@@ -3,7 +3,7 @@
 		"I18N.LANGUAGE": {
 			"LANGUAGE": "Español",
 			"MAINTAINERS": "@Viriato139ac#0342"
-		},		
+		},
 		"errorLibWrapperMissing": "'DF Scene Enhancements' requiere el módulo 'libWrapper'. Por favor, instale y active 'libWrapper'",
 		"Thumbnail": {
 			"Label": "Sobrescribir vista previa",
@@ -22,6 +22,8 @@
 			"SettingOnClickJournalOnlyOneHint": "Si solo hay una opción disponible, no mostrar el diálogo y ejecutarla directamente",
 			"SettingRealName": "Mostrar para el GM los nombres completos en la barra de navegación",
 			"SettingRealNameHint": "Sobrescribe la barra de navegación de la escena para mostrar el nombre completo de la escena para usuarios GM",
+			"SettingShowTitle": "Mostrar el nombre de la escena en la sugerencia de navegación al pasar el mouse",
+			"SettingShowTitleHint": "Muestra una pista cuando pasas el cursor sobre un botón en la barra de navegación que muestra el nombre de la escena. Si la opción \"Mostrar Nombres Completos\" está activada y se configura un nombre de navegación, se mostrará ese nombre en su lugar.",
 			"Tooltip_PC": "Nombre de navegación: ",
 			"ContextOptions": {
 				"SetView": "Mostrar posición de la vista",

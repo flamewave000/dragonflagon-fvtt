@@ -18,6 +18,8 @@
 			"SettingOnClickJournalOnlyOneHint": "If only one option is available, don't display the dialog and just execute the action immediately.",
 			"SettingRealName": "Display Full Names in Nav Bar for GM",
 			"SettingRealNameHint": "Overrides the scene navigation bar to display the Scene's Full name for GM users.",
+			"SettingShowTitle": "Show scene name in nav hint on hover",
+			"SettingShowTitleHint": "Display a hint when you hover over a button in the Nav Bar that displays the name of the scene. If \"Display Full Names\" is on and a Navigation Name is set, will display that instead.",
 			"Tooltip_PC": "Nav Name: ",
 			"ContextOptions": {
 				"SetView": "Set View Position",
