@@ -9,7 +9,8 @@
 			"webRoot": "${workspaceFolder}",
 			"cwd": "${workspaceFolder}",
 			"pathMapping": {
-				"modules": "${workspaceFolder}"
+				"modules": "${workspaceFolder}",
+				"scripts": "${workspaceFolder}/fvtt-scripts"
 			}
 		}
 	]
