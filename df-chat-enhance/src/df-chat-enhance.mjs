@@ -13,7 +13,7 @@ import WhisperTruncation from "./whisper-trunc/whisper-trunc.mjs";
 // import PlayerColor from './player-color/PlayerColor.mjs';
 import SendButton from "./send/send-button.mjs";
 import FontSizePatch from "./font-size/font-size.mjs";
-// import ChatTime from "./chat-time/chat-time.mjs";
+import ChatTime from "./chat-time/chat-time.mjs";
 SETTINGS.init('df-chat-enhance');
 
 Application.prototype._recalculateDimensions = function () {
@@ -41,7 +41,7 @@ Hooks.once('init', function () {
 	// PlayerColor.init();
 	SendButton.init();
 	FontSizePatch.init();
-	// ChatTime.init();
+	ChatTime.init();
 
 	libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype._getEntryContextOptions',
 		/**
@@ -67,5 +67,5 @@ Hooks.once('ready', function () {
 	// DFChatEdit.ready();
 	// ChatMerge.ready();
 	// ScrollManage.ready();
-	// ChatTime.ready();
+	ChatTime.ready();
 });
