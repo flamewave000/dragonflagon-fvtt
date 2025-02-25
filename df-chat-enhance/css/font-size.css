@@ -3,7 +3,7 @@
 }
 
 .chat-message {
-	font-size: var(--dfce-chat-font-size, 14px);
+	font-size: var(--dfce-chat-font-size, 14px) !important;
 }
 
 #chat-form #chat-message {

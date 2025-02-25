@@ -1,26 +1,29 @@
-import SETTINGS from "../../../common/Settings";
-import UTIL from "../Util";
+/// <reference path="../../../fvtt-scripts/foundry.js" />
+import SETTINGS from "../../common/Settings.mjs";
+import UTIL from "../Util.mjs";
 
-
-const ICONS_FOR_KNOWN_ROLL_TYPES: {
-	[key: string]: string;
-	publicroll: string;
-	gmroll: string;
-	blindroll: string;
-	selfroll: string;
-} = {
+/**@type { {[key: string]:string;publicroll:string;gmroll:string;blindroll:string;selfroll:string;} }*/
+const ICONS_FOR_KNOWN_ROLL_TYPES = {
 	publicroll: 'fas fa-dice-d20',
 	gmroll: 'fas fa-user-secret',
 	blindroll: 'fas fa-user-ninja',
 	selfroll: 'fas fa-ghost'
 };
 
-interface ChatLogData {
-	user: User,
-	rollMode: string,
-	rollModes: any,
-	isStream: boolean
-}
+/**
+ * @typedef {object} RollMode
+ * @property {'CHAT.RollDefault'} group
+ * @property {'publicroll'|'gmroll'|'blindroll'|'selfroll'} value
+ * @property {'CHAT.RollPublic'|'CHAT.RollPrivate'|'CHAT.RollBlind'|'CHAT.RollSelf'} label
+ */
+
+/**
+ * @typedef {object} ChatLogData
+ * @property {User} user
+ * @property {string} rollMode
+ * @property {RollMode[]} rollModes
+ * @property {boolean} isStream
+ */
 
 export default class ChatRollPrivacy {
 	static setup() {
@@ -81,20 +84,30 @@ export default class ChatRollPrivacy {
 		if (SETTINGS.get('enabled') === false)
 			return;
 	
-		Hooks.on('renderChatLog', this._handleChatLogRendering);
+		Hooks.on('renderChatLog', this.#_handleChatLogRendering);
 	}
 
 
-	private static calcColour(current: number, count: number): string {
+	/**
+	 * @param {number} current
+	 * @param {number} count
+	 * @returns {string}
+	 */
+	static #calcColour(current, count) {
 		return `rgb(${(current / count) * 255},${(1 - (current / count)) * 255},0)`;
 	}
 
-	private static async _handleChatLogRendering(chat: ChatLog, html: JQuery<HTMLElement>, data: ChatLogData) {
-		const modes = Object.keys(data.rollModes);
-		const buttons: any[] = [];
+	/**
+	 * @param {ChatLog} chat
+	 * @param {JQuery<HTMLElement>} html
+	 * @param {ChatLogData} data
+	 * @returns {Promise<void>}
+	 */
+	static async #_handleChatLogRendering(chat, html, data) {
+		const buttons = [];
 		const iconKeys = Object.keys(ICONS_FOR_KNOWN_ROLL_TYPES);
-		for (let c = 0; c < modes.length; c++) {
-			const rt = modes[c];
+		for (let c = 0; c < data.rollModes.length; c++) {
+			const rt = data.rollModes[c].value;
 			if (!(rt in ICONS_FOR_KNOWN_ROLL_TYPES)) {
 				console.warn(Error(`Unknown roll type '${rt}'`));
 				continue;
@@ -104,13 +117,13 @@ export default class ChatRollPrivacy {
 				name: data.rollModes[rt],
 				active: data.rollMode === rt,
 				icon: ICONS_FOR_KNOWN_ROLL_TYPES[rt],
-				colour: ChatRollPrivacy.calcColour(iconKeys.findIndex(x => x == rt), iconKeys.length)
+				colour: ChatRollPrivacy.#calcColour(iconKeys.findIndex(x => x == rt), iconKeys.length)
 			});
 		}
 		const buttonHtml = $(await renderTemplate('modules/df-chat-enhance/templates/privacy-button.hbs', { buttons }));
 		buttonHtml.find('button').on('click', function () {
 			const rollType = $(this).attr('data-id');
-			game.settings.set("core", "rollMode", <any>rollType);
+			game.settings.set("core", "rollMode", rollType);
 			buttonHtml.find('button.active').removeClass('active');
 			$(this).addClass('active');
 		});
@@ -130,7 +143,7 @@ export default class ChatRollPrivacy {
 			const classes = $(this).attr('class');
 			const title = $(this).attr('title');
 			const style = $(this).attr('style');
-			const click = ($ as any)._data(this, 'events')['click'][0].handler;
+			const click = $._data(this, 'events')['click'][0].handler;
 			const button = $(`<button class="${classes}" title="${title}" style="${style}">${html}</button>`);
 			button.on('click', click);
 			// Add a small margin between the first button and the RollTypes

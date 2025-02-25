@@ -3,26 +3,19 @@
 	"title": "DF Chat Enhancements",
 	"description": "Various enhancements to the chat features.",
 	"version": "4.1.0",
-	"author": "flamewave000#0001",
-	"compatibility": {
-		"minimum": 10,
-		"verified": 10.288
-	},
+	"authors": [ { "name": "flamewave000", "discord": "flamewave000", "url": "https://github.com/flamewave000" } ],
+	"compatibility": { "minimum": 12, "verified": 12.331 },
 	"relationships": {
 		"requires": [
 			{
 				"id": "lib-wrapper",
 				"type": "module",
-				"compatibility": {
-					"verified": "1.12.10.0"
-				}
+				"compatibility": { "verified": "1.13.2.0", "minimum": "1.12.15.0" }
 			},
 			{
 				"id": "_chatcommands",
 				"type": "module",
-				"compatibility": {
-					"minimum": "1.4.0"
-				}
+				"compatibility": { "verified": "2.0.2", "minimum": "2.0.2" }
 			}
 		]
 	},
@@ -37,15 +30,13 @@
 		{ "lang": "ko", "name": "한국어", "path": "lang/ko.json" },
 		{ "lang": "ja", "name": "日本語", "path": "lang/ja.json" }
 	],
-	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-chat-enhance",
-	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/LICENSE",
+	"url":		"https://dragonflagon.cafe/mods/url/df-chat-enhance",
+	"license":	"https://dragonflagon.cafe/mods/lic/df-chat-enhance",
 	"manifest":	"https://dragonflagon.cafe/mods/man/df-chat-enhance",
 	"download":	"https://dragonflagon.cafe/mods/pak/df-chat-enhance",
-	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-chat-enhance/README.md",
-	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-chat-enhance/CHANGELOG.md",
-	"manifestPlusVersion": "1.0.0",
-	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues/new/choose",
-	"authors": [ { "name": "flamewave000", "discord": "flamewave000#0001", "url": "https://github.com/flamewave000" } ],
+	"readme":	"https://dragonflagon.cafe/mods/doc/df-chat-enhance",
+	"changelog":"https://dragonflagon.cafe/mods/chg/df-chat-enhance",
+	"bugs":		"https://dragonflagon.cafe/mods/bug/df-chat-enhance",
 	"media": [
 		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-chat-enhance/cover.png" },
 		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" },

@@ -197,7 +197,7 @@
 	},
 	"DF_CHAT_FONT_SIZE": {
 		"FontSizeName": "Chat Message Font Size",
-		"FontSizeHint": "The font size of chat messages and the text box. (default: 14)"
+		"FontSizeHint": "The font size of chat messages and the text box. (default: 13)"
 	},
 	"DF_CHAT_TIME": {
 		"EnabledName": "Use Simple Calendar for Chat Timestamps",
