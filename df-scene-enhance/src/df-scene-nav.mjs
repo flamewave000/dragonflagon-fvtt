@@ -58,6 +58,15 @@ export default class DFSceneNav {
 		const blackList = ['SCENES.Activate', 'SCENES.Configure', 'SCENES.ToggleNav', 'SCENES.GenerateThumb'];
 		if (!game.user.isGM)
 			return options.filter(x => !blackList.includes(x.name));
+
+		// Add preload button for scene tab items
+		const activateIdx = options.findIndex(x => x.name == 'SCENES.Activate');
+		options.splice(activateIdx + 1, 0, {
+				name: "SCENES.Preload",
+				icon: '<i class="fas fa-download"></i>',
+				condition: li => game.user.isGM && !game.scenes.get(li[0].dataset.documentId).active,
+				callback: li => game.scenes.preload(li[0].dataset.documentId, true)
+			});
 		return options;
 	}
 

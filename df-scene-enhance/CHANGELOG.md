@@ -5,6 +5,7 @@
 - **UPDATE:** Downgraded TS -> JS (such sad).
 - **UPDATE:** Improved Scene Nav button hover-hints.
 - **FIX #436:** Fix issue with players seeing real scene names.
+- **NEW #394:** Add preload button to scene context menus in Scene Directory.
 
 ## Release 3.6.0 (2022-10-15)
 - **UPDATED:** Migrated to FoundryVTT v10.
