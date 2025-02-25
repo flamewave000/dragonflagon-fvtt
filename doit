@@ -41,12 +41,15 @@ clean {
 
 dev {
 	@ Copy the targetted module's data to the set foundry data directory
-	opt module_name @ Provide the module name you wish to deploy instead of the current target
+	opt module_name @ Provide the module name you wish to deploy instead of\nthe current target
 	$ $doit_dev dev $@
 }
 
 watch {
-	@ Watches the current target module for file changes and executes `dev` if a change occurs
+	@@@
+	Watches the current target module for file changes and executes `dev`
+	if a change occurs
+	@@@
 	$ $doit_dev watch $@
 }
 
@@ -61,7 +64,10 @@ tag {
 }
 
 tgt {
-	@ Get/Set the target module for development/release. If no target name is provided, it will print the current target.
+	@@@
+	Get/Set the target module for development/release. If no target name
+	is provided, it will print the current target.
+	@@@
 	opt name @ name of the target to be set
 	opt -r @ If you omit a name, this will print the current target raw.
 	$ $doit_env tgt $@
@@ -82,8 +88,8 @@ lint {
 getref {
 	@@@
 	Create a sym-link to the foundry.js file found in the set environment.
-	This reference is used for type hinting and for checking on how Foundry does
-	certain things.
+	This reference is used for type hinting and for checking on how Foundry
+	does certain things.
 	@@@
 	$$$
 	rm -f fvtt-scripts

@@ -12,10 +12,6 @@ New wall tools for drawing walls along a Bézier curve, an ellipse, or a rectang
 ![Forge Installs](https://img.shields.io/badge/dynamic/json?color=red&label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Flib-df-buttons) ![Latest Version](https://img.shields.io/badge/dynamic/json?label=Latest%20Release&prefix=v&query=package.versions%5B0%5D&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Flib-df-buttons) [![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Flib-df-buttons%2Fshield%2Fendorsements)](https://www.foundryvtt-hub.com/package/lib-df-buttons/)  
 Library that provides a way for modules to register controls outside of the scene layer controls.
 
-## [DF Chat Enhancements](https://github.com/flamewave000/dragonflagon-fvtt/blob/master/df-chat-enhance/README.md)
-![Forge Installs](https://img.shields.io/badge/dynamic/json?color=red&label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-chat-enhance) ![Latest Version](https://img.shields.io/badge/dynamic/json?label=Latest%20Release&prefix=v&query=package.versions%5B0%5D&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-chat-enhance) [![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Fdf-chat-enhance%2Fshield%2Fendorsements)](https://www.foundryvtt-hub.com/package/df-chat-enhance/)  
-Various enhancements to the chat. Roll types as buttons, Adventure Logs, chat message editing, and chat archiving.
-
 ## [DF Settings Clarity](https://github.com/flamewave000/dragonflagon-fvtt/blob/master/df-settings-clarity/README.md)
 ![Forge Installs](https://img.shields.io/badge/dynamic/json?color=red&label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-settings-clarity) ![Latest Version](https://img.shields.io/badge/dynamic/json?label=Latest%20Release&prefix=v&query=package.versions%5B0%5D&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-settings-clarity) [![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Flib-df-hotkeys%2Fshield%2Fendorsements)](https://www.foundryvtt-hub.com/package/df-settings-clarity/)  
 Displays a tag next to each module setting, indicating if it is a World setting (GM Only) or a client setting (Per User).
@@ -23,6 +19,10 @@ Displays a tag next to each module setting, indicating if it is a World setting 
 ## [DF Active Lights](https://github.com/flamewave000/dragonflagon-fvtt/blob/master/df-active-lights/README.md)
 ![Forge Installs](https://img.shields.io/badge/dynamic/json?color=red&label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-active-lights) ![Latest Version](https://img.shields.io/badge/dynamic/json?label=Latest%20Release&prefix=v&query=package.versions%5B0%5D&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-active-lights) [![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Fdf-active-lights%2Fshield%2Fendorsements)](https://www.foundryvtt-hub.com/package/df-active-lights/)  
 Allows you to animate the various properties of a light, such as emission angle, color, or direction.
+
+## [DF Chat Enhancements](https://github.com/flamewave000/dragonflagon-fvtt/blob/master/df-chat-enhance/README.md)
+![Forge Installs](https://img.shields.io/badge/dynamic/json?color=red&label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-chat-enhance) ![Latest Version](https://img.shields.io/badge/dynamic/json?label=Latest%20Release&prefix=v&query=package.versions%5B0%5D&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-chat-enhance) [![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Fdf-chat-enhance%2Fshield%2Fendorsements)](https://www.foundryvtt-hub.com/package/df-chat-enhance/)  
+Various enhancements to the chat. Roll types as buttons, Adventure Logs, chat message editing, and chat archiving.
 
 ## [DF Scene Enhancement](https://github.com/flamewave000/dragonflagon-fvtt/blob/master/df-scene-enhance/README.md)
 ![Forge Installs](https://img.shields.io/badge/dynamic/json?color=red&label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-scene-enhance) ![Latest Version](https://img.shields.io/badge/dynamic/json?label=Latest%20Release&prefix=v&query=package.versions%5B0%5D&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-scene-enhance) [![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Fdf-scene-enhance%2Fshield%2Fendorsements)](https://www.foundryvtt-hub.com/package/df-scene-enhance/)  
@@ -54,62 +54,78 @@ DragonFlagon Enhancement Suite Patch for Foundry VTT
 
 # For Developers
 
-If you wish to contribute to any modules, please perform the following to build any module in the project.
+If you wish to contribute to any modules, please perform the following to build any module in the project. The build system requires a unix system (WSL, Mac, or any Linux).
 
-## Install NPM Packages
+## Install DOIT
 
-Within the root directory of the project, execute the following command
+I have converted over to using DOIT scripts for my build environment. It works way better than a bunch of NPM scripts or regular bash shell scripts.
+
+You can find the DOIT script project here: [DOIT](https://github.com/flamewave000/doit)
+The Latest Release that can be downloaded: [Latest Release](https://github.com/flamewave000/doit/releases/latest)
+
+## Initialize Environment
+
+First execute the following command inside the project's root directory:
 
 ```bash
-npm install
+doit init
 ```
 
-## Setup Foundry Environment
+### Setup Foundry Environment
 
 If you wish to use all of the commands `launch`, `devbuild` and `devwatch`, you will need to initialize the full Foundry Environment. This also requires you to have the Node version of Foundry installed. This only needs to be done once, or after you move the Server or Data directories.
 
 ```bash
-npm run env /path/to/foundryvtt /path/to/foundrydata
+doit env /path/to/foundryvtt /path/to/foundrydata
 ```
 
  - `/path/to/foundryvtt`: This is the absolute path to your FoundryVTT installation directory
  - `/path/to/foundrydata`: This is the absolute path to your FoundryVTT Data directory
 
-If you don't intend to use the `launch` command, then you can simply pass an empty string for the `foundryvtt` path.
-```bash
-npm run env "" /path/to/foundrydata
-```
-
-## Set Target Module
+### Set Target Module
 
 To perform builds, you must set the current module target. This is done by running the following command with the desired target module's name.
 
 ```bash
-npm run target df-curvy-walls
+doit tgt df-curvy-walls
 ```
 
 ## Commands
 
-Once you have your environment and target module set up, you can use any of the following commands:
+Once you have your environment and target module set up, you can simply type `doit` into the console while in the root directory and it will display all of the available commands and help docs for them.
 
-```bash
-# General in-place build commands
-npm run build    # Builds target module
-npm run watch    # Watches files and builds target module
-npm run clean    # Deletes target module build files
+```
+localhost:~/dragonflagon-fvtt $ doit
+Usage: doit <target> [args...]
 
-# Dev Environment build commands (requires data path to be set in .devenv)
-npm run devbuild # Builds target module and outputs to Foundry module folder
-npm run devwatch # Watches files and builds target module to Foundry module folder
-npm run devclean # Deletes target module build files from the Foundry module folder
-
-# Bundle/Release Commands
-npm run stage    # Builds and bundles the target module without optimization
-npm run prod     # Builds and bundles the target module with optimization
-npm run tag      # Tags the current commit with the target module's name and version (ie. df_qol_1.0.0)
-
-# Helpers
-npm run launch   # Launches the Foundry Server (requires install path to be set in .devenv)
-npm run release  # Executes `npm run lint && npm run tag && npm run prod`
+TARGETS
+   clean [-g]
+          Cleans up the target module directory
+          -g  If specified, will remove the global build files/directories
+     dev [module_name]
+          Copy the targetted module's data to the set foundry data directory
+          module_name  Provide the module name you wish to deploy instead of
+                       the current target
+     env <f-path> <f-data>
+          Set the foundry environment
+          f-path  Path to the Foundry Install directory
+          f-data  Path to the Foundry Data directory
+  getref  Create a sym-link to the foundry.js file found in the set environment.
+          This reference is used for type hinting and for checking on how Foundry
+          does certain things.
+    init [-g]
+          Initializes the currently targetted module
+          -g  This is to initlaize the global environment
+  launch  Launch the foundry server
+    lint  Run ESLint to check validity of files
+    pack  Package the targetted module for release
+     tag  Tag the current commit for release of the currently targetted module
+     tgt [name] [-r]
+          Get/Set the target module for development/release. If no target name
+          is provided, it will print the current target.
+          name  name of the target to be set
+            -r  If you omit a name, this will print the current target raw.
+   watch  Watches the current target module for file changes and executes `dev`
+          if a change occurs
 ```
 
