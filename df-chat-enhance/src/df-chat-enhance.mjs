@@ -2,7 +2,7 @@
 /// <reference path="./types.d.ts" />
 
 // import * as DFChatArchive from "./archive/df-chat-archive.mjs";
-// import DFChatEdit from "./edit/df-chat-edit.mjs";
+import DFChatEdit from "./edit/df-chat-edit.mjs";
 // import * as DFAdventureLog from "./logger/df-adventure-log.mjs";
 // import DFAdventureLogProcessor from "./logger/DFAdventureLogProcessor.mjs";
 import ChatMerge from "./merge/chat-merge.mjs";
@@ -51,7 +51,7 @@ Hooks.once('init', function () {
 		 */
 		function (wrapped, ...args) {
 			const options = wrapped(...args);
-			// DFChatEdit.appendChatContextMenuOptions(options);
+			DFChatEdit.appendChatContextMenuOptions(options);
 			// DFAdventureLogProcessor.appendChatContextMenuOptions(options);
 			return options;
 		}, 'WRAPPER');
@@ -64,7 +64,7 @@ Hooks.once('ready', function () {
 			ui.notifications.error('DF_CHAT_LOG.Error.LibWrapperMissing'.localize());
 	}
 	// DFAdventureLog.ready();
-	// DFChatEdit.ready();
+	DFChatEdit.ready();
 	ChatMerge.ready();
 	ScrollManage.ready();
 	ChatTime.ready();

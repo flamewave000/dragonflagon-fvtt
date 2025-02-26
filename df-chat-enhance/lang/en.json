@@ -165,8 +165,6 @@
 		"EnableHint": "Will display a Scroll To Bottom button, and if you are scrolling up through the log, it will prevent the chat log from scrolling down when a new message is posted. Instead it will highlight the Scroll To Bottom button when a new message is posted.",
 		"ScrollIfYouName": "Scroll To Bottom When You Send Message",
 		"ScrollIfYouHint": "If you have scrolled up through the chat log, this will automatically scroll you back to the bottom when you send a message.",
-		"ScrollButton": "Scroll to Bottom",
-		"NewMessage": "New Message!",
 		"HistorySizeName": "Reduce Shown Chat Messages",
 		"HistorySizeHint": "Reduces the number of shown chat messages. Old messages will load in as you scroll up the chat log. This helps improve Foundry's performance when you have a vary long chat history.",
 		"HistoryFixEnabledName": "Maximum Chat Messages",

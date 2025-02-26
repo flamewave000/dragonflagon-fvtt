@@ -140,9 +140,7 @@
 		"EnableName": "개선된 채팅 스크롤 활용",
 		"EnableHint": "아래로 스크롤 버튼이 표시되며, 로그를 스크롤할 경우 새 메시지가 게시되었을 때 채팅 로그가 스크롤 다운되지 않는다. 대신 새 메시지가 게시되었을 때 아래로 스크롤 버튼이 표시된다.",
 		"ScrollIfYouName": "메시지를 보낼 때 아래로 스크롤한다.",
-		"ScrollIfYouHint": "채팅 로그를 스크롤 했을 때 메시지를 보내면 자동적으로 아래로 스크롤한다.",
-		"ScrollButton": "아래로 스크롤",
-		"NewMessage": "새 메시지 확인"
+		"ScrollIfYouHint": "채팅 로그를 스크롤 했을 때 메시지를 보내면 자동적으로 아래로 스크롤한다."
 	},
 	"DF_CHAT_WHISPER_TRUNC": {
 		"SettingEnabledName": "귓속말 이름 목록 자르기 활성화",

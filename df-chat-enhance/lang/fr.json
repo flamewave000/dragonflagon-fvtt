@@ -163,8 +163,6 @@
 		"EnableHint": "Affichera un bouton de défilement vers le bas, et si vous faites défiler le journal, cela empêchera le journal de chat de faire défiler vers le bas lorsqu'un nouveau message sera publié. Au lieu de cela, il mettra en évidence le bouton de défilement vers le bas lorsqu'un nouveau message sera publié.",
 		"ScrollIfYouName": "Faites défiler vers le bas lorsque vous envoyez un message",
 		"ScrollIfYouHint": "Si vous avez fait défiler le journal de chat, cela vous fait automatiquement défiler vers le bas lorsque vous envoyez un message.",
-		"ScrollButton": "Faites défiler vers le bas",
-		"NewMessage": "Nouveau message!",
 		"HistorySizeName": "Réduire les messages de chat affichés",
 		"HistorySizeHint": "Réduit le nombre de messages de chat affichés. Les anciens messages se chargeront lorsque vous faites défiler le journal de chat. Cela permet d'améliorer les performances de Foundry lorsque vous avez une longue histoire de chat long.",
 		"HistoryFixEnabledName": "Messages de chat maximum",
