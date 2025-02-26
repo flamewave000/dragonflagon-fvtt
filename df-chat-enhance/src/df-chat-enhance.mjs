@@ -7,7 +7,7 @@
 // import DFAdventureLogProcessor from "./logger/DFAdventureLogProcessor.mjs";
 import ChatMerge from "./merge/chat-merge.mjs";
 import ChatRollPrivacy from "./privacy/df-chat-privacy.mjs";
-// import ScrollManage from "./scroll-manage/scroll-manage.mjs";
+import ScrollManage from "./scroll-manage/scroll-manage.mjs";
 import SETTINGS from "../common/Settings.mjs";
 import WhisperTruncation from "./whisper-trunc/whisper-trunc.mjs";
 import PlayerColor from './player-color/PlayerColor.mjs';
@@ -36,7 +36,7 @@ Hooks.once('init', function () {
 	ChatRollPrivacy.init();
 	// DFAdventureLog.init();
 	ChatMerge.init();
-	// ScrollManage.init();
+	ScrollManage.init();
 	WhisperTruncation.init();
 	PlayerColor.init();
 	SendButton.init();
@@ -66,6 +66,6 @@ Hooks.once('ready', function () {
 	// DFAdventureLog.ready();
 	// DFChatEdit.ready();
 	ChatMerge.ready();
-	// ScrollManage.ready();
+	ScrollManage.ready();
 	ChatTime.ready();
 });

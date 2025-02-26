@@ -1,13 +1,15 @@
-import SETTINGS from "../../../common/Settings";
-import UTIL from "../Util";
+/// <reference path="../../../fvtt-scripts/foundry.js" />
+/// <reference path="../../../common/foundry.d.ts" />
+/// <reference path="../../../common/libWrapper.d.ts" />
+import SETTINGS from "../../common/Settings.mjs";
+import UTIL from "../Util.mjs";
 
 export default class ChatHistoryOptimizer {
 
-	private static readonly PREF_ENABLED = 'ChatHistoryOptimizer.Enabled';
-	private static readonly PREF_HISTORY_SIZE = 'ChatHistoryOptimizer.HistorySize';
+	/**@readonly*/static PREF_ENABLED = 'ChatHistoryOptimizer.Enabled';
+	/**@readonly*/static PREF_HISTORY_SIZE = 'ChatHistoryOptimizer.HistorySize';
 
 	static init() {
-
 		SETTINGS.register(this.PREF_ENABLED, {
 			name: 'DF_CHAT_SCROLL.HistoryFixEnabledName',
 			hint: 'DF_CHAT_SCROLL.HistoryFixEnabledHint',
@@ -17,7 +19,7 @@ export default class ChatHistoryOptimizer {
 			scope: 'world',
 			onChange: UTIL.requestReload
 		});
-		SETTINGS.register<number>(this.PREF_HISTORY_SIZE, {
+		SETTINGS.register(this.PREF_HISTORY_SIZE, {
 			name: 'DF_CHAT_SCROLL.HistorySizeName',
 			hint: 'DF_CHAT_SCROLL.HistorySizeHint',
 			config: true,
@@ -34,37 +36,54 @@ export default class ChatHistoryOptimizer {
 
 		if (!SETTINGS.get(this.PREF_ENABLED)) return;
 
-		libWrapper.register(SETTINGS.MOD_NAME, 'ChatLog.prototype._onScrollLog', this._ChatLog_onScrollLog, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, "ChatLog.prototype.isAtBottom", function() { return this._isAtBottom; }, "OVERRIDE");
 
-		/**
-		// This is used for DEBUG purposes only
-		// Displays the number of messages being rendered in the Chat Log
-		Hooks.on('renderChatLog', (_: any, html: JQuery) => {
-			html.find('#scrollToBottom').after('<div class="dfce-chat-count" style="flex:0;text-align:center"></div>');
+		Hooks.on('renderChatLog', (/**@type {ChatLog}*/app, /**@type {JQuery}*/ html) => {
+			html.find("#chat-log").off().on("scroll", this.ChatLog_onScrollLog.bind(app));
+/* DEBUG *
+			// This is used for DEBUG purposes only
+			// Displays the number of messages being rendered in the Chat Log
+			html.find('.jump-to-bottom').after('<div class="dfce-chat-count" style="flex:0;text-align:center"></div>');
 		});
 		this._displayMessageCounts(0);
-		/**/
+/* DEBUG */
+		});
+/* DEBUG */
 	}
-
-	private static _ChatLog_onScrollLog(this: ChatLog, wrapped: (event: any) => Promise<void>, event: any): Promise<void> {
+	
+	/**
+	 * @this {ChatLog}
+	 * @param {(event: any)=>Promise<void>} wrapped
+	 * @param {JQuery.ScrollEvent} event
+	 * @returns {Promise<void>}
+	 */
+	static ChatLog_onScrollLog(event) {
 		if (!this.rendered) return Promise.resolve();
-		const maxMessageCount = SETTINGS.get<number>(ChatHistoryOptimizer.PREF_HISTORY_SIZE);
-		// Ignore all scroll events when there are not enough messages to even batch
-		if (this.collection.size <= CONFIG.ChatMessage.batchSize) return wrapped(event);
-		const log = event.target as HTMLElement;
-		const messages = $(log).find('li.chat-message');
+		// If this variable is not set, we need to allow the original script to run
+		if (!this._scrollToBottomButton) {
+			this._scrollToBottomButton = this.element.find(".jump-to-bottom")[0];
+			return this._onScrollLog(event);
+		}
+		
+		/**@type {HTMLElement}*/const log = event.target;
+		const pct = log.scrollTop / (log.scrollHeight - log.clientHeight);
+		this._isAtBottom = (pct > 0.99) || Number.isNaN(pct);
+		this._scrollToBottomButton[0].classList.toggle("hidden", this._isAtBottom);
 
+		const maxMessageCount = SETTINGS.get(ChatHistoryOptimizer.PREF_HISTORY_SIZE);
+		// Ignore all scroll events when there are not enough messages to even batch
+		if (this.collection.size <= CONFIG.ChatMessage.batchSize) return;
+		const messages = $(log).find('li.chat-message');
 		// Grab the top most message based on current scroll position
 		let topMessageIndex = -1;
 
 		//! NOTICE! The message list is inverted, it is sorted OLDEST to NEWEST,
 		//! so message[0] is at the very top of the chat log, and message[n] is
 		//! at the very bottom of the chat log.
-
+		
 		// We try to start as close to the actual top message as we can, then traverse either up or down from there
-		const pct = log.scrollTop / log.scrollHeight;
 		const chatViewTop = log.scrollTop + messages[0].offsetTop;
-		let c = Math.trunc(messages.length * pct);
+		let c = Math.clamp(Math.trunc(messages.length * pct), 0, messages.length - 1);
 		// If the estimate is too high up the log, we traverse down
 		if (messages[c].offsetTop < chatViewTop) {
 			for (; c < messages.length; c++) {
@@ -116,11 +135,15 @@ export default class ChatHistoryOptimizer {
 		return Promise.resolve();
 	}
 
-	private static _lastFrame = 0;
-	private static _displayMessageCounts(time: number) {
-		if (ChatHistoryOptimizer._lastFrame + 500 < time) {
-			ChatHistoryOptimizer._lastFrame = time;
-			$('.dfce-chat-count').each(function (_, element: HTMLElement) {
+	static #_lastFrame = 0;
+	/**
+	 * @private
+	 * @param {number} time
+	 */
+	static _displayMessageCounts(time) {
+		if (ChatHistoryOptimizer.#_lastFrame + 1000 < time) {
+			ChatHistoryOptimizer.#_lastFrame = time;
+			$('.dfce-chat-count').each(function (_, element) {
 				const msgCount = $(element).siblings('#chat-log').find('li.chat-message').length;
 				element.innerText = `${msgCount} / ${ui.chat.collection.size}`;
 			});

@@ -1,47 +1,18 @@
-div#scrollToBottom {
-	padding: 4px;
-	display: inline;
-	flex: 0;
-	position: relative;
-	border: 1px solid #ff6400;
-	background-color: #8b3c3c;
-	text-align: center;
-	border-radius: 5px;
-	margin-bottom: -27px;
-	top: -25px;
-	position: relative;
-	margin-left: 3px;
-	margin-right: 9px;
-}
-
-div#scrollToBottom:hover {
-	cursor: pointer;
-	background-color: #be1212;
-}
-
-div#scrollToBottom.new {
-	box-shadow: 0 0 10px red;
+div.jump-to-bottom.new > a {
+	box-shadow: 0 0 10px red inset;
 	animation: dfce-sm-pulse 1s infinite;
-}
-
-div#scrollToBottom>span {
-	display: none;
-}
-
-div#scrollToBottom.new>span {
-	display: unset;
 }
 
 @keyframes dfce-sm-pulse {
 	0% {
-		box-shadow: 0 0 0px red;
+		box-shadow: 0 0 0px red inset;
 	}
 
 	50% {
-		box-shadow: 0 0 10px red;
+		box-shadow: 0 0 10px red inset;
 	}
 
 	100% {
-		box-shadow: 0 0 0px red;
+		box-shadow: 0 0 0px red inset;
 	}
 }
