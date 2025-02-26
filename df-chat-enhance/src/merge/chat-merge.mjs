@@ -1,45 +1,48 @@
-import { ChatMessageData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
-import libWrapperShared from "../../../common/libWrapperShared";
-import SETTINGS from "../../../common/Settings";
-import DFChatArchiveManager from "../archive/DFChatArchiveManager";
+/// <reference path="../../../fvtt-scripts/foundry.js" />
+/// <reference path="../../../common/foundry.d.ts" />
+import libWrapperShared from "../../common/libWrapperShared.mjs";
+import SETTINGS from "../../common/Settings.mjs";
+//TODO: Re-enable after migrating Chat Archive
+// import DFChatArchiveManager from "../archive/DFChatArchiveManager.mjs";
 
 
 export default class ChatMerge {
 
-	private static readonly PREF_ENABLED = 'chat-merge-enabled';
-	private static readonly PREF_SPLIT_SPEAKER = 'chat-merge-split-speaker';
-	private static readonly PREF_EPOCH = 'chat-merge-epoch';
-	private static readonly PREF_ALLOW_ROLLS = 'chat-merge-allowRolls';
-	private static readonly PREF_SEPARATE = 'chat-merge-separateWithBorder';
-	private static readonly PREF_HOVER = 'chat-merge-showhover';
-	private static readonly PREF_SHOW_HEADER = 'chat-merge-showheader';
+	/**@readonly*/ static #PREF_ENABLED = 'chat-merge-enabled';
+	/**@readonly*/ static #PREF_SPLIT_SPEAKER = 'chat-merge-split-speaker';
+	/**@readonly*/ static #PREF_EPOCH = 'chat-merge-epoch';
+	/**@readonly*/ static #PREF_ALLOW_ROLLS = 'chat-merge-allowRolls';
+	/**@readonly*/ static #PREF_SEPARATE = 'chat-merge-separateWithBorder';
+	/**@readonly*/ static #PREF_HOVER = 'chat-merge-showhover';
+	/**@readonly*/ static #PREF_SHOW_HEADER = 'chat-merge-showheader';
 
-	private static get _enabled(): boolean { return SETTINGS.get(this.PREF_ENABLED); }
-	private static get _epoch(): number { return SETTINGS.get(this.PREF_EPOCH); }
-	private static get _allowRolls(): string { return SETTINGS.get(this.PREF_ALLOW_ROLLS); }
-	private static get _separateWithBorder(): boolean { return SETTINGS.get(this.PREF_SEPARATE); }
-	private static get _showHover(): boolean { return SETTINGS.get(this.PREF_HOVER); }
-	private static get _showHeader(): boolean { return SETTINGS.get(this.PREF_SHOW_HEADER); }
+	/**@type {boolean}*/ static get #_enabled() { return SETTINGS.get(this.#PREF_ENABLED); }
+	/**@type {number}*/ static get #_epoch() { return SETTINGS.get(this.#PREF_EPOCH); }
+	/**@type {string}*/ static get #_allowRolls() { return SETTINGS.get(this.#PREF_ALLOW_ROLLS); }
+	/**@type {boolean}*/ static get #_separateWithBorder() { return SETTINGS.get(this.#PREF_SEPARATE); }
+	/**@type {boolean}*/ static get #_showHover() { return SETTINGS.get(this.#PREF_HOVER); }
+	/**@type {boolean}*/ static get #_showHeader() { return SETTINGS.get(this.#PREF_SHOW_HEADER); }
 
 	static init() {
-		SETTINGS.register(this.PREF_ENABLED, {
+		SETTINGS.register(this.#PREF_ENABLED, {
 			name: 'DF_CHAT_MERGE.EnableName',
 			hint: 'DF_CHAT_MERGE.EnableHint',
 			config: true,
 			scope: 'client',
 			default: true,
 			type: Boolean,
-			onChange: () => this._processAllMessage()
+			onChange: () => this.#_processAllMessage()
 		});
-		SETTINGS.register(this.PREF_SHOW_HEADER, {
+		SETTINGS.register(this.#PREF_SHOW_HEADER, {
 			name: 'DF_CHAT_MERGE.ShowHeaderName',
 			hint: 'DF_CHAT_MERGE.ShowHeaderHint',
 			config: true,
 			scope: 'client',
 			default: false,
 			type: Boolean,
-			onChange: (newValue: boolean) => {
-				const style = (<HTMLElement>document.querySelector(':root')).style;
+			onChange: (/**@type {boolean}*/newValue) => {
+				/**@type {CSSStyleDeclaration}*/
+				const style = document.querySelector(':root').style;
 				style.setProperty('--dfce-cm-header', newValue ? '' : 'none');
 				if (game.user.isGM) {
 					style.setProperty('--dfce-cm-header-delete', newValue ? '' : '0');
@@ -47,16 +50,16 @@ export default class ChatMerge {
 				}
 			}
 		});
-		SETTINGS.register(this.PREF_SPLIT_SPEAKER, {
+		SETTINGS.register(this.#PREF_SPLIT_SPEAKER, {
 			name: 'DF_CHAT_MERGE.SplitSpeakerName',
 			hint: 'DF_CHAT_MERGE.SplitSpeakerHint',
 			config: true,
 			scope: 'client',
 			default: true,
 			type: Boolean,
-			onChange: () => this._processAllMessage()
+			onChange: () => this.#_processAllMessage()
 		});
-		SETTINGS.register<string>(this.PREF_ALLOW_ROLLS, {
+		SETTINGS.register(this.#PREF_ALLOW_ROLLS, {
 			name: 'DF_CHAT_MERGE.AllowRollsName',
 			hint: 'DF_CHAT_MERGE.AllowRollsHint',
 			config: true,
@@ -68,33 +71,35 @@ export default class ChatMerge {
 				rolls: 'DF_CHAT_MERGE.AllowRollsOptions.rolls'.localize(),
 				all: 'DF_CHAT_MERGE.AllowRollsOptions.all'.localize()
 			},
-			onChange: () => this._processAllMessage()
+			onChange: () => this.#_processAllMessage()
 		});
-		SETTINGS.register(this.PREF_SEPARATE, {
+		SETTINGS.register(this.#PREF_SEPARATE, {
 			name: 'DF_CHAT_MERGE.SeparateName',
 			hint: 'DF_CHAT_MERGE.SeparateHint',
 			config: true,
 			scope: 'client',
 			default: false,
 			type: Boolean,
-			onChange: (newValue: boolean) => {
-				const style = (<HTMLElement>document.querySelector(':root')).style;
-				style.setProperty('--dfce-cm-separation', newValue ? '' : '0');
+			onChange: (/**@type {boolean}*/newValue) => {
+				/**@type {CSSStyleDeclaration}*/
+				const style = document.querySelector(':root').style;
+				style.setProperty('--dfce-cm-separation', newValue ? 'thin' : '0');
 			}
 		});
-		SETTINGS.register(this.PREF_HOVER, {
+		SETTINGS.register(this.#PREF_HOVER, {
 			name: 'DF_CHAT_MERGE.HoverName',
 			hint: 'DF_CHAT_MERGE.HoverHint',
 			config: true,
 			scope: 'client',
 			default: true,
 			type: Boolean,
-			onChange: (newValue: boolean) => {
-				const style = (<HTMLElement>document.querySelector(':root')).style;
+			onChange: (/**@type {boolean}*/newValue) => {
+				/**@type {CSSStyleDeclaration}*/
+				const style = document.querySelector(':root').style;
 				newValue ? style.removeProperty('--dfce-cm-hover-shadow') : style.setProperty('--dfce-cm-hover-shadow', '0px');
 			}
 		});
-		SETTINGS.register<number>(this.PREF_EPOCH, {
+		SETTINGS.register(this.#PREF_EPOCH, {
 			name: 'DF_CHAT_MERGE.EpochName',
 			hint: 'DF_CHAT_MERGE.EpochHint',
 			config: true,
@@ -106,29 +111,35 @@ export default class ChatMerge {
 				max: 60,
 				step: 1
 			},
-			onChange: () => this._processAllMessage()
+			onChange: () => this.#_processAllMessage()
 		});
 
-		libWrapperShared.register('ChatLog.prototype.deleteMessage', this._deleteMessage.bind(this));
-		Hooks.on("renderChatMessage", this._renderChatMessage);
+		libWrapperShared.register('ChatLog.prototype.deleteMessage', this.#_deleteMessage.bind(this));
+		Hooks.on("renderChatMessage", this.#_renderChatMessage);
 	}
 	static ready() {
-		const style = (<HTMLElement>document.querySelector(':root')).style;
-		style.setProperty('--dfce-cm-separation', this._separateWithBorder ? '' : '0');
-		this._showHover ? style.removeProperty('--dfce-cm-hover-shadow') : style.setProperty('--dfce-cm-hover-shadow', '0px');
-		style.setProperty('--dfce-cm-header', this._showHeader ? '' : 'none');
+		/**@type {CSSStyleDeclaration}*/
+		const style = document.querySelector(':root').style;
+		style.setProperty('--dfce-cm-separation', this.#_separateWithBorder ? 'thin' : '0');
+		this.#_showHover ? style.removeProperty('--dfce-cm-hover-shadow') : style.setProperty('--dfce-cm-hover-shadow', '0px');
+		style.setProperty('--dfce-cm-header', this.#_showHeader ? '' : 'none');
 		if (game.user.isGM) {
-			style.setProperty('--dfce-cm-header-delete', this._showHeader ? '' : '0');
-			style.setProperty('--dfce-cm-header-delete-pad', this._showHeader ? '' : '16px');
+			style.setProperty('--dfce-cm-header-delete', this.#_showHeader ? '' : '0');
+			style.setProperty('--dfce-cm-header-delete-pad', this.#_showHeader ? '' : '16px');
 		}
-		this._processAllMessage(ui.chat.element);
-		Hooks.on('renderChatLog', (_: any, html: JQuery<HTMLElement>) => this._processAllMessage(html));
-		Hooks.on('renderDFChatArchiveViewer', (_: any, html: JQuery<HTMLElement>) => this._processAllMessage(html));
+		this.#_processAllMessage(ui.chat.element);
+		Hooks.on('renderChatLog', (_, html) => this.#_processAllMessage(html));
+		Hooks.on('renderDFChatArchiveViewer', (_, html) => this.#_processAllMessage(html));
 	}
 
-	private static _deleteMessage(wrapper: (arg0: any, arg1: any) => any, messageId: string, { deleteAll = false } = {}) {
+	/**
+	 * @param {Function} wrapper
+	 * @param {string} messageId
+	 * @returns 
+	 */
+	static #_deleteMessage(wrapper, messageId, { deleteAll = false } = {}) {
 		// Ignore the Delete All process. Everything is being obliterated, who cares about the styling
-		if (!deleteAll && this._enabled) {
+		if (!deleteAll && this.#_enabled) {
 			const element = document.querySelector(`li[data-message-id="${messageId}"`);
 			// If we were a TOP
 			if (element?.classList?.contains('dfce-cm-top')) {
@@ -159,14 +170,15 @@ export default class ChatMerge {
 		return wrapper(messageId, { deleteAll });
 	}
 
-	private static _processAllMessage(element?: JQuery<HTMLElement>) {
+	/**@param {JQuery<HTMLElement>} [element]*/
+	static #_processAllMessage(element) {
 		element = element ?? $(document.body);
 		// Remove the old CSS class designations
 		element.find('.dfce-cm-top').removeClass('dfce-cm-top');
 		element.find('.dfce-cm-middle').removeClass('dfce-cm-middle');
 		element.find('.dfce-cm-bottom').removeClass('dfce-cm-bottom');
 		// If we are disabled, return
-		if (!ChatMerge._enabled) return;
+		if (!ChatMerge.#_enabled) return;
 		// Collect all rendered chat messages
 		const messages = element.find('li.chat-message');
 		// Return if there are no messages rendered
@@ -178,7 +190,7 @@ export default class ChatMerge {
 		// Process each message after the first
 		for (let c = 1; c < messages.length; c++) {
 			// Update styling of the chat messages
-			this._styleChatMessages(
+			this.#_styleChatMessages(
 				game.messages.get(messages[c].getAttribute('data-message-id')),
 				messages[c],
 				game.messages.get(messages[c - 1].getAttribute('data-message-id')),
@@ -186,8 +198,12 @@ export default class ChatMerge {
 		}
 	}
 
-	private static _renderChatMessage(message: ChatMessageData, html: JQuery<HTMLElement>, _cmd: ChatMessageData) {
-		if (!ChatMerge._enabled) return;
+	/**
+	 * @param {ChatMessage} message
+	 * @param {JQuery<HTMLElement>} html
+	 */
+	static #_renderChatMessage(message, html) {
+		if (!ChatMerge.#_enabled) return;
 		// Find the most recent message in the chat log
 		const partnerElem = $(`li.chat-message`).last()[0];
 		// If there is no message, return
@@ -196,23 +212,30 @@ export default class ChatMerge {
 		const partner = game.messages.get(partnerElem.getAttribute('data-message-id'));
 		if (!message || !partner) return;
 		// Update styling of the chat messages
-		ChatMerge._styleChatMessages(message, html[0], partner, partnerElem);
+		ChatMerge.#_styleChatMessages(message, html[0], partner, partnerElem);
 	}
 
-	private static _inTimeFrame(current: number, previous: number): boolean {
-		return current > previous && (current - previous) < (this._epoch * 1000);
+	/**
+	 * @param {number} current
+	 * @param {number} previous
+	 * @returns {boolean}
+	 */
+	static #_inTimeFrame(current, previous) {
+		return current > previous && (current - previous) < (this.#_epoch * 1000);
 	}
 
-	private static _isValidMessage(current: ChatMessageData, previous: ChatMessageData): boolean {
-		const rolls = this._allowRolls;
-		const splitSpeaker = SETTINGS.get<boolean>(this.PREF_SPLIT_SPEAKER);
+	/**
+	 * @param {ChatMessage} currData
+	 * @param {ChatMessage} prevData
+	 * @returns {boolean}
+	 */
+	static #_isValidMessage(currData, prevData) {
+		const rolls = this.#_allowRolls;
+		const splitSpeaker = SETTINGS.get(this.#PREF_SPLIT_SPEAKER);
 		let userCompare = false;
 
-		const currData = current ?? <ChatMessageData><any>current;
-		const prevData = previous ?? <ChatMessageData><any>previous;
-
 		// If either message is a Midi-QoL message, ignore it
-		if ((currData?.flags && (currData.flags as Record<string, any>)['midi-qol']) || (prevData?.flags && (prevData.flags as Record<string, any>)['midi-qol']))
+		if ((currData?.flags && currData.flags['midi-qol']) || (prevData?.flags && prevData.flags['midi-qol']))
 			return false;
 
 		if (splitSpeaker) {
@@ -224,39 +247,48 @@ export default class ChatMerge {
 				( // If BOTH actors are null and users are equal
 					!currData.speaker.actor
 					&& !prevData.speaker.actor
-					&& currData.user === prevData.user
+					&& currData.author === prevData.author
 				);
 		} else {
 			// If we are not splitting by speaker, just do the simple option of comparing the users
-			userCompare = currData.user === prevData.user;
+			userCompare = currData.author === prevData.author;
 		}
 		return userCompare
-			&& this._inTimeFrame(currData.timestamp, prevData.timestamp)
+			&& this.#_inTimeFrame(currData.timestamp, prevData.timestamp)
 			// Check for merging with roll types
 			&& (rolls === 'all'
-				|| (rolls === 'rolls' && current.isRoll === previous.isRoll)
-				|| (rolls === 'none' && !current.isRoll && !previous.isRoll));
+				|| (rolls === 'rolls' && currData.isRoll === prevData.isRoll)
+				|| (rolls === 'none' && !currData.isRoll && !prevData.isRoll));
 	}
 
-	private static _styleChatMessages(curr: ChatMessageData, currElem: HTMLElement, prev: ChatMessageData, prevElem: HTMLElement) {
+	/**
+	 * @param {ChatMessage} curr
+	 * @param {HTMLElement} currElem
+	 * @param {ChatMessage} prev
+	 * @param {HTMLElement} prevElem
+	 */
+	static #_styleChatMessages(curr, currElem, prev, prevElem) {
 		if (currElem.hasAttribute('style')) {
 			currElem.style.setProperty('--dfce-mc-border-color', currElem.style.borderColor);
 		}
-		// If we are running in a Chat Archive
-		if (curr === undefined && prev === undefined) {
-			const logId = parseInt(/df-chat-log-(\d+)/.exec(currElem.parentElement.parentElement.id)[1]);
-			if (isNaN(logId)) return;
-			const chatLog = DFChatArchiveManager.chatViewers.get(logId);
-			curr = <ChatMessageData>chatLog.messages.find(x =>
-				(x.id ?? x._id) == currElem.dataset.messageId);
-			prev = <ChatMessageData>chatLog.messages.find(x =>
-				(x.id ?? x._id) == prevElem.dataset.messageId);
-		}
-		if (!ChatMerge._isValidMessage(curr, prev)) return;
+		//TODO: Re-enable after migrating Chat Archive
+		// // If we are running in a Chat Archive
+		// if (curr === undefined && prev === undefined) {
+		// 	const logId = parseInt(/df-chat-log-(\d+)/.exec(currElem.parentElement.parentElement.id)[1]);
+		// 	if (isNaN(logId)) return;
+		// 	const chatLog = DFChatArchiveManager.chatViewers.get(logId);
+		// 	curr = chatLog.messages.find(x =>
+		// 		(x.id ?? x._id) == currElem.dataset.messageId);
+		// 	prev = chatLog.messages.find(x =>
+		// 		(x.id ?? x._id) == prevElem.dataset.messageId);
+		// }
+		if (!ChatMerge.#_isValidMessage(curr, prev)) return;
 		if (prevElem.classList.contains('dfce-cm-bottom')) {
 			prevElem.classList.remove('dfce-cm-bottom');
 			prevElem.classList.add('dfce-cm-middle');
 		} else prevElem.classList.add('dfce-cm-top');
 		currElem.classList.add('dfce-cm-bottom');
+		if (!!game.dnd5e)
+			currElem.classList.add('dnd5e');
 	}
 }

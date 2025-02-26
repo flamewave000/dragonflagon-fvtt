@@ -1,0 +1,111 @@
+$debug: false;
+
+/**** Corrects conflict with Chat Portraits ****/
+/***********************************************/
+:root {
+	--dfce-cm-separation: ;
+	--dfce-cm-header: ;
+	--dfce-cm-header-delete: ;
+	--dfce-cm-header-delete-pad: ;
+}
+:is(.chat-popout, #chat-log, .chat-log) .message {
+	&.dfce-cm-top {
+		@if $debug {
+		background-color: blue;
+		}
+		border-bottom: none;
+		border-radius: 5px 5px 0 0;
+		margin-bottom: 0;
+		padding-bottom: 2.5px;
+		&:hover {
+			box-shadow: inset 0 0 var(--dfce-cm-hover-shadow, 5px) var(--dfce-mc-border-color, #6f6c66);
+		}
+	}
+	&.dfce-cm-middle {
+		@if $debug {
+		background-color: red;
+		}
+		border-top: var(--dfce-cm-separation) solid;
+		border-bottom: none;
+		border-radius: 0;
+		margin-top: 0;
+		margin-bottom: 0;
+		padding-top: 2.5px;
+		padding-bottom: 2.5px;
+		> header {
+			> h4 {
+				display: none;
+				display: var(--dfce-cm-header, inherit);
+			}
+			> span.flavor-text {
+				padding-right: var(--dfce-cm-header-delete-pad, inherit);
+			}
+		}
+		.message-timestamp {
+			display: var(--dfce-cm-header, inherit);
+		}
+		.message-header {
+			height: var(--dfce-cm-header-delete, inherit);
+			.message-metadata {
+				flex: 2 !important;
+			}
+		}
+		.message-metadata {
+			height: var(--dfce-cm-header-delete, inherit);
+		}
+		.message-delete {
+			position: relative;
+		}
+		> .message-content {
+			padding-right: var(--dfce-cm-header-delete-pad, inherit);
+		}
+		&:hover {
+			box-shadow: inset 0 0 var(--dfce-cm-hover-shadow, 5px) var(--dfce-mc-border-color, #6f6c66);
+		}
+		.message-portrait {
+			display: none;
+		}
+	}
+	&.dfce-cm-bottom {
+		@if $debug {
+		background-color: green;
+		}
+		border-top: var(--dfce-cm-separation) solid;
+		border-radius: 0 0 5px 5px;
+		margin-top: 0;
+		padding-top: 2.5px;
+		> header {
+			> h4 {
+				display: none;
+				display: var(--dfce-cm-header, inherit);
+			}
+			> span.flavor-text {
+				padding-right: var(--dfce-cm-header-delete-pad, inherit);
+			}
+		}
+		.message-timestamp {
+			display: var(--dfce-cm-header, inherit);
+		}
+		.message-header {
+			height: var(--dfce-cm-header-delete, inherit);
+			.message-metadata {
+				flex: 2 !important;
+			}
+		}
+		.message-metadata {
+			height: var(--dfce-cm-header-delete, inherit);
+		}
+		.message-delete {
+			position: relative;
+		}
+		> .message-content {
+			padding-right: var(--dfce-cm-header-delete-pad, inherit);
+		}
+		&:hover {
+			box-shadow: inset 0 0 var(--dfce-cm-hover-shadow, 5px) var(--dfce-mc-border-color, #6f6c66);
+		}
+		.message-portrait {
+			display: none;
+		}
+	}
+}
