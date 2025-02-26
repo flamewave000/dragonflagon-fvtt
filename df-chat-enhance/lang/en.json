@@ -180,6 +180,7 @@
 	},
 	"DF_CHAT_PLAYER_COLOR": {
 		"Label": "Player Chat Colour",
+		"Hint": "If set, the player chat colour is used for chat cards instead of the configured player colour. This can be useful if a player's colour doesn't work well in chat, so you can select a different hue that works.",
 		"SettingTintBackgroundName": "Tint Chat Message Background",
 		"SettingTintBackgroundHint": "Tint the backgrounds of chat messages to the player's colour.",
 		"SettingBorderStyleName": "Chat Message Tinted Borders",

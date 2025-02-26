@@ -10,7 +10,7 @@ import ChatRollPrivacy from "./privacy/df-chat-privacy.mjs";
 // import ScrollManage from "./scroll-manage/scroll-manage.mjs";
 import SETTINGS from "../common/Settings.mjs";
 import WhisperTruncation from "./whisper-trunc/whisper-trunc.mjs";
-// import PlayerColor from './player-color/PlayerColor.mjs';
+import PlayerColor from './player-color/PlayerColor.mjs';
 import SendButton from "./send/send-button.mjs";
 import FontSizePatch from "./font-size/font-size.mjs";
 import ChatTime from "./chat-time/chat-time.mjs";
@@ -38,7 +38,7 @@ Hooks.once('init', function () {
 	// ChatMerge.init();
 	// ScrollManage.init();
 	WhisperTruncation.init();
-	// PlayerColor.init();
+	PlayerColor.init();
 	SendButton.init();
 	FontSizePatch.init();
 	ChatTime.init();
