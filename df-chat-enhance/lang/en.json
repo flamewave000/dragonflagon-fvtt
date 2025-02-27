@@ -117,6 +117,10 @@
 		"Config_ClearContent": "Clear all contents of the journal",
 		"Config_GmClearContent": "Clear all contents of the GM Only journal",
 		"Config_JournalPermissions": "Anyone who will log events will need permission to edit the selected Journal.",
+
+		"UserConfig_Journal": "Player Log Journal",
+		"UserConfig_JournalPage": "Player Log Journal Page",
+
 		"ContextMenu_AsEvent": "Adventure Log as an Event",
 		"ContextMenu_AsQuote": "Adventure Log as a Quote",
 		"ContextMenu_AsGmEvent": "GM Adventure Log as an Event",

@@ -3,8 +3,8 @@
 
 // import * as DFChatArchive from "./archive/df-chat-archive.mjs";
 import DFChatEdit from "./edit/df-chat-edit.mjs";
-// import * as DFAdventureLog from "./logger/df-adventure-log.mjs";
-// import DFAdventureLogProcessor from "./logger/DFAdventureLogProcessor.mjs";
+import * as DFAdventureLog from "./logger/df-adventure-log.mjs";
+import DFAdventureLogProcessor from "./logger/DFAdventureLogProcessor.mjs";
 import ChatMerge from "./merge/chat-merge.mjs";
 import ChatRollPrivacy from "./privacy/df-chat-privacy.mjs";
 import ScrollManage from "./scroll-manage/scroll-manage.mjs";
@@ -34,7 +34,7 @@ Hooks.once('init', function () {
 	 */
 	// DFChatArchive.init();
 	ChatRollPrivacy.init();
-	// DFAdventureLog.init();
+	DFAdventureLog.init();
 	ChatMerge.init();
 	ScrollManage.init();
 	WhisperTruncation.init();
@@ -52,7 +52,7 @@ Hooks.once('init', function () {
 		function (wrapped, ...args) {
 			const options = wrapped(...args);
 			DFChatEdit.appendChatContextMenuOptions(options);
-			// DFAdventureLogProcessor.appendChatContextMenuOptions(options);
+			DFAdventureLogProcessor.appendChatContextMenuOptions(options);
 			return options;
 		}, 'WRAPPER');
 });
@@ -63,7 +63,7 @@ Hooks.once('ready', function () {
 		if (game.user.isGM)
 			ui.notifications.error('DF_CHAT_LOG.Error.LibWrapperMissing'.localize());
 	}
-	// DFAdventureLog.ready();
+	DFAdventureLog.ready();
 	DFChatEdit.ready();
 	ChatMerge.ready();
 	ScrollManage.ready();

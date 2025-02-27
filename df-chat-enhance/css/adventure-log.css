@@ -32,3 +32,11 @@ article.df-adventure-log code {
 	font-size: smaller;
 	padding-top: 3px;
 }
+
+
+.application.sheet.user-config{
+	max-height: 700px;
+}
+.application.sheet.user-config section.window-content {
+	overflow-y: scroll;
+}
