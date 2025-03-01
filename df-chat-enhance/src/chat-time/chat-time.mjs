@@ -47,10 +47,10 @@ export default class ChatTime {
 			 * @returns {unknown}
 			 */
 			(wrapped, chatData, createOptions) => {
-				chatData.flags = chatData.flags ?? {};
-				chatData.flags[SETTINGS.MOD_NAME] = {};
-				chatData.flags[SETTINGS.MOD_NAME][this.#FLAG_CHAT_TIME] = game.time.worldTime;
-				return wrapped(chatData, createOptions);
+				const data = { flags: {} };
+				data.flags[SETTINGS.MOD_NAME] = {};
+				data.flags[SETTINGS.MOD_NAME][this.#FLAG_CHAT_TIME] = game.time.worldTime;
+				return wrapped(foundry.utils.mergeObject(chatData, data), createOptions);
 			}, 'WRAPPER');
 
 		if (!game.dnd5e)
