@@ -27,33 +27,33 @@ const ICONS_FOR_KNOWN_ROLL_TYPES = {
 
 export default class ChatRollPrivacy {
 	static setup() {
-		game.keybindings.register(SETTINGS.MOD_NAME, "roll-mode.publicroll", {
+		game.keybindings.register(SETTINGS.MOD_NAME, "roll-mode_publicroll", {
 			name: 'Public Roll',
-			editable: [{ key: 'KeyQ', modifiers: [KeyboardManager.MODIFIER_KEYS.ALT] }],
+			// editable: [{ key: 'KeyQ', modifiers: [KeyboardManager.MODIFIER_KEYS.ALT] }],
 			namespace: 'Roll Type Shortcuts',
 			onDown: () => {
 				$('#dfcp-rt-buttons > button[data-id="publicroll"]').trigger('click');
 			}
 		});
-		game.keybindings.register(SETTINGS.MOD_NAME, "roll-mode.gmroll", {
+		game.keybindings.register(SETTINGS.MOD_NAME, "roll-mode_gmroll", {
 			name: 'Private GM Roll',
-			editable: [{ key: 'KeyW', modifiers: [KeyboardManager.MODIFIER_KEYS.ALT] }],
+			// editable: [{ key: 'KeyW', modifiers: [KeyboardManager.MODIFIER_KEYS.ALT] }],
 			namespace: 'Roll Type Shortcuts',
 			onDown: () => {
 				$('#dfcp-rt-buttons > button[data-id="gmroll"]').trigger('click');
 			}
 		});
-		game.keybindings.register(SETTINGS.MOD_NAME, "roll-mode.blindroll", {
+		game.keybindings.register(SETTINGS.MOD_NAME, "roll-mode_blindroll", {
 			name: 'Blind GM Roll',
-			editable: [{ key: 'KeyE', modifiers: [KeyboardManager.MODIFIER_KEYS.ALT] }],
+			// editable: [{ key: 'KeyE', modifiers: [KeyboardManager.MODIFIER_KEYS.ALT] }],
 			namespace: 'Roll Type Shortcuts',
 			onDown: () => {
 				$('#dfcp-rt-buttons > button[data-id="blindroll"]').trigger('click');
 			}
 		});
-		game.keybindings.register(SETTINGS.MOD_NAME, "roll-mode.selfroll", {
+		game.keybindings.register(SETTINGS.MOD_NAME, "roll-mode_selfroll", {
 			name: 'Self Roll',
-			editable: [{ key: 'KeyR', modifiers: [KeyboardManager.MODIFIER_KEYS.ALT] }],
+			// editable: [{ key: 'KeyR', modifiers: [KeyboardManager.MODIFIER_KEYS.ALT] }],
 			namespace: 'Roll Type Shortcuts',
 			onDown: () => {
 				$('#dfcp-rt-buttons > button[data-id="selfroll"]').trigger('click');
