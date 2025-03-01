@@ -9,8 +9,8 @@
 		"decrement": "Diminuer les segments",
 		"apply": "Appliquer des murs courbes au calque",
 		"cancel": "Effacer l'outil",
-		"cubic_lock_handles": "Link Curve Controls to Line Ends",
-		"ellipse_close": "Fermer cercle lorsque découpé en tranches",
+		"cubic_lock_handles": "Lier les Contrôles des courbes aux Fins de ligne",
+		"ellipse_close": "Fermer le cercle lorsqu'il est découpé en tranches",
 		"ellipse_finish_slice": "Ajouter un mur court au point de coupe",
 		"ellipse_increment": "Augmenter la taille du pas d'angle",
 		"ellipse_decrement": "Diminuer la taille du pas d'angle",
@@ -21,7 +21,7 @@
 		"SettingSmallHandlesHint": "Réduisez la taille des poignées rondes de déplacement d'un outil ainsi que les libellés affichés.",
 		"pointmapapply": "Générer le placement d'outil à partir de points",
 		"pointmap_quad": "Vous devez placer 3 points pour générer une courbe Quadratique de Bézier.<br>Ctrl + Clic pour supprimer un point. Cliquez + Faites glisser pour déplacer un point.",
-		"pointmap_circ": "Vous devez placer 2 à 3 points pour générer un Ellipse.<br>Ctrl + Clic pour supprimer un point. Cliquez + Faites glisser pour déplacer un point.",
+		"pointmap_circ": "Vous devez placer 2 à 3 points pour générer une Ellipse.<br>Ctrl + Clic pour supprimer un point. Cliquez + Faites glisser pour déplacer un point.",
 		"pointmap_rect": "Vous devez placer 2 à 4 points pour générer un Rectangle.<br>Ctrl + Clic pour supprimer un point. Cliquez + Faites glisser pour déplacer un point."
 	}
 }
