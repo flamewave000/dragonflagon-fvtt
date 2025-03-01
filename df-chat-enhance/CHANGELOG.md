@@ -5,6 +5,9 @@
 - **UPDATE:** Downgraded TS -> JS (such sad).
 - **FIX:** Several discovered bugs and problems which have accumulated over time.
 - **FIX #417:** Deleting messages after date-range archive now ONLY deletes the selected messages.
+- **FIX #408:** Keybindings no longer have defaults.
+- **FIX #387:** Adjusted flag setting in Chat Time to use `mergeObject`.
+- **FIX #415:** Public Roll icon changed from D20 icon to a more appropriate "public" icon.
 
 ## Release 4.1.0 (2022-10-23)
 - **UPDATE:** Migrated to V10.

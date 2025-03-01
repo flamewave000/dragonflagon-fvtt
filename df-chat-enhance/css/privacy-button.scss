@@ -13,13 +13,12 @@ $colour-self: #E74C3C;
 		max-height: 36px;
 		padding-top: 2px;
 		i {
-			width: 20px;
 			height: 20px;
 			margin: auto;
 		}
-		&:first-child {
-			text-align: justify;
-		}
+	}
+	button.gm:first-child i {
+		width: 20px;
 	}
 	button.active i {
 		color: #000;

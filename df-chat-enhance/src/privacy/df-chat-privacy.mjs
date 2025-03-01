@@ -115,6 +115,7 @@ export default class ChatRollPrivacy {
 			buttons.push({
 				rt: rt,
 				name: data.rollModes[rt],
+				isGM: game.user.isGM,
 				active: data.rollMode === rt,
 				icon: ICONS_FOR_KNOWN_ROLL_TYPES[rt],
 				colour: ChatRollPrivacy.#calcColour(iconKeys.findIndex(x => x == rt), iconKeys.length)
