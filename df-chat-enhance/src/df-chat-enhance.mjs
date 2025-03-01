@@ -1,7 +1,7 @@
 /// <reference path="../../fvtt-scripts/foundry.js" />
 /// <reference path="./types.d.ts" />
 
-// import * as DFChatArchive from "./archive/df-chat-archive.mjs";
+import * as DFChatArchive from "./archive/df-chat-archive.mjs";
 import DFChatEdit from "./edit/df-chat-edit.mjs";
 import * as DFAdventureLog from "./logger/df-adventure-log.mjs";
 import DFAdventureLogProcessor from "./logger/DFAdventureLogProcessor.mjs";
@@ -32,7 +32,7 @@ Hooks.once('init', function () {
 	 * chat window, while the privacy changes those buttons
 	 * from <a> tags to <button> tags if enabled.
 	 */
-	// DFChatArchive.init();
+	DFChatArchive.init();
 	ChatRollPrivacy.init();
 	DFAdventureLog.init();
 	ChatMerge.init();

@@ -8,7 +8,8 @@ $debug: false;
 	--dfce-cm-header-delete: ;
 	--dfce-cm-header-delete-pad: ;
 }
-:is(.chat-popout, #chat-log, .chat-log) .message {
+:is(.chat-popout, #chat-log, .chat-log) .message,
+#df-chat-log .message {
 	&.dfce-cm-top {
 		@if $debug {
 		background-color: blue;

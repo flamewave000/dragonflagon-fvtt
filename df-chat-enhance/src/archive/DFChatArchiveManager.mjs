@@ -1,30 +1,38 @@
-import SETTINGS from "../../../common/Settings";
-import { DFChatArchive } from "./DFChatArchive";
-import DFChatArchiveViewer from "./DFChatArchiveViewer";
+/// <reference path="../../../fvtt-scripts/foundry.js" />
+import SETTINGS from "../../common/Settings.mjs";
+import { DFChatArchive } from "./DFChatArchive.mjs";
+import DFChatArchiveViewer from "./DFChatArchiveViewer.mjs";
 
 export default class DFChatArchiveManager extends Application {
-	static readonly PREF_REVERSE_SORT = 'dfca-manager-reverseSort';
-	static chatViewers: Map<number, DFChatArchiveViewer> = new Map();
+	/**@readonly*/ static PREF_REVERSE_SORT = 'dfca-manager-reverseSort';
+	/**@type {Map<number, DFChatArchiveViewer>}*/
+	static chatViewers = new Map();
 
+	/**@type {ApplicationOptions}*/
 	static get defaultOptions() {
-		return mergeObject(Application.defaultOptions as Partial<ApplicationOptions>, {
+		return foundry.utils.mergeObject(Application.defaultOptions, {
 			template: "modules/df-chat-enhance/templates/archive-manager.hbs",
 			resizable: true,
 			minimizable: true,
 			width: 300,
 			height: 500,
 			title: "DF_CHAT_ARCHIVE.ArchiveManager_Title".localize()
-		}) as ApplicationOptions;
+		});
 	}
 
-	getData(options?: any) {
+	/**
+	 * @param {*} [options]
+	 * @returns {object}
+	 */
+	getData(options) {
 		const data = super.getData(options);
 		let messages = DFChatArchive.getLogs();
 		if (!game.user.isGM)
 			messages = messages.filter(x => x.visible);
 		messages = messages.sort((a, b) => a.name.localeCompare(b.name));
-		const reverseSort = SETTINGS.get<boolean>(DFChatArchiveManager.PREF_REVERSE_SORT);
-		mergeObject(data, {
+		/**@type {boolean}*/
+		const reverseSort = SETTINGS.get(DFChatArchiveManager.PREF_REVERSE_SORT);
+		foundry.utils.mergeObject(data, {
 			messages: reverseSort ? messages.reverse() : messages,
 			isGM: game.user.isGM,
 			reverseSort
@@ -32,7 +40,7 @@ export default class DFChatArchiveManager extends Application {
 		return data;
 	}
 
-	private _subscribeView(element: JQuery) {
+	#_subscribeView(/**@type {JQuery}*/ element) {
 		element.on('click', function () {
 			const id = parseInt($(this).attr('data-id'));
 			if (isNaN(id) || !DFChatArchive.exists(id)) {
@@ -49,7 +57,7 @@ export default class DFChatArchiveManager extends Application {
 			}
 		});
 	}
-	private _subscribeDelete(element: JQuery) {
+	#_subscribeDelete(/**@type {JQuery}*/ element) {
 		element.on('click', async function () {
 			const id = parseInt($(this).attr('data-id'));
 			if (isNaN(id) || !DFChatArchive.exists(id)) {
@@ -66,12 +74,12 @@ export default class DFChatArchiveManager extends Application {
 		});
 	}
 
-	activateListeners(html: JQuery) {
-		DFChatArchive.setUpdateListener(this._archiveChanged.bind(this));
+	activateListeners(/**@type {JQuery}*/ html) {
+		DFChatArchive.setUpdateListener(this.#_archiveChanged.bind(this));
 		if (DFChatArchive.getLogs().length > 0)
 			html.find('p.dfca-no-items').hide();
-		html.find('a[data-type="view"]').each((i, element) => { this._subscribeView($(element)); });
-		html.find('a[data-type="delete"]').each((i, element) => { this._subscribeDelete($(element)); });
+		html.find('a[data-type="view"]').each((i, element) => { this.#_subscribeView($(element)); });
+		html.find('a[data-type="delete"]').each((i, element) => { this.#_subscribeDelete($(element)); });
 		html.find('#dfca-delete-all').on('click', async function () {
 			await Dialog.confirm({
 				title: 'DF_CHAT_ARCHIVE.ArchiveManager_ConfirmDeleteAllTitle'.localize(),
@@ -106,12 +114,16 @@ export default class DFChatArchiveManager extends Application {
 		});
 	}
 
-	close(options?: any): Promise<void> {
+	/**
+	 * @param {*} [options]
+	 * @returns {Proimise<void>}
+	 */
+	close(options) {
 		DFChatArchive.setUpdateListener(null);
 		return super.close(options);
 	}
 
-	private async _archiveChanged() {
+	async #_archiveChanged() {
 		let logs = DFChatArchive.getLogs();
 		if (!game.user.isGM)
 			logs = logs.filter(x => x.visible);
@@ -131,8 +143,8 @@ export default class DFChatArchiveManager extends Application {
 				<a class="button dfca-delete" data-type="delete" data-id="${archive.id}"><i class="fas fa-trash"></i></a>
 			</div>
 		</li>`);
-			this._subscribeView(html.find('a[data-type="view"]'));
-			this._subscribeDelete(html.find('a[data-type="delete"]'));
+			this.#_subscribeView(html.find('a[data-type="view"]'));
+			this.#_subscribeDelete(html.find('a[data-type="delete"]'));
 			archiveContainer.append(html);
 		}
 		if (archiveContainer[0].children.length == 0)

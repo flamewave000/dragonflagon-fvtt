@@ -2,8 +2,7 @@
 /// <reference path="../../../common/foundry.d.ts" />
 import libWrapperShared from "../../common/libWrapperShared.mjs";
 import SETTINGS from "../../common/Settings.mjs";
-//TODO: Re-enable after migrating Chat Archive
-// import DFChatArchiveManager from "../archive/DFChatArchiveManager.mjs";
+import DFChatArchiveManager from "../archive/DFChatArchiveManager.mjs";
 
 
 export default class ChatMerge {
@@ -205,7 +204,7 @@ export default class ChatMerge {
 	static #_renderChatMessage(message, html) {
 		if (!ChatMerge.#_enabled) return;
 		// Find the most recent message in the chat log
-		const partnerElem = $(`li.chat-message`).last()[0];
+		const partnerElem = $(`#chat-log li.chat-message`).last()[0];
 		// If there is no message, return
 		if (partnerElem === null || partnerElem === undefined) return;
 		// get the ChatMessage document associated with the html
@@ -253,12 +252,16 @@ export default class ChatMerge {
 			// If we are not splitting by speaker, just do the simple option of comparing the users
 			userCompare = currData.author === prevData.author;
 		}
+
+		const currIsRoll = (currData.rolls ?? []).length > 0;
+		const prevIsRoll = (prevData.rolls ?? []).length > 0;
+
 		return userCompare
 			&& this.#_inTimeFrame(currData.timestamp, prevData.timestamp)
 			// Check for merging with roll types
 			&& (rolls === 'all'
-				|| (rolls === 'rolls' && currData.isRoll === prevData.isRoll)
-				|| (rolls === 'none' && !currData.isRoll && !prevData.isRoll));
+				|| (rolls === 'rolls' && currIsRoll === prevIsRoll)
+				|| (rolls === 'none' && !currIsRoll && !prevIsRoll));
 	}
 
 	/**
@@ -271,24 +274,23 @@ export default class ChatMerge {
 		if (currElem.hasAttribute('style')) {
 			currElem.style.setProperty('--dfce-mc-border-color', currElem.style.borderColor);
 		}
-		//TODO: Re-enable after migrating Chat Archive
-		// // If we are running in a Chat Archive
-		// if (curr === undefined && prev === undefined) {
-		// 	const logId = parseInt(/df-chat-log-(\d+)/.exec(currElem.parentElement.parentElement.id)[1]);
-		// 	if (isNaN(logId)) return;
-		// 	const chatLog = DFChatArchiveManager.chatViewers.get(logId);
-		// 	curr = chatLog.messages.find(x =>
-		// 		(x.id ?? x._id) == currElem.dataset.messageId);
-		// 	prev = chatLog.messages.find(x =>
-		// 		(x.id ?? x._id) == prevElem.dataset.messageId);
-		// }
+		let isArchive = false;
+		// If we are running in a Chat Archive
+		if (curr === undefined && prev === undefined) {
+			isArchive = true;
+			const logId = parseInt(/df-chat-log-(\d+)/.exec(currElem.parentElement.parentElement.id)[1]);
+			if (isNaN(logId)) return;
+			const chatLog = DFChatArchiveManager.chatViewers.get(logId);
+			curr = chatLog.messages.find(x => (x.id ?? x._id) == currElem.dataset.messageId);
+			prev = chatLog.messages.find(x => (x.id ?? x._id) == prevElem.dataset.messageId);
+		}
 		if (!ChatMerge.#_isValidMessage(curr, prev)) return;
 		if (prevElem.classList.contains('dfce-cm-bottom')) {
 			prevElem.classList.remove('dfce-cm-bottom');
 			prevElem.classList.add('dfce-cm-middle');
 		} else prevElem.classList.add('dfce-cm-top');
 		currElem.classList.add('dfce-cm-bottom');
-		if (!!game.dnd5e)
+		if (!!game.dnd5e && !isArchive)
 			currElem.classList.add('dnd5e');
 	}
 }

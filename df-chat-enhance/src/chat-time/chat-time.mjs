@@ -54,9 +54,9 @@ export default class ChatTime {
 			}, 'WRAPPER');
 
 		if (!game.dnd5e)
-			Hooks.on('renderChatMessage', this.#_renderChatMessage);
+			Hooks.on('renderChatMessage', this.renderChatMessage);
 		else
-			Hooks.on('dnd5e.renderChatMessage', this.#_renderChatMessage);
+			Hooks.on('dnd5e.renderChatMessage', this.renderChatMessage);
 	}
 	/**
 	* @param {ChatMessage} message
@@ -64,7 +64,7 @@ export default class ChatTime {
 	* @param {any} _data
 	* @returns {void}
 	*/
-	static #_renderChatMessage(message, html, _data) {
+	static renderChatMessage(message, html, _data) {
 		const time = new Date(message.timestamp).toLocaleString(navigator.language.startsWith('en') ? 'en-CA' : navigator.language);
 		/**@type {JQuery<HTMLElement>}*/
 		const element = $(html);
