@@ -282,8 +282,8 @@ export default class DFAdventureLogProcessor {
 			return;
 		}
 
-		// If the user did not enter anything, send them a help message
-		if (messageText.length == 0 || tokens.every(x => x.length == 0)) {
+		// If the user did not enter anything, or they entered simply 'h' or 'help', send them a help message
+		if (messageText.length == 0 || tokens.every(x => x.length == 0) || messageText.toLowerCase() == 'h' || messageText.toLowerCase() == 'help') {
 			setTimeout(async () => {
 				await Dialog.prompt({
 					title: 'DF_CHAT_LOG.HelpDialog_Title'.localize(),
