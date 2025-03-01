@@ -57,7 +57,7 @@ export default class ChatHistoryOptimizer {
 	 * @param {JQuery.ScrollEvent} event
 	 * @returns {Promise<void>}
 	 */
-	static ChatLog_onScrollLog(event) {
+	static ChatLog_onScrollLog(event, force = false) {
 		if (!this.rendered) return Promise.resolve();
 		// If this variable is not set, we need to allow the original script to run
 		if (!this._scrollToBottomButton) {
@@ -72,7 +72,7 @@ export default class ChatHistoryOptimizer {
 
 		const maxMessageCount = SETTINGS.get(ChatHistoryOptimizer.PREF_HISTORY_SIZE);
 		// Ignore all scroll events when there are not enough messages to even batch
-		if (this.collection.size <= CONFIG.ChatMessage.batchSize) return;
+		if (!force && this.collection.size <= CONFIG.ChatMessage.batchSize) return;
 		const messages = $(log).find('li.chat-message');
 		// Grab the top most message based on current scroll position
 		let topMessageIndex = -1;

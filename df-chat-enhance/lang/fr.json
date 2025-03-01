@@ -21,6 +21,7 @@
 		"ArchiveNew_FromDate": "À partir de la date:",
 		"ArchiveNew_ToDate": "À ce jour:",
 		"ArchiveNew_Delete": "Supprimer les messages de chat du journal de chat?",
+		"ArchiveNew_DeleteWarning": "La suppression partielle de l'historique <b>pourrait</b> casser la disposition du journal de chat<br>et nécessiter un rechargement.",
 		"ArchiveNew_Visible": "Rendre visible les joueurs?",
 		"ArchiveNew_Submit": "Sauver les archives",
 		"ArchiveNew_ErrorNameMissing": "Doit fournir un nom pour la nouvelle archive!",

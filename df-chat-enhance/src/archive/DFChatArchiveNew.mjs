@@ -2,6 +2,7 @@
 /// <reference path="../../../common/foundry.d.ts" />
 import { DFChatArchive } from "./DFChatArchive.mjs";
 import SETTINGS from "../../common/Settings.mjs";
+import ChatHistoryOptimizer from '../scroll-manage/ChatHistoryOptimizer.mjs'
 
 export default class DFChatArchiveNew extends FormApplication {
 	/**@readonly*/ static PREF_DELETE = 'new-should-delete';
@@ -50,24 +51,26 @@ export default class DFChatArchiveNew extends FormApplication {
 
 		//* Create a clone of the data and adjust chat IDs so they don't match with
 		//* existing chats, in case they weren't deleted.
+		const isDateRange = formData['date-or-all'] === 'date';
+		const fromDate = isDateRange ? new Date(formData.from).getTime() : Number.MIN_VALUE;
+		const toDate = isDateRange ? new Date(formData.to).getTime() : Number.MAX_VALUE;
 		/**
 		 * @param {ChatMessage[]} items
 		 */
 		function* process(items) {
-			const fromDate = formData['date-or-all'] === 'date' ? new Date(formData.from).getTime() : Number.MIN_VALUE;
-			const toDate = formData['date-or-all'] === 'date' ? new Date(formData.to).getTime() : Number.MAX_VALUE;
 			for (let i = 0; i < items.length; i++) {
 				if (items[i].timestamp < fromDate || items[i].timestamp > toDate) continue;
 				/**@type {ChatMessage}*/
 				const result = items[i].toObject();
+				result.originalID = result._id;
 				result._id = "DFCA" + result._id.substring(4);
 				yield result;
 			}
 		}
+		const chats = [...process(ui.chat.collection.contents)];
 
 		ui.notifications.info('DF_CHAT_ARCHIVE.ArchiveNew_NoticeSuccess'.localize().replace('{0}', name));
 		try {
-			const chats = [...process(ui.chat.collection.contents)];
 			await DFChatArchive.createChatArchive(name, chats, formData['visible']);
 		}
 		catch (e) {
@@ -78,7 +81,10 @@ export default class DFChatArchiveNew extends FormApplication {
 		// If we don't want to delete the messages, return
 		if (!formData.delete) return;
 
-		game.messages.flush();
+		if (!isDateRange)
+			game.messages.flush();
+		else
+			await game.messages.documentClass.deleteDocuments(chats.map(x => x.originalID));
 	}
 
 	/**
@@ -90,14 +96,17 @@ export default class DFChatArchiveNew extends FormApplication {
 			.then((html) => {
 				const from = html.find('#dfca-from');
 				const to = html.find('#dfca-to');
+				const warn = html.find("#dfca-warning");
 				html.find('#dfca-all').on('change', () => {
 					from.prop('disabled', true);
 					to.prop('disabled', true);
+					warn.hide();
 					this._recalculateDimensions();
 				});
 				html.find('#dfca-date').on('change', () => {
 					from.prop('disabled', false);
 					to.prop('disabled', false);
+					warn.show();
 					this._recalculateDimensions();
 				});
 				return html;

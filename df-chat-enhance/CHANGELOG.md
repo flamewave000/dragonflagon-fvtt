@@ -1,5 +1,11 @@
 # DF Chat Enhancements
 
+## Release 5.0.0 (2025-02-28)
+- **UPDATE:** Migrated to v12.
+- **UPDATE:** Downgraded TS -> JS (such sad).
+- **FIX:** Several discovered bugs and problems which have accumulated over time.
+- **FIX #417:** Deleting messages after date-range archive now ONLY deletes the selected messages.
+
 ## Release 4.1.0 (2022-10-23)
 - **UPDATE:** Migrated to V10.
 

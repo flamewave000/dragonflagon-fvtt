@@ -9,7 +9,7 @@
 		<li class="dfca-archive-item" data-id="{{id}}">
 			<div>
 				<a class="button dfca-view" data-type="view" data-id="{{id}}"><span>{{name}}</span></a>
-				{{#if isGM}}
+				{{#if ../isGM}}
 				{{#if visible}}<i class="dfca-visible fas fa-users" title="{{localize 'DF_CHAT_ARCHIVE.ArchiveManager_VisibleToPlayers'}}"></i>{{/if}}
 				<a class="button dfca-delete" data-type="delete" data-id="{{id}}"><i class="fas fa-trash"></i></a>
 				{{/if}}

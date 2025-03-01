@@ -21,6 +21,7 @@
 		"ArchiveNew_FromDate": "From Date:",
 		"ArchiveNew_ToDate": "To Date:",
 		"ArchiveNew_Delete": "Delete the chat messages from the chat log?",
+		"ArchiveNew_DeleteWarning": "Partial history deletion <b>might</b> break chat log layout<br>and require reload.",
 		"ArchiveNew_Visible": "Make visible to players?",
 		"ArchiveNew_Submit": "Save Archive",
 		"ArchiveNew_ErrorNameMissing": "Must provide a name for the new archive!",
