@@ -1,13 +1,22 @@
-import SETTINGS from "../../common/Settings";
-import LineToBoxCollision from "./LineToBoxCollision";
-import { TemplateConfig, HighlightMode } from "./TemplateConfig";
+/// <reference path="../../fvtt-scripts/foundry.js" />
+/// <reference path="../../common/foundry.d.ts" />
+/// <reference path="./types.d.ts" />
+import SETTINGS from "../common/Settings.mjs";
+import LineToBoxCollision from "./LineToBoxCollision.mjs";
+import { TemplateConfig, HighlightMode } from "./TemplateConfig.mjs";
 
-function throttle<T>(fn: AnyFunction, threshhold?: number): T {
+/**
+ * @template {T}
+ * @param {(...args) => void} fn
+ * @param {number} [threshhold]
+ * @returns {T}
+ */
+function throttle(fn, threshhold) {
 	threshhold || (threshhold = 250);
-	let last: number;
+	let last = 0;
 	let hasTimer = false;
-	let mostRecent: any[];
-	return <any>function (this: any, ...args: any) {
+	/**@type {any[]}*/ let mostRecent;
+	return function (...args) {
 		// Preserve the most recent arguments
 		mostRecent = [...args];
 		// Grab the current time
@@ -40,25 +49,25 @@ function throttle<T>(fn: AnyFunction, threshhold?: number): T {
 
 export default class TemplateTargeting {
 
-	private static readonly PREVIEW_PREF = "template-preview";
-	private static readonly TARGETING_TOGGLE_PREF = "template-targeting-toggle";
-	private static readonly TARGETING_MODE_PREF = "template-targeting";
-	private static readonly GRIDLESS_RESOLUTION_PREF = "template-gridless-resolution";
-	private static readonly GRIDLESS_PERCENTAGE_PREF = "template-gridless-percentage";
+	/**@readonly*/ static #PREVIEW_PREF = "template-preview";
+	/**@readonly*/ static #TARGETING_TOGGLE_PREF = "template-targeting-toggle";
+	/**@readonly*/ static #TARGETING_MODE_PREF = "template-targeting";
+	/**@readonly*/ static #GRIDLESS_RESOLUTION_PREF = "template-gridless-resolution";
+	/**@readonly*/ static #GRIDLESS_PERCENTAGE_PREF = "template-gridless-percentage";
 
-	private static readonly PointGraphContainer = new PIXI.Graphics();
+	/**@readonly*/ static #PointGraphContainer = new PIXI.Graphics();
 
 	static init() {
 		TemplateConfig.init();
 
-		SETTINGS.register(TemplateTargeting.TARGETING_TOGGLE_PREF, {
+		SETTINGS.register(TemplateTargeting.#TARGETING_TOGGLE_PREF, {
 			config: false,
 			scope: 'client',
 			type: Boolean,
 			default: true,
-			onChange: () => { if (SETTINGS.get(TemplateTargeting.TARGETING_MODE_PREF) !== 'toggle') return; }
+			onChange: () => { if (SETTINGS.get(TemplateTargeting.#TARGETING_MODE_PREF) !== 'toggle') return; }
 		});
-		SETTINGS.register<string>(TemplateTargeting.TARGETING_MODE_PREF, {
+		SETTINGS.register(TemplateTargeting.#TARGETING_MODE_PREF, {
 			config: true,
 			scope: 'world',
 			name: 'DF_TEMPLATES.AutoTargetName',
@@ -72,7 +81,7 @@ export default class TemplateTargeting {
 			default: 'toggle',
 			onChange: () => { ui.controls.initialize(); ui.controls.render(true); }
 		});
-		SETTINGS.register<number>(TemplateTargeting.GRIDLESS_RESOLUTION_PREF, {
+		SETTINGS.register(TemplateTargeting.#GRIDLESS_RESOLUTION_PREF, {
 			config: true,
 			scope: 'world',
 			name: 'DF_TEMPLATES.GridlessPointResolutionName',
@@ -85,7 +94,7 @@ export default class TemplateTargeting {
 			type: Number,
 			default: 3
 		});
-		SETTINGS.register<number>(TemplateTargeting.GRIDLESS_PERCENTAGE_PREF, {
+		SETTINGS.register(TemplateTargeting.#GRIDLESS_PERCENTAGE_PREF, {
 			config: true,
 			scope: 'world',
 			name: 'DF_TEMPLATES.GridlessPointPercentageName',
@@ -98,7 +107,7 @@ export default class TemplateTargeting {
 			type: Number,
 			default: 0
 		});
-		SETTINGS.register(TemplateTargeting.PREVIEW_PREF, {
+		SETTINGS.register(TemplateTargeting.#PREVIEW_PREF, {
 			config: true,
 			scope: 'world',
 			name: 'DF_TEMPLATES.PreviewName',
@@ -106,8 +115,8 @@ export default class TemplateTargeting {
 			type: Boolean,
 			default: true
 		});
-		Hooks.on('getSceneControlButtons', (controls: SceneControl[]) => {
-			if (SETTINGS.get(TemplateTargeting.TARGETING_MODE_PREF) !== 'toggle') return;
+		Hooks.on('getSceneControlButtons', (/**@type {SceneControl[]}*/controls) => {
+			if (SETTINGS.get(TemplateTargeting.#TARGETING_MODE_PREF) !== 'toggle') return;
 			const control = controls.find(x => x.name === 'measure');
 			control.tools.splice(0, 0, {
 				icon: 'fas fa-bullseye',
@@ -115,64 +124,86 @@ export default class TemplateTargeting {
 				title: 'DF_TEMPLATES.ToggleTitle',
 				visible: true,
 				toggle: true,
-				active: SETTINGS.get(TemplateTargeting.TARGETING_TOGGLE_PREF),
-				onClick: (toggled: boolean) => { SETTINGS.set(TemplateTargeting.TARGETING_TOGGLE_PREF, toggled); }
+				active: SETTINGS.get(TemplateTargeting.#TARGETING_TOGGLE_PREF),
+				onClick: (/**@type {boolean}*/toggled) => { SETTINGS.set(TemplateTargeting.#TARGETING_TOGGLE_PREF, toggled); }
 			});
 		});
 
 		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.highlightGrid', this._MeasuredTemplate_highlightGrid, 'OVERRIDE');
 		// When dragging a template, we need to catch the cancellation in order for us to refresh the template to draw back in its original position.
-		libWrapper.register(SETTINGS.MOD_NAME, 'PlaceableObject.prototype._createInteractionManager', function (this: PlaceableObject, wrapper: () => MouseInteractionManager) {
-			if (!(this instanceof MeasuredTemplate)) return wrapper();
-			// We wrap the interaction manager construction method
-			const manager = wrapper();
-			// Replacing the `dragLeftCancel` with our own wrapper function
-			manager.callbacks.dragLeftCancel = function (this: PlaceableObject, event: any) {
-				this.refresh();
-				PlaceableObject.prototype._onDragLeftCancel.apply(this, [event]);
-			};
-			return manager;
-		}, 'WRAPPER');
+		libWrapper.register(SETTINGS.MOD_NAME, 'PlaceableObject.prototype._createInteractionManager',
+			/**
+			 * @this {PlaceableObject}
+			 * @param {() => MouseInteractionManager} wrapper
+			 * @returns {MouseInteractionManager}
+			 */
+			function (wrapper) {
+				if (!(this instanceof MeasuredTemplate)) return wrapper();
+				// We wrap the interaction manager construction method
+				const manager = wrapper();
+				// Replacing the `dragLeftCancel` with our own wrapper function
+				manager.callbacks.dragLeftCancel = /** @this {PlaceableObject} @param {*} event */function (event) {
+					this.refresh();
+					PlaceableObject.prototype._onDragLeftCancel.apply([event]);
+				};
+				return manager;
+			}, 'WRAPPER');
 	}
 
 	static ready() {
 		// This is used to throttle the number of UI updates made to a set number of Frames Per Second.
-		const ThrottledTemplateRefresh = throttle<(w?: AnyFunction) => void>(function (this: MeasuredTemplate) {
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
+		const ThrottledTemplateRefresh = throttle(/**@this {MeasuredTemplate}*/ function () {
 			TemplateTargeting._MeasuredTemplate_highlightGrid.apply(this);
 		}, 1000 / 20);// Throttle to 20fps
 
 		// Register for the D&D5e Ability Template preview
-		// @ts-ignore
 		if (game.dnd5e) {
-			libWrapper.register(SETTINGS.MOD_NAME, 'game.dnd5e.canvas.AbilityTemplate.prototype.refresh', function (this: MeasuredTemplate, wrapper: AnyFunction, ...args: any) {
-				ThrottledTemplateRefresh.apply(this);
-				return wrapper(...args);
-			}, 'WRAPPER');
+			libWrapper.register(SETTINGS.MOD_NAME, 'game.dnd5e.canvas.AbilityTemplate.prototype.refresh',
+				/**
+				 * @this {MeasuredTemplate}
+				 * @param {Function} wrapper
+				 * @param  {...any} args
+				 * @returns 
+				 */
+				function (wrapper, ...args) {
+					ThrottledTemplateRefresh.apply(this);
+					return wrapper(...args);
+				}, 'WRAPPER');
 		}
 		// Register for the regular template movement preview
-		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.refresh', function (this: MeasuredTemplate, wrapper: AnyFunction) {
-			ThrottledTemplateRefresh.apply(this);
-			return wrapper();
-			// return wrapper();
-		}, 'WRAPPER');
+		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.refresh',
+			/**
+			 * @this {MeasuredTemplate}
+			 * @param {Function} wrapper
+			 */
+			function (wrapper) {
+				ThrottledTemplateRefresh.apply(this);
+				return wrapper();
+			}, 'WRAPPER');
 
 		// Register for the regular template creation completion and cancellation
-		const handleTemplateCreation = function (this: TemplateLayer, wrapper: AnyFunction, ...args: any) {
-			// clear the highlight preview layer
-			canvas.grid.getHighlightLayer('Template.null')?.clear();
-			return wrapper(...args);
-		};
+		const handleTemplateCreation =
+			/**
+			 * @this {TemplateLayer}
+			 * @param {Function} wrapper
+			 * @param  {...any} args
+			 */
+			function (wrapper, ...args) {
+				// clear the highlight preview layer
+				canvas.interface.grid.getHighlightLayer('Template.null')?.clear();
+				return wrapper(...args);
+			};
 		libWrapper.register(SETTINGS.MOD_NAME, 'TemplateLayer.prototype._onDragLeftDrop', handleTemplateCreation, 'WRAPPER');
 		libWrapper.register(SETTINGS.MOD_NAME, 'TemplateLayer.prototype._onDragLeftCancel', handleTemplateCreation, 'WRAPPER');
 
 		// Add the point graph container to the controls layer for rendering
-		canvas.controls.addChild(TemplateTargeting.PointGraphContainer);
+		canvas.controls.addChild(TemplateTargeting.#PointGraphContainer);
 	}
 
-	private static _MeasuredTemplate_highlightGrid(this: MeasuredTemplate) {
-		const mode = SETTINGS.get<string>(TemplateTargeting.TARGETING_MODE_PREF);
-		const shouldAutoSelect = mode === 'always' || (mode === 'toggle' && SETTINGS.get<boolean>(TemplateTargeting.TARGETING_TOGGLE_PREF));
+	/** @this {MeasuredTemplate}*/
+	static _MeasuredTemplate_highlightGrid() {
+		const mode = SETTINGS.get(TemplateTargeting.#TARGETING_MODE_PREF);
+		const shouldAutoSelect = mode === 'always' || (mode === 'toggle' && SETTINGS.get(TemplateTargeting.#TARGETING_TOGGLE_PREF));
 		const isOwner = this.document.user.id === game.userId;
 		// Release all previously targeted tokens
 		if ((this.hover || !this.id) && isOwner && shouldAutoSelect && canvas.tokens.objects) {
@@ -180,19 +211,15 @@ export default class TemplateTargeting {
 				t.setTarget(false, { releaseOthers: false, groupSelection: true });
 			}
 		}
-		TemplateTargeting._handleTouchTemplate.bind(this)(isOwner, shouldAutoSelect);
+		TemplateTargeting.#_handleTouchTemplate.bind(this)(isOwner, shouldAutoSelect);
 	}
 
-	private static _calculateGridTestArea(this: MeasuredTemplate) {
-		const shape: {
-			radius?: number,
-			points?: number[],
-			x?: number,
-			y?: number,
-			width?: number,
-			height?: number
-		} = <any>this.shape;
-		const points: number[] = shape.points ? shape.points :
+	/** @this {MeasuredTemplate}*/
+	static #_calculateGridTestArea() {
+		/** @type { {radius?:number,points?:number[],x?:number,y?:number,width?:number,height?:number} } */
+		const shape = this.shape;
+		/**@type {number[]}*/
+		const points = shape.points ? shape.points :
 			(shape.radius ?
 				[-shape.radius, -shape.radius, shape.radius, shape.radius] :
 				[shape.x, shape.y, shape.x + shape.width, shape.y + shape.height]);
@@ -215,17 +242,23 @@ export default class TemplateTargeting {
 		return shapeBounds;
 	}
 
-	private static _handleTouchTemplate(this: MeasuredTemplate, isOwner: boolean, shouldAutoSelect: boolean) {
+	/**
+	 * @this {MeasuredTemplate}
+	 * @param {boolean} isOwner
+	 * @param {boolean} shouldAutoSelect
+	 */
+	static #_handleTouchTemplate(isOwner, shouldAutoSelect) {
 		/************** THIS CODE IS DIRECTLY COPIED FROM 'MeasuredTemplate.prototype.highlightGrid' ****************/
 		const grid = canvas.grid;
 		const d = canvas.dimensions;
-		const border = <number>this.borderColor;
-		const color = <number>this.fillColor;
+		const border = this.document.borderColor.valueOf();
+		const color = this.document.fillColor.valueOf;
 		const DEBUG = SETTINGS.get('template-debug');
 
 		// Only highlight for objects which have a defined shape
-		const id: string = this.highlightId ?? (<any>this)['_original']?.highlightId;
-		if ((!this.id && !SETTINGS.get(TemplateTargeting.PREVIEW_PREF)) || !this.shape) return;
+		/**@type {string}*/
+		const id = this.highlightId ?? this['_original']?.highlightId;
+		if ((!this.id && !SETTINGS.get(TemplateTargeting.#PREVIEW_PREF)) || !this.shape) return;
 
 		// Clear existing highlight
 		const hl = grid.getHighlightLayer(id);
@@ -248,13 +281,13 @@ export default class TemplateTargeting {
 				}
 			}// eslint-disable-next-line no-empty
 			catch (error) { }
-			grid.grid.highlightGridPosition(hl, { border, color: <any>color, shape: <any>shape });
-			TemplateTargeting._selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this, <PIXI.Polygon>this.shape, true);
+			grid.grid.highlightGridPosition(hl, { border, color: color, shape: shape });
+			TemplateTargeting.#_selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this, this.shape, true);
 			return;
 		}
 
 		// Get number of rows and columns
-		const shapeBounds = TemplateTargeting._calculateGridTestArea.apply(this);
+		const shapeBounds = TemplateTargeting.#_calculateGridTestArea.apply(this);
 		const colCount = Math.ceil(shapeBounds.width() / grid.w) + 2; //? Add a padding ring around for any outlier cases
 		const rowCount = Math.ceil(shapeBounds.height() / grid.h) + 2; //? Add a padding ring around for any outlier cases
 
@@ -333,7 +366,7 @@ export default class TemplateTargeting {
 
 						const sqrDistance = distance * distance;
 						let [vx, vy] = [0, 0];
-						const testPoint = (x: number, y: number) => {
+						const testPoint = (/**@type {number}*/x,/**@type {number}*/y) => {
 							[vx, vy] = [x - this.document.x, y - this.document.y];
 							return (vx * vx + vy * vy) < sqrDistance;
 						};
@@ -345,7 +378,7 @@ export default class TemplateTargeting {
 						break;
 					}
 					case "rect": {
-						const rect = (this as any)._getRectShape(direction, distance, true);
+						const rect = this._getRectShape(direction, distance, true);
 						if (rect instanceof PIXI.Polygon) {
 							contains = this.shape.contains(testX - this.document.x, testY - this.document.y);
 							if (contains || TemplateConfig.config.rect === HighlightMode.CENTER) break;
@@ -393,11 +426,11 @@ export default class TemplateTargeting {
 							let [vx, vy] = [0, 0];
 							let mag = 0;
 							let vecAngle = 0;
-							const testPoint = (x: number, y: number) => {
+							const testPoint = (/**@type {number}*/x,/**@type {number}*/y) => {
 								[vx, vy] = [x - this.document.x, y - this.document.y];
 								return (vx * vx + vy * vy) < sqrDistance;
 							};
-							const testAngle: () => boolean = () => {
+							const testAngle = () => {
 								// calculate vector magnitude
 								mag = Math.sqrt(vx * vx + vy * vy);
 								// normalize the vector
@@ -461,7 +494,7 @@ export default class TemplateTargeting {
 
 				// If we are using Point based targetting for this template
 				if (TemplateConfig.config[this.document.t] === HighlightMode.POINTS) {
-					TemplateTargeting._selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this.document, <PIXI.Polygon>this.shape, true);
+					TemplateTargeting.#_selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this.document, this.shape, true);
 					continue;
 				}
 				// Iterate over all existing tokens and target the ones within the template area
@@ -477,21 +510,31 @@ export default class TemplateTargeting {
 		/******************************************** END OF COPIED CODE ********************************************/
 	}
 
-	private static _selectTokensByPointContainment(this: MeasuredTemplate, isOwner: boolean, shouldAutoSelect: boolean, data: { x: number, y: number }, shape: PIXI.Polygon, useMultiPointTest: boolean = false) {
+	/**
+	 * @this MeasuredTemplate
+	 * @param {boolean} isOwner
+	 * @param {boolean} shouldAutoSelect
+	 * @param { { x: number, y: number } } data
+	 * @param {PIXI.Polygon} shape
+	 * @param {boolean} useMultiPointTest
+	 * @returns 
+	 */
+	static #_selectTokensByPointContainment(isOwner, shouldAutoSelect, data, shape, useMultiPointTest = false) {
 		//* THIS CODE WAS ORIGINALLY COPIED FROM `MeasuredTemplate.prototype.highlightGrid`
 		// Ignore changing the target selection if we don't own the template, or `shouldAutoSelect` is false
 		if (!isOwner || !shouldAutoSelect) return;
 
-		const DebugMode = SETTINGS.get<boolean>('template-debug');
-		TemplateTargeting.PointGraphContainer.clear();
-		TemplateTargeting.PointGraphContainer.removeChildren();
-		let pointGraphics: PIXI.Graphics;
+		const DebugMode = SETTINGS.get('template-debug');
+		TemplateTargeting.#PointGraphContainer.clear();
+		TemplateTargeting.#PointGraphContainer.removeChildren();
+		/**@type {PIXI.Graphics}*/
+		let pointGraphics;
 		if (DebugMode) {
 			pointGraphics = new PIXI.Graphics();
-			TemplateTargeting.PointGraphContainer.addChild(pointGraphics);
+			TemplateTargeting.#PointGraphContainer.addChild(pointGraphics);
 		}
 		// If we are multi-point grab the gridless resolution, otherwise we test for each grid square center
-		const pointResolution = useMultiPointTest ? SETTINGS.get<number>(TemplateTargeting.GRIDLESS_RESOLUTION_PREF) : 1;
+		const pointResolution = useMultiPointTest ? SETTINGS.get(TemplateTargeting.#GRIDLESS_RESOLUTION_PREF) : 1;
 		// Iterate over all existing tokens and target the ones within the template area
 		for (const token of canvas.tokens.placeables) {
 			// Get the center offset of the token
@@ -513,7 +556,7 @@ export default class TemplateTargeting {
 			let y = 0;
 			let pointFound = false;
 			if (DebugMode) pointGraphics.beginFill(0xFF0000);
-			const percentage = SETTINGS.get<number>(TemplateTargeting.GRIDLESS_PERCENTAGE_PREF) / 100;
+			const percentage = SETTINGS.get(TemplateTargeting.#GRIDLESS_PERCENTAGE_PREF) / 100;
 			const pointCount = verPoints * horPoints;
 			let hitCount = 0;
 			for (let row = 0; !pointFound && row < verPoints; row++) {

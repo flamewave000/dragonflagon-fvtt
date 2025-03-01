@@ -1,19 +1,32 @@
+/// <reference path="../../fvtt-scripts/foundry.js" />
+/// <reference path="../../common/foundry.d.ts" />
+/// <reference path="./types.d.ts" />
 
+/**
+ * @readonly
+ * @enum {number}
+ */
+const OutCode = {
+	INSIDE: 0x0000,
+	LEFT: 0x0001,
+	RIGHT: 0x0010,
+	BOTTOM: 0x0100,
+	TOP: 0x1000,
+};
 
-enum OutCode {
-	INSIDE = 0x0000,
-	LEFT = 0x0001,
-	RIGHT = 0x0010,
-	BOTTOM = 0x0100,
-	TOP = 0x1000
-}
 /**
  * Uses the highly optimized Cohen–Sutherland algorithm for detecting if a line segment passes through a rectangle on a 2D plane.
  * https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm
  */
 export default class LineToBoxCollision {
-	private static _computeOutCode(x: number, y: number, bounds: { left: number, right: number, top: number, bottom: number }): OutCode {
-		let code: OutCode;
+	/**
+	 * @param {number} x
+	 * @param {number} y
+	 * @param { { left: number, right: number, top: number, bottom: number } } bounds
+	 * @returns {OutCode}
+	 */
+	static #_computeOutCode(x, y, bounds) {
+		/**@type {OutCode}*/ let code;
 		code = OutCode.INSIDE;          // initialised as being inside of [[clip window]]
 		if (x <= bounds.left)           // to the left of clip window
 			code |= OutCode.LEFT;
@@ -26,14 +39,21 @@ export default class LineToBoxCollision {
 		return code;
 	}
 
-	// Cohen–Sutherland clipping algorithm clips a line from
-	// P0 = (x0, y0) to P1 = (x1, y1) against a rectangle with 
-	// diagonal from (left, top) to (right, bottom).
-	static cohenSutherlandLineClipAndDraw(x0: number, y0: number, x1: number, y1: number,
-		bounds: { left: number, right: number, top: number, bottom: number }): boolean {
+	/**
+	 * Cohen–Sutherland clipping algorithm clips a line from
+	 * P0 = (x0, y0) to P1 = (x1, y1) against a rectangle with 
+	 * diagonal from (left, top) to (right, bottom).
+	 * @param {number} x0
+	 * @param {number} y0
+	 * @param {number} x1
+	 * @param {number} y1
+	 * @param { { left: number, right: number, top: number, bottom: number } } bounds
+	 * @returns {boolean}
+	 */
+	static cohenSutherlandLineClipAndDraw(x0, y0, x1, y1, bounds) {
 		// compute outcodes for P0, P1, and whatever point lies outside the clip rectangle
-		let outcode0: OutCode = this._computeOutCode(x0, y0, bounds);
-		let outcode1: OutCode = this._computeOutCode(x1, y1, bounds);
+		/**@type {OutCode}*/ let outcode0 = this.#_computeOutCode(x0, y0, bounds);
+		/**@type {OutCode}*/ let outcode1 = this.#_computeOutCode(x1, y1, bounds);
 		let accept = false;
 
 		while (true) {
@@ -51,7 +71,8 @@ export default class LineToBoxCollision {
 				let [x, y] = [0, 0];
 
 				// At least one endpoint is outside the clip rectangle; pick it.
-				const outcodeOut: OutCode = outcode1 > outcode0 ? outcode1 : outcode0;
+				/**@type {OutCode}*/
+				const outcodeOut = outcode1 > outcode0 ? outcode1 : outcode0;
 
 				// Now find the intersection point;
 				// use formulas:
@@ -79,11 +100,11 @@ export default class LineToBoxCollision {
 				if (outcodeOut == outcode0) {
 					x0 = x;
 					y0 = y;
-					outcode0 = this._computeOutCode(x0, y0, bounds);
+					outcode0 = this.#_computeOutCode(x0, y0, bounds);
 				} else {
 					x1 = x;
 					y1 = y;
-					outcode1 = this._computeOutCode(x1, y1, bounds);
+					outcode1 = this.#_computeOutCode(x1, y1, bounds);
 				}
 			}
 		}

@@ -1,47 +1,37 @@
-import SETTINGS from "../../common/Settings";
+/// <reference path="../../fvtt-scripts/foundry.js" />
+/// <reference path="../../common/foundry.d.ts" />
+/// <reference path="./types.d.ts" />
+import SETTINGS from "../common/Settings.mjs";
 
+/**
+ * @readonly
+ * @enum {string}
+ */
+export const HighlightMode = {
+	CENTER: 'center',
+	TOUCH: 'touch',
+	POINTS: 'points'
+};
 
-interface Option {
-	type?: string;
-	label: string;
-	desc: string;
-}
-
-interface Config {
-	circle: string;
-	cone: string;
-	rect: string;
-	ray: string;
-}
-
-interface Data extends Config {
-	options: Option[];
-}
-
-export enum HighlightMode {
-	CENTER = 'center',
-	TOUCH = 'touch',
-	POINTS = 'points'
-}
-
-export class TemplateConfig extends FormApplication<any, Data> {
-	private static readonly CONFIG_PREF = 'template-config';
-	private static readonly PATCH_5E_PREF = "template-targeting-patch5e";
-	private static readonly PATCH_5E_CIRCLE_PREF = "template-targeting-patch5e-circle";
-	private static _options: Option[];
-	private static get options(): Option[] {
-		if (!this._options) {
-			const root: Record<string, Option> =
-				<any>(game.i18n.translations['DF_TEMPLATES'] ?? (game.i18n as any)._fallback['DF_TEMPLATES'])['TemplateConfig']['Options'];
-			this._options = Object.keys(root).map(key => {
+export class TemplateConfig extends FormApplication {
+	/**@readonly*/ static #CONFIG_PREF = 'template-config';
+	/**@readonly*/ static #PATCH_5E_PREF = "template-targeting-patch5e";
+	/**@readonly*/ static #PATCH_5E_CIRCLE_PREF = "template-targeting-patch5e-circle";
+	/**@type {Option[]}*/ static #_options;
+	/**@type {Option[]}*/ static get #options() {
+		if (!this.#_options) {
+			/**@type {Record<string, Option>}*/
+			const root = (game.i18n.translations['DF_TEMPLATES'] ?? game.i18n._fallback['DF_TEMPLATES'])['TemplateConfig']['Options'];
+			this.#_options = Object.keys(root).map(key => {
 				root[key].type = key;
 				return root[key];
 			});
 		}
-		return this._options;
+		return this.#_options;
 	}
 
-	static get defaultOptions(): FormApplicationOptions {
+	/**@type {FormApplicationOptions}*/
+	static get defaultOptions() {
 		const options = mergeObject(super.defaultOptions, {
 			resizable: false,
 			submitOnChange: false,
@@ -57,8 +47,10 @@ export class TemplateConfig extends FormApplication<any, Data> {
 		return options;
 	}
 
-	static get config(): Config { return SETTINGS.get(this.CONFIG_PREF); }
-	static get isNotDefault(): boolean {
+	/**@type {Config}*/
+	static get config() { return SETTINGS.get(this.#CONFIG_PREF); }
+	/**@type {boolean}*/
+	static get isNotDefault() {
 		const config = this.config;
 		return config.circle !== HighlightMode.CENTER
 			|| config.cone !== HighlightMode.CENTER
@@ -67,51 +59,59 @@ export class TemplateConfig extends FormApplication<any, Data> {
 	}
 
 	static init() {
-		SETTINGS.register(this.PATCH_5E_PREF, {
+		SETTINGS.register(this.#PATCH_5E_PREF, {
 			config: false,
 			type: Boolean,
 			default: false,
 			scope: 'world'
 		});
-		SETTINGS.register(this.PATCH_5E_CIRCLE_PREF, {
+		SETTINGS.register(this.#PATCH_5E_CIRCLE_PREF, {
 			config: false,
 			type: Boolean,
 			default: false,
 			scope: 'world'
 		});
 
-		const old5ePatch = SETTINGS.get<boolean>(this.PATCH_5E_PREF);
-		const old5eCirclePatch = SETTINGS.get<boolean>(this.PATCH_5E_CIRCLE_PREF);
+		const old5ePatch = SETTINGS.get(this.#PATCH_5E_PREF);
+		const old5eCirclePatch = SETTINGS.get(this.#PATCH_5E_CIRCLE_PREF);
 
-		SETTINGS.register<Config>(this.CONFIG_PREF, {
+		SETTINGS.register(this.#CONFIG_PREF, {
 			config: false,
 			scope: 'world',
-			type: <any>Object,
+			type: Object,
 			default: {
 				circle: old5eCirclePatch ? HighlightMode.TOUCH : HighlightMode.CENTER,
 				cone: old5ePatch ? HighlightMode.TOUCH : HighlightMode.CENTER,
 				rect: old5ePatch ? HighlightMode.TOUCH : HighlightMode.CENTER,
 				ray: old5ePatch ? HighlightMode.TOUCH : HighlightMode.CENTER
 			},
-			onChange: () => canvas.templates?.placeables.filter((t: MeasuredTemplate) => t.document.t === "circle")
-				.forEach((t: MeasuredTemplate) => t.draw())
+			onChange: () => canvas.templates?.placeables
+				.filter((/**@type {MeasuredTemplate}*/t) => t.document.t === "circle")
+				.forEach((/**@type {MeasuredTemplate}*/t) => t.draw())
 		});
 
 		SETTINGS.registerMenu('template-config', {
 			restricted: true,
-			type: <any>TemplateConfig,
+			type: TemplateConfig,
 			label: "DF_TEMPLATES.TemplateConfig.Title"
 		});
 	}
 
-	getData(_options?: Partial<any>): Data | Promise<Data> {
+	/**
+	 * @param {*} [_options]
+	 * @returns {Data | Promise<Data>}
+	 */
+	getData(_options) {
 		const data = mergeObject(TemplateConfig.config, {
-			options: TemplateConfig.options
+			options: TemplateConfig.#options
 		});
 		return data;
 	}
 
-	activateListeners(html: JQuery<HTMLElement>): void {
+	/**
+	 * @param {JQuery<HTMLElement>} html
+	 */
+	activateListeners(html) {
 		html.find('#dfte-set-foundry').on('click', e => {
 			e.preventDefault();
 			html.find(`select[name="circle"]`).val(HighlightMode.CENTER);
@@ -132,7 +132,13 @@ export class TemplateConfig extends FormApplication<any, Data> {
 		});
 	}
 
-	protected async _updateObject(_event: Event, formData?: any): Promise<void> {
-		await SETTINGS.set(TemplateConfig.CONFIG_PREF, formData);
+	/**
+	 * @protected
+	 * @param {Event} _event
+	 * @param {*} [formData]
+	 * @returns {Promise<void>}
+	 */
+	async _updateObject(_event, formData) {
+		await SETTINGS.set(TemplateConfig.#CONFIG_PREF, formData);
 	}
 }

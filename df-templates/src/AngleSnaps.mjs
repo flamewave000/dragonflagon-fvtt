@@ -1,8 +1,11 @@
-import SETTINGS from "../../common/Settings";
+/// <reference path="../../fvtt-scripts/foundry.js" />
+/// <reference path="../../common/foundry.d.ts" />
+/// <reference path="./types.d.ts" />
+import SETTINGS from "../common/Settings.mjs";
 
 export default class AngleSnaps {
 	static init() {
-		SETTINGS.register<number>('angle-snap-macro', {
+		SETTINGS.register('angle-snap-macro', {
 			config: true,
 			scope: 'world',
 			name: 'DF_TEMPLATES.AngleSnap.MacroName',
@@ -15,7 +18,7 @@ export default class AngleSnaps {
 			},
 			default: 24
 		});
-		SETTINGS.register<number>('angle-snap-micro', {
+		SETTINGS.register('angle-snap-micro', {
 			config: true,
 			scope: 'world',
 			name: 'DF_TEMPLATES.AngleSnap.MicroName',
@@ -31,17 +34,23 @@ export default class AngleSnaps {
 	}
 
 	static ready() {
-		libWrapper.register(SETTINGS.MOD_NAME, 'canvas.templates._onMouseWheel', function (this: TemplateLayer, event: MouseEvent): any {
+		libWrapper.register(SETTINGS.MOD_NAME, 'canvas.templates._onMouseWheel',
+			/**
+			 * @this {TemplateLayer}
+			 * @param {MouseEvent} event
+			 * @returns {*}
+			 */
+			function (event) {
 			// Determine whether we have a hovered template?
 			const template = this.hover;
 			if (!template) return;
 			// Determine the incremental angle of rotation from event data
-			const snapCount = SETTINGS.get<number>('angle-snap-macro');
+			const snapCount = SETTINGS.get('angle-snap-macro');
 			let snap = 360 / snapCount;
 			if (!event.shiftKey)
-				snap /= SETTINGS.get<number>('angle-snap-micro');
+				snap /= SETTINGS.get('angle-snap-micro');
 
-			const sign = Math.sign((event as any).deltaY);
+			const sign = Math.sign(event.deltaY);
 			const delta = snap * sign;
 			let direction = template.document.direction - (template.document.direction % snap);
 			if (template.document.direction % snap !== 0 && sign < 0)
@@ -50,16 +59,19 @@ export default class AngleSnaps {
 		}, 'OVERRIDE');
 	}
 
-	static handleDnD5eAbilityTemplate(this: any, event: any) {
+	/**
+	 * @param {*} event
+	 */
+	static handleDnD5eAbilityTemplate(event) {
 		/***************** THIS IS COPIED FROM THE DnD 5e CODE BASE `AbilityTemplate.prototype._onRotatePlacement `module/canvas/ability-template.mjs`` ***************/
 		if (event.ctrlKey) event.preventDefault(); // Avoid zooming the browser window
 		event.stopPropagation();
 
 		/**** MODIFIED THIS REGION ****/
-		const snapCount = SETTINGS.get<number>('angle-snap-macro');
+		const snapCount = SETTINGS.get('angle-snap-macro');
 		let snap = 360 / snapCount;
 		if (event.shiftKey)
-			snap /= SETTINGS.get<number>('angle-snap-micro');
+			snap /= SETTINGS.get('angle-snap-micro');
 
 		const sign = Math.sign(event.deltaY);
 		let direction = this.document.direction;

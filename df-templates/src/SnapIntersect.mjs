@@ -1,4 +1,8 @@
-import SETTINGS from "../../common/Settings";
+/// <reference path="../../fvtt-scripts/foundry.js" />
+/// <reference path="../../common/foundry.d.ts" />
+/// <reference path="../../common/libWrapper.d.ts" />
+/// <reference path="./types.d.ts" />
+import SETTINGS from "../common/Settings.mjs";
 
 export default class SnapIntersect {
 	static init() {
@@ -9,27 +13,27 @@ export default class SnapIntersect {
 			hint: 'DF_TEMPLATES.SnapIntersectHint',
 			type: Boolean,
 			default: false,
-			onChange: (toggled) => toggled ? this.patch() : this.unpatch()
+			onChange: (toggled) => toggled ? this.#patch() : this.#unpatch()
 		});
 	}
 
 	static ready() {
-		if (SETTINGS.get<boolean>('SnapIntersect'))
-			this.patch();
+		if (SETTINGS.get('SnapIntersect'))
+			this.#patch();
 	}
 
-	private static patch() {
-		libWrapper.register(SETTINGS.MOD_NAME, 'canvas.templates.gridPrecision', SnapIntersect.TemplateLayer_gridPrecision, 'OVERRIDE');
+	static #patch() {
+		libWrapper.register(SETTINGS.MOD_NAME, 'canvas.templates.gridPrecision', SnapIntersect.#TemplateLayer_gridPrecision, 'OVERRIDE');
 	}
-	private static unpatch() {
+	static #unpatch() {
 		libWrapper.unregister(SETTINGS.MOD_NAME, 'canvas.templates.gridPrecision', false);
 	}
 
-	private static TemplateLayer_gridPrecision() {
+	static #TemplateLayer_gridPrecision() {
 		return canvas.grid.type === CONST.GRID_TYPES.GRIDLESS ? 0 : 1;
 	}
 
-	static handleDnD5eAbilityTemplate(this: any, event: any) {
+	static handleDnD5eAbilityTemplate(event) {
 		/***************** THIS IS COPIED FROM THE DnD 5e CODE BASE `AbilityTemplate.prototype._onMovePlacement` `module/canvas/ability-template.mjs` ***************/
 		const now = Date.now(); // Apply a 20ms throttle
 		if ( now - this._moveTime <= 20 ) return;
