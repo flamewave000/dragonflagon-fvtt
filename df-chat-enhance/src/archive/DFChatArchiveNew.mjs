@@ -2,7 +2,6 @@
 /// <reference path="../../../common/foundry.d.ts" />
 import { DFChatArchive } from "./DFChatArchive.mjs";
 import SETTINGS from "../../common/Settings.mjs";
-import ChatHistoryOptimizer from '../scroll-manage/ChatHistoryOptimizer.mjs'
 
 export default class DFChatArchiveNew extends FormApplication {
 	/**@readonly*/ static PREF_DELETE = 'new-should-delete';

@@ -148,7 +148,7 @@ export default class DFChatArchiveViewer extends Application {
 				const log = html.find('#df-chat-log');
 				const messageHtml = [];
 				/**@type {ChatMessage[]}*/
-				this.messages = await DFChatArchive.getArchiveContents(this.archive)
+				this.messages = await DFChatArchive.getArchiveContents(this.archive);
 				this.messages = this.messages.filter(x => game.user.isGM || x.author.id === game.userId || x.whisper.length == 0 || x.whisper.some(x => x === game.userId));
 
 				/**@type {string[]}*/

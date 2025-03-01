@@ -1,0 +1,43 @@
+$colour-public: #26C281;
+$colour-gm: #F2CA27;
+$colour-blind: #E87E04;
+$colour-self: #E74C3C;
+
+#dfcp-rt-buttons {
+	display: flex;
+	flex-flow: row nowrap;
+	margin: 0 0.5em;
+	button {
+		flex: 0 1 auto;
+		min-height: 36px;
+		max-height: 36px;
+		padding-top: 2px;
+		i {
+			width: 20px;
+			height: 20px;
+			margin: auto;
+		}
+		&:first-child {
+			text-align: justify;
+		}
+	}
+	button.active i {
+		color: #000;
+	}
+	button[data-id="publicroll"].active {
+		background-color: $colour-public;
+	}
+	button[data-id="gmroll"].active {
+		background-color: $colour-gm;
+	}
+	button[data-id="blindroll"].active {
+		background-color: $colour-blind;
+	}
+	button[data-id="selfroll"].active {
+		background-color: $colour-self;
+	}
+}
+#chat-controls {
+	padding: 0.5em 0;
+	align-items: center;
+}

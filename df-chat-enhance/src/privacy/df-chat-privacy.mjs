@@ -4,7 +4,7 @@ import UTIL from "../Util.mjs";
 
 /**@type { {[key: string]:string;publicroll:string;gmroll:string;blindroll:string;selfroll:string;} }*/
 const ICONS_FOR_KNOWN_ROLL_TYPES = {
-	publicroll: 'fas fa-dice-d20',
+	publicroll: 'fas fa-users',
 	gmroll: 'fas fa-user-secret',
 	blindroll: 'fas fa-user-ninja',
 	selfroll: 'fas fa-ghost'
