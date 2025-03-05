@@ -22,29 +22,29 @@ export default class SquareTemplate {
 	}
 
 	static #patch() {
-		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype._getRectShape', SquareTemplate.MeasuredTemplate_getRectShape, 'OVERRIDE');
+		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.getRectShape', SquareTemplate.MeasuredTemplate_getRectShape, 'OVERRIDE');
 		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype._refreshRulerText', SquareTemplate.#MeasuredTemplate_refreshRulerText, 'WRAPPER');
 	}
 	static #unpatch() {
-		libWrapper.unregister(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype._getRectShape', false);
+		libWrapper.unregister(SETTINGS.MOD_NAME, 'MeasuredTemplate.getRectShape', false);
 		libWrapper.unregister(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype._refreshRulerText', false);
 	}
 
 	/**
 	 * @this {MeasuredTemplate}
-	 * @param {number} direction
 	 * @param {number} distance
+	 * @param {number} direction
 	 * @param {boolean} adjustForRoundingError
 	 * @returns {PIXI.Polygon}
 	 */
-	static MeasuredTemplate_getRectShape(direction, distance, adjustForRoundingError = false) {
+	static MeasuredTemplate_getRectShape(distance, direction, adjustForRoundingError = false) {
 		// Generate a rotation matrix to apply the rect against. The base rotation must be rotated
 		// CCW by 45° before applying the real direction rotation.
-		const matrix = PIXI.Matrix.IDENTITY.rotate((-45 * (Math.PI / 180)) + direction);
+		const matrix = PIXI.Matrix.IDENTITY.rotate(Math.toRadians(-45 + direction));
 		// If the shape will be used for collision, shrink the rectangle by a fixed EPSILON amount to account for rounding errors
 		const EPSILON = adjustForRoundingError ? 0.0001 : 0;
 		// Use simple Pythagoras to calculate the square's size from the diagonal "distance".
-		const size = Math.sqrt((distance * distance) / 2) - EPSILON;
+		const size = (Math.sqrt((distance * distance) / 2) * canvas.dimensions.distancePixels) - EPSILON;
 		// Create the square's 4 corners with origin being the Top-Left corner and apply the
 		// rotation matrix against each.
 		const topLeft = matrix.apply(new PIXI.Point(EPSILON, EPSILON));

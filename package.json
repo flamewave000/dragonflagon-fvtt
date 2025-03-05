@@ -6,6 +6,7 @@
 		"@wstaeblein/json-translator": "^0.7.2",
 		"eslint": "^9.20.1",
 		"globals": "^15.15.0",
+		"pixi.js": "^7.4.2",
 		"sass": "^1.84.0"
 	}
 }

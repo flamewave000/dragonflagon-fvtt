@@ -130,87 +130,87 @@ export default class TemplateTargeting {
 		});
 
 		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.highlightGrid', this._MeasuredTemplate_highlightGrid, 'OVERRIDE');
-		// When dragging a template, we need to catch the cancellation in order for us to refresh the template to draw back in its original position.
-		libWrapper.register(SETTINGS.MOD_NAME, 'PlaceableObject.prototype._createInteractionManager',
-			/**
-			 * @this {PlaceableObject}
-			 * @param {() => MouseInteractionManager} wrapper
-			 * @returns {MouseInteractionManager}
-			 */
-			function (wrapper) {
-				if (!(this instanceof MeasuredTemplate)) return wrapper();
-				// We wrap the interaction manager construction method
-				const manager = wrapper();
-				// Replacing the `dragLeftCancel` with our own wrapper function
-				manager.callbacks.dragLeftCancel = /** @this {PlaceableObject} @param {*} event */function (event) {
-					this.refresh();
-					PlaceableObject.prototype._onDragLeftCancel.apply([event]);
-				};
-				return manager;
-			}, 'WRAPPER');
+		// // When dragging a template, we need to catch the cancellation in order for us to refresh the template to draw back in its original position.
+		// libWrapper.register(SETTINGS.MOD_NAME, 'PlaceableObject.prototype._createInteractionManager',
+		// 	/**
+		// 	 * @this {PlaceableObject}
+		// 	 * @param {() => MouseInteractionManager} wrapper
+		// 	 * @returns {MouseInteractionManager}
+		// 	 */
+		// 	function (wrapper) {
+		// 		if (!(this instanceof MeasuredTemplate)) return wrapper();
+		// 		// We wrap the interaction manager construction method
+		// 		const manager = wrapper();
+		// 		// Replacing the `dragLeftCancel` with our own wrapper function
+		// 		manager.callbacks.dragLeftCancel = /** @this {PlaceableObject} @param {*} event */function (event) {
+		// 			this.refresh();
+		// 			PlaceableObject.prototype._onDragLeftCancel.apply([event]);
+		// 		};
+		// 		return manager;
+		// 	}, 'WRAPPER');
 	}
 
 	static ready() {
-		// This is used to throttle the number of UI updates made to a set number of Frames Per Second.
-		const ThrottledTemplateRefresh = throttle(/**@this {MeasuredTemplate}*/ function () {
-			TemplateTargeting._MeasuredTemplate_highlightGrid.apply(this);
-		}, 1000 / 20);// Throttle to 20fps
+		// // This is used to throttle the number of UI updates made to a set number of Frames Per Second.
+		// const ThrottledTemplateRefresh = throttle(/**@this {MeasuredTemplate}*/ function () {
+		// 	TemplateTargeting._MeasuredTemplate_highlightGrid.apply(this);
+		// }, 1000 / 20);// Throttle to 20fps
 
-		// Register for the D&D5e Ability Template preview
-		if (game.dnd5e) {
-			libWrapper.register(SETTINGS.MOD_NAME, 'game.dnd5e.canvas.AbilityTemplate.prototype.refresh',
-				/**
-				 * @this {MeasuredTemplate}
-				 * @param {Function} wrapper
-				 * @param  {...any} args
-				 * @returns 
-				 */
-				function (wrapper, ...args) {
-					ThrottledTemplateRefresh.apply(this);
-					return wrapper(...args);
-				}, 'WRAPPER');
-		}
-		// Register for the regular template movement preview
-		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.refresh',
-			/**
-			 * @this {MeasuredTemplate}
-			 * @param {Function} wrapper
-			 */
-			function (wrapper) {
-				ThrottledTemplateRefresh.apply(this);
-				return wrapper();
-			}, 'WRAPPER');
+		// // Register for the D&D5e Ability Template preview
+		// if (game.dnd5e) {
+		// 	libWrapper.register(SETTINGS.MOD_NAME, 'game.dnd5e.canvas.AbilityTemplate.prototype.refresh',
+		// 		/**
+		// 		 * @this {MeasuredTemplate}
+		// 		 * @param {Function} wrapper
+		// 		 * @param  {...any} args
+		// 		 * @returns 
+		// 		 */
+		// 		function (wrapper, ...args) {
+		// 			ThrottledTemplateRefresh.apply(this);
+		// 			return wrapper(...args);
+		// 		}, 'WRAPPER');
+		// }
+		// // Register for the regular template movement preview
+		// libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.refresh',
+		// 	/**
+		// 	 * @this {MeasuredTemplate}
+		// 	 * @param {Function} wrapper
+		// 	 */
+		// 	function (wrapper) {
+		// 		ThrottledTemplateRefresh.apply(this);
+		// 		return wrapper();
+		// 	}, 'WRAPPER');
 
-		// Register for the regular template creation completion and cancellation
-		const handleTemplateCreation =
-			/**
-			 * @this {TemplateLayer}
-			 * @param {Function} wrapper
-			 * @param  {...any} args
-			 */
-			function (wrapper, ...args) {
-				// clear the highlight preview layer
-				canvas.interface.grid.getHighlightLayer('Template.null')?.clear();
-				return wrapper(...args);
-			};
-		libWrapper.register(SETTINGS.MOD_NAME, 'TemplateLayer.prototype._onDragLeftDrop', handleTemplateCreation, 'WRAPPER');
-		libWrapper.register(SETTINGS.MOD_NAME, 'TemplateLayer.prototype._onDragLeftCancel', handleTemplateCreation, 'WRAPPER');
+		// // Register for the regular template creation completion and cancellation
+		// const handleTemplateCreation =
+		// 	/**
+		// 	 * @this {TemplateLayer}
+		// 	 * @param {Function} wrapper
+		// 	 * @param  {...any} args
+		// 	 */
+		// 	function (wrapper, ...args) {
+		// 		// clear the highlight preview layer
+		// 		canvas.interface.grid.getHighlightLayer('Template.null')?.clear();
+		// 		return wrapper(...args);
+		// 	};
+		// libWrapper.register(SETTINGS.MOD_NAME, 'TemplateLayer.prototype._onDragLeftDrop', handleTemplateCreation, 'WRAPPER');
+		// libWrapper.register(SETTINGS.MOD_NAME, 'TemplateLayer.prototype._onDragLeftCancel', handleTemplateCreation, 'WRAPPER');
 
-		// Add the point graph container to the controls layer for rendering
-		canvas.controls.addChild(TemplateTargeting.#PointGraphContainer);
+		// // Add the point graph container to the controls layer for rendering
+		// canvas.controls.addChild(TemplateTargeting.#PointGraphContainer);
 	}
 
 	/** @this {MeasuredTemplate}*/
 	static _MeasuredTemplate_highlightGrid() {
 		const mode = SETTINGS.get(TemplateTargeting.#TARGETING_MODE_PREF);
 		const shouldAutoSelect = mode === 'always' || (mode === 'toggle' && SETTINGS.get(TemplateTargeting.#TARGETING_TOGGLE_PREF));
-		const isOwner = this.document.user.id === game.userId;
-		// Release all previously targeted tokens
-		if ((this.hover || !this.id) && isOwner && shouldAutoSelect && canvas.tokens.objects) {
-			for (const t of game.user.targets) {
-				t.setTarget(false, { releaseOthers: false, groupSelection: true });
-			}
-		}
+		const isOwner = this.document.author.id === game.userId;
+		// // Release all previously targeted tokens
+		// if ((this.hover || !this.id) && isOwner && shouldAutoSelect && canvas.tokens.objects) {
+		// 	for (const t of game.user.targets) {
+		// 		t.setTarget(false, { releaseOthers: false, groupSelection: true });
+		// 	}
+		// }
 		TemplateTargeting.#_handleTouchTemplate.bind(this)(isOwner, shouldAutoSelect);
 	}
 
@@ -235,8 +235,8 @@ export default class TemplateTargeting {
 			if (points[c + 1] < shapeBounds.top) shapeBounds.top = points[c + 1];
 			if (points[c + 1] > shapeBounds.bottom) shapeBounds.bottom = points[c + 1];
 		}
-		const snappedTopLeft = canvas.grid.grid.getSnappedPosition(shapeBounds.left, shapeBounds.top, 1);
-		const snappedBottomRight = canvas.grid.grid.getSnappedPosition(shapeBounds.right, shapeBounds.bottom, 1);
+		const snappedTopLeft = canvas.grid.getSnappedPoint({ x: shapeBounds.left, y: shapeBounds.top }, { mode: 0, resolution: 1 });
+		const snappedBottomRight = canvas.grid.getSnappedPoint({ x: shapeBounds.right, y: shapeBounds.bottom }, { mode: 0, resolution: 1 });
 		[shapeBounds.left, shapeBounds.top] = [snappedTopLeft.x, snappedTopLeft.y];
 		[shapeBounds.right, shapeBounds.bottom] = [snappedBottomRight.x, snappedBottomRight.y];
 		return shapeBounds;
@@ -248,62 +248,33 @@ export default class TemplateTargeting {
 	 * @param {boolean} shouldAutoSelect
 	 */
 	static #_handleTouchTemplate(isOwner, shouldAutoSelect) {
-		/************** THIS CODE IS DIRECTLY COPIED FROM 'MeasuredTemplate.prototype.highlightGrid' ****************/
-		const grid = canvas.grid;
+		// Clear the existing highlight layer
+		canvas.interface.grid.clearHighlightLayer(this.highlightId);
+		// Highlight colors
+		const border = this.document.borderColor;
+		const color = this.document.fillColor;
+		/**@type {GridLayer}*/
+		const grid = canvas.interface.grid;
 		const d = canvas.dimensions;
-		const border = this.document.borderColor.valueOf();
-		const color = this.document.fillColor.valueOf;
 		const DEBUG = SETTINGS.get('template-debug');
 
 		// Only highlight for objects which have a defined shape
-		/**@type {string}*/
-		const id = this.highlightId ?? this['_original']?.highlightId;
-		if ((!this.id && !SETTINGS.get(TemplateTargeting.#PREVIEW_PREF)) || !this.shape) return;
-
-		// Clear existing highlight
-		const hl = grid.getHighlightLayer(id);
-		hl?.clear();
+		if (!this.shape) return;
 
 		// If we are in gridless mode, highlight the shape directly
-		if (grid.type === CONST.GRID_TYPES.GRIDLESS) {
-			const shape = this.shape.clone();
-			//* ADDED CODE: This try-catch was added to handle a random error that occurs where
-			//* Foundry Core tries to update the MeasuredTemplate when it doesn't have a position.
-			try {
-				if ("points" in shape) {
-					shape.points = shape.points.map((p, i) => {
-						if (i % 2) return this.y + p;
-						else return this.x + p;
-					});
-				} else {
-					shape.x += this.x;
-					shape.y += this.y;
-				}
-			}// eslint-disable-next-line no-empty
-			catch (error) { }
-			grid.grid.highlightGridPosition(hl, { border, color: color, shape: shape });
-			TemplateTargeting.#_selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this, this.shape, true);
+		if (canvas.grid.type === foundry.CONST.GRID_TYPES.GRIDLESS) {
+			const shape = this._getGridHighlightShape();
+			canvas.interface.canvas.grid.sizeYighlightPosition(this.highlightId, { border, color, shape });
+			// TemplateTargeting.#_selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this, this.shape, true);
 			return;
 		}
 
-		// Get number of rows and columns
-		const shapeBounds = TemplateTargeting.#_calculateGridTestArea.apply(this);
-		const colCount = Math.ceil(shapeBounds.width() / grid.w) + 2; //? Add a padding ring around for any outlier cases
-		const rowCount = Math.ceil(shapeBounds.height() / grid.h) + 2; //? Add a padding ring around for any outlier cases
-
-		// Get the offset of the template origin relative to the top-left grid space
-		const [tx, ty] = canvas.grid.getTopLeft(this.document.x, this.document.y);
-		const [row0, col0] = grid.grid.getGridPositionFromPixels(shapeBounds.left + tx, shapeBounds.top + ty);
-		const hx = canvas.grid.w / 2;
-		const hy = canvas.grid.h / 2;
-
-		/***** START OF CODE EDIT *****/
 		// Extract and prepare data
 		let { direction, distance, angle, width } = this.document;
 		distance *= (d.size / d.distance);
 		width *= (d.size / d.distance);
 		angle = Math.toRadians(angle);
-		direction = Math.toRadians((direction % 360) + 360);
+		direction = Math.toRadians(direction);
 		// If we are round, the side is of length `distance`, otherwise calculate the true length of the hypotenouse
 		const isRound = game.settings.get("core", "coneTemplateType") === 'round';
 		const rayLength = isRound ? distance : (distance / Math.sin((Math.PI / 2) - (angle / 2))) * Math.sin(Math.PI / 2);
@@ -346,22 +317,27 @@ export default class TemplateTargeting {
 				ay2 + (Math.sin(direction) * distance)
 			];
 		};
+
+		
+		const shapeBounds = this.shape.getBounds();
+		const {x: ox, y: oy} = this.document;
+		shapeBounds.x += ox;
+		shapeBounds.y += oy;
+		shapeBounds.fit(canvas.dimensions.rect);
+		shapeBounds.pad(canvas.grid.size);
+		const [i0, j0, i1, j1] = canvas.grid.getOffsetRange(shapeBounds);
 		// Identify grid coordinates covered by the template Graphics
 		//? Start on -1 to account for padding ring of cells around test area
-		for (let r = -1; r < rowCount; r++) {
+		for (let i = i0; i < i1; i++) {
 			//? Start on -1 to account for padding ring of cells around test area
-			for (let c = -1; c < colCount; c++) {
-				const [gx, gy] = canvas.grid.grid.getPixelsFromGridPosition(row0 + r, col0 + c);
-				const testX = gx + hx;
-				const testY = gy + hy;
-				const testRect = new PIXI.Rectangle(gx, gy, canvas.grid.w, canvas.grid.h).normalize();
+			for (let j = j0; j < j1; j++) {
+				const offset = canvas.grid.getTopLeftPoint({i, j});
+				let {x: testX, y: testY} = canvas.grid.getCenterPoint(offset);
+				const testRect = new PIXI.Rectangle(offset.x, offset.y, canvas.grid.sizeX, canvas.grid.sizeY).normalize();
 				let contains = false;
 				switch (this.document.t) {
 					case "circle": {
-						// Calculate the vector from the PoI to the grid square center
-						const [rcx, rcy] = [testX - this.document.x, testY - this.document.y];
-						// If the distance between the centres is <= the circle's radius
-						contains = ((rcx * rcx) + (rcy * rcy)) <= (distance * distance);
+						contains = this.shape.contains(testX - this.document.x, testY - this.document.y);
 						if (contains || TemplateConfig.config.circle === HighlightMode.CENTER) break;
 
 						const sqrDistance = distance * distance;
@@ -378,7 +354,7 @@ export default class TemplateTargeting {
 						break;
 					}
 					case "rect": {
-						const rect = this._getRectShape(direction, distance, true);
+						const rect = MeasuredTemplate.getRectShape(this.document.distance, this.document.direction, true);
 						if (rect instanceof PIXI.Polygon) {
 							contains = this.shape.contains(testX - this.document.x, testY - this.document.y);
 							if (contains || TemplateConfig.config.rect === HighlightMode.CENTER) break;
@@ -401,9 +377,6 @@ export default class TemplateTargeting {
 						} else {
 							rect.x += this.document.x;
 							rect.y += this.document.y;
-							// The normalized rectangle always adds 1 to the width and height
-							rect.width -= 1;
-							rect.height -= 1;
 							// Standard 2D Box Collision detection
 							contains = !(rect.left >= testRect.right || rect.right <= testRect.left
 								|| rect.top >= testRect.bottom || rect.bottom <= testRect.top);
@@ -413,6 +386,7 @@ export default class TemplateTargeting {
 					case "cone": {
 						contains = this.shape.contains(testX - this.document.x, testY - this.document.y);
 						if (contains || TemplateConfig.config.cone === HighlightMode.CENTER) break;
+
 						generateConeData();
 						// check the top line
 						contains = LineToBoxCollision.cohenSutherlandLineClipAndDraw(ax1, ay1, bx1, by1, testRect);
@@ -441,10 +415,10 @@ export default class TemplateTargeting {
 								const minAngle = direction - (angle / 2);
 								const maxAngle = direction + (angle / 2);
 								if (minAngle < 0)
-									return vecAngle <= maxAngle || vecAngle >= ((Math.PI * 2) + minAngle);
+									return vecAngle < maxAngle || vecAngle > ((Math.PI * 2) + minAngle);
 								else if (maxAngle > Math.PI * 2)
-									return vecAngle <= (maxAngle - (Math.PI * 2)) || vecAngle >= minAngle;
-								else return vecAngle <= maxAngle && vecAngle >= minAngle;
+									return vecAngle < (maxAngle - (Math.PI * 2)) || vecAngle > minAngle;
+								else return vecAngle < maxAngle && vecAngle > minAngle;
 							};
 							if (testPoint(testRect.left, testRect.top)) {
 								contains = testAngle();
@@ -482,32 +456,32 @@ export default class TemplateTargeting {
 				}
 
 				if (!DEBUG && !contains) continue;
-				try { grid.grid.highlightGridPosition(hl, { x: gx, y: gy, border, color: DEBUG ? (contains ? 0x00FF00 : 0xFF0000) : color }); }
+				try {
+					grid.highlightPosition(this.highlightId, { x: offset.x, y: offset.y, border, color: DEBUG ? (contains ? 0x00FF00 : 0xFF0000) : color });
+				}
 				catch (error) {
-					// Catches a specific "highlight" error that will randomly occur inside of `grid.grid.highlightGridPosition()`
+					// Catches a specific "highlight" error that will randomly occur inside of `grid.canvas.grid.sizeYighlightGridPosition()`
 					if (!(error instanceof Error) || !error.message.includes("'highlight'")) throw error;
 				}
 				if (!contains) continue;
 
-				// Ignore changing the target selection if we don't own the template, or `shouldAutoSelect` is false
-				if ((!this.hover && this.id) || !isOwner || !shouldAutoSelect) continue;
+				// // Ignore changing the target selection if we don't own the template, or `shouldAutoSelect` is false
+				// if ((!this.hover && this.id) || !isOwner || !shouldAutoSelect) continue;
 
-				// If we are using Point based targetting for this template
-				if (TemplateConfig.config[this.document.t] === HighlightMode.POINTS) {
-					TemplateTargeting.#_selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this.document, this.shape, true);
-					continue;
-				}
-				// Iterate over all existing tokens and target the ones within the template area
-				for (const token of canvas.tokens.placeables) {
-					const tokenRect = new PIXI.Rectangle(token.x, token.y, token.w, token.h).normalize();
-					if (testRect.left >= tokenRect.right || testRect.right <= tokenRect.left
-						|| testRect.top >= tokenRect.bottom || testRect.bottom <= tokenRect.top) continue;
-					token.setTarget(true, { user: game.user, releaseOthers: false, groupSelection: true });
-				}
-				/****** END OF CODE EDIT ******/
+				// // If we are using Point based targetting for this template
+				// if (TemplateConfig.config[this.document.t] === HighlightMode.POINTS) {
+				// 	TemplateTargeting.#_selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this.document, this.shape, true);
+				// 	continue;
+				// }
+				// // Iterate over all existing tokens and target the ones within the template area
+				// for (const token of canvas.tokens.placeables) {
+				// 	const tokenRect = new PIXI.Rectangle(token.x, token.y, token.w, token.h).normalize();
+				// 	if (testRect.left >= tokenRect.right || testRect.right <= tokenRect.left
+				// 		|| testRect.top >= tokenRect.bottom || testRect.bottom <= tokenRect.top) continue;
+				// 	token.setTarget(true, { user: game.user, releaseOthers: false, groupSelection: true });
+				// }
 			}
 		}
-		/******************************************** END OF COPIED CODE ********************************************/
 	}
 
 	/**
@@ -543,11 +517,11 @@ export default class TemplateTargeting {
 			// Adjust the token position to be relative to the template
 			const [tokenX, tokenY] = [token.x - data.x, token.y - data.y];
 			// Calculate how many points there should be along the X and Y axes
-			let horPoints = pointResolution > 1 ? Math.roundDecimals(token.w / canvas.grid.w, 1) * (pointResolution - 1) + 1 : Math.ceil(token.w / canvas.grid.w);
-			let verPoints = pointResolution > 1 ? Math.roundDecimals(token.h / canvas.grid.h, 1) * (pointResolution - 1) + 1 : Math.ceil(token.h / canvas.grid.h);
+			let horPoints = pointResolution > 1 ? (token.w / canvas.grid.sizeX).toNearest(1) * (pointResolution - 1) + 1 : Math.ceil(token.w / canvas.grid.sizeX);
+			let verPoints = pointResolution > 1 ? (token.h / canvas.grid.sizeY).toNearest(1) * (pointResolution - 1) + 1 : Math.ceil(token.h / canvas.grid.sizeY);
 			// Make a small adjustment for tokens smaller than 1x1
-			if (token.w / canvas.grid.w < 1) horPoints = Math.floor(horPoints);
-			if (token.h / canvas.grid.h < 1) verPoints = Math.floor(verPoints);
+			if (token.w / canvas.grid.sizeX < 1) horPoints = Math.floor(horPoints);
+			if (token.h / canvas.grid.sizeY < 1) verPoints = Math.floor(verPoints);
 			// Calculate the distance between each point on the vertical and horizontal
 			const horStep = horPoints > 1 ? token.w / (horPoints - 1) : token.w;
 			const verStep = verPoints > 1 ? token.h / (verPoints - 1) : token.h;
@@ -566,8 +540,8 @@ export default class TemplateTargeting {
 						y = verPoints > 1 ? tokenY + (verStep * row) : tokenY + hy;
 					}
 					else {
-						x = horPoints > 1 ? tokenX + (canvas.grid.w * col) + (canvas.grid.w / 2) : tokenX + hx;
-						y = verPoints > 1 ? tokenY + (canvas.grid.h * row) + (canvas.grid.h / 2) : tokenY + hy;
+						x = horPoints > 1 ? tokenX + (canvas.grid.sizeX * col) + (canvas.grid.sizeX / 2) : tokenX + hx;
+						y = verPoints > 1 ? tokenY + (canvas.grid.sizeY * row) + (canvas.grid.sizeY / 2) : tokenY + hy;
 					}
 					if (DebugMode) pointGraphics.drawCircle(x + data.x, y + data.y, 3);
 					// If the point is not contained in the shape, ignore it
@@ -575,7 +549,7 @@ export default class TemplateTargeting {
 					// Increment our hit count for percentage based targetting
 					hitCount++;
 					// If we target on touch or hit our required percentage
-					if (percentage === 0 || Math.roundDecimals(hitCount / pointCount, 1) >= percentage) {
+					if (percentage === 0 || (hitCount / pointCount).toNearest(1) >= percentage) {
 						// Mark the token as selected
 						token.setTarget(true, { user: game.user, releaseOthers: false, groupSelection: true });
 						if (!DebugMode) {

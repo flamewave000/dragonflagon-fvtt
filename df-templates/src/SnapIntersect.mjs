@@ -30,7 +30,7 @@ export default class SnapIntersect {
 	}
 
 	static #TemplateLayer_gridPrecision() {
-		return canvas.grid.type === CONST.GRID_TYPES.GRIDLESS ? 0 : 1;
+		return canvas.grid.type === foundry.CONST.GRID_TYPES.GRIDLESS ? 0 : 1;
 	}
 
 	static handleDnD5eAbilityTemplate(event) {
@@ -39,7 +39,7 @@ export default class SnapIntersect {
 		if ( now - this._moveTime <= 20 ) return;
 		const center = event.data.getLocalPosition(this.layer);
 		/**** MODIFIED THIS `getSnappedPosition` TO HAVE INTERVAL 1 INSTEAD OF 2 IF ENABLED ****/
-		const snapped = canvas.grid.getSnappedPosition(center.x, center.y, SETTINGS.get('SnapIntersect') ? 1 : 2);
+		const snapped = canvas.grid.grid.getSnappedPosition(center.x, center.y, SETTINGS.get('SnapIntersect') ? 1 : 2);
 		this.document.updateSource({x: snapped.x, y: snapped.y});
 		this.refresh();
 		this._moveTime = now;

@@ -32,7 +32,7 @@ export class TemplateConfig extends FormApplication {
 
 	/**@type {FormApplicationOptions}*/
 	static get defaultOptions() {
-		const options = mergeObject(super.defaultOptions, {
+		const options = foundry.utils.mergeObject(super.defaultOptions, {
 			resizable: false,
 			submitOnChange: false,
 			closeOnSubmit: true,
@@ -102,7 +102,7 @@ export class TemplateConfig extends FormApplication {
 	 * @returns {Data | Promise<Data>}
 	 */
 	getData(_options) {
-		const data = mergeObject(TemplateConfig.config, {
+		const data = foundry.utils.mergeObject(TemplateConfig.config, {
 			options: TemplateConfig.#options
 		});
 		return data;
