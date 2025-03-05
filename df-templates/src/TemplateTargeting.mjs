@@ -54,8 +54,9 @@ export default class TemplateTargeting {
 	/**@readonly*/ static #TARGETING_MODE_PREF = "template-targeting";
 	/**@readonly*/ static #GRIDLESS_RESOLUTION_PREF = "template-gridless-resolution";
 	/**@readonly*/ static #GRIDLESS_PERCENTAGE_PREF = "template-gridless-percentage";
-
 	/**@readonly*/ static #PointGraphContainer = new PIXI.Graphics();
+	/**@type {Set<string>}*/
+	static recentlyUpdated = new Set();
 
 	static init() {
 		TemplateConfig.init();
@@ -130,74 +131,95 @@ export default class TemplateTargeting {
 		});
 
 		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.highlightGrid', this._MeasuredTemplate_highlightGrid, 'OVERRIDE');
-		// // When dragging a template, we need to catch the cancellation in order for us to refresh the template to draw back in its original position.
-		// libWrapper.register(SETTINGS.MOD_NAME, 'PlaceableObject.prototype._createInteractionManager',
-		// 	/**
-		// 	 * @this {PlaceableObject}
-		// 	 * @param {() => MouseInteractionManager} wrapper
-		// 	 * @returns {MouseInteractionManager}
-		// 	 */
-		// 	function (wrapper) {
-		// 		if (!(this instanceof MeasuredTemplate)) return wrapper();
-		// 		// We wrap the interaction manager construction method
-		// 		const manager = wrapper();
-		// 		// Replacing the `dragLeftCancel` with our own wrapper function
-		// 		manager.callbacks.dragLeftCancel = /** @this {PlaceableObject} @param {*} event */function (event) {
-		// 			this.refresh();
-		// 			PlaceableObject.prototype._onDragLeftCancel.apply([event]);
-		// 		};
-		// 		return manager;
-		// 	}, 'WRAPPER');
+
+		// When dragging a template, we need to catch the cancellation in order for us to refresh the template to draw back in its original position.
+		libWrapper.register(SETTINGS.MOD_NAME, 'PlaceableObject.prototype._createInteractionManager',
+			/**
+			 * @this {PlaceableObject}
+			 * @param {() => MouseInteractionManager} wrapper
+			 * @returns {MouseInteractionManager}
+			 */
+			function (wrapper) {
+				if (!(this instanceof MeasuredTemplate)) return wrapper();
+				// We wrap the interaction manager construction method
+				const manager = wrapper();
+				// Replacing the `dragLeftCancel` with our own wrapper function
+				manager.callbacks.dragLeftCancel = /** @this {PlaceableObject} @param {*} event */function (event) {
+					PlaceableObject.prototype._onDragLeftCancel.apply(this, [event]);
+					TemplateTargeting.recentlyUpdated.add(this.id);
+					console.log(this.document.y);
+					// this.refresh();
+				};
+				return manager;
+			}, 'WRAPPER');
+
+		libWrapper.register(SETTINGS.MOD_NAME, 'PlaceablesLayer.prototype.clearPreviewContainer',
+			/**
+			 * @this {TemplatesLayer}
+			 * @param {Function} wrapped
+			 * @returns {any}
+			 */
+			function(wrapped) {
+			const items = [...TemplateTargeting.recentlyUpdated.values()];
+			TemplateTargeting.recentlyUpdated.clear();
+			if (this instanceof TemplateLayer && items.length > 0) {
+				items.map(x => this.get(x)).filter(x => !!x).forEach(template => {
+					console.log(template.document.y);
+					template.refresh();
+				});
+			}
+			return wrapped();
+		}, 'WRAPPER');
 	}
 
 	static ready() {
-		// // This is used to throttle the number of UI updates made to a set number of Frames Per Second.
-		// const ThrottledTemplateRefresh = throttle(/**@this {MeasuredTemplate}*/ function () {
-		// 	TemplateTargeting._MeasuredTemplate_highlightGrid.apply(this);
-		// }, 1000 / 20);// Throttle to 20fps
+		// This is used to throttle the number of UI updates made to a set number of Frames Per Second.
+		const ThrottledTemplateRefresh = throttle(/**@this {MeasuredTemplate}*/ function () {
+			TemplateTargeting._MeasuredTemplate_highlightGrid.apply(this);
+		}, 1000 / 20);// Throttle to 20fps
 
-		// // Register for the D&D5e Ability Template preview
-		// if (game.dnd5e) {
-		// 	libWrapper.register(SETTINGS.MOD_NAME, 'game.dnd5e.canvas.AbilityTemplate.prototype.refresh',
-		// 		/**
-		// 		 * @this {MeasuredTemplate}
-		// 		 * @param {Function} wrapper
-		// 		 * @param  {...any} args
-		// 		 * @returns 
-		// 		 */
-		// 		function (wrapper, ...args) {
-		// 			ThrottledTemplateRefresh.apply(this);
-		// 			return wrapper(...args);
-		// 		}, 'WRAPPER');
-		// }
-		// // Register for the regular template movement preview
-		// libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.refresh',
-		// 	/**
-		// 	 * @this {MeasuredTemplate}
-		// 	 * @param {Function} wrapper
-		// 	 */
-		// 	function (wrapper) {
-		// 		ThrottledTemplateRefresh.apply(this);
-		// 		return wrapper();
-		// 	}, 'WRAPPER');
+		// Register for the D&D5e Ability Template preview
+		if (game.dnd5e) {
+			libWrapper.register(SETTINGS.MOD_NAME, 'game.dnd5e.canvas.AbilityTemplate.prototype.refresh',
+				/**
+				 * @this {MeasuredTemplate}
+				 * @param {Function} wrapper
+				 * @param  {...any} args
+				 * @returns 
+				 */
+				function (wrapper, ...args) {
+					ThrottledTemplateRefresh.apply(this);
+					return wrapper(...args);
+				}, 'WRAPPER');
+		}
+		// Register for the regular template movement preview
+		libWrapper.register(SETTINGS.MOD_NAME, 'MeasuredTemplate.prototype.refresh',
+			/**
+			 * @this {MeasuredTemplate}
+			 * @param {Function} wrapper
+			 */
+			function (wrapper) {
+				ThrottledTemplateRefresh.apply(this);
+				return wrapper();
+			}, 'WRAPPER');
 
-		// // Register for the regular template creation completion and cancellation
-		// const handleTemplateCreation =
-		// 	/**
-		// 	 * @this {TemplateLayer}
-		// 	 * @param {Function} wrapper
-		// 	 * @param  {...any} args
-		// 	 */
-		// 	function (wrapper, ...args) {
-		// 		// clear the highlight preview layer
-		// 		canvas.interface.grid.getHighlightLayer('Template.null')?.clear();
-		// 		return wrapper(...args);
-		// 	};
-		// libWrapper.register(SETTINGS.MOD_NAME, 'TemplateLayer.prototype._onDragLeftDrop', handleTemplateCreation, 'WRAPPER');
-		// libWrapper.register(SETTINGS.MOD_NAME, 'TemplateLayer.prototype._onDragLeftCancel', handleTemplateCreation, 'WRAPPER');
+		// Register for the regular template creation completion and cancellation
+		const handleTemplateCreation =
+			/**
+			 * @this {TemplateLayer}
+			 * @param {Function} wrapper
+			 * @param  {...any} args
+			 */
+			function (wrapper, ...args) {
+				// clear the highlight preview layer
+				canvas.interface.grid.getHighlightLayer('Template.null')?.clear();
+				return wrapper(...args);
+			};
+		libWrapper.register(SETTINGS.MOD_NAME, 'TemplateLayer.prototype._onDragLeftDrop', handleTemplateCreation, 'WRAPPER');
+		libWrapper.register(SETTINGS.MOD_NAME, 'TemplateLayer.prototype._onDragLeftCancel', handleTemplateCreation, 'WRAPPER');
 
-		// // Add the point graph container to the controls layer for rendering
-		// canvas.controls.addChild(TemplateTargeting.#PointGraphContainer);
+		// Add the point graph container to the controls layer for rendering
+		canvas.controls.addChild(TemplateTargeting.#PointGraphContainer);
 	}
 
 	/** @this {MeasuredTemplate}*/
@@ -205,12 +227,12 @@ export default class TemplateTargeting {
 		const mode = SETTINGS.get(TemplateTargeting.#TARGETING_MODE_PREF);
 		const shouldAutoSelect = mode === 'always' || (mode === 'toggle' && SETTINGS.get(TemplateTargeting.#TARGETING_TOGGLE_PREF));
 		const isOwner = this.document.author.id === game.userId;
-		// // Release all previously targeted tokens
-		// if ((this.hover || !this.id) && isOwner && shouldAutoSelect && canvas.tokens.objects) {
-		// 	for (const t of game.user.targets) {
-		// 		t.setTarget(false, { releaseOthers: false, groupSelection: true });
-		// 	}
-		// }
+		// Release all previously targeted tokens
+		if (isOwner && shouldAutoSelect && canvas.tokens.objects) {
+			for (const t of game.user.targets) {
+				t.setTarget(false, { releaseOthers: false, groupSelection: true });
+			}
+		}
 		TemplateTargeting.#_handleTouchTemplate.bind(this)(isOwner, shouldAutoSelect);
 	}
 
@@ -265,7 +287,7 @@ export default class TemplateTargeting {
 		if (canvas.grid.type === foundry.CONST.GRID_TYPES.GRIDLESS) {
 			const shape = this._getGridHighlightShape();
 			canvas.interface.canvas.grid.sizeYighlightPosition(this.highlightId, { border, color, shape });
-			// TemplateTargeting.#_selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this, this.shape, true);
+			TemplateTargeting.#_selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this, this.shape, true);
 			return;
 		}
 
@@ -318,21 +340,20 @@ export default class TemplateTargeting {
 			];
 		};
 
-		
 		const shapeBounds = this.shape.getBounds();
-		const {x: ox, y: oy} = this.document;
+		const { x: ox, y: oy } = this.document;
 		shapeBounds.x += ox;
 		shapeBounds.y += oy;
 		shapeBounds.fit(canvas.dimensions.rect);
-		shapeBounds.pad(canvas.grid.size);
+		// shapeBounds.pad(canvas.grid.size);
 		const [i0, j0, i1, j1] = canvas.grid.getOffsetRange(shapeBounds);
 		// Identify grid coordinates covered by the template Graphics
 		//? Start on -1 to account for padding ring of cells around test area
 		for (let i = i0; i < i1; i++) {
 			//? Start on -1 to account for padding ring of cells around test area
 			for (let j = j0; j < j1; j++) {
-				const offset = canvas.grid.getTopLeftPoint({i, j});
-				let {x: testX, y: testY} = canvas.grid.getCenterPoint(offset);
+				const offset = canvas.grid.getTopLeftPoint({ i, j });
+				let { x: testX, y: testY } = canvas.grid.getCenterPoint(offset);
 				const testRect = new PIXI.Rectangle(offset.x, offset.y, canvas.grid.sizeX, canvas.grid.sizeY).normalize();
 				let contains = false;
 				switch (this.document.t) {
@@ -465,21 +486,21 @@ export default class TemplateTargeting {
 				}
 				if (!contains) continue;
 
-				// // Ignore changing the target selection if we don't own the template, or `shouldAutoSelect` is false
-				// if ((!this.hover && this.id) || !isOwner || !shouldAutoSelect) continue;
+				// Ignore changing the target selection if we don't own the template, or `shouldAutoSelect` is false
+				if (!isOwner || !shouldAutoSelect) continue;
 
-				// // If we are using Point based targetting for this template
-				// if (TemplateConfig.config[this.document.t] === HighlightMode.POINTS) {
-				// 	TemplateTargeting.#_selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this.document, this.shape, true);
-				// 	continue;
-				// }
-				// // Iterate over all existing tokens and target the ones within the template area
-				// for (const token of canvas.tokens.placeables) {
-				// 	const tokenRect = new PIXI.Rectangle(token.x, token.y, token.w, token.h).normalize();
-				// 	if (testRect.left >= tokenRect.right || testRect.right <= tokenRect.left
-				// 		|| testRect.top >= tokenRect.bottom || testRect.bottom <= tokenRect.top) continue;
-				// 	token.setTarget(true, { user: game.user, releaseOthers: false, groupSelection: true });
-				// }
+				// If we are using Point based targetting for this template
+				if (TemplateConfig.config[this.document.t] === HighlightMode.POINTS) {
+					TemplateTargeting.#_selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this.document, this.shape, true);
+					continue;
+				}
+				// Iterate over all existing tokens and target the ones within the template area
+				for (const token of canvas.tokens.placeables) {
+					const tokenRect = new PIXI.Rectangle(token.x, token.y, token.w, token.h).normalize();
+					if (testRect.left >= tokenRect.right || testRect.right <= tokenRect.left
+						|| testRect.top >= tokenRect.bottom || testRect.bottom <= tokenRect.top) continue;
+					token.setTarget(true, { user: game.user, releaseOthers: false, groupSelection: true });
+				}
 			}
 		}
 	}
