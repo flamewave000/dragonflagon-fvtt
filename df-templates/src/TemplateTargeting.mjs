@@ -354,6 +354,8 @@ export default class TemplateTargeting {
 				const offset = canvas.grid.getTopLeftPoint({ i, j });
 				let { x: testX, y: testY } = canvas.grid.getCenterPoint(offset);
 				const testRect = new PIXI.Rectangle(offset.x, offset.y, canvas.grid.sizeX, canvas.grid.sizeY).normalize();
+				// We want to shrink the box by 1/10 of a pixel to prevent rounding errors
+				testRect.pad(-0.1);
 				let contains = false;
 				switch (this.document.t) {
 					case "circle": {
@@ -549,7 +551,6 @@ export default class TemplateTargeting {
 			let x = 0;
 			let y = 0;
 			let pointFound = false;
-			// if (DebugMode) pointGraphics.beginFill(0xFF0000);
 			const percentage = SETTINGS.get(TemplateTargeting.#GRIDLESS_PERCENTAGE_PREF) / 100;
 			const pointCount = verPoints * horPoints;
 			let hitCount = 0;
@@ -590,7 +591,6 @@ export default class TemplateTargeting {
 					}
 				}
 			}
-			// if (DebugMode) pointGraphics.endFill();
 		}
 	}
 }
