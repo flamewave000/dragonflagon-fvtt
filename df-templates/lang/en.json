@@ -17,9 +17,9 @@
 		"DebugName": "[DEBUG Only] Display Auto-Target Point Grids and Test Grids",
 		"DebugHint": "For the purposes of debugging the auto-targetting feature, this option will display the points used for detecting token targeting in a gridless scene. Or will display the entire test zone for grid highlighting.",
 		"AngleSnap": {
-			"MacroName": "Template Angle Snap Point Count (FoundryVTT Default: 24)",
+			"MacroName": "Template Angle Snap Point Count (Default: 24)",
 			"MacroHint": "How many snap points are available to rotate a template to. This can be used to reduce the number of angles a player has to choose from in order to speed up combat",
-			"MicroName": "Small Rotation Multiplier (Foundry Default: 3)",
+			"MicroName": "Small Rotation Multiplier (Default: 3)",
 			"MicroHint": "When holding Ctrl, you can perform smaller rotation snaps. This essentially multiplies the above setting by this amount to generate a sub-set of angle snaps. Setting this to 1 effectively disables micro angle steps."
 		},
 		"TemplateConfig": {
