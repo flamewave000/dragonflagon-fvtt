@@ -23,14 +23,21 @@ export default class SnapIntersect {
 	}
 
 	static #patch() {
-		libWrapper.register(SETTINGS.MOD_NAME, 'canvas.templates.gridPrecision', SnapIntersect.#TemplateLayer_gridPrecision, 'OVERRIDE');
+		libWrapper.register(SETTINGS.MOD_NAME, 'TemplateLayer.prototype.getSnappedPoint', SnapIntersect.#TemplateLayer_gridPrecision, 'OVERRIDE');
 	}
 	static #unpatch() {
-		libWrapper.unregister(SETTINGS.MOD_NAME, 'canvas.templates.gridPrecision', false);
+		libWrapper.unregister(SETTINGS.MOD_NAME, 'TemplateLayer.prototype.getSnappedPoint', false);
 	}
 
-	static #TemplateLayer_gridPrecision() {
-		return canvas.grid.type === foundry.CONST.GRID_TYPES.GRIDLESS ? 0 : 1;
+	static #TemplateLayer_gridPrecision(point) {
+		const M = CONST.GRID_SNAPPING_MODES;
+		const grid = canvas.grid;
+		return grid.getSnappedPoint(point, {
+		  mode: grid.isHexagonal && !this.options.controllableObjects
+			? M.CENTER | M.VERTEX
+			: M.CENTER | M.VERTEX | M.CORNER | M.SIDE_MIDPOINT,
+		  resolution: 0.5
+		});
 	}
 
 	static handleDnD5eAbilityTemplate(event) {
