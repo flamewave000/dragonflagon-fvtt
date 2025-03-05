@@ -1,5 +1,6 @@
 /// <reference path="../../fvtt-scripts/foundry.js" />
 /// <reference path="../../common/foundry.d.ts" />
+/// <reference path="../../common/libWrapper.d.ts" />
 /// <reference path="./types.d.ts" />
 import SETTINGS from "../common/Settings.mjs";
 import LineToBoxCollision from "./LineToBoxCollision.mjs";
@@ -147,8 +148,6 @@ export default class TemplateTargeting {
 				manager.callbacks.dragLeftCancel = /** @this {PlaceableObject} @param {*} event */function (event) {
 					PlaceableObject.prototype._onDragLeftCancel.apply(this, [event]);
 					TemplateTargeting.recentlyUpdated.add(this.id);
-					console.log(this.document.y);
-					// this.refresh();
 				};
 				return manager;
 			}, 'WRAPPER');
@@ -159,17 +158,17 @@ export default class TemplateTargeting {
 			 * @param {Function} wrapped
 			 * @returns {any}
 			 */
-			function(wrapped) {
-			const items = [...TemplateTargeting.recentlyUpdated.values()];
-			TemplateTargeting.recentlyUpdated.clear();
-			if (this instanceof TemplateLayer && items.length > 0) {
-				items.map(x => this.get(x)).filter(x => !!x).forEach(template => {
-					console.log(template.document.y);
-					template.refresh();
-				});
-			}
-			return wrapped();
-		}, 'WRAPPER');
+			function (wrapped) {
+				const items = [...TemplateTargeting.recentlyUpdated.values()];
+				TemplateTargeting.recentlyUpdated.clear();
+				if (this instanceof TemplateLayer && items.length > 0) {
+					items
+						.map(x => this.get(x))
+						.filter(x => !!x)
+						.forEach(template => template.refresh());
+				}
+				return wrapped();
+			}, 'WRAPPER');
 	}
 
 	static ready() {
@@ -286,7 +285,7 @@ export default class TemplateTargeting {
 		// If we are in gridless mode, highlight the shape directly
 		if (canvas.grid.type === foundry.CONST.GRID_TYPES.GRIDLESS) {
 			const shape = this._getGridHighlightShape();
-			canvas.interface.canvas.grid.sizeYighlightPosition(this.highlightId, { border, color, shape });
+			canvas.interface.grid.highlightPosition(this.highlightId, { border, color, shape });
 			TemplateTargeting.#_selectTokensByPointContainment.bind(this)(isOwner, shouldAutoSelect, this, this.shape, true);
 			return;
 		}
@@ -481,7 +480,7 @@ export default class TemplateTargeting {
 					grid.highlightPosition(this.highlightId, { x: offset.x, y: offset.y, border, color: DEBUG ? (contains ? 0x00FF00 : 0xFF0000) : color });
 				}
 				catch (error) {
-					// Catches a specific "highlight" error that will randomly occur inside of `grid.canvas.grid.sizeYighlightGridPosition()`
+					// Catches a specific "highlight" error that will randomly occur inside of `grid.canvas.grid.highlightGridPosition()`
 					if (!(error instanceof Error) || !error.message.includes("'highlight'")) throw error;
 				}
 				if (!contains) continue;
@@ -550,7 +549,7 @@ export default class TemplateTargeting {
 			let x = 0;
 			let y = 0;
 			let pointFound = false;
-			if (DebugMode) pointGraphics.beginFill(0xFF0000);
+			// if (DebugMode) pointGraphics.beginFill(0xFF0000);
 			const percentage = SETTINGS.get(TemplateTargeting.#GRIDLESS_PERCENTAGE_PREF) / 100;
 			const pointCount = verPoints * horPoints;
 			let hitCount = 0;
@@ -564,13 +563,24 @@ export default class TemplateTargeting {
 						x = horPoints > 1 ? tokenX + (canvas.grid.sizeX * col) + (canvas.grid.sizeX / 2) : tokenX + hx;
 						y = verPoints > 1 ? tokenY + (canvas.grid.sizeY * row) + (canvas.grid.sizeY / 2) : tokenY + hy;
 					}
-					if (DebugMode) pointGraphics.drawCircle(x + data.x, y + data.y, 3);
 					// If the point is not contained in the shape, ignore it
-					if (!shape.contains(x, y)) continue;
+					if (!shape.contains(x, y)) {
+						if (DebugMode) {
+							pointGraphics.beginFill(0xFF0000);
+							pointGraphics.drawCircle(x + data.x, y + data.y, 3);
+							pointGraphics.endFill();
+						}
+						continue;
+					}
+					if (DebugMode) {
+						pointGraphics.beginFill(0x00FF00);
+						pointGraphics.drawCircle(x + data.x, y + data.y, 3);
+						pointGraphics.endFill();
+					}
 					// Increment our hit count for percentage based targetting
 					hitCount++;
 					// If we target on touch or hit our required percentage
-					if (percentage === 0 || (hitCount / pointCount).toNearest(1) >= percentage) {
+					if (percentage === 0 || (hitCount / pointCount).toNearest(0.1) >= percentage) {
 						// Mark the token as selected
 						token.setTarget(true, { user: game.user, releaseOthers: false, groupSelection: true });
 						if (!DebugMode) {
@@ -580,7 +590,7 @@ export default class TemplateTargeting {
 					}
 				}
 			}
-			if (DebugMode) pointGraphics.endFill();
+			// if (DebugMode) pointGraphics.endFill();
 		}
 	}
 }
