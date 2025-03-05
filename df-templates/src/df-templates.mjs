@@ -40,8 +40,6 @@ Hooks.once('ready', function () {
 	if (game.dnd5e) {
 		libWrapper.register(SETTINGS.MOD_NAME, 'game.dnd5e.canvas.AbilityTemplate.prototype.activatePreviewListeners',
 			function (/**@type {(il: any) => any}*/ wrapper, /**@type {CanvasLayer}*/ initialLayer) {
-				this._onMovePlacement_ORIG = this._onMovePlacement;
-				this._onMovePlacement = SnapIntersect.handleDnD5eAbilityTemplate.bind(this);
 				this._onRotatePlacement_ORIG = this._onRotatePlacement;
 				this._onRotatePlacement = AngleSnaps.handleDnD5eAbilityTemplate.bind(this);
 				return wrapper(initialLayer);

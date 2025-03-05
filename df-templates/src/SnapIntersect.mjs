@@ -39,17 +39,4 @@ export default class SnapIntersect {
 		  resolution: 0.5
 		});
 	}
-
-	static handleDnD5eAbilityTemplate(event) {
-		/***************** THIS IS COPIED FROM THE DnD 5e CODE BASE `AbilityTemplate.prototype._onMovePlacement` `module/canvas/ability-template.mjs` ***************/
-		const now = Date.now(); // Apply a 20ms throttle
-		if ( now - this._moveTime <= 20 ) return;
-		const center = event.data.getLocalPosition(this.layer);
-		/**** MODIFIED THIS `getSnappedPosition` TO HAVE INTERVAL 1 INSTEAD OF 2 IF ENABLED ****/
-		const snapped = canvas.grid.grid.getSnappedPosition(center.x, center.y, SETTINGS.get('SnapIntersect') ? 1 : 2);
-		this.document.updateSource({x: snapped.x, y: snapped.y});
-		this.refresh();
-		this._moveTime = now;
-		/***************** END OF COPY ***************/
-	}
 }

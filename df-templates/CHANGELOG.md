@@ -1,5 +1,9 @@
 # DragonFlagon Template Enhancements
 
+## Release 2.0.0 (2025-03-05)
+- **UPDATE:** Migrated to v12.
+- **UPDATE:** Downgraded TS -> JS (such sad).
+
 ## Release 1.3.0 (2022-10-23)
 - **UPDATE:** Migrated to v10.
 - **NEW #339:** Brazillian Portuguese Localization: Courtesy of [MagelaCE](https://github.com/MagelaCE).
