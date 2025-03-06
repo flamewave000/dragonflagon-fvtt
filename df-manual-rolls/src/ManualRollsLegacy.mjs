@@ -1,25 +1,25 @@
-import ManualRolls from "./ManualRolls";
-import RollPrompt from "./RollPrompt";
-import SETTINGS from "../../common/Settings";
-
-/***** Pathfinder1 Roller Declaration *****/
-declare class RollPF {
-	static safeRoll(p1: any, p2: any): any;
-}
+/// <reference path="../../fvtt-scripts/foundry.js" />
+/// <reference path="../../common/foundry.d.ts" />
+/// <reference path="../../common/libWrapper.d.ts" />
+/// <reference path="./types.d.ts" />
+import ManualRolls from "./ManualRolls.mjs";
+import RollPrompt from "./RollPrompt.mjs";
+import SETTINGS from "../common/Settings.mjs";
 
 export default class ManualRollsLegacy {
 	static PREF_USE_LEGACY = 'use-legacy';
 
-	static get useLegacy(): boolean { return SETTINGS.get(ManualRollsLegacy.PREF_USE_LEGACY); }
+	/**@type {boolean}*/
+	static get useLegacy() { return SETTINGS.get(ManualRollsLegacy.PREF_USE_LEGACY); }
 
-	private static pf1HelpersPatched = false;
+	static #pf1HelpersPatched = false;
 
 	static patch() {
-		libWrapper.register(SETTINGS.MOD_NAME, 'DiceTerm.prototype._evaluateSync', this._DiceTerm_evaluateSync, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.dice.terms.DiceTerm.prototype._evaluateSync', this._DiceTerm_evaluateSync, 'MIXED');
 
-		if (this.pf1HelpersPatched) return;
-		this.pf1HelpersPatched = true;
-		
+		if (this.#pf1HelpersPatched) return;
+		this.#pf1HelpersPatched = true;
+
 		/*******************************************************/
 		/************** This Code Copied From PF1 **************/
 		/*******************************************************/
@@ -31,9 +31,9 @@ export default class ManualRollsLegacy {
 
 			const rv = [];
 
-			const reduceFormula = (formula: any) => {
+			const reduceFormula = formula => {
 				/******** MODIFIED PORTION START ********/
-				let roll: any;
+				let roll;
 				try {
 					ManualRolls.tempDisable = true;
 					roll = RollPF.safeRoll(formula, rollData);
@@ -45,7 +45,7 @@ export default class ManualRollsLegacy {
 				return [roll, formula];
 			};
 
-			const handleParts = (parts: any) => {
+			const handleParts = parts => {
 				for (const [formula, _] of parts) {
 					const [roll, newformula] = reduceFormula(formula);
 					if (roll.total == 0) continue;
@@ -82,10 +82,16 @@ export default class ManualRollsLegacy {
 		/********************************************************/
 	}
 	static unpatch() {
-		libWrapper.unregister(SETTINGS.MOD_NAME, 'DiceTerm.prototype.roll', false);
+		libWrapper.unregister(SETTINGS.MOD_NAME, 'foundry.dice.terms.DiceTerm.prototype.roll', false);
 	}
 
-	static _DiceTerm_evaluateSync(this: DiceTerm, wrapper: AnyFunction, { minimize = false, maximize = false } = {}) {
+	/**
+	 * 
+	 * @this {foundry.dice.terms.DiceTerm}
+	 * @param {Function} wrapper
+	 * @returns 
+	 */
+	static _DiceTerm_evaluateSync(wrapper, { minimize, maximize } = { minimize: false, maximize: false }) {
 		if ((this.number > 999)) {
 			throw new Error(`You may not evaluate a DiceTerm with more than 999 requested results`);
 		}
@@ -101,13 +107,14 @@ export default class ManualRollsLegacy {
 			this.results = results.map(x => { return { result: x, active: true }; });
 			if (ManualRolls.flagged && total[1]) {
 				this.options.flavor = (this.options.flavor || '') + '[MRT]';
-				(<any>this.options).isManualRoll = true;
+				this.options.isManualRoll = true;
 			}
 		}
 		else {
 			const flags = [];
 			for (let n = 1; n <= this.number; n++) {
-				const roll: { result: number, active: boolean } = { result: undefined, active: true };
+				/**@type { { result: number|undefined, active: boolean } }*/
+				const roll = { result: undefined, active: true };
 				if (minimize) {
 					roll.result = Math.min(1, this.faces);
 					flags.push('RN');
@@ -125,30 +132,36 @@ export default class ManualRollsLegacy {
 			}
 			if (ManualRolls.flagged && flags.some(x => x === 'MR')) {
 				this.options.flavor = (this.options.flavor || '') + '[' + flags.join(',') + ']';
-				(<any>this.options).isManualRoll = true;
+				this.options.isManualRoll = true;
 			}
 		}
 		this._evaluateModifiers();
 		return this;
 	}
 
-	static prompt(number: number, faces: number, flavour: string): [number, boolean] {
+	/**
+	 * @param {number} number
+	 * @param {number} faces
+	 * @param {string} flavour
+	 * @returns {[number, boolean]}
+	 */
+	static prompt(number, faces, flavour) {
 		let failed = false;
-		let result: [number, boolean] = [0, false];
+		let result = [0, false];
 		const promptText = game.i18n.localize('DF_MANUAL_ROLLS.Prompt.Legacy')
 			.dfmr_replaceAll('{0}', number.toString())
 			.dfmr_replaceAll('{1}', faces.toString())
 			.dfmr_replaceAll('{2}', (number * faces).toString());
 		const invalidText = game.i18n.localize('DF_MANUAL_ROLLS.Prompt.Legacy_Invalid');
 		while (true) {
-			let value: string | number =
-				prompt(promptText + (flavour ? `\n${flavour}` : '') + (failed ? '\n' + invalidText : ''), '');
+			/**@type {string | number}*/
+			let value = prompt(promptText + (flavour ? `\n${flavour}` : '') + (failed ? '\n' + invalidText : ''), '');
 			if (value === '' || value === null)
 				result = [Math.ceil(CONFIG.Dice.randomUniform() * faces), false];
 			else {
 				value = parseInt(value);
 				result = [value, true];
-				if (isNaN(<number>value) || value < number || value > number * faces) {
+				if (isNaN(value) || value < number || value > number * faces) {
 					failed = true;
 					continue;
 				}

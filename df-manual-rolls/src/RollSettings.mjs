@@ -1,9 +1,13 @@
-import SETTINGS from "../../common/Settings";
-import ManualRolls from "./ManualRolls";
+/// <reference path="../../fvtt-scripts/foundry.js" />
+/// <reference path="../../common/foundry.d.ts" />
+/// <reference path="../../common/libWrapper.d.ts" />
+/// <reference path="./types.d.ts" />
+import SETTINGS from "../common/Settings.mjs";
+import ManualRolls from "./ManualRolls.mjs";
 
 export default class RollSettings {
 	static init() {
-		Hooks.on('renderPlayerList', (app: PlayerList, html: JQuery<HTMLElement>) => {
+		Hooks.on('renderPlayerList', (/**@type {PlayerList}*/ app, /**@type {JQuery<HTMLElement>}*/ html) => {
 			if (!game.user.isGM) return;
 			html.find('li.player').each((_idx, element) => {
 				const userId = element.getAttribute('data-user-id');
@@ -19,7 +23,7 @@ export default class RollSettings {
 				$(element).append(`<span class="player-roll-type">${html}</span>`);
 			});
 		});
-		Hooks.on('renderUserConfig', (app: UserConfig, html: JQuery<HTMLElement>) => {
+		Hooks.on('renderUserConfig', (/**@type {UserConfig}*/ app, /**@type {JQuery<HTMLElement>}*/ html) => {
 			if (!game.user.isGM) return;
 			const rollType = app.object.getFlag(SETTINGS.MOD_NAME, ManualRolls.FLAG_ROLL_TYPE);
 			const rollConfig = $(`<div class="form-group">
@@ -38,10 +42,10 @@ export default class RollSettings {
 			app.element[0].style.height = '';
 			app.element[0].style.width = '';
 			app.setPosition({});
-			if (!(app as any)._updateObject_ORIG) {
-				(app as any)._updateObject_ORIG = (app as any)._updateObject;
-				(app as any)._updateObject = async function (...args: any) {
-					const result = await (this as any)._updateObject_ORIG(...args);
+			if (!app._updateObject_ORIG) {
+				app._updateObject_ORIG = app._updateObject;
+				app._updateObject = async function (...args) {
+					const result = await this._updateObject_ORIG(...args);
 					ui.controls.initialize();
 					return result;
 				};

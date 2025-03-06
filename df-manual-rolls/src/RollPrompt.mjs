@@ -1,32 +1,25 @@
-import ManualRolls from "./ManualRolls";
-import SETTINGS from "../../common/Settings";
+/// <reference path="../../fvtt-scripts/foundry.js" />
+/// <reference path="../../common/foundry.d.ts" />
+/// <reference path="../../common/libWrapper.d.ts" />
+/// <reference path="./types.d.ts" />
+import ManualRolls from "./ManualRolls.mjs";
+import SETTINGS from "../common/Settings.mjs";
 
-interface RollPromptData {
-	id: number;
-	res: AnyFunction;
-	term: DiceTerm;
-}
-interface RenderData {
-	id: string;
-	idx: number;
-	faces: string;
-	hasTotal: boolean;
-	term: DiceTerm
-}
+export default class RollPrompt extends FormApplication {
+	/**@readonly*/static PREF_FOCUS_INPUT = 'focus-input';
 
-export default class RollPrompt extends FormApplication<FormApplicationOptions, { terms: RenderData[] }> {
+	/**@type {RollPromptData[]}*/
+	#_terms = [];
+	#_nextId = 0;
+	#_rolled = false;
 
-	static readonly PREF_FOCUS_INPUT = 'focus-input';
+	/**@type {boolean}*/
+	static get focusInput() { return SETTINGS.get(RollPrompt.PREF_FOCUS_INPUT); }
 
-	private _nextId = 0;
-	private _terms: RollPromptData[] = [];
-	private _rolled = false;
-
-	static get focusInput(): boolean { return SETTINGS.get(RollPrompt.PREF_FOCUS_INPUT); }
-
-	static get defaultOptions(): FormApplicationOptions {
-		return <FormApplicationOptions>mergeObject(
-			<DeepPartial<FormApplicationOptions>>FormApplication.defaultOptions,
+	/**@type {FormApplicationOptions}*/
+	static get defaultOptions() {
+		return foundry.utils.mergeObject(
+			FormApplication.defaultOptions,
 			{
 				title: game.i18n.localize("DF_MANUAL_ROLLS.Prompt.DefaultTitle"),
 				template: `modules/${SETTINGS.MOD_NAME}/templates/roll-prompt.hbs`,
@@ -35,9 +28,14 @@ export default class RollPrompt extends FormApplication<FormApplicationOptions, 
 			});
 	}
 
-	getData(_options?: Application.RenderOptions): { terms: RenderData[] } {
-		const data: RenderData[] = [];
-		for (const term of this._terms) {
+	/**
+	 * @param {Application.RenderOptions} [_options]
+	 * @returns { { terms: RenderData[] } }
+	 */
+	getData(_options) {
+		/**@type {RenderData[]}*/
+		const data = [];
+		for (const term of this.#_terms) {
 			const die = term.term;
 			for (let c = 0; c < die.number; c++) {
 				data.push({
@@ -51,12 +49,17 @@ export default class RollPrompt extends FormApplication<FormApplicationOptions, 
 		}
 		return { terms: data };
 	}
-	close(options?: FormApplication.CloseOptions): Promise<void> {
+	/**
+	 * @param {FormApplication.CloseOptions} [options]
+	 * @returns {Promise<void>}
+	 */
+	close(options) {
 		// If we have not actually rolled anything yet, we need to resolve these with RNG values
-		if (!this._rolled) {
-			this._rolled = true;
-			for (const x of this._terms) {
-				const results: number[] = [];
+		if (!this.#_rolled) {
+			this.#_rolled = true;
+			for (const x of this.#_terms) {
+				/**@type {number[]}*/
+				const results = [];
 				for (let c = 0; c < x.term.number; c++) {
 					results.push(Math.ceil(CONFIG.Dice.randomUniform() * x.term.faces));
 				}
@@ -65,18 +68,35 @@ export default class RollPrompt extends FormApplication<FormApplicationOptions, 
 		}
 		return super.close(options);
 	}
-	render(force?: boolean, options?: Application.RenderOptions) {
-		if (this._terms.length == 0) return;
+	/**
+	 * @param {boolean} [force]
+	 * @param {Application.RenderOptions} [options]
+	 * @returns {Promise}
+	 */
+	render(force, options) {
+		if (this.#_terms.length == 0) return;
 		return super.render(force, options);
 	}
-	async _render(force?: boolean, options?: Application.RenderOptions) {
+	/**
+	 * @param {boolean} [force]
+	 * @param {ApplicationOptions} [options]
+	 */
+	async _render(force, options) {
 		await super._render(force, options);
 		if (RollPrompt.focusInput)
 			this.element.find('input')[0].focus();
 	}
-	protected _updateObject(_: Event, formData?: { [key: string]: string | null }): Promise<unknown> {
-		for (const x of this._terms) {
-			const results: number[] = [];
+	
+	/**
+	 * @protected
+	 * @param {Event} _
+	 * @param { { [key: string]: string | null } } [formData]
+	 * @returns {Promise<unknown>}
+	 */
+	_updateObject(_, formData) {
+		for (const x of this.#_terms) {
+			/**@type {number[]}*/
+			const results = [];
 			const total = formData[`${x.id}-total`];
 			// If a total input was defined and given, it overrides everything else.
 			if (total !== undefined && total !== null) {
@@ -94,27 +114,37 @@ export default class RollPrompt extends FormApplication<FormApplicationOptions, 
 						flags.push('RN');
 					} else {
 						flags.push('MR');
-						(<any>x.term.options).isManualRoll = true;
+						x.term.options.isManualRoll = true;
 					}
 					results.push(value);
 				}
 				if (ManualRolls.flagged && flags.some(x => x === 'MR')) {
 					x.term.options.flavor = (x.term.options.flavor || '') + '[' + flags.join(',') + ']';
-					(<any>x.term.options).isManualRoll = true;
+					x.term.options.isManualRoll = true;
 				}
 			}
 			x.res(results);
 		}
-		this._rolled = true;
+		this.#_rolled = true;
 		return undefined;
 	}
 
-	requestResult(term: DiceTerm): Promise<number[]> {
-		return new Promise((res, _) => this._terms.push({ id: this._nextId++, res, term }));
+	/**
+	 * @param {foundry.dice.terms.DiceTerm} term
+	 * @returns {Promise<number[]>}
+	 */
+	requestResult(term) {
+		return new Promise((res, _) => this.#_terms.push({ id: this.#_nextId++, res, term }));
 	}
 
-	static distributeRoll(total: number, count: number): number[] {
-		const results: number[] = [];
+	/**
+	 * @param {number} total
+	 * @param {number} count
+	 * @returns {number[]}
+	 */
+	static distributeRoll(total, count) {
+		/**@type {number[]}*/
+		const results = [];
 		// If a total input was defined and given, it overrides everything else.
 		let base = 0;
 		// Append dice with the base average of the total.

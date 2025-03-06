@@ -1,12 +1,12 @@
-import RollPrompt from "./RollPrompt";
-import SETTINGS from "../../common/Settings";
+/// <reference path="../../fvtt-scripts/foundry.js" />
+/// <reference path="../../common/foundry.d.ts" />
+/// <reference path="../../common/libWrapper.d.ts" />
+/// <reference path="./types.d.ts" />
 
-declare global {
-	interface String {
-		dfmr_replaceAll(token: string, replacement: string): string;
-	}
-}
-String.prototype.dfmr_replaceAll = function (token: string, replacement: string) { return this.split(token).join(replacement); };
+import RollPrompt from "./RollPrompt.mjs";
+import SETTINGS from "../common/Settings.mjs";
+
+String.prototype.dfmr_replaceAll = function (token, replacement) { return this.split(token).join(replacement); };
 
 export default class ManualRolls {
 	static PREF_GM_STATE = 'gm';
@@ -15,9 +15,15 @@ export default class ManualRolls {
 	static PREF_TOGGLED = 'toggled';
 	static FLAG_ROLL_TYPE = 'roll-type';
 
-	static get flagged(): boolean { return SETTINGS.get(ManualRolls.PREF_FLAGGED); }
-	static get toggled(): boolean { return SETTINGS.get(ManualRolls.PREF_TOGGLED); }
-	static setToggled(value: boolean): Promise<boolean> { return SETTINGS.set(ManualRolls.PREF_TOGGLED, value); }
+	/**@type {boolean}*/
+	static get flagged() { return SETTINGS.get(ManualRolls.PREF_FLAGGED); }
+	/**@type {boolean}*/
+	static get toggled() { return SETTINGS.get(ManualRolls.PREF_TOGGLED); }
+	/**
+	 * @param {boolean} value 
+	 * @returns {Promise<boolean>}
+	 */
+	static setToggled(value) { return SETTINGS.set(ManualRolls.PREF_TOGGLED, value); }
 	static get toggleable() {
 		return (game.user.getFlag(SETTINGS.MOD_NAME, ManualRolls.FLAG_ROLL_TYPE) || SETTINGS.get(game.user.isGM ? ManualRolls.PREF_GM_STATE : ManualRolls.PREF_PC_STATE)) === 'toggle';
 	}
@@ -28,15 +34,20 @@ export default class ManualRolls {
 	}
 
 	static patch() {
-		libWrapper.register(SETTINGS.MOD_NAME, 'Roll.prototype._evaluate', this._Roll_evaluate, 'MIXED');
-		libWrapper.register(SETTINGS.MOD_NAME, 'DiceTerm.prototype._evaluate', this._DiceTerm_evaluate, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'Roll.prototype._evaluate', this.#_Roll_evaluate, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.dice.terms.DiceTerm.prototype._evaluate', this.#_DiceTerm_evaluate, 'MIXED');
 	}
 	static unpatch() {
 		libWrapper.unregister(SETTINGS.MOD_NAME, 'Roll.prototype._identifyTerms', false);
-		libWrapper.unregister(SETTINGS.MOD_NAME, 'DiceTerm.prototype.roll', false);
+		libWrapper.unregister(SETTINGS.MOD_NAME, 'foundry.dice.terms.DiceTerm.prototype._evaluate', false);
 	}
 
-	private static async _Roll_evaluate(this: Roll, wrapper: (arg: any) => any, { minimize = false, maximize = false } = {}): Promise<Roll> {
+	/**
+	 * @this {Roll}
+	 * @param {Function} wrapper
+	 * @returns {Promise<Roll>}
+	 */
+	static async #_Roll_evaluate(wrapper, { minimize , maximize } = { minimize: false, maximize: false}) {
 		// Ignore Min/Max requests and if we are disabled
 		if (!ManualRolls.shouldRollManually || minimize || maximize) {
 			return wrapper({ minimize, maximize });
@@ -46,33 +57,34 @@ export default class ManualRolls {
 		// Step 1 - Replace intermediate terms with evaluated numbers
 		const intermediate = [];
 		for (const element of this.terms) {
-			let term: any = element;
-			if (!(term instanceof RollTerm)) {
+			let term = element;
+			if (!(term instanceof foundry.dice.terms.RollTerm)) {
 				throw new Error("Roll evaluation encountered an invalid term which was not a RollTerm instance");
 			}
 			if (term.isIntermediate) {
 				await term.evaluate({ minimize, maximize, async: true });
-				this._dice = this._dice.concat((<any>term).dice);
-				term = new NumericTerm({ number: <number>term.total, options: (<any>term).options });
+				this._dice = this._dice.concat(term.dice);
+				term = new NumericTerm({ number: term.total, options: term.options });
 			}
 			intermediate.push(term);
 		}
 		this.terms = intermediate;
 
 		// Step 2 - Simplify remaining terms
-		this.terms = (this.constructor as any).simplifyTerms(this.terms);
+		this.terms = this.constructor.simplifyTerms(this.terms);
 
 		/****** DF MANUAL ROLLS MODIFICATION ******/
 		// @ts-ignore
 		const rollPrompt = new RollPrompt({}, this.options.flavor ? { title: this.options.flavor } : {});
 
 		for (const term of this.terms) {
-			if (!(term instanceof DiceTerm)) continue;
-			(<any>term).rollPrompt = rollPrompt;
+			if (!(term instanceof foundry.dice.terms.DiceTerm)) continue;
+			term.rollPrompt = rollPrompt;
 		}
 
 		// Step 3 - Evaluate remaining terms
-		const promises: Promise<RollTerm>[] = [];
+		/**@type {Promise<foundry.dice.terms.RollTerm>[]}*/
+		const promises = [];
 		for (const term of this.terms) {
 			// @ts-ignore
 			if (term._evaluated) continue;
@@ -88,8 +100,15 @@ export default class ManualRolls {
 		/****** END OF CAPTURE ******/
 	}
 
-	private static async _DiceTerm_evaluate(this: DiceTerm, wrapper: AnyFunction, { minimize = false, maximize = false } = {}): Promise<DiceTerm> {
-		const rollPrompt: RollPrompt = (<any>this).rollPrompt;
+	/**
+	 * 
+	 * @this {foundry.dice.terms.DiceTerm}
+	 * @param {Function} wrapper
+	 * @returns {Promise<foundry.dice.terms.DiceTerm>}
+	 */
+	static async #_DiceTerm_evaluate(wrapper, { minimize, maximize } = {minimize: false, maximize: false}) {
+		/**@type {RollPrompt}*/
+		const rollPrompt = this.rollPrompt;
 		// Ignore Min/Max requests, if we are disabled, or if this dice term does not have a bound DFRollPrompt
 		if (!ManualRolls.shouldRollManually || !rollPrompt || minimize || maximize)
 			return wrapper(minimize, maximize);
