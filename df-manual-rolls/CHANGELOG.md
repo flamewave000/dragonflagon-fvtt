@@ -1,5 +1,9 @@
 # DF Manual Rolls
 
+## Release 3.0.0 (2025-03-05)
+- **UPDATE:** Migrated to v12.
+- **UPDATE:** Downgraded TS -> JS (such sad).
+
 ## Release 2.4.0 (2022-10-23)
 - **UPDATE:** Migrated to V10.
 

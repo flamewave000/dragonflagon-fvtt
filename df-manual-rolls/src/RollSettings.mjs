@@ -16,40 +16,53 @@ export default class RollSettings {
 				if (!rollType) return;
 				let html = '';
 				switch (user.getFlag(SETTINGS.MOD_NAME, ManualRolls.FLAG_ROLL_TYPE) ?? SETTINGS.get(ManualRolls.PREF_PC_STATE)) {
-					case 'disabled': html = `<i class="fas fa-dice" title="${'DF_MANUAL_ROLLS.Setting_Options.Disabled'.localize()}"></i>`; break;
-					case 'always': html = `<i class="fas fa-keyboard" title="${'DF_MANUAL_ROLLS.Setting_Options.Always'.localize()}"></i>`; break;
-					case 'toggle': html = `<i class="fas fa-toggle-on" title="${'DF_MANUAL_ROLLS.Setting_Options.Toggle'.localize()}"></i>`; break;
+					case 'disabled': html = `<i class="fas fa-dice" data-tooltip="${'DF_MANUAL_ROLLS.Setting_Options.Disabled'.localize()}"></i>`; break;
+					case 'always': html = `<i class="fas fa-keyboard" data-tooltip="${'DF_MANUAL_ROLLS.Setting_Options.Always'.localize()}"></i>`; break;
+					case 'toggle': html = `<i class="fas fa-toggle-on" data-tooltip="${'DF_MANUAL_ROLLS.Setting_Options.Toggle'.localize()}"></i>`; break;
 				}
 				$(element).append(`<span class="player-roll-type">${html}</span>`);
 			});
 		});
-		Hooks.on('renderUserConfig', (/**@type {UserConfig}*/ app, /**@type {JQuery<HTMLElement>}*/ html) => {
+		Hooks.on('renderUserConfig', (/**@type {UserConfig}*/ app, /**@type {HTMLElement}*/ html) => {
 			if (!game.user.isGM) return;
-			const rollType = app.object.getFlag(SETTINGS.MOD_NAME, ManualRolls.FLAG_ROLL_TYPE);
-			const rollConfig = $(`<div class="form-group">
-	<label>${'Manual Roll Override'.localize()}</label>
-	<div class="form-fields" style="width:${html.find('#characters').parent().outerWidth()}px">
-		<select name="flags.df-manual-rolls.roll-type">
-			<option value="" ${!rollType ? 'selected' : ''}></option>
-			<option value="disabled" ${rollType === 'disabled' ? 'selected' : ''}>${'DF_MANUAL_ROLLS.Setting_Options.Disabled'.localize()}</option>
-			<option value="always" ${rollType === 'always' ? 'selected' : ''}>${'DF_MANUAL_ROLLS.Setting_Options.Always'.localize()}</option>
-			<option value="toggle" ${rollType === 'toggle' ? 'selected' : ''}>${'DF_MANUAL_ROLLS.Setting_Options.Toggle'.localize()}</option>
-		</select>
+			const rollType = app.document.getFlag(SETTINGS.MOD_NAME, ManualRolls.FLAG_ROLL_TYPE);
+			const rollConfig = $(`
+<fieldset>
+	<legend>${'DF_MANUAL_ROLLS.UserConfig.Title'.localize()}</legend>
+	<div class="form-group">
+		<div class="form-fields">
+			<select name="dfmr_roll_type">
+				<option value="" ${!rollType ? 'selected' : ''}></option>
+				<option value="disabled" ${rollType === 'disabled' ? 'selected' : ''}>${'DF_MANUAL_ROLLS.Setting_Options.Disabled'.localize()}</option>
+				<option value="always" ${rollType === 'always' ? 'selected' : ''}>${'DF_MANUAL_ROLLS.Setting_Options.Always'.localize()}</option>
+				<option value="toggle" ${rollType === 'toggle' ? 'selected' : ''}>${'DF_MANUAL_ROLLS.Setting_Options.Toggle'.localize()}</option>
+			</select>
+		</div>
 	</div>
-</div>`);
-			html.find('#characters').parent().before(rollConfig);
+</fieldset>`);
+			$(html.querySelector('div.character').parentElement).before(rollConfig);
 			// Resize the window
 			app.element[0].style.height = '';
 			app.element[0].style.width = '';
 			app.setPosition({});
-			if (!app._updateObject_ORIG) {
-				app._updateObject_ORIG = app._updateObject;
-				app._updateObject = async function (...args) {
-					const result = await this._updateObject_ORIG(...args);
-					ui.controls.initialize();
-					return result;
-				};
-			}
 		});
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.applications.sheets.UserConfig.prototype._processFormData',
+					/**
+					 * @this {foundry.applications.sheets.UserConfig}
+					 * @param {(...any) => any} wrapped
+					 * @param {SubmitEvent} event
+					 * @param {HTMLFormElement} form
+					 * @param { { "chat-color": string } } formData
+					 * @returns {Promise<any>}
+					 */
+					async function (wrapped, event, form, formData) {
+						const flag = formData.object.dfmr_roll_type;
+						delete formData.object.dfmr_roll_type;
+						await this.document.setFlag(SETTINGS.MOD_NAME, ManualRolls.FLAG_ROLL_TYPE, flag);
+						const result = await wrapped(event, form, formData);
+						ui.controls.initialize();
+						ui.players.render(true);
+						return result;
+					}, "WRAPPER");
 	}
 }

@@ -74,7 +74,6 @@ export default class ManualRolls {
 		this.terms = this.constructor.simplifyTerms(this.terms);
 
 		/****** DF MANUAL ROLLS MODIFICATION ******/
-		// @ts-ignore
 		const rollPrompt = new RollPrompt({}, this.options.flavor ? { title: this.options.flavor } : {});
 
 		for (const term of this.terms) {
@@ -86,7 +85,6 @@ export default class ManualRolls {
 		/**@type {Promise<foundry.dice.terms.RollTerm>[]}*/
 		const promises = [];
 		for (const term of this.terms) {
-			// @ts-ignore
 			if (term._evaluated) continue;
 			promises.push(term.evaluate({ minimize, maximize, async: true }));
 		}

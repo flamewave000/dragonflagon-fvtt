@@ -82,12 +82,12 @@ export default class ManualRollsLegacy {
 		/********************************************************/
 	}
 	static unpatch() {
-		libWrapper.unregister(SETTINGS.MOD_NAME, 'foundry.dice.terms.DiceTerm.prototype.roll', false);
+		libWrapper.unregister(SETTINGS.MOD_NAME, 'DiceTerm.prototype.roll', false);
 	}
 
 	/**
 	 * 
-	 * @this {foundry.dice.terms.DiceTerm}
+	 * @this {DiceTerm}
 	 * @param {Function} wrapper
 	 * @returns 
 	 */

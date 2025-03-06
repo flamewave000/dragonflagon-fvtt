@@ -5,6 +5,8 @@
 import ManualRolls from "./ManualRolls.mjs";
 import SETTINGS from "../common/Settings.mjs";
 
+const BRACES = [];
+
 export default class RollPrompt extends FormApplication {
 	/**@readonly*/static PREF_FOCUS_INPUT = 'focus-input';
 
@@ -24,8 +26,19 @@ export default class RollPrompt extends FormApplication {
 				title: game.i18n.localize("DF_MANUAL_ROLLS.Prompt.DefaultTitle"),
 				template: `modules/${SETTINGS.MOD_NAME}/templates/roll-prompt.hbs`,
 				width: 400,
-
 			});
+	}
+
+	constructor(...args) {
+		super(...args);
+		if (BRACES.length > 0) return;
+		if (!game.dnd5e) {
+			BRACES.push('[');
+			BRACES.push(']');
+		} else {
+			BRACES.push('(');
+			BRACES.push(')');
+		}
 	}
 
 	/**
@@ -41,7 +54,7 @@ export default class RollPrompt extends FormApplication {
 				data.push({
 					id: term.id.toString(),
 					idx: c,
-					faces: c == 0 ? `${die.number}d${die.faces}${die.modifiers.length > 0 ? ' [' + die.modifiers.join(',') + ']' : ''}` : '',
+					faces: c == 0 ? `${die.number}d${die.faces}${die.modifiers.length > 0 ? ' ' + BRACES[0] + die.modifiers.join(',') + BRACES[1] : ''}` : '',
 					hasTotal: c == 0 && die.modifiers.length == 0 && die.number > 1,
 					term: die
 				});
@@ -86,7 +99,7 @@ export default class RollPrompt extends FormApplication {
 		if (RollPrompt.focusInput)
 			this.element.find('input')[0].focus();
 	}
-	
+
 	/**
 	 * @protected
 	 * @param {Event} _
@@ -103,7 +116,7 @@ export default class RollPrompt extends FormApplication {
 				const value = parseInt(total);
 				results.push(...RollPrompt.distributeRoll(value, x.term.number));
 				if (ManualRolls.flagged) {
-					x.term.options.flavor = (x.term.options.flavor || '') + '[MRT]';
+					x.term.options.flavor = (x.term.options.flavor || '') + BRACES[0] + 'MRT' + BRACES[1];
 					x.term.options.isManualRoll = true;
 				}
 			} else {
@@ -121,7 +134,7 @@ export default class RollPrompt extends FormApplication {
 					results.push(value);
 				}
 				if (ManualRolls.flagged && flags.some(x => x === 'MR')) {
-					x.term.options.flavor = (x.term.options.flavor || '') + '[' + flags.join(',') + ']';
+					x.term.options.flavor = (x.term.options.flavor || '') + BRACES[0] + flags.join(',') + BRACES[1];
 					x.term.options.isManualRoll = true;
 				}
 			}
