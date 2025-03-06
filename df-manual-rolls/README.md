@@ -70,9 +70,7 @@ There is always a potential conflict with any other module that modifies rolls. 
 - ✅ Midi Quality of Life Improvements
 - ✅ Dice So Nice!
 - ✅ Dice Tray
-- ✅ Let Me Roll That For You
-- ❌ Better Rolls (see notes below)
-- ❌ Quick Rolls DnD5e (see notes below)
+- ✅ Ready Set Roll for 5e
 ---
 
 ### Better Rolls
