@@ -102,8 +102,10 @@ export default class RollPrompt extends FormApplication {
 			if (total !== undefined && total !== null) {
 				const value = parseInt(total);
 				results.push(...RollPrompt.distributeRoll(value, x.term.number));
-				if (ManualRolls.flagged)
+				if (ManualRolls.flagged) {
 					x.term.options.flavor = (x.term.options.flavor || '') + '[MRT]';
+					x.term.options.isManualRoll = true;
+				}
 			} else {
 				const flags = [];
 				for (let c = 0; c < x.term.number; c++) {

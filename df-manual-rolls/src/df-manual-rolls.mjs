@@ -113,11 +113,11 @@ Hooks.on('createChatMessage', async (/**@type {ChatMessage}*/ chatMessage) => {
 	if (!chatMessage.author || chatMessage.author.id !== game.userId) return;
 	// Ignore non-roll, non-flagged, non-manual messages
 	if (!chatMessage.isRoll || !ManualRolls.flagged || !ManualRolls.shouldRollManually) return;
-	let flavor = game.i18n.localize("DF_MANUAL_ROLLS.Flag");
 	// If all of the manual rolls were cancelled, don't set the flag
-	if (!chatMessage.roll.terms.some(value => value instanceof foundry.dice.terms.DiceTerm && value.options.isManualRoll))
+	if (!chatMessage.rolls.some(x => x.terms.some(value => value instanceof foundry.dice.terms.DiceTerm && value.options.isManualRoll)))
 		return;
-	if (chatMessage.document.flavor)
-		flavor += " " + chatMessage.document.flavor;
+	let flavor = game.i18n.localize("DF_MANUAL_ROLLS.Flag");
+	if (chatMessage.flavor)
+		flavor += " " + chatMessage.flavor;
 	await chatMessage.update({ flavor: flavor });
 });

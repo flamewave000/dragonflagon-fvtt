@@ -1,12 +1,12 @@
 <form>
 	<table>
 		<thead>
-			<th>{{localize "DF_MANUAL_ROLLS.Prompt.Header_RollTerm"}}<a class="button" title="{{localize "DF_MANUAL_ROLLS.Tooltip.RollTerm"}}">
+			<th>{{localize "DF_MANUAL_ROLLS.Prompt.Header_RollTerm"}}<a class="button" data-tooltip="{{localize "DF_MANUAL_ROLLS.Tooltip.RollTerm"}}">
 					<i class="fas fa-question-circle"></i></a></th>
-			<th>{{localize "DF_MANUAL_ROLLS.Prompt.Header_Rolls"}}<a class="button" title="{{localize "DF_MANUAL_ROLLS.Tooltip.Rolls"}}">
+			<th>{{localize "DF_MANUAL_ROLLS.Prompt.Header_Rolls"}}<a class="button" data-tooltip="{{localize "DF_MANUAL_ROLLS.Tooltip.Rolls"}}">
 					<i class="fas fa-question-circle"></i></a></th>
 			<th>&nbsp;&nbsp;&nbsp;{{localize "DF_MANUAL_ROLLS.Prompt.Header_Total"}}
-				<a class="button" title="{{localize "DF_MANUAL_ROLLS.Tooltip.Total"}}">
+				<a class="button" data-tooltip="{{localize "DF_MANUAL_ROLLS.Tooltip.Total"}}">
 					<i class="fas fa-question-circle"></i>
 				</a>&nbsp;&nbsp;&nbsp;
 			</th>
@@ -26,13 +26,8 @@
 			</tr>
 			{{/each}}
 		</tbody>
-		<tfoot>
-			<tr>
-				<td colspan="3" style="padding:0">
-					<button type="submit" style="width:100%" name="submit" tabindex="300">
-						<i class="fas fa-dice-d20"></i>{{localize "DF_MANUAL_ROLLS.Submit"}}</button>
-				</td>
-			</tr>
-		</tfoot>
 	</table>
+	<footer>
+		<button name="submit" tabindex="300"><i class="fas fa-dice-d20"></i>{{localize "DF_MANUAL_ROLLS.Submit"}}</button>
+	</footer>
 </form>
