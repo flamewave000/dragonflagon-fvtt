@@ -10,6 +10,11 @@
 	"languages": [
 		{ "lang": "en", "name": "English", "path": "lang/en.json" }
 	],
+	"relationships": {
+		"requires": [
+			{ "id": "lib-wrapper", "type": "module", "compatibility": { "verified": "1.13.2.0", "minimum": "1.12.15.0" } }
+		]
+	},
 	"url":		"https://dragonflagon.cafe/mods/url/df-module-name",
 	"license":	"https://dragonflagon.cafe/mods/lic/df-module-name",
 	"manifest":	"https://dragonflagon.cafe/mods/man/df-module-name",
