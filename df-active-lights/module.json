@@ -1,13 +1,10 @@
 {
 	"id": "df-active-lights",
-	"version": "1.3.1",
+	"version": "2.0.0",
 	"title": "DF Active Lights",
 	"description": "Lights can now have complex animations attached to their various properties such as the direction or colour.",
-	"author": "flamewave000#0001",
-	"compatibility": {
-		"minimum": 10.290,
-		"verified": 10.290
-	},
+	"authors": [ { "name": "flamewave000", "discord": "flamewave000", "url": "https://github.com/flamewave000" } ],
+	"compatibility": { "minimum": 12, "verified": 12.331 },
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [
@@ -17,24 +14,16 @@
 	],
 	"relationships": {
 		"requires": [
-			{
-				"id": "lib-wrapper",
-				"type": "module",
-				"compatibility": {
-					"verified": "1.12.10.0"
-				}
-			}
+			{ "id": "lib-wrapper", "type": "module", "compatibility": { "verified": "1.13.2.0", "minimum": "1.12.15.0" } }
 		]
 	},
-	"url":		"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-active-lights",
-	"license":	"https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/LICENSE",
+	"url":		"https://dragonflagon.cafe/mods/url/df-active-lights",
+	"license":	"https://dragonflagon.cafe/mods/lic/df-active-lights",
 	"manifest":	"https://dragonflagon.cafe/mods/man/df-active-lights",
 	"download":	"https://dragonflagon.cafe/mods/pak/df-active-lights",
-	"readme":	"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-active-lights/README.md",
-	"changelog":"https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-active-lights/CHANGELOG.md",
-	"manifestPlusVersion": "1.0.0",
-	"bugs": "https://github.com/flamewave000/dragonflagon-fvtt/issues/new/choose",
-	"authors": [ { "name": "flamewave000", "discord": "flamewave000#0001", "url": "https://github.com/flamewave000" } ],
+	"readme":	"https://dragonflagon.cafe/mods/doc/df-active-lights",
+	"changelog":"https://dragonflagon.cafe/mods/chg/df-active-lights",
+	"bugs":		"https://dragonflagon.cafe/mods/bug/df-active-lights",
 	"media": [
 		{ "type": "cover", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/df-active-lights/df-active-lights.gif" },
 		{ "type": "icon", "url": "https://raw.githubusercontent.com/flamewave000/dragonflagon-fvtt/master/.assets/logo.png" },

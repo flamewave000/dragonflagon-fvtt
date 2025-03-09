@@ -1,7 +1,6 @@
-
-const EaseFunctions: {
-	[key: string]: (x: number) => number
-} = {
+/// <reference path="./types.d.ts" />
+/**@type {EaseFunctionRegister} */
+const EaseFunctions = {
 	linear: x => x,
 	linearLoop: x => x < 0.5 ? x : (1 - x),
 	quadIn: x => 1 - ((x - 1) * (x - 1)),
@@ -15,5 +14,4 @@ const EaseFunctions: {
 	fixedStart: x => x === 1 ? 0 : 1,
 	fixedEnd: x => x === 0 ? 0 : 1
 };
-
 export default EaseFunctions;
