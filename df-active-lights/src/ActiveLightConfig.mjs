@@ -36,7 +36,7 @@ export default class ActiveLightConfig extends Application {
 	}
 
 	/**@type {AmbientLightDocument}*/ #_document;
-	/**@type {AnimatorData}*/ #_data;
+	/**@type {import("./types").AnimatorData}*/ #_data;
 
 	/**
 	 * @param {AmbientLightConfigExt} app
@@ -117,9 +117,17 @@ export default class ActiveLightConfig extends Application {
 			this.#_data.bounce = /** @type {HTMLInputElement}*/(e.currentTarget).checked;
 			this.#_save();
 		});
-		html.find('input[name="offset"]').on('change', (e) => {
+		/**@type {JQuery<HTMLInputElement>}*/
+		const offset = html.find('input[name="offset"]');
+		offset.on('change', (e) => {
 			this.#_data.offset = /**@type {HTMLInputElement}*/ (e.currentTarget).valueAsNumber;
 			this.#_save();
+		});
+
+		html.find('a[name="randomize-offset"]').on("click", () => {
+			const max = Math.max(...this.#_data.keys.map(x => x.time));
+			offset.val(Math.round(Math.random() * max));
+			offset.trigger("change");
 		});
 
 		// Listen for Add KeyFrame button
