@@ -53,6 +53,7 @@ export default class ActiveLightConfig extends Application {
 			this.#_data = {
 				bounce: false,
 				offset: 0,
+				manual: false,
 				keys: [ActiveLightConfig.#_createKeyFrame(0, document.data)]
 			};
 		} else this.#_data = foundry.utils.duplicate(this.#_data);
@@ -72,8 +73,10 @@ export default class ActiveLightConfig extends Application {
 	 */
 	getData(_options) {
 		return {
+			id: this.appId,
 			bounce: this.#_data.bounce,
-			offset: this.#_data.offset === 0 ? '' : this.#_data.offset
+			offset: this.#_data.offset === 0 ? '' : this.#_data.offset,
+			manual: !!this.#_data.manual
 		};
 	}
 
@@ -113,13 +116,13 @@ export default class ActiveLightConfig extends Application {
 		/**@type {JQuery<HTMLOListElement>}*/ const keysContainer = html.find('aside>ol');
 
 		// Listen for changes to the Bounce and Offset fields
-		html.find('input[name="bounce"]').on('change', (e) => {
+		html.find('input[name="bounce"]').on('change', e => {
 			this.#_data.bounce = /** @type {HTMLInputElement}*/(e.currentTarget).checked;
 			this.#_save();
 		});
 		/**@type {JQuery<HTMLInputElement>}*/
 		const offset = html.find('input[name="offset"]');
-		offset.on('change', (e) => {
+		offset.on('change', e => {
 			this.#_data.offset = /**@type {HTMLInputElement}*/ (e.currentTarget).valueAsNumber;
 			this.#_save();
 		});
@@ -128,6 +131,11 @@ export default class ActiveLightConfig extends Application {
 			const max = Math.max(...this.#_data.keys.map(x => x.time));
 			offset.val(Math.round(Math.random() * max));
 			offset.trigger("change");
+		});
+
+		html.find('input[name="manual"]').on("change", e => {
+			this.#_data.manual = /** @type {HTMLInputElement}*/(e.currentTarget).checked;
+			this.#_save();
 		});
 
 		// Listen for Add KeyFrame button

@@ -25,13 +25,20 @@ export default class LightAnimator {
 	 * @param {number} _
 	 * @returns {void}
 	 */
-	static #_LightingLayer_animateSource(_) {
+	static async #_LightingLayer_animateSource(_) {
 		// If we are not enabled, return immediately
 		if (!SETTINGS.get('enabled')) return;
 		let atLeastOneLight = false;
 
 		for (const source of canvas.effects.lightSources) {
-			if (!(source.object instanceof AmbientLight) || source.object.document.hidden) continue;
+			if (!(source.object instanceof AmbientLight)) continue;
+			if (source.object.document.hidden) {
+				if (game.user.isGM && !!source.object.document.flags['df-active-lights']) {
+					if (source.object.document.flags[SETTINGS.MOD_NAME][LightAnimator.FLAG_ANIMS]?.tempOffset != undefined)
+						await source.object.document.setFlag(SETTINGS.MOD_NAME, LightAnimator.FLAG_ANIMS + '.-=tempOffset', null);
+				}
+				continue;
+			}
 			if (LightAnimator.#_PointSource_animate.bind(source)(source.object))
 				atLeastOneLight = true;
 		}
@@ -52,12 +59,12 @@ export default class LightAnimator {
 			// If the light has not had an animator created for it yet
 			if (!light.animator) {
 				// Get the animation data
-				/**@type {AnimatorData}*/
+				/**@type {import("./types").AnimatorData}*/
 				const animData = this.object.document.getFlag(SETTINGS.MOD_NAME, LightAnimator.FLAG_ANIMS);
 				// Ignore any light that has no animations
 				if (!animData || animData.keys.length <= 1) return false;
 				if (animData.keys[0].time !== 0) {
-					console.warn('Malformed first keyframe! Time was not 0, setting to zero for now.');
+					console.warn('Malformed first keyframe! Time was not 0, forcing to zero.');
 					animData.keys[0].time = 0;
 				}
 				// Create a light animator
@@ -145,8 +152,19 @@ export default class LightAnimator {
 	/**@returns {boolean}*/
 	tick() {
 		if (this.#_data.keys.length <= 1 || this.#_data.keys[0].time !== 0) return false;
+		const duration = this.duration;
+		let offset = this.offset;
+		// Handle a light source that has its start managed manually
+		if (this.#_data.manual) {
+			// If GM and the light source just turned on, set the tempOffset to be a pad on the duration.
+			if (game.user.isGM && this.#_data.tempOffset == undefined) {
+				this.#_data.tempOffset = duration - (game.time.serverTime % duration);
+				this.#_object.document.setFlag(SETTINGS.MOD_NAME, LightAnimator.FLAG_ANIMS + '.tempOffset', this.#_data.tempOffset);
+			}
+			offset = this.#_object.document.getFlag(SETTINGS.MOD_NAME, LightAnimator.FLAG_ANIMS + '.tempOffset');
+		}
 		// Calculate the current time relative to the animation loop
-		const time = (game.time.serverTime + this.offset) % this.duration;
+		const time = (game.time.serverTime + offset) % duration;
 		for (const value of this.#_props.values()) {
 			if (value.next === null) continue;
 			this.#_process(value, time);

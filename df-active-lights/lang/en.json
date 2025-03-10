@@ -8,7 +8,9 @@
 			"AddKey": "Add Key Frame",
 			"Bounce": "Make animation bounce back and forth",
 			"Randomize": "Randomize offset based on current duration",
-			"Offset": "Time Offset in milliseconds for \"desyncing\" similar animations"
+			"Offset": "Time Offset in milliseconds for \"desyncing\" similar animations",
+			"Manual": "Start animation when light is enabled",
+			"ManualDesc": "Allows a GM to control when an animation begins by toggling the light on/off to play/reset the animation."
 		},
 		"Props": {
 			"Time": "Key Frame Time Position (Milliseconds)",

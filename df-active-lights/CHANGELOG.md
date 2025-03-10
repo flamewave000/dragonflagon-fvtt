@@ -3,6 +3,7 @@
 ## Release 2.0.0 (2025-03-09)
 - **UPDATE:** Migrated to v12.
 - **UPDATE:** Downgraded TS -> JS (such sad).
+- **NEW #379:** Add ability to manually control when an animation starts by toggling a light on/off.
 
 ## Release 1.3.1 (2022-11-25) (Requires v10.290)
 - **FIX #424:** FoundryVTT v10.290 fixed HTML injection for Active Lights button.

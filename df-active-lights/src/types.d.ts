@@ -52,6 +52,8 @@ declare interface AnimatorData {
 	offset: number;
 	bounce: boolean;
 	keys: KeyFrame[];
+	manual: boolean;
+	tempOffset?: number;
 }
 declare interface PropertyKeyFrame extends PropertyDelta {
 	name: string;
