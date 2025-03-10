@@ -10,13 +10,18 @@
 		<table>
 			<tr>
 				<td></td>
-				<td><input name="bounce" type="checkbox" {{#if bounce}}checked{{/if}}></td>
-				<td><label>{{localize 'DF_ACTIVE_LIGHTS.Config.Bounce'}}</label></td>
+				<td><input id="dfal-{{id}}-bounce" name="bounce" type="checkbox"{{#if bounce}} checked{{/if}}></td>
+				<td><label for="dfal-{{id}}-bounce">{{localize 'DF_ACTIVE_LIGHTS.Config.Bounce'}}</label></td>
 			</tr>
 			<tr>
-				<td><a class="button" name="randomize-offset" data-tooltip="{{localize 'DF_ACTIVE_LIGHTS.Config.Randomize'}}"><i class="fas fa-dice"></i></a></td>
-				<td><input name="offset" type="number" step="0.00" placeholder="0" value="{{offset}}"></td>
-				<td><label>{{localize 'DF_ACTIVE_LIGHTS.Config.Offset'}}</label></td>
+				<td><a class="button" id="dfal-{{id}}-offset" name="randomize-offset" data-tooltip="{{localize 'DF_ACTIVE_LIGHTS.Config.Randomize'}}"><i class="fas fa-dice"></i></a></td>
+				<td><input name="offset" type="number" step="0.00" placeholder="0" value="{{offset}}"{{#if manual}} disabled{{/if}}></td>
+				<td><label for="dfal-{{id}}-offset"{{#if manual}} style="text-decoration:line-through;"{{/if}}>{{localize 'DF_ACTIVE_LIGHTS.Config.Offset'}}</label></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input id="dfal-{{id}}-manual" name="manual" type="checkbox"{{#if manual}} checked{{/if}}></td>
+				<td><label for="dfal-{{id}}-manual" data-tooltip="{{localize 'DF_ACTIVE_LIGHTS.Config.ManualDesc'}}">{{localize 'DF_ACTIVE_LIGHTS.Config.Manual'}}</label></td>
 			</tr>
 		</table>
 		<section>
