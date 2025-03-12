@@ -2,7 +2,7 @@
 	"id": "df-chat-enhance",
 	"title": "DF Chat Enhancements",
 	"description": "Various enhancements to the chat features.",
-	"version": "5.0.1",
+	"version": "5.0.2",
 	"authors": [ { "name": "flamewave000", "discord": "flamewave000", "url": "https://github.com/flamewave000" } ],
 	"compatibility": { "minimum": 12, "verified": 12.331 },
 	"relationships": {

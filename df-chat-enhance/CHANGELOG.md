@@ -1,5 +1,8 @@
 # DF Chat Enhancements
 
+## Release 5.0.2 (2025-03-12)
+- **FIX #513:** UserConfig properly saves its data again.
+
 ## Release 5.0.1 (2025-03-01)
 - **UPDATE #468:** Update Chinese Localization: Courtesy of [LiyuNodream](https://github.com/LiyuNodream).
 

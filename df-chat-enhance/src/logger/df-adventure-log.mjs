@@ -126,15 +126,15 @@ export function ready() {
 		 * @param { { "chat-color": string } } formData
 		 * @returns {Promise<any>}
 		 */
-		async function (wrapped, event, form, formData) {
+		function (wrapped, event, form, formData) {
 			if (!formData.object["player-log"] || !formData.object["player-log-page"]) {
-				await this.document.setFlag(SETTINGS.MOD_NAME, DFAdventureLogProcessor.PREF_PLAYER_LOG_JOURNAL, null);
+				this.document.setFlag(SETTINGS.MOD_NAME, DFAdventureLogProcessor.PREF_PLAYER_LOG_JOURNAL, null);
 				return wrapped(event, form, formData);
 			}
 			const selection = formData.object["player-log"] + '.' + formData.object["player-log-page"];
-			await this.document.setFlag(SETTINGS.MOD_NAME, DFAdventureLogProcessor.PREF_PLAYER_LOG_JOURNAL, selection);
+			this.document.setFlag(SETTINGS.MOD_NAME, DFAdventureLogProcessor.PREF_PLAYER_LOG_JOURNAL, selection);
 			delete formData.object["player-log"];
 			delete formData.object["player-log-page"];
-			return await wrapped(event, form, formData);
+			return wrapped(event, form, formData);
 		});
 }
