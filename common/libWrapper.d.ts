@@ -3,10 +3,10 @@ declare class libWrapper {
 	// Properties
 	static get version(): string
 	static get versions(): string[]
-	static get is_fallback(): Boolean
+	static get is_fallback(): boolean
 
-	static get debug(): Boolean
-	static set debug(value: Boolean)
+	static get debug(): boolean
+	static set debug(value: boolean)
 
 	// Errors
 	static get LibWrapperError(): string
@@ -55,7 +55,8 @@ declare class libWrapper {
 	 *
 	 *
 	 */
-	static register(module: string, target: string, fn: Function, type?: 'WRAPPER' | 'MIXED' | 'OVERRIDE'): void;
+	static register(module: string, target: string, fn: (wrapped: (...args: any) => any, ...args: any) => any, type?: 'WRAPPER' | 'MIXED'): void;
+	static register(module: string, target: string, fn: (...args: any) => any, type?: 'OVERRIDE'): void;
 
 	/**
 	 * Unregister an existing wrapper.
@@ -64,7 +65,7 @@ declare class libWrapper {
 	 * @param {string} target    A string containing the path to the function you wish to remove the wrapper from, starting at global scope. For example: 'SightLayer.prototype.updateToken'
 	 * @param {boolean} fail     [Optional] If true, this method will throw an exception if it fails to find the method to unwrap. Default is 'true'.
 	 */
-	static unregister(module: string, target: string, fail?: Boolean): void;
+	static unregister(module: string, target: string, fail?: boolean): void;
 
 	/**
 	 * Clear all wrappers created by a given module.

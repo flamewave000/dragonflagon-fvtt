@@ -67,7 +67,7 @@ import glob
 in_file = '$1'
 out_file = '$2'
 src_files = ',\n\t\t'.join([f'"{os.path.relpath(x, in_file)}"' for x in glob.glob(in_file + "/src/**/*.*js", recursive=True)] + [f'"{os.path.relpath(x, in_file)}"' for x in glob.glob(in_file + "/common/**/*.*js", recursive=True)])
-css_files = ',\n\t'.join([f'"{os.path.relpath(x, in_file)}"' for x in glob.glob(in_file + "/css/**/*.css", recursive=True)])
+css_files = ',\n\t\t'.join([f'"{os.path.relpath(x, in_file)}"' for x in glob.glob(in_file + "/css/**/*.css", recursive=True)])
 if len(out_file) == 0:
 	out_file = in_file
 file = ''
@@ -82,6 +82,7 @@ with open(out_file + "/module.json", "w") as manifest:
 
 proc_sass {
 %%%
+import os
 import glob
 import subprocess
 from pathlib import Path
@@ -96,6 +97,8 @@ for file in files:
 	print(f" {filename}.scss", end='')
 print('')
 subprocess.run(args)
+for file in files:
+	os.remove(file)
 %%%
 }
 
