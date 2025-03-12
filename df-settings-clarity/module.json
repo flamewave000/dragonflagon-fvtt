@@ -8,18 +8,14 @@
 	"scripts": [ "libs/fuzzysort.js" ],
 	"relationships": {
 		"requires": [
-			{
-				"id": "lib-wrapper",
-				"type": "module",
-				"compatibility": { "verified": "1.13.2.0", "minimum": "1.12.15.0" }
-			}
+			{ "id": "lib-wrapper", "type": "module", "compatibility": { "verified": "1.13.2.0", "minimum": "1.12.15.0" } }
 		]
 	},
 	"esmodules": "{{sources}}",
 	"styles": "{{css}}",
 	"languages": [
 		{ "lang": "en", "name": "English", "path": "lang/en.json" },
-		{ "lang": "fr", "name": "French", "path": "lang/fr.json" },
+		{ "lang": "fr", "name": "Français", "path": "lang/fr.json" },
 		{ "lang": "es", "name": "Español", "path": "lang/es.json" }
 	],
 	"url":		"https://dragonflagon.cafe/mods/url/df-settings-clarity",

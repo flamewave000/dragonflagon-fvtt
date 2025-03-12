@@ -101,3 +101,8 @@ launch {
 	@ Launch the foundry server
 	$ sudo $$(which node) "$$(jq -r .foundry.path .devenv)/resources/app/main.js" --dataPath="$$(jq -r .foundry.data .devenv)"
 }
+
+pubmod {
+	@ Please Ignore. This is for modifying my remote module registry.
+	$ ssh `cat ~/conns/dragonflagon.cafe` -t 'vim apps/Town/module-registry.jsonc'
+}
