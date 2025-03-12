@@ -90,7 +90,7 @@ export default class DFChatEdit {
 							case '/emote': /* fall-through */
 							case '/whisper': /* fall-through */
 							case '/w':
-								[originalMessage, message] = DFChatEditor.processMarkdown(message.substr(token.length));
+								[originalMessage, message] = DFChatEditor.processMarkdown(message.substring(token.length));
 								originalMessage = `${token} ${originalMessage.trimStart()}`;
 								message = `${token} ${message.trimStart()}`;
 								break;

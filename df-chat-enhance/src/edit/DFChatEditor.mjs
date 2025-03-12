@@ -134,3 +134,18 @@ export default class DFChatEditor extends FormApplication {
 		return [originalMessage, message];
 	}
 }
+
+/**@type {MarkedExtension}*/
+const inlineDiceRoll = {
+	name: "dice-roll",
+	level: 'inline',
+	start(src) { return src.match(/\[\[/)?.index; },
+	renderer(token) { return token.raw; },
+	tokenizer(src, _tokens) {
+		const rule = /^\[\[[^\n\r]+\]\]$/;
+		const match = rule.exec(src);
+		if (match)
+			return { type: 'dice-roll', raw: match[0] };
+	}
+};
+marked.use({ extensions: [inlineDiceRoll] });
