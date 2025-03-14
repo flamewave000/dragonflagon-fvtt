@@ -25,7 +25,7 @@ This is a very feature that adds a "Roll on the table" option to the context men
 
 ## Custom Folder Text Colours
 
-Folders for the various entities can have custom background colours, but sometimes that colour does not contrast well with the unchanging text colour. This feature allows you to customize the text colour as well.
+Folders for the various entities can have custom background colours, but sometimes that colour does not contrast well with the unchanging text colour. This feature allows you to customize the text colour as well. It also adds a small highlight along the border of a folder when right-clicked to display its context menu.
 
 ![Folder Config](../.assets/df-qol/folder-config.png)
 

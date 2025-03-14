@@ -1,3 +1,4 @@
+/// <reference path="../../fvtt-scripts/foundry.js" />
 import SETTINGS from "../common/Settings.mjs";
 
 export default class DayNightTransition {
@@ -11,13 +12,13 @@ export default class DayNightTransition {
 			hint: 'DF_QOL.DayNight.ProgressSettingHint',
 			onChange: toggled => {
 				if (toggled)
-					libWrapper.register(SETTINGS.MOD_NAME, 'EffectsCanvasGroup.prototype.animateDarkness', DayNightTransition._animateDarkness, 'OVERRIDE');
+					libWrapper.register(SETTINGS.MOD_NAME, 'EffectsCanvasGroup.prototype.animateDarkness', this.#animateDarkness, 'OVERRIDE');
 				else
 					libWrapper.unregister(SETTINGS.MOD_NAME, 'EffectsCanvasGroup.prototype.animateDarkness');
 			}
 		});
 		if (SETTINGS.get('day-night-progress')) {
-			libWrapper.register(SETTINGS.MOD_NAME, 'EffectsCanvasGroup.prototype.animateDarkness', DayNightTransition._animateDarkness, 'OVERRIDE');
+			libWrapper.register(SETTINGS.MOD_NAME, 'EffectsCanvasGroup.prototype.animateDarkness', this.#animateDarkness, 'OVERRIDE');
 		}
 		SETTINGS.register('day-night-duration', {
 			scope: 'world',
@@ -29,11 +30,23 @@ export default class DayNightTransition {
 			hint: 'DF_QOL.DayNight.DurationSettingHint'
 		});
 	}
-	static async _animateDarkness(target = 1.0, { duration = 10000 } = {}) {
+
+/*
+
+Display a time wheel that shows the current day-night cycle. The wheel can look
+like a sun and moon on a horizon. When they click from one to another it can
+rotate the sun and moon until one or the other is at the zenith. At which point
+the image will fade away.
+
+We can then set the dawn/day/dusk/night 
+
+ */
+
+	static async #animateDarkness(target = 1.0, { duration = 10000 } = {}) {
 		const animationName = "lighting.animateDarkness";
-		/***************************************************************************************/
+		/********************************************************************************************/
 		/** COPYRIGHT START FoundryVTT : foundry.js > EffectsCanvasGroup.prototype.animateDarkness **/
-		/***************************************************************************************/
+		/********************************************************************************************/
 		CanvasAnimation.terminateAnimation(animationName);
 		if (target === canvas.darknessLevel) return false;
 		if (duration <= 0) return canvas.colorManager.initialize({ darknessLevel: target });
@@ -76,11 +89,6 @@ export default class DayNightTransition {
 				// const loader = document.getElementById("loading");
 				const pct = Math.ceil((elapsed / duration) * 100);
 				SceneNavigation.displayProgressBar({label:'Day/Night Transitioning...', pct});
-				// loader.querySelector("#context").textContent = 'Day/Night Transitioning...';
-				// loader.querySelector("#loading-bar").style.width = `${pct}%`;
-				// loader.querySelector("#progress").textContent = `${Math.round(elapsed / 1000)}/${Math.ceil(duration / 1000)} sec`;
-				// loader.style.display = "block";
-				// if ((duration - elapsed < 500) && !loader.hidden) $(loader).fadeOut(2000);
 				/*************************/
 				/** DF QOL ADDITION END **/
 				/*************************/
@@ -88,8 +96,8 @@ export default class DayNightTransition {
 		}).then(completed => {
 			if ( !completed ) canvas.environment.initialize({environment: {darknessLevel: target}});
 		});
-		/*************************************************************************************/
-		/** COPYRIGHT END FoundryVTT : foundry.js > LightingLayer.prototype.animateDarkness **/
-		/*************************************************************************************/
+		/******************************************************************************************/
+		/** COPYRIGHT END FoundryVTT : foundry.js > EffectsCanvasGroup.prototype.animateDarkness **/
+		/******************************************************************************************/
 	}
 }

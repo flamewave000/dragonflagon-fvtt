@@ -107,6 +107,7 @@ tag {
 	MODULE_NAME=`jq -r .module .devenv`
 	MODULE_VERS=`jq -r .version "$$MODULE_NAME/module.json"`
 	TAG_NAME="$${MODULE_NAME}_$$MODULE_VERS"
+	$doit_utl confirm "'Create tag for $${MODULE_NAME}_$$MODULE_VERS?'" || exit 1
 	echo "Tagging $$TAG_NAME"
 	git tag -d $$TAG_NAME 2>/dev/null
 	git tag $$TAG_NAME && git push -f origin $$TAG_NAME

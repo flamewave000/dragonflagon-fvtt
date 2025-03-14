@@ -1,6 +1,7 @@
 # DragonFlagon Quality of Life
 
-## Release 2.0.2 (2025-03-14)
+## Release 2.0.2 (2025-03-20)
+- **FIX #509:** Fix folder text update issue.
 - **FIX #510:** Fix multi-token locking.
 - **FIX:** Deprecation fix: `Math.clamped` -> `Math.clamp`
 
