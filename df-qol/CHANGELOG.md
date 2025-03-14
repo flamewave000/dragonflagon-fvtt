@@ -1,6 +1,7 @@
 # DragonFlagon Quality of Life
 
-## Release 
+## Release 2.0.2 (2025-03-14)
+- **FIX #510:** Fix multi-token locking.
 - **FIX:** Deprecation fix: `Math.clamped` -> `Math.clamp`
 
 ## Release 2.0.1 (2025-02-23)

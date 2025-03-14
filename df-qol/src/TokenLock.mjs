@@ -81,10 +81,7 @@ export default class TokenLock {
 					// Only update tokens that are different than what we are trying to set the rest to
 					.filter((x) => TokenLock.getLocked(x) != locked)
 					// Create the update data for each token
-					.map(x => ({
-						_id: x.data._id,
-						flags: { 'df-qol': { locked } }
-					}));
+					.map(x => ({ _id: x.id, locked: locked }));
 				// Perform Batch Update
 				await canvas.scene.updateEmbeddedDocuments("Token", data);
 			}
