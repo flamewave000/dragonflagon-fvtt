@@ -21,6 +21,7 @@
 		"ArchiveNew_FromDate": "시작 날짜:",
 		"ArchiveNew_ToDate": "마지막 날짜:",
 		"ArchiveNew_Delete": "채팅 로그에서 메시지를 삭제하시겠습니까?",
+		"ArchiveNew_DeleteWarning": "기록 일부 삭제는 <b>채팅 로그 레이아웃을 깨뜨릴 수 있으며</b><br>새로고침이 필요할 수 있습니다.",
 		"ArchiveNew_Visible": "플레이어에게 표시합니까?",
 		"ArchiveNew_Submit": "아카이브 저장",
 		"ArchiveNew_ErrorNameMissing": "새 아카이브의 이름을 지정해야합니다!",
@@ -45,6 +46,7 @@
 		"ArchiveViewer_Visible": "플레이어에게 보이기",
 		"ArchiveViewer_DeleteTitle": "보관된 메시지 삭제",
 		"ArchiveViewer_DeleteContent": "이전 삭제 내용을 모두 적용하겠습니까?",
+		"ArchiveViewer_Html": "Save the chat log as html",
 		"ArchiveViewer_Print": "채팅 아카이브 프린트",
 		"ArchiveViewer_Merge": "아카이브를 이 아카이브에 병합",
 		"ArchiveViewer_Merge_Title": "채팅 아카이브 병합",
@@ -72,31 +74,53 @@
 			"GmOnlyHint": "모험 기록 명령을 GM만이 하도록 설정한다.",
 			"GmOnlyWhisperName": "모험 기록: (GM 전용 활성화시) 모든 기록 귓속말화",
 			"GmOnlyWhisperHint": "상기 GM 전용 설정이 켜져 있으면 모든 로그 입력 채팅 메시지가 귓속말이 된다.",
+			"UseTimeName": "모험 기록: 현재 시간 포함",
+			"UseTimeHint": "타임스탬프에 현재 시간을 포함합니다 (hh:mm:ss 형식)",
 			"PrintMessagesName": "모험 기록: 채팅 메시지에 로그 게시",
 			"PrintMessagesHint": "새 모험 기록 엔트리를 알리는 메시지를 채팅에 게시한다.",
+			"DisableFormatName": "모험 기록: 서식 비활성화",
+			"DisableFormatHint": "모험 기록에 항목을 추가할 때 글꼴 서식을 비활성화합니다.",
+			"DisableEntryAuthorName": "모험 기록: 작성자 표시 비활성화",
+			"DisableEntryAuthorHint": "이벤트나 인용구를 기록할 때 작성자의 이름이 기록되지 않도록 합니다.",
 			"SortDescendingName": "모험 기록: 최신순 맨 위로 정렬",
-			"SortDescendingHint": "로그 상단에 최신 메시지가 올라오도록 모험 기록을 정렬한다."
+			"SortDescendingHint": "로그 상단에 최신 메시지가 올라오도록 모험 기록을 정렬한다.",
+			"SimpleCalendarName": "모험 기록: SimpleCalendar 시간 사용",
+			"SimpleCalendarHint": "실제 시간이 아닌 SimpleCalendar에서 생성된 시간으로 타임스탬프를 표시합니다."
 		},
 		"Error": {
 			"LibWrapperMissing": "libwrapper 모듈이 비활성화되어 있습니다. 모험 기록은 해당 모듈이 없으면 작동하지 않습니다.",
 			"ConfigGmOnly": "GM만이 모험 기록 구성을 변경할 수 있습니다.",
 			"Disabled": "GM이 모험 기록을 비활성화 했습니다.",
 			"NoJournalSet": "GM이 모험 기록으로 사용할 저널을 설정하지 않았습니다.",
+			"NoPlayerJournalSet": "개인 모험 기록이 사용자 계정에 연결되어 있지 않습니다.",
 			"NoJournalSetGM": "모험 기록에 사용할 저널이 없습니다. \"<code>/log config</code>\" 명령어를 사용하십시오.",
 			"MissingQuote": "{0}에 대한 마무리 인용구를 찾지 못했습니다.",
 			"MissingMessage": "메시지를 제공하지 않았습니다.",
 			"ApiLog_NotGm": "GM 모험 기록에 이벤트를 기록하려면 GM이어야 합니다."
 		},
 		"Log_Header": "모험 기록",
+		"PLog_Header": "Player Log",
 		"GMLog_Header": "GM만이 모험 기록 가능",
 		"Log_Event": "<p><code><span class=\"dfal-ts\">{0}</span></code>&nbsp;(<span class=\"dfal-na\">{1}</span>)&nbsp;<span class=\"dfal-ev\">{2}</span></p>",
 		"Log_Quote": "<p><code><span class=\"dfal-ts\">{0}</span></code>&nbsp;(<span class=\"dfal-na\">{1}</span>)&nbsp;<span class=\"dfal-qu-src\">{2} said:</span>&nbsp;<span class=\"dfal-qu\">\"{3}\"</span></p>",
+		"Log_Event_Bland": "<p><span>{0}</span>&nbsp;(<span>{1}</span>)&nbsp;<span>{2}</span></p>",
+		"Log_Quote_Bland": "<p><span>{0}</span>&nbsp;(<span>{1}</span>)&nbsp;<span>{2} said:</span>&nbsp;<span>\"{3}\"</span></p>",
+		
+		"Log_Event_NoAuth": "<p><code><span class=\"dfal-ts\">[{0}]</span></code>&nbsp;<span class=\"dfal-ev\">{2}</span></p>",
+		"Log_Quote_NoAuth": "<p><code><span class=\"dfal-ts\">[{0}]</span></code>&nbsp;<span class=\"dfal-qu-src\">{2} said:</span>&nbsp;<span class=\"dfal-qu\">\"{3}\"</span></p>",
+		"Log_Event_Bland_NoAuth": "<p><span>({0})</span>&nbsp;<span>{2}</span></p>",
+		"Log_Quote_Bland_NoAuth": "<p><span>({0})</span>&nbsp;<span>{2} said:</span>&nbsp;<span>\"{3}\"</span></p>",
+		
 		"Config_Title": "모험 기록 설정",
 		"Config_JournalSelect": "모험 기록으로 사용할 저널",
 		"Config_GMJournalSelect": "GM 전용 기록에 사용할 저널",
 		"Config_ClearContent": "저널의 모든 내용 삭제",
 		"Config_GmClearContent": "GM 전용 저널의 모든 내용을 삭제한다.",
 		"Config_JournalPermissions": "유저가 이벤트를 기록하려면 저널 편집 권한이 필요합니다.",
+
+		"UserConfig_Journal": "플레이어 모험 기록 저널",
+		"UserConfig_JournalPage": "플레이어 모험 기록 페이지",
+
 		"ContextMenu_AsEvent": "이벤트로 모험 기록",
 		"ContextMenu_AsQuote": "인용구로 모험 기록",
 		"ContextMenu_AsGmEvent": "이벤트로 GM 모험 기록",
@@ -111,6 +135,10 @@
 		"Settings_GMEditAllHint": "GM이 모든 유저의 메시지를 수정할 수 있도록 한다.",
 		"Settings_IgnoreHtmlName": "채팅 수정: HTML이 포함된 메시지 무시",
 		"Settings_IgnoreHtmlHint": "HTML이 포함된 메시지의 수정을 허용하지 않는다.",
+		"Settings_MarkdownName": "채팅 수정: 마크다운 사용",
+		"Settings_MarkdownHint": "채팅 로그에서 마크다운 스타일을 사용할 수 있도록 허용합니다.",
+		"Settings_ShowEditedLabelName": "채팅 수정: 수정 표시 태그 추가",
+		"Settings_ShowEditedLabelHint": "수정된 메시지 하단에 \"(수정됨)\"이라는 작은 표시를 추가합니다.",
 		"EditedFlag": "(수정됨)",
 		"Error_NoPermission": "GM이 수정 기능을 비활성화했습니다.",
 		"ContextOption": "메시지 수정"
@@ -140,12 +168,45 @@
 		"EnableName": "개선된 채팅 스크롤 활용",
 		"EnableHint": "아래로 스크롤 버튼이 표시되며, 로그를 스크롤할 경우 새 메시지가 게시되었을 때 채팅 로그가 스크롤 다운되지 않는다. 대신 새 메시지가 게시되었을 때 아래로 스크롤 버튼이 표시된다.",
 		"ScrollIfYouName": "메시지를 보낼 때 아래로 스크롤한다.",
-		"ScrollIfYouHint": "채팅 로그를 스크롤 했을 때 메시지를 보내면 자동적으로 아래로 스크롤한다."
+		"ScrollIfYouHint": "채팅 로그를 스크롤 했을 때 메시지를 보내면 자동적으로 아래로 스크롤한다.",
+		"HistorySizeName": "표시 채팅 메시지 수 제한",
+		"HistorySizeHint": "표시되는 채팅 메시지 수를 줄입니다. 오래된 메시지는 로그를 위로 스크롤할 때 로드되며, 매우 긴 채팅 기록이 있을 때 Foundry의 성능 향상에 도움이 됩니다.",
+		"HistoryFixEnabledName": "최대 채팅 메시지 수",
+		"HistoryFixEnabledHint": "채팅 로그 맨 아래에 있을 때 표시되는 최대 메시지 수를 설정합니다."
 	},
 	"DF_CHAT_WHISPER_TRUNC": {
 		"SettingEnabledName": "귓속말 이름 목록 자르기 활성화",
 		"SettingEnabledHint": "귓속말 메시지를 받는 사람의 이름 목록이 길면 자르기합니다.",
 		"SettingCharLimitName": "귓속말 글자 자르기 제한",
 		"SettingCharLimitHint": "이름이 잘리는 부분 전까지 표시할 최대 글자 수입니다."
+	},
+	"DF_CHAT_PLAYER_COLOR": {
+		"Label": "플레이어 채팅 색상",
+		"Hint": "설정 시, 플레이어 색상 대신 채팅 카드에 사용할 색상을 별도로 지정할 수 있습니다.",
+		"SettingTintBackgroundName": "채팅 배경 색상 적용",
+		"SettingTintBackgroundHint": "채팅 메시지 배경에 플레이어 색상을 적용합니다.",
+		"SettingBorderStyleName": "채팅 테두리 색상 적용",
+		"SettingBorderStyleHint": "어떤 채팅 메시지에 테두리 색상을 적용할지 설정합니다.",
+		"BorderStyle": {
+			"all": "모든 메시지 (기본값)",
+			"mine": "내 메시지만",
+			"none": "테두리 색상 없음"
+		}
+	},
+	"DF_CHAT_SEND_BUTTON": {
+		"EnabledName": "채팅 전송 버튼 표시",
+		"EnabledHint": "채팅창에 메시지를 전송할 수 있는 버튼을 표시합니다.",
+		"ButtonTitle": "메시지 전송"
+	},
+	"DF_CHAT_FONT_SIZE": {
+		"FontSizeName": "채팅 글꼴 크기",
+		"FontSizeHint": "채팅 메시지와 입력 상자의 글꼴 크기입니다. (기본값: 13)"
+	},
+	"DF_CHAT_TIME": {
+		"EnabledName": "채팅 시간 표시: Simple Calendar 사용",
+		"EnabledHint": "(Simple Calendar 필요) 활성화 시, 채팅 메시지에 실제 시간이 아닌 게임 시간을 표시합니다. 변경 시 채팅 로그가 다시 렌더링됩니다.",
+		"FormatName": "채팅 시간 포맷",
+		"FormatHint": "채팅 메시지에 표시되는 Simple Calendar 시간의 포맷입니다. 위 설정이 활성화되어 있어야 적용됩니다. (기본값: \"YYYY, MMM DD, HH:mm\")",
+		"ErrorSimpleCalendarMissing": "Simple Calendar가 설치 및 활성화되어 있어야 이 기능을 사용할 수 있습니다."
 	}
 }
