@@ -61,7 +61,23 @@
 		"Settings_EnableTitle": "Roll Buttons: Replace roll type selector with buttons",
 		"Settings_EnableHint": "(Requires Reload) Replace the drop-down menu selector for roll types with a set of four buttons.",
 		"Settings_ReplaceButtonsTitle": "Roll Buttons: Use button style on all chat buttons",
-		"Settings_ReplaceButtonsHint": "(Requires Reload) Restyle the other chat buttons to look the same as the new Roll Type buttons."
+		"Settings_ReplaceButtonsHint": "(Requires Reload) Restyle the other chat buttons to look the same as the new Roll Type buttons.",
+		"Settings_ToggleATitle": "Roll Buttons: Toggle Shortcut Roll Mode A",
+		"Settings_ToggleAHint": "If the Roll Mode Toggle keyboard shortcut is configured, this setting is for the default roll mode it switches to.",
+		"Settings_ToggleBTitle": "Roll Buttons: Toggle Shortcut Roll Mode B",
+		"Settings_ToggleBHint": "If the Roll Mode Toggle keyboard shortcut is configured, this setting is for the alternative roll mode to switch to if we are currently set to 'Roll Mode A'.",
+		"Bindings": {
+			"publicroll_name": "Public Roll",
+			"publicroll_hint": "Sets the Dice Roll Mode to Public",
+			"privateroll_name": "Private GM Roll",
+			"privateroll_hint": "Sets the Dice Roll Mode to Private GM",
+			"blindroll_name": "Blind GM Roll",
+			"blindroll_hint": "Sets the Dice Roll Mode to Blind GM",
+			"selfroll_name": "Self Roll",
+			"selfroll_hint": "Sets the Dice Roll Mode to Self",
+			"toggleroll_name": "Quick Toggle Roll Modes",
+			"toggleroll_hint": "Toggles between your two configured roll modes that you feel you want to use most often."
+		}
 	},
 	"DF_CHAT_LOG": {
 		"CommandDescription": "Submit an event to the Adventure Log",

@@ -134,16 +134,22 @@ AdventureLog.gmquote("Bob", "Don't worry, be happy!", true)
 
 ## Roll Selector Buttons ![Roll Types](../.assets/df-chat-enhance/privacy-roll-types.png)
 
+Replaces the dropdown menu for roll modes with selector buttons. The colours are specifically meant to be colour-blind friendly (please let me know if there is any issue with this). The module also registers keyboard shortcuts for the roll modes. To avoid conflicts, these are not set by default and you will need to map them yourself to your own desired shortcut combination.
+
 | Players | Game Masters |
 | :-: | :-: |
 | ![Roll buttons for players](../.assets/df-chat-enhance/privacy-pc.png) | ![Roll buttons for Game Master](../.assets/df-chat-enhance/privacy-gm.png) |
 
-| Roll Type | Button | Keyboard Shortcut |
-| - | - | :-: |
-| Public Rolls | ![](../.assets/df-chat-enhance/privacy-rt-public.png) | <kbd>Alt</kbd> `+` <kbd>Q</kbd> |
-| Private GM Rolls | ![](../.assets/df-chat-enhance/privacy-rt-gm.png) | <kbd>Alt</kbd> `+` <kbd>W</kbd> |
-| Blind GM Rolls | ![](../.assets/df-chat-enhance/privacy-rt-blind.png) | <kbd>Alt</kbd> `+` <kbd>E</kbd> |
-| Self Rolls | ![](../.assets/df-chat-enhance/privacy-rt-self.png) | <kbd>Alt</kbd> `+` <kbd>R</kbd> |
+| Roll Type | Button |
+| - | - |
+| Public Rolls | ![](../.assets/df-chat-enhance/privacy-rt-public.png) |
+| Private GM Rolls | ![](../.assets/df-chat-enhance/privacy-rt-gm.png) |
+| Blind GM Rolls | ![](../.assets/df-chat-enhance/privacy-rt-blind.png) |
+| Self Rolls | ![](../.assets/df-chat-enhance/privacy-rt-self.png) |
+
+### Roll Mode Toggle
+
+There is also a roll mode toggle shortcut registered. This will toggle between `Roll Mode A` and `Roll Mode B` which are configured in the module settings. This is very useful for a GM who maybe frequently toggles between Public and Self rolls. Or for a player who maybe toggles between Public and Private GM rolls. This shortcut is also not set to any default, so you will need to create a keybinding for it in the Configure Controls menu.
 
 ## Chat Archive
 

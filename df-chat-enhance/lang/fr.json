@@ -61,7 +61,23 @@
 		"Settings_EnableTitle": "Boutons de roulis: remplacer le sélecteur de type de rouleau par des boutons",
 		"Settings_EnableHint": "(Nécessite un rechargement) Remplacez le sélecteur de menu déroulant pour les types de rouleaux avec un ensemble de quatre boutons.",
 		"Settings_ReplaceButtonsTitle": "Boutons de roulement: utilisez le style des bouton sur tous les boutons de chat",
-		"Settings_ReplaceButtonsHint": "(Nécessite un rechargement) Restyle les autres boutons de chat pour se ressembler les nouveaux boutons de type de rouleau."
+		"Settings_ReplaceButtonsHint": "(Nécessite un rechargement) Restyle les autres boutons de chat pour se ressembler les nouveaux boutons de type de rouleau.",
+		"Settings_ToggleATitle": "Boutons de Rouleau: Basculez le Mode de Rouleau de Raccourci A",
+		"Settings_ToggleAHint": "Si le raccourci clavier Basculer le mode de roulis est configuré, ce paramètre correspond au mode de roulis par défaut vers lequel il bascule.",
+		"Settings_ToggleBTitle": "Boutons de Rouleau: Basculez le Mode de Rouleau de Raccourci B",
+		"Settings_ToggleBHint": "Si le raccourci clavier Basculer le mode de roulis est configuré, ce paramètre permet de basculer vers le mode de roulis alternatif si nous sommes actuellement définis sur 'Mode de roulis A'.",
+		"Bindings": {
+			"publicroll_name": "Lancer des Dés Publics",
+			"publicroll_hint": "Définit le mode de lancer des dés sur Public",
+			"privateroll_name": "Lancer des Dés Privé GM",
+			"privateroll_hint": "Définit le mode de lancer des dés sur GM privé",
+			"blindroll_name": "Lancer des Dés Secret du GM",
+			"blindroll_hint": "Définit le mode de lancer de dés sur GM aveugle",
+			"selfroll_name": "Lancer des Dés Automatique",
+			"selfroll_hint": "Définit le mode de lancer des dés sur Auto",
+			"toggleroll_name": "Basculement Rapide des Modes de Roulis",
+			"toggleroll_hint": "Bascule entre vos deux modes de roulis configurés que vous souhaitez utiliser le plus souvent."
+		}
 	},
 	"DF_CHAT_LOG": {
 		"CommandDescription": "Soumettre un événement au journal d'aventure",
