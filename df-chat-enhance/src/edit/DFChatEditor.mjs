@@ -41,14 +41,14 @@ export default class DFChatEditor extends FormApplication {
 	getData(options) {
 		// Collect the different Actor types and the labels for those types
 		const types = Object.keys(CONFIG.Actor.typeLabels).map(type => {
-			return { type, label: CONFIG.Actor.typeLabels[type], actors: [] };
+			return { type, label: (foundry.utils.hasProperty(game.i18n.translations, CONFIG.Actor.typeLabels[type]) ? CONFIG.Actor.typeLabels[type] : "Tokens"), actors: [] };
 		});
 		// Organize the actors in the current scene into those type categories
 		for (const type of types) {
-			type.actors = game.scenes.viewed.tokens.contents.filter(x => x.actor.type === type.type).map(x => ({
-				id: 'token-' + x.id,
-				name: x.name
-			}));
+			type.actors = game.scenes.viewed.tokens.contents
+				.filter(x => x.actor.type === type.type)
+				.filter(x => x.testUserPermission(game.user, foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER))
+				.map(x => ({ id: 'token-' + x.id, name: x.name }));
 		}
 
 		let selected = '';
@@ -59,7 +59,7 @@ export default class DFChatEditor extends FormApplication {
 
 		return foundry.utils.mergeObject(options, {
 			selected,
-			players: game.users.map(x => ({ id: 'user-' + x.id, name: x.name })),
+			players: game.user.isGM ? game.users.map(x => ({ id: 'user-' + x.id, name: x.name })) : [{ id: 'user-' + game.userId, name: game.user.name }],
 			actorGroups: types.filter(x => x.actors.length > 0),
 			messageText: this.#chatMessage.content
 				.replace(/< *br *\/?>/gm, '\n')

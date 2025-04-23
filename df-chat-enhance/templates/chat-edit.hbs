@@ -1,14 +1,14 @@
 <form class="dfce-editor" style="display:flex;flex-flow:column">
 	<h3>Speaker</h3>
 	<select name="speaker">
-		<optgroup label="{{localize 'Players'}}">
+		<optgroup label="{{localize 'PLAYERS.Title'}}">
 			{{#each players}}
 			<option value="{{id}}" {{#if (eq ../selected id)}}selected{{/if}}>{{name}}</option>
 			{{/each}}
 		</optgroup>
 
 		{{#each actorGroups}}
-		<optgroup label="{{localize 'label'}}">
+		<optgroup label="{{localize label}}">
 			{{#each actors}}
 			<option value="{{id}}" {{#if (eq ../../selected id)}}selected{{/if}}>{{name}}</option>
 			{{/each}}
