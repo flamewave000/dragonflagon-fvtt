@@ -37,12 +37,13 @@ export function init() {
 		}).bind(DFAdventureLogProcessor)
 	};
 	window.AdventureLog = api;
-}
-export function ready() {
+
 	if (!game.modules.get('lib-wrapper')?.active) return;
 	DFAdventureLogConfig.setupSettings();
 	DFAdventureLogProcessor.setupSettings();
-
+}
+export function ready() {
+	if (!game.modules.get('lib-wrapper')?.active) return;
 	if (!game.user.isGM) return;
 
 	Hooks.on('renderUserConfig',

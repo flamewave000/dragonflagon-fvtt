@@ -1,5 +1,11 @@
 # DF Chat Enhancements
 
+## Release 5.1.0 (2025-04-24)
+- **UPDATE:** Korean Localization: Courtesy of [Jihoon9836](https://github.com/Jihoon9836)
+- **NEW #457:** New keyboard shortcut registered for a Roll Mode Quick Toggle which allows you to quickly switch between two configurable roll modes.
+- **NEW #451:** Added setting for collapsing the Adventure Log context menu options into a single option. When clicked, it will launch a dialog with the full option list. This is to help declutter the chat message context menu when using a system that adds a lot of other options.
+- **FIX #461:** Editing a message would reveal all of the token names to players. Now players will only see tokens that they own in the list.
+
 ## Release 5.0.2 (2025-03-12)
 - **FIX #513:** UserConfig properly saves its data again.
 - **FIX #512:** Inline-Rolls containing markdown characters in chat function correctly again without being converted to html.

@@ -40,3 +40,7 @@ article.df-adventure-log code {
 .application.sheet.user-config section.window-content {
 	overflow-y: scroll;
 }
+
+button:has(> i[data-dfce="button"]) {
+	flex: unset !important;
+}

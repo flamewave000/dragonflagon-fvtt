@@ -18,6 +18,7 @@ if (!String.prototype.trimStart) {
 }
 
 export default class DFAdventureLogProcessor {
+	/**@readonly*/ static PREF_COLLAPSE_OPTIONS = "collapse-options";
 	/**@readonly*/ static PREF_ENABLE = 'enable-command';
 	/**@readonly*/ static PREF_GMONLY = 'df-log-gmonly';
 	/**@readonly*/ static PREF_GMONLY_WHISPER = 'df-log-gmonly-whisper';
@@ -34,73 +35,97 @@ export default class DFAdventureLogProcessor {
 
 	/**@param {ContextMenuEntry} options*/
 	static appendChatContextMenuOptions(options) {
+		const LogEvent = (/**@type {boolean}*/isGM, /**@type {ChatMessage}*/chatData) =>
+			DFAdventureLogProcessor.commandProcessor(chatData.content, isGM, false);
+		const LogQuote = (/**@type {boolean}*/isGM, /**@type {ChatMessage}*/chatData) => {
+			if (chatData.content.trimStart().startsWith('"'))
+				DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, isGM, false);
+			else
+				DFAdventureLogProcessor.commandProcessor(`q "${chatData.author.name}" ${chatData.content}`, isGM, false);
+		};
+		if (SETTINGS.get(DFAdventureLogProcessor.PREF_COLLAPSE_OPTIONS)) {
+			options.push({
+				name: 'DF_CHAT_LOG.ContextMenu.LogMessage',
+				icon: '<i class="fas fa-edit"></i>',
+				condition: () => {
+					const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
+					const isGM = game.user.isGM;
+					const gmOnly = SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY);
+					return enabled && (!gmOnly || isGM);
+				},
+				callback: (header) => {
+					/**@type {ChatMessage}*/
+					const chatData = ui.chat.collection.get($(header).attr('data-message-id'));
+					const buttons = {};
+					if (game.user.isGM || !SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY)) {
+						buttons.event = {
+							label: game.i18n.localize('DF_CHAT_LOG.ContextMenu.AsEvent'),
+							icon: '<i data-dfce="button" style="color:SeaGreen" class="fas fa-edit"></i>',
+							callback: () => LogEvent(false, chatData)
+						};
+						buttons.quote = {
+							label: game.i18n.localize('DF_CHAT_LOG.ContextMenu.AsQuote'),
+							icon: '<i data-dfce="button" style="color:SeaGreen" class="fas fa-quote-right"></i>',
+							callback: () => LogQuote(false, chatData)
+						};
+					}
+					if (game.user.isGM) {
+						buttons.gmevent = {
+							label: game.i18n.localize('DF_CHAT_LOG.ContextMenu.AsGmEvent'),
+							icon: '<i data-dfce="button" style="color:FireBrick" class="fas fa-edit"></i>',
+							callback: () => LogEvent(true, chatData)
+						};
+						buttons.gmquote = {
+							label: game.i18n.localize('DF_CHAT_LOG.ContextMenu.AsGmQuote'),
+							icon: '<i data-dfce="button" style="color:FireBrick" class="fas fa-quote-right"></i>',
+							callback: () => LogQuote(true, chatData)
+						};
+					}
+					buttons.cancel = {
+						label: 'Cancel',
+						icon: '<i data-dfce="button" class="fas fa-close"></i>',
+						callback: () => { }
+					};
+					Dialog.wait({ title: game.i18n.localize("DF_CHAT_LOG.ContextMenu.LogMessage"), buttons });
+					return {};
+				}
+			});
+			return;
+		}
+
+		function checkAdventureLogPermission() {
+			const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
+			const gmOnly = SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY);
+			return enabled && (!gmOnly || game.user.isGM);
+		}
+		function checkGMLogPermission() {
+			const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
+			return enabled && game.user.isGM;
+		}
+
 		options.push({
-			name: 'DF_CHAT_LOG.ContextMenu_AsEvent',
+			name: 'DF_CHAT_LOG.ContextMenu.AsEvent',
 			icon: '<i style="color:SeaGreen" class="fas fa-edit"></i>',
-			condition: () => {
-				const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
-				const isGM = game.user.isGM;
-				const gmOnly = SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY);
-				return enabled && (!gmOnly || isGM);
-			},
-			callback: (header) => {
-				/**@type {ChatMessage}*/
-				const chatData = ui.chat.collection.get($(header).attr('data-message-id'));
-				DFAdventureLogProcessor.commandProcessor(chatData.content, false, false);
-				return {};
-			}
+			condition: checkAdventureLogPermission,
+			callback: (header) => LogEvent(false, ui.chat.collection.get($(header).attr('data-message-id')))
 		});
 		options.push({
-			name: 'DF_CHAT_LOG.ContextMenu_AsQuote',
+			name: 'DF_CHAT_LOG.ContextMenu.AsQuote',
 			icon: '<i style="color:SeaGreen" class="fas fa-quote-right"></i>',
-			condition: () => {
-				const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
-				const isGM = game.user.isGM;
-				const gmOnly = SETTINGS.get(DFAdventureLogProcessor.PREF_GMONLY);
-				return enabled && (!gmOnly || isGM);
-			},
-			callback: (header) => {
-				/**@type {ChatMessage}*/
-				const chatData = ui.chat.collection.get($(header).attr('data-message-id'));
-				if (chatData.content.trimStart().startsWith('"'))
-					DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, false, false);
-				else
-					DFAdventureLogProcessor.commandProcessor(`q "${chatData.author.name}" ${chatData.content}`, false, false);
-				return {};
-			}
+			condition: checkAdventureLogPermission,
+			callback: (header) => LogQuote(false, ui.chat.collection.get($(header).attr('data-message-id')))
 		});
 		options.push({
-			name: 'DF_CHAT_LOG.ContextMenu_AsGmEvent',
+			name: 'DF_CHAT_LOG.ContextMenu.AsGmEvent',
 			icon: '<i style="color:FireBrick" class="fas fa-edit"></i>',
-			condition: () => {
-				const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
-				const isGM = game.user.isGM;
-				return enabled && isGM;
-			},
-			callback: (header) => {
-				/**@type {ChatMessage}*/
-				const chatData = ui.chat.collection.get($(header).attr('data-message-id'));
-				DFAdventureLogProcessor.commandProcessor(chatData.content, true, false);
-				return {};
-			}
+			condition: checkGMLogPermission,
+			callback: (header) => LogEvent(true, ui.chat.collection.get($(header).attr('data-message-id')))
 		});
 		options.push({
-			name: 'DF_CHAT_LOG.ContextMenu_AsGmQuote',
+			name: 'DF_CHAT_LOG.ContextMenu.AsGmQuote',
 			icon: '<i style="color:FireBrick" class="fas fa-quote-right"></i>',
-			condition: () => {
-				const enabled = SETTINGS.get(DFAdventureLogProcessor.PREF_ENABLE);
-				const isGM = game.user.isGM;
-				return enabled && isGM;
-			},
-			callback: (header) => {
-				/**@type {ChatMessage}*/
-				const chatData = ui.chat.collection.get($(header).attr('data-message-id'));
-				if (chatData.content.trimStart().startsWith('"'))
-					DFAdventureLogProcessor.commandProcessor('q ' + chatData.content, true, false);
-				else
-					DFAdventureLogProcessor.commandProcessor(`q "${chatData.author.name}" ${chatData.content}`, true, false);
-				return {};
-			}
+			condition: checkGMLogPermission,
+			callback: (header) => LogQuote(true, ui.chat.collection.get($(header).attr('data-message-id')))
 		});
 	}
 
@@ -118,6 +143,15 @@ export default class DFAdventureLogProcessor {
 				else
 					DFAdventureLogProcessor.registerCommand();
 			}
+		});
+		SETTINGS.register(DFAdventureLogProcessor.PREF_COLLAPSE_OPTIONS, {
+			scope: 'world',
+			name: 'DF_CHAT_LOG.Setting.CollapseOptionsTitle',
+			hint: 'DF_CHAT_LOG.Setting.CollapseOptionsHint',
+			config: true,
+			type: Boolean,
+			default: false,
+			requiresReload: true
 		});
 		SETTINGS.register(DFAdventureLogProcessor.PREF_GMONLY, {
 			name: 'DF_CHAT_LOG.Setting.GmOnlyTitle',
@@ -225,7 +259,7 @@ export default class DFAdventureLogProcessor {
 		DFAdventureLogProcessor.logCommand = commands.register({
 			name: "/log",
 			module: SETTINGS.MOD_NAME,
-			callback: async (_log, msg, _message) => {await DFAdventureLogProcessor.commandProcessor(msg, false, false);},
+			callback: async (_log, msg, _message) => { await DFAdventureLogProcessor.commandProcessor(msg, false, false); },
 			icon: "fa-edit",
 			description: "DF_CHAT_LOG.CommandDescription".localize()
 		});
@@ -233,7 +267,7 @@ export default class DFAdventureLogProcessor {
 		DFAdventureLogProcessor.plogCommand = commands.register({
 			name: "/plog",
 			module: SETTINGS.MOD_NAME,
-			callback: async (_log, msg, _message) => {await DFAdventureLogProcessor.commandProcessor(msg, false, true);},
+			callback: async (_log, msg, _message) => { await DFAdventureLogProcessor.commandProcessor(msg, false, true); },
 			icon: "fa-edit",
 			description: "DF_CHAT_LOG.PCCommandDescription".localize()
 		});
@@ -242,7 +276,7 @@ export default class DFAdventureLogProcessor {
 		DFAdventureLogProcessor.gmlogCommand = commands.register({
 			name: "/gmlog",
 			module: SETTINGS.MOD_NAME,
-			callback: async (_log, msg, _message) => {await DFAdventureLogProcessor.commandProcessor(msg, true, false);},
+			callback: async (_log, msg, _message) => { await DFAdventureLogProcessor.commandProcessor(msg, true, false); },
 			icon: "fa-edit",
 			description: "DF_CHAT_LOG.GMCommandDescription".localize(),
 			requiredRole: 'ASSISTANT'

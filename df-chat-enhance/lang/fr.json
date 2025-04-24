@@ -102,7 +102,9 @@
 			"SortDescendingName": "Journal de l'aventure: Sourti le plus récent sur le dessus",
 			"SortDescendingHint": "Triez le journal d'aventure avec les nouveaux messages en haut du journal et le plus ancien message en bas du journal.",
 			"SimpleCalendarName": "Journal de l'aventure: utilisez des horodatages SimpleCalendar",
-			"SimpleCalendarHint": "Au lieu de véritables horodatages, utilisez un horodatage généré par SimpleCalendar"
+			"SimpleCalendarHint": "Au lieu de véritables horodatages, utilisez un horodatage généré par SimpleCalendar",
+			"CollapseOptionsTitle": "Réduire les Options du Message",
+			"CollapseOptionsHint": "Réduisez les options du menu contextuel pour enregistrer les messages en une seule entrée qui lancera ensuite une invite vous demandant comment vous voulez enregistrer le message. Cela réduit les 2 à 4 options à seulement 1, ce qui est utile si le système et d'autres mods ajoutent beaucoup d'autres options."
 		},
 		"Error": {
 			"LibWrapperMissing": "Vous n'avez pas activé LibWrapper. Le journal d'aventure dépend de ce module et ne fonctionnera pas sans lui.",
@@ -132,10 +134,13 @@
 		"Config_ClearContent": "Effacer tous les contenus du journal",
 		"Config_GmClearContent": "Effacer tous les contenus du journal GM uniquement",
 		"Config_JournalPermissions": "Quiconque enregistrera les événements aura besoin de permettre de modifier le journal sélectionné.",
-		"ContextMenu_AsEvent": "Journal d'aventure comme événement",
-		"ContextMenu_AsQuote": "Journal d'aventure comme citation",
-		"ContextMenu_AsGmEvent": "GM Adventure Log comme un événement",
-		"ContextMenu_AsGmQuote": "Journal d'aventure GM comme citation"
+		"ContextMenu": {
+			"LogMessage": "Ajouter au Journal d'Aventure",
+			"AsEvent": "Journal d'aventure comme événement",
+			"AsQuote": "Journal d'aventure comme citation",
+			"AsGmEvent": "GM Adventure Log comme un événement",
+			"AsGmQuote": "Journal d'aventure GM comme citation"
+		}
 	},
 	"DF_CHAT_EDIT": {
 		"Editor_Title": "Éditeur de chat DF",
