@@ -31,7 +31,7 @@ export default class MessageProcessor {
 			login: this.loginMessages,
 			logout: this.logoutMessages
 		})], 'user-logger-messages.json', { type: 'application/json' });
-		/** @type {FilePickerResponse}*/const response = await FilePicker.upload('data', '', file);
+		/** @type {FilePickerResponse}*/const response = await foundry.applications.apps.FilePicker.implementation.upload('data', '', file);
 		if (!response.path)
 			throw new Error('Could not upload the login.json to server');
 	}

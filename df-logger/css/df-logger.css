@@ -1,41 +1,42 @@
-.message-headers {
+.dfl-message-headers {
 	display: flex;
 	flex-flow: row nowrap;
 }
 
-.message-headers>h4 {
+.dfl-message-headers>h4 {
 	flex: 1;
 	text-align: center;
+	margin: 0;
 }
 
-.message-headers>h4:first-child {
+.dfl-message-headers>h4:first-child {
 	flex: auto;
 	flex-grow: 0;
 }
 
-.message-headers>h4:last-child {
+.dfl-message-headers>h4:last-child {
 	flex: auto;
 	flex-grow: 0;
 }
 
-.message-entry {
+.dfl-message-entry {
 	display: flex;
 	flex-flow: row nowrap;
 	align-items: center;
 }
 
-.message-entry>input[type="text"] {
+.dfl-message-entry>input[type="text"] {
 	flex: 1;
 }
 
-.message-entry>button {
+.dfl-message-entry>button {
 	width: fit-content;
 	padding: 0px 2px 0px 4px;
 	font-size: 10pt;
 	line-height: 22px;
 	margin-left: 0.5em;
 }
-
+/* 
 .tab-container {
 	display: flex;
 	flex-flow: column nowrap;
@@ -58,4 +59,4 @@
 	margin-bottom: 1.5em;
 	background-color: #c25454;
 	color: white;
-}
+} */

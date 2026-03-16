@@ -53,6 +53,8 @@ pack {
 
 	if command -v -- explorer.exe > /dev/null 2>&1; then
 		$doit_utl confirm '"Do you want to open the bundle in explorer?"' Y && explorer.exe "$$(wslpath -w "$$dir")"
+	elif command -v -- nemo > /dev/null 2>&1; then
+		$doit_utl confirm '"Do you want to open the bundle in file browser?"' Y && nemo "$$dir"
 	elif command -v -- browse > /dev/null 2>&1; then
 		$doit_utl confirm '"Do you want to open the bundle in file browser?"' Y && browse "$$dir"
 	elif command -v -- open > /dev/null 2>&1; then

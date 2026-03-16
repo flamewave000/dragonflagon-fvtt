@@ -93,13 +93,13 @@ getref {
 	@@@
 	$$$
 	rm -f fvtt-scripts
-	ln -s "$$(jq -r .foundry.path .devenv)/resources/app/public/scripts/" fvtt-scripts
+	ln -s "$$(jq -r .foundry.path .devenv)/public/scripts/" fvtt-scripts
 	$$$
 }
 
 launch {
 	@ Launch the foundry server
-	$ sudo $$(which node) "$$(jq -r .foundry.path .devenv)/resources/app/main.js" --dataPath="$$(jq -r .foundry.data .devenv)"
+	$ sudo -E $$(which node) "$$(jq -r .foundry.path .devenv)/main.js" --dataPath="$$(jq -r .foundry.data .devenv)"
 }
 
 pubmod {

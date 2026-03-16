@@ -5,9 +5,10 @@
 			"name": "Launch Foundry",
 			"type": "chrome",
 			"request": "launch",
-			"url": "https://localhost:30000/game",
+			"url": "http://localhost:30000/game",
 			"webRoot": "${workspaceFolder}",
 			"cwd": "${workspaceFolder}",
+			"runtimeExecutable": "/usr/bin/chrome",
 			"pathMapping": {
 				"modules": "${workspaceFolder}",
 				"scripts": "${workspaceFolder}/fvtt-scripts"

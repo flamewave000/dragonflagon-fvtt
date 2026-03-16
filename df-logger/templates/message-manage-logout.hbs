@@ -1,0 +1,18 @@
+<section class="tab standard-form scrollable" data-tab="{{tabs.logout.id}}" data-group="{{tabs.logout.group}}">
+	<header>
+		<div class="message-headers">
+			<h4>{{localize 'DF-LOGGER.ManageMenu.Headers.Toggle'}}</h4>
+			<h4>{{localize 'DF-LOGGER.ManageMenu.Headers.Message'}}</h4>
+			<h4>{{localize 'DF-LOGGER.ManageMenu.Headers.Remove'}}</h4>
+		</div>
+	</header>
+	<main>
+		{{#each logout}}
+		<div class="message-entry">
+			<input type="checkbox" title="{{localize 'DF-LOGGER.ManageMenu.Entry.ToggleTitle'}}" {{#if tog}}checked{{/if}}>
+			<input type="text" value="{{msg}}" placeholder="{{localize 'DF-LOGGER.ManageMenu.Entry.MessagePlaceholder'}}" {{#unless tog}}disabled{{/unless}}>
+			<button type="button" title="{{localize 'DF-LOGGER.ManageMenu.Entry.RemoveTitle'}}"><i class="fas fa-minus"></i></button>
+		</div>
+		{{/each}}
+	</main>
+</section>
