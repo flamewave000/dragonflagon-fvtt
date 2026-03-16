@@ -1,7 +1,7 @@
 # DF User Logger
 
-## Release 
-- **FIX:** Deprecation fix: `mergeObject` -> `foundry.utils.mergeObject`
+## Release 13.0.0 (2026-03-16)
+- **UPDATE:** Migrated to FoundryVTT v13.351.
 
 ## Release 2.0.0 (2025-01-30)
 - **UPDATE:** Migrated to v12.

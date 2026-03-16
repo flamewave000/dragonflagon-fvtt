@@ -1,18 +1,17 @@
-<section class="tab standard-form scrollable" data-tab="{{tabs.logout.id}}" data-group="{{tabs.logout.group}}">
+<fieldset class="tab standard-form scrollable df-logger" data-tab="{{tabs.logout.id}}" data-group="{{tabs.logout.group}}">
+	<legend>{{localize 'DF-LOGGER.ManageMenu.TabLogout'}}</legend>
 	<header>
-		<div class="message-headers">
-			<h4>{{localize 'DF-LOGGER.ManageMenu.Headers.Toggle'}}</h4>
-			<h4>{{localize 'DF-LOGGER.ManageMenu.Headers.Message'}}</h4>
-			<h4>{{localize 'DF-LOGGER.ManageMenu.Headers.Remove'}}</h4>
-		</div>
+		<h4>{{localize 'DF-LOGGER.ManageMenu.Headers.Toggle'}}</h4>
+		<h4>{{localize 'DF-LOGGER.ManageMenu.Headers.Message'}}</h4>
+		<h4>{{localize 'DF-LOGGER.ManageMenu.Headers.Remove'}}</h4>
 	</header>
 	<main>
 		{{#each logout}}
-		<div class="message-entry">
+		<li>
 			<input type="checkbox" title="{{localize 'DF-LOGGER.ManageMenu.Entry.ToggleTitle'}}" {{#if tog}}checked{{/if}}>
 			<input type="text" value="{{msg}}" placeholder="{{localize 'DF-LOGGER.ManageMenu.Entry.MessagePlaceholder'}}" {{#unless tog}}disabled{{/unless}}>
 			<button type="button" title="{{localize 'DF-LOGGER.ManageMenu.Entry.RemoveTitle'}}"><i class="fas fa-minus"></i></button>
-		</div>
+		</li>
 		{{/each}}
 	</main>
-</section>
+</fieldset>

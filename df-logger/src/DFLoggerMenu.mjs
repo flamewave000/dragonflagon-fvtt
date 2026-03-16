@@ -1,8 +1,11 @@
+/// <reference path="../../fvtt-scripts/foundry.mjs" />
+
 import MessageProcessor from "./MessageProcessor.mjs";
+import { renderTemplateElement } from '../common/fvtt.mjs';
 
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api
+const { ApplicationV2, DialogV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export default class DFLoggerMenuV2 extends HandlebarsApplicationMixin(ApplicationV2) {
+export default class DFLoggerMenu extends HandlebarsApplicationMixin(ApplicationV2) {
 	/** @inheritDoc */
 	static DEFAULT_OPTIONS = {
 		position: {
@@ -18,9 +21,10 @@ export default class DFLoggerMenuV2 extends HandlebarsApplicationMixin(Applicati
 		form: {
 			submitOnChange: false,
 			submitOnClose: false,
-			closeOnSubmit: true
+			closeOnSubmit: true,
+			handler: DFLoggerMenu.#onSubmitForm
 		}
-	}
+	};
 	static TABS = {
 		sheet: {
 			tabs: [
@@ -30,40 +34,98 @@ export default class DFLoggerMenuV2 extends HandlebarsApplicationMixin(Applicati
 			],
 			initial: "login",
 		}
-	}
+	};
 	/** @inheritDoc */
 	static PARTS = {
 		tabs: { template: 'modules/df-logger/templates/message-manage-tabs.hbs' },
 		login: { template: 'modules/df-logger/templates/message-manage-login.hbs' },
 		logout: { template: 'modules/df-logger/templates/message-manage-logout.hbs' },
 		footer: { template: 'modules/df-logger/templates/message-manage-footer.hbs' }
-	}
+	};
 	async _prepareContext(options) {
 		const context = await super._prepareContext(options);
 		context.login = MessageProcessor.loginMessages;
 		context.logout = MessageProcessor.logoutMessages;
 		return context;
 	}
+
+	/**
+	 * Attach event listeners to rendered template parts.
+	 * @param {string} partId                       The id of the part being rendered
+	 * @param {HTMLElement} htmlElement             The rendered HTML element for the part
+	 * @param {ApplicationRenderOptions} _options    Rendering options passed to the render method
+	 * @protected
+	 */
+	_attachPartListeners(partId, htmlElement, _options) {
+		switch (partId) {
+			case 'login':
+			case 'logout':
+				htmlElement.querySelectorAll('main>li').forEach(/**@type {HTMLDivElement}*/elem => this._processEntry(elem));
+				break;
+			case 'footer':
+				htmlElement.querySelector('button[name="add"]').onclick = this.#addEntry.bind(this);
+				htmlElement.querySelector('button[name="reset"]').onclick = this.#reset.bind(this);
+				break;
+		}
+	}
+
+	/** @param {HTMLElement} element */
+	_processEntry(element) {
+		/** @type {HTMLInputElement}*/
+		const textBlock = element.querySelector('input[type="text"]');
+		/** @type {HTMLInputElement}*/
+		const checkbox = element.querySelector('input[type="checkbox"]');
+		checkbox.onchange = () => textBlock.toggleAttribute('disabled', !checkbox.checked);
+		/** @type {HTMLButtonElement}*/
+		const button = element.querySelector('button');
+		button.onclick = () => button.closest('li').remove();
+	}
+
+	async #addEntry() {
+		const element = await renderTemplateElement('modules/df-logger/templates/message-template.hbs', { tog: true, msg: '' });
+		this._processEntry(element);
+		this.element.querySelector('fieldset.active>main').appendChild(element);
+		element.scrollIntoView();
+		element.querySelector('input[type="text"]').focus();
+	}
+
+	async #reset() {
+		DialogV2.confirm({
+			window: { title: 'DF-LOGGER.ManageMenu.Confirm.Title'.localize() },
+			content: 'DF-LOGGER.ManageMenu.Confirm.Content'.localize(),
+			no: { default: true },
+			yes: {
+				callback: async () => {
+					MessageProcessor.loginMessages = [];
+					MessageProcessor.logoutMessages = [];
+					await MessageProcessor.initializeMessages();
+					await this.render(true);
+				}
+			}
+		});
+	}
+
 	/**
 	 * Handle form submission
-	 * @this {DFLoggerMenuV2}
+	 * @this {DFLoggerMenu}
 	 * @param {SubmitEvent} event
 	 * @param {HTMLFormElement} form
 	 * @param {FormDataExtended} formData
+	 * @param {object} _submitOptions
 	 */
-	static async #onSubmitForm(event, form, _formData) {
-		event.preventDefault()
-		const loginEntryElements = form.find('div[data-tab="login"]>div.message-entry');
+	static async #onSubmitForm(event, form, _formData, _submitOptions) {
+		event.preventDefault();
+		const login = form.querySelectorAll('section>fieldset[data-tab="login"]>main>li');
 		/**@type {Message[]}*/const loginEntries = [];
-		loginEntryElements.each((_, elem) => {
+		login.forEach(elem => {
 			loginEntries.push({
 				tog: elem.querySelector('input[type="checkbox"]').checked,
 				msg: elem.querySelector('input[type="text"]').value
 			});
 		});
-		const logoutEntryElements = form.find('div[data-tab="logout"]>div.message-entry');
+		const logout = form.querySelectorAll('section>fieldset[data-tab="logout"]>main>li');
 		/**@type {Message[]}*/const logoutEntries = [];
-		logoutEntryElements.each((_, elem) => {
+		logout.forEach(elem => {
 			logoutEntries.push({
 				tog: elem.querySelector('input[type="checkbox"]').checked,
 				msg: elem.querySelector('input[type="text"]').value
@@ -73,136 +135,4 @@ export default class DFLoggerMenuV2 extends HandlebarsApplicationMixin(Applicati
 		MessageProcessor.logoutMessages = logoutEntries;
 		await MessageProcessor.saveMessages();
 	}
-	_attachFrameListeners() {
-		super._attachFrameListeners()
-		const html = $(this.element);
-		html.find('div.message-entry').each((_, elem) => this._processEntry($(elem)));
-		html.find('button[name="add"]').on('click', async () => {
-			const entry = $(await renderTemplate('modules/df-logger/templates/message-template.hbs', { tog: true, msg: '' }));
-			this._processEntry(entry);
-			html.find('div.tab.active').append(entry);
-		});
-		html.find('button[name="reset"]').on('click', async () => {
-			Dialog.confirm({
-				title: 'DF-LOGGER.ManageMenu.Confirm.Title'.localize(),
-				content: 'DF-LOGGER.ManageMenu.Confirm.Content'.localize(),
-				defaultYes: false,
-				yes: async () => {
-					MessageProcessor.loginMessages = [];
-					MessageProcessor.logoutMessages = [];
-					await MessageProcessor.initializeMessages();
-					await this.render(true);
-				}
-			});
-		});
-	}
-	/**
-	 * @param {JQuery} element 
-	 */
-	_processEntry(element) {
-		const textBlock = element.find('input[type="text"]');
-		element.find('input[type="checkbox"]').on('change', (event) => {
-			/**@type {HTMLInputElement}*/const input = event.currentTarget;
-			if (input.checked) textBlock.removeAttr('disabled');
-			else textBlock.attr('disabled', '');
-		});
-		element.find('button').on('click', (/**@type {JQuery.ClickEvent}*/event) => {
-			$(event.currentTarget).parent('.message-entry').remove();
-		});
-	}
 }
-
-
-// class DFLoggerMenu extends FormApplication {
-// 	static get defaultOptions() {
-// 		return foundry.utils.mergeObject(super.defaultOptions, {
-// 			editable: true,
-// 			resizable: true,
-// 			submitOnChange: false,
-// 			submitOnClose: false,
-// 			closeOnSubmit: true,
-// 			width: 600,
-// 			height: 500,
-// 			title: 'DF-LOGGER.ManageMenu.Title'.localize(),
-// 			tabs: [{ navSelector: ".tabs", contentSelector: "main", initial: "login" }],
-// 			template: 'modules/df-logger/templates/message-manage.hbs'
-// 		});
-// 	}
-
-// 	/**
-// 	 * @param {Event} _event
-// 	 * @param {object} [_formData]
-// 	 */
-// 	async _updateObject(_event, _formData) {
-// 		const loginEntryElements = this.element.find('div[data-tab="login"]>div.message-entry');
-// 		/**@type {Message[]}*/const loginEntries = [];
-// 		loginEntryElements.each((_, elem) => {
-// 			loginEntries.push({
-// 				tog: elem.querySelector('input[type="checkbox"]').checked,
-// 				msg: elem.querySelector('input[type="text"]').value
-// 			});
-// 		});
-// 		const logoutEntryElements = this.element.find('div[data-tab="logout"]>div.message-entry');
-// 		/**@type {Message[]}*/const logoutEntries = [];
-// 		logoutEntryElements.each((_, elem) => {
-// 			logoutEntries.push({
-// 				tog: elem.querySelector('input[type="checkbox"]').checked,
-// 				msg: elem.querySelector('input[type="text"]').value
-// 			});
-// 		});
-// 		MessageProcessor.loginMessages = loginEntries;
-// 		MessageProcessor.logoutMessages = logoutEntries;
-// 		await MessageProcessor.saveMessages();
-// 	}
-
-// 	/**
-// 	 * @param {Application.RenderOptions} _options 
-// 	 * @returns {object}
-// 	 */
-// 	getData(_options) {
-// 		return {
-// 			login: MessageProcessor.loginMessages,
-// 			logout: MessageProcessor.logoutMessages
-// 		};
-// 	}
-
-// 	/**
-// 	 * @param {JQuery} html 
-// 	 */
-// 	activateListeners(html) {
-// 		html.find('div.message-entry').each((_, elem) => this._processEntry($(elem)));
-// 		html.find('button[name="add"]').on('click', async () => {
-// 			const entry = $(await renderTemplate('modules/df-logger/templates/message-template.hbs', { tog: true, msg: '' }));
-// 			this._processEntry(entry);
-// 			html.find('div.tab.active').append(entry);
-// 		});
-// 		html.find('button[name="reset"]').on('click', async () => {
-// 			Dialog.confirm({
-// 				title: 'DF-LOGGER.ManageMenu.Confirm.Title'.localize(),
-// 				content: 'DF-LOGGER.ManageMenu.Confirm.Content'.localize(),
-// 				defaultYes: false,
-// 				yes: async () => {
-// 					MessageProcessor.loginMessages = [];
-// 					MessageProcessor.logoutMessages = [];
-// 					await MessageProcessor.initializeMessages();
-// 					await this.render(true);
-// 				}
-// 			});
-// 		});
-// 	}
-
-// 	/**
-// 	 * @param {JQuery} element 
-// 	 */
-// 	_processEntry(element) {
-// 		const textBlock = element.find('input[type="text"]');
-// 		element.find('input[type="checkbox"]').on('change', (event) => {
-// 			/**@type {HTMLInputElement}*/const input = event.currentTarget;
-// 			if (input.checked) textBlock.removeAttr('disabled');
-// 			else textBlock.attr('disabled', '');
-// 		});
-// 		element.find('button').on('click', (/**@type {JQuery.ClickEvent}*/event) => {
-// 			$(event.currentTarget).parent('.message-entry').remove();
-// 		});
-// 	}
-// }

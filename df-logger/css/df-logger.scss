@@ -1,0 +1,42 @@
+.df-logger {
+	>header {
+		display: flex;
+		flex-flow: row nowrap;
+
+		>h4 {
+			flex: 1;
+			text-align: center;
+			margin: 0;
+
+			:first-child {
+				flex: auto;
+				flex-grow: 0;
+			}
+
+			:last-child {
+				flex: auto;
+				flex-grow: 0;
+			}
+		}
+	}
+
+	>main {
+		>li {
+		
+			display: flex;
+			flex-flow: row nowrap;
+			align-items: center;
+			>input[type="text"] {
+				flex: 1;
+			}
+
+			>button {
+				width: fit-content;
+				padding: 0px 2px 0px 4px;
+				font-size: 10pt;
+				line-height: 22px;
+				margin-left: 0.5em;
+			}
+		}
+	}
+}
