@@ -104,5 +104,5 @@ launch {
 
 pubmod {
 	@ Please Ignore. This is for modifying my remote module registry.
-	$ ssh `cat ~/conns/dragonflagon.cafe` -t 'vim apps/Town/module-registry.jsonc'
+	$ ssh dragonflagon -t 'vim apps/Town/module-registry.jsonc'
 }
