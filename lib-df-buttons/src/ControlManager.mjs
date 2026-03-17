@@ -31,9 +31,9 @@ import SETTINGS from "../common/Settings.mjs";
  */
 export default class ControlManager extends Application {
 	/**
-	 * 
+	 *
 	 * @param {Predicate | boolean | null} [field]
-	 * @param {*} invertFalsey 
+	 * @param {*} invertFalsey
 	 * @returns {Promise<boolean>}
 	 */
 	static async checkBoolean(field, invertFalsey = false) {
@@ -43,7 +43,6 @@ export default class ControlManager extends Application {
 
 	#initializationIncomplete = false;
 	/**@type {ToolGroup[]}*/ #_groups = [];
-	/**@type {JQuery<HTMLElement> | null}*/ #magnetMenu = null;
 	/**@type {Record<string, number>}*/ #hooksRegister = {};
 	/**@type {ToolGroup[]}*/ get groups() { return this.#_groups; }
 	/**@type {string|null}*/ activeGroupName = null;
@@ -100,10 +99,10 @@ export default class ControlManager extends Application {
 		this.#hooksRegister['activateToolByName'] = Hooks.on('activateToolByName', this.activateToolByName.bind(this));
 		this.#hooksRegister['reloadModuleButtons'] = Hooks.on('reloadModuleButtons', this.reloadModuleButtons.bind(this));
 		this.#hooksRegister['refreshModuleButtons'] = Hooks.on('refreshModuleButtons', this.refresh.bind(this));
-		this.#hooksRegister['renderSceneControls'] = Hooks.on('renderSceneControls', () => { this.refresh(); this.#_handleWindowResize(); });
-		this.#hooksRegister['collapseSceneNavigation'] = Hooks.on('collapseSceneNavigation', this.#_handleWindowResize.bind(this));
-		this.#hooksRegister['renderPlayerList'] = Hooks.on('renderPlayerList', this.#_handleWindowResize.bind(this));
-		window.addEventListener('resize', this.#_handleWindowResize.bind(this));
+		this.#hooksRegister['renderSceneControls'] = Hooks.on('renderSceneControls', () => { this.refresh(); this.#_applyPosition(); });
+		this.#hooksRegister['collapseSceneNavigation'] = Hooks.on('collapseSceneNavigation', this.#_applyPosition.bind(this));
+		this.#hooksRegister['renderPlayerList'] = Hooks.on('renderPlayerList', this.#_applyPosition.bind(this));
+		window.addEventListener('resize', this.#_applyPosition.bind(this));
 		for (const group of this.#_groups) {
 			// Initialize all unset fields to their defaults
 			ControlManager.#initializeFields(group);
@@ -145,7 +144,7 @@ export default class ControlManager extends Application {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param {Application.RenderOptions} [_]
 	 * @returns {Promise<CMData>}
 	 */
@@ -195,33 +194,69 @@ export default class ControlManager extends Application {
 	}
 
 	/**
-	 * @param {JQuery<HTMLElement} html
+	 * Compute default position adjacent to scene controls.
+	 * @returns {{left: number, top: number}}
+	 */
+	#getDefaultPosition() {
+		const controls = document.querySelector('#controls');
+		if (controls) {
+			const rect = controls.getBoundingClientRect();
+			return { left: rect.right + 8, top: rect.top };
+		}
+		return { left: 110, top: 73 };
+	}
+
+	/**
+	 * @param {JQuery<HTMLElement>} html
 	 */
 	activateListeners(html) {
 		html.find('.control-tool[data-group]').on('click', this.#_onClickGroup.bind(this));
 		html.find('.control-tool[data-tool]').on('click', this.#_onClickTool.bind(this));
-		html.find('#magnet').on('click', async () => {
-			if (this.#magnetMenu) return;
-			this.#magnetMenu = $(await renderTemplate(`/modules/${SETTINGS.MOD_NAME}/templates/magnet.hbs`, {}));
-			this.#magnetMenu.find('button').on('click', async event => {
-				this.#magnetMenu.remove();
-				this.#magnetMenu = null;
-				await SETTINGS.set('position', event.currentTarget.classList[0]);
-			});
-			this.#magnetMenu.find('.close').on('click', () => {
-				this.#magnetMenu.remove();
-				this.#magnetMenu = null;
-			});
-			$('body').append(this.#magnetMenu);
+
+		// Drag via grip handle
+		const el = html[0];
+		const grip = html.find('#df-buttons-grip');
+		grip.on('mousedown', (e) => {
+			if (e.button !== 0) return;
+			e.preventDefault();
+			const startX = e.clientX;
+			const startY = e.clientY;
+			const rect = el.getBoundingClientRect();
+			const startLeft = rect.left;
+			const startTop = rect.top;
+
+			const onMouseMove = (/** @type {MouseEvent} */ moveEvent) => {
+				el.style.left = (startLeft + moveEvent.clientX - startX) + 'px';
+				el.style.top = (startTop + moveEvent.clientY - startY) + 'px';
+			};
+			const onMouseUp = () => {
+				document.removeEventListener('mousemove', onMouseMove);
+				document.removeEventListener('mouseup', onMouseUp);
+				const finalRect = el.getBoundingClientRect();
+				SETTINGS.set('toolbar-pos', {
+					left: finalRect.left,
+					top: finalRect.top,
+				});
+			};
+			document.addEventListener('mousemove', onMouseMove);
+			document.addEventListener('mouseup', onMouseUp);
+		});
+
+		// Double-click grip to reset to default position
+		grip.on('dblclick', async () => {
+			await SETTINGS.set('toolbar-pos', null);
+			const pos = this.#getDefaultPosition();
+			el.style.left = pos.left + 'px';
+			el.style.top = pos.top + 'px';
 		});
 	}
 
 	/**
-	 * 
+	 *
 	 * @param {Handler<boolean> | null | undefined} handler
 	 * @param {Tool} owner
 	 * @param {boolean} [active]
-	 * @returns 
+	 * @returns
 	 */
 	async #_invokeHandler(handler, owner, active) {
 		if (handler === null || handler === undefined) return;
@@ -230,7 +265,7 @@ export default class ControlManager extends Application {
 	}
 
 	/**
-	 * @param {JQuery.ClickEvent} event 
+	 * @param {JQuery.ClickEvent} event
 	 */
 	async #_onClickGroup(event) {
 		event.preventDefault();
@@ -286,9 +321,8 @@ export default class ControlManager extends Application {
 	 * @param {JQuery<HTMLElement>} html
 	 */
 	_injectHTML(html) {
-		// $('body').append(html);
+		$('body').append(html);
 		this._element = html;
-		// this.#_handleWindowResize();
 	}
 
 	/**
@@ -301,20 +335,8 @@ export default class ControlManager extends Application {
 		if (this.#initializationIncomplete) await this.#completeInitialization();
 		if (!game.ready) return;
 		await super._render(force, options);
-		if (ui.sidebar._collapsed) {
-			this.element.css('right', '35px');
-		}
 		if (!this.element || !this.element[0]) return;
-		this.element[0].removeAttribute('class');
-		this.element[0].classList.add('app');
-		switch (SETTINGS.get('position')) {
-			case 'top': this.element[0].classList.add('top'); break;
-			case 'left': this.element[0].classList.add('left'); break;
-			case 'bottom': this.element[0].classList.add('bottom'); break;
-			case 'right': default: break;
-		}
-
-		this.#_handleWindowResize();
+		this.#_applyPosition();
 	}
 	/**
 	 * @param {Application.CloseOptions} [options]
@@ -327,92 +349,23 @@ export default class ControlManager extends Application {
 		Hooks.off('renderSceneControls', this.#hooksRegister['renderSceneControls']);
 		Hooks.off('collapseSceneNavigation', this.#hooksRegister['collapseSceneNavigation']);
 		Hooks.off('renderPlayerList', this.#hooksRegister['renderPlayerList']);
-		window.removeEventListener('resize', this.#_handleWindowResize);
+		window.removeEventListener('resize', this.#_applyPosition);
 		return super.close(options);
 	}
 
-	static #CONTROL_WIDTH = 38 + 5;
-	static #CONTROL_HEIGHT = 48;
+	#_applyPosition() {
+		const element = this._element;
+		if (!element || element.length === 0) return;
+		const el = element[0];
 
-	/**
-	 * @returns {number}
-	 */
-	#getLeftWidth() {
-		//? This may need to be reintroduced for ardittristan's Button Overflow module
-		// /**@type {HTMLElement}*/const sceneLayers = document.querySelector('#controls > ol.main-controls.app.control-tools.flexcol');
-		// max = Math.floor(sceneLayers.offsetHeight / ControlManager.#CONTROL_WIDTH);
-		// cols = Math.ceil(sceneLayers.childElementCount / max);
-		let cols = 1;
-		/**@type {HTMLElement}*/const sceneTools = document.querySelector('#controls > ol.sub-controls.app.control-tools.flexcol.active');
-		const max = Math.floor(sceneTools.offsetHeight / ControlManager.#CONTROL_HEIGHT);
-		cols += Math.ceil(sceneTools.childElementCount / max);
-		return cols * ControlManager.#CONTROL_WIDTH + 25;
-	}
-	/**
-	 * @param {boolean} magnetToSceneControls
-	 * @returns {number}
-	 */
-	#getTopHeight(magnetToSceneControls) {
-		if (magnetToSceneControls) {
-			/**@type {HTMLElement}*/const uiTop = document.querySelector('#ui-middle #ui-top #navigation');
-			/**@type {HTMLElement}*/const layers = document.querySelector('#ui-left > #controls > ol.main-controls.app.control-tools.flexcol');
-			return Math.max(uiTop.offsetTop + uiTop.offsetHeight, layers.offsetTop);
+		const savedPos = SETTINGS.get('toolbar-pos');
+		if (savedPos) {
+			el.style.left = Math.max(0, Math.min(savedPos.left, window.innerWidth - 50)) + 'px';
+			el.style.top = Math.max(0, Math.min(savedPos.top, window.innerHeight - 50)) + 'px';
 		} else {
-			/**@type {HTMLElement}*/const loadBar = document.querySelector('#ui-middle #ui-top #loading');
-			//* The 4 is a small padding to give the loading bar some space and also happens to align with the scene controls
-			return loadBar.offsetHeight + 4;
-		}
-	}
-	#_handleWindowResize() {
-		/**@type {JQuery<HTMLElement>}*/ const element = this._element;
-		if (element.length === 0) return;
-		/**@type {number}*/ let max;
-		/**@type {number}*/ let cols;
-
-		const position = SETTINGS.get('position');
-		// element.removeAttr('class');
-		// element.addClass('app');
-		element.addClass(position);
-		switch (position) {
-			case 'top': {
-				element.detach().insertBefore('#ui-top #loading');
-				element[0].style.marginTop = this.#getTopHeight(false) + 'px';
-				element[0].style.marginLeft = -element[0].querySelector("#magnet").offsetWidth + 'px';
-				element[0].style.height = undefined;
-				break;
-			}
-			case 'left': {
-				element.detach().appendTo('#ui-left');
-				/**@type {HTMLElement}*/const controls = document.querySelector('#ui-left > #controls');
-				element[0].style.height = `${controls.offsetHeight}px`;
-				max = Math.floor(controls.offsetHeight / ControlManager.#CONTROL_WIDTH);
-				cols = Math.ceil(this.groups.length / max);
-				element.find('.group-tools').css('margin-left', `${(cols - 1) * (ControlManager.#CONTROL_WIDTH + 2)}px`);
-				element[0].style.marginTop = this.#getTopHeight(true) + 'px';
-				element[0].style.marginLeft = this.#getLeftWidth() + 'px';
-				break;
-			}
-			case 'bottom': {
-				element.detach().appendTo('#ui-bottom');
-
-				/**@type {HTMLElement}*/ const magnet = element[0].querySelector("#magnet");
-				/**@type {HTMLElement}*/ const folder = document.querySelector('#hotbar > #hotbar-directory-controls');
-				/**@type {HTMLElement}*/ const action = document.querySelector('#hotbar > #action-bar');
-
-				const left = 2 + action.offsetLeft - magnet.offsetWidth;
-				element[0].style.left = left + 'px';
-				element[0].style.bottom = (folder.offsetHeight + 10) + 'px';
-				break;
-			}
-			case 'right': default: {
-				element.detach().appendTo('#ui-right');
-				max = Math.floor(element[0].offsetHeight / ControlManager.#CONTROL_WIDTH);
-				cols = Math.ceil(this.groups.length / max);
-				element.find('.group-tools').css('margin-right', `${(cols - 1) * (ControlManager.#CONTROL_WIDTH + 2)}px`);
-				element[0].style.top = document.getElementById("sidebar-tabs").offsetTop + 'px';
-				element[0].style.left = -element[0].offsetWidth + 'px';
-				break;
-			}
+			const pos = this.#getDefaultPosition();
+			el.style.left = pos.left + 'px';
+			el.style.top = pos.top + 'px';
 		}
 	}
 
@@ -451,7 +404,7 @@ export default class ControlManager extends Application {
 	 * @param {string} groupName
 	 * @param {string} toolName
 	 * @param {boolean} [activateGroup]
-	 * @returns 
+	 * @returns
 	 */
 	async activateToolByName(groupName, toolName, activateGroup = true) {
 		const group = this.groups.find(x => x.name === groupName);

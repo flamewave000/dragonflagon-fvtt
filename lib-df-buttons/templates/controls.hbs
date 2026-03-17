@@ -6,7 +6,7 @@
 {{/inline}}
 
 <div id="lib-df-buttons" class="app">
-	<a id="magnet" class="button" title="{{localize 'LIB_DF_BUTTONS.title'}}"><i class="fas fa-magnet"></i></a>
+	{{#if groups.length}}<div id="df-buttons-grip" title="Drag to move (double-click to reset)"><i class="fas fa-grip-vertical"></i></div>{{/if}}
 	<section id="moduleControls">
 		<ol class="controls active">
 			{{#unless singleGroup}}

@@ -4,60 +4,30 @@
 	background: none;
 	box-shadow: none;
 	border: none;
-	position: absolute;
-	display: grid;
-	pointer-events: none;
-	height: calc(100vh - 70px);
-	grid-template-rows: auto auto;
-	grid-template-columns: auto auto;
+	position: fixed;
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	gap: 0;
+	z-index: 70;
 
-	#magnet {
-		padding: 5px 10px 5px 0px;
-		height: fit-content;
-		width: fit-content;
+	#df-buttons-grip {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 12px;
+		min-height: 36px;
+		cursor: grab;
+		color: #666;
+		font-size: 12px;
+		user-select: none;
 		pointer-events: all;
-		i {
-			visibility: hidden;
-		}
-		
-		&:hover > i {
-			visibility: visible;
-		}
-	}
 
-	&.left {
-		#magnet {
-			grid-area: 1 / 2 / 1 / 2;
+		&:hover {
+			color: #fff;
 		}
-		#moduleControls {
-			grid-area: 1 / 1 / 1 / 1;
-		}
-	}
-	&.top {
-		height: fit-content;
-		#magnet {
-			grid-area: 1 / 1 / 1 / 1;
-		}
-		#moduleControls {
-			grid-area: 1 / 2 / 1 / 2;
-		}
-	}
-	&.right {
-		#magnet {
-			grid-area: 1 / 1 / 1 / 1;
-		}
-		#moduleControls {
-			grid-area: 1 / 2 / 1 / 2;
-		}
-	}
-	&.bottom {
-		height: fit-content;
-		margin-top: auto;
-		#magnet {
-			grid-area: 1 / 1 / 1 / 1;
-		}
-		#moduleControls {
-			grid-area: 2 / 1 / 2 / 1;
+		&:active {
+			cursor: grabbing;
 		}
 	}
 }
@@ -68,13 +38,17 @@
 	background: none;
 	box-shadow: none;
 	border: none;
-	height: calc(100vh - 70px);
 	display: flex;
-	flex-direction: row-reverse;
+	flex-direction: row;
 	flex-wrap: nowrap;
+	gap: 0;
 
 	.group-tools {
 		display: inline-flex;
+	}
+
+	> .controls {
+		margin-right: 2px;
 	}
 
 	.controls {
@@ -88,7 +62,7 @@
 	.controls.active {
 		display: flex;
 		flex-direction: column;
-		flex-wrap: wrap-reverse;
+		flex-wrap: wrap;
 	}
 
 	.control-tool {
@@ -125,38 +99,5 @@
 	.control-tool.toggle:hover {
 		background: rgba(60, 0, 120, 0.5);
 		box-shadow: 0 0 10px #9b8dff;
-	}
-}
-
-#lib-df-buttons.bottom #moduleControls {
-	flex-direction: column-reverse;
-	height: fit-content;
-	// width: calc(100vw - 532px);
-	// left: 222px;
-	// bottom: 70px;
-	.controls.active {
-		flex-direction: row;
-		justify-content: unset;
-	}
-}
-
-#lib-df-buttons.top #moduleControls {
-	// top: 0;
-	flex-direction: column;
-	height: fit-content;
-	.controls.active {
-		flex-direction: row;
-		flex-wrap: wrap;
-		justify-content: unset;
-	}
-}
-
-#lib-df-buttons.left #moduleControls {
-	// top: 0;
-	width: fit-content;
-	// height: calc(100vh - 150px);
-	flex-direction: row;
-	.controls.active {
-		flex-wrap: wrap;
 	}
 }
