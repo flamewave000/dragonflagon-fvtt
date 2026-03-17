@@ -1,15 +1,15 @@
-/// <reference path="../common/libWrapper.d.ts" />
-import FuzzySearch from "./FuzzySearch.js";
+/// <reference path="../../common/libWrapper.d.ts" />
+// import FuzzySearch from "./FuzzySearch.mjs";
 class DFSettingsClarity {
 	static types = ["client", "world"];
 	static patchGameSettings() {
-		libWrapper.register('df-settings-clarity', 'ClientSettings.prototype.register', DFSettingsClarity.settingsRegister, 'WRAPPER');
+		libWrapper.register('df-settings-clarity', 'foundry.helpers.ClientSettings.prototype.register', DFSettingsClarity.settingsRegister, 'WRAPPER');
 		for (const pair of game.settings.settings) {
 			pair[1].name = DFSettingsClarity.formatName(pair[1].name ?? '', pair[1]);
 		}
 	}
 	static patchGameSettingsMenus() {
-		libWrapper.register('df-settings-clarity', 'ClientSettings.prototype.registerMenu', DFSettingsClarity.settingsRegisterMenu, 'WRAPPER');
+		libWrapper.register('df-settings-clarity', 'foundry.helpers.ClientSettings.prototype.registerMenu', DFSettingsClarity.settingsRegisterMenu, 'WRAPPER');
 		for (const pair of game.settings.menus) {
 			pair[1].name = DFSettingsClarity.formatName(pair[1].name ?? '', pair[1]);
 		}
@@ -42,12 +42,14 @@ class DFSettingsClarity {
 		data.name = DFSettingsClarity.formatName(data.name ?? '', data);
 		wrapper(module, key, data);
 	}
+	/** @param {Event} event */
 	static showWorldHover(event) {
 		if (event.clientX > $(event.target).offset().left + 30)
 			DFSettingsClarity.hideHover();
 		else
 			DFSettingsClarity.showHover($(event.target), 'world');
 	}
+	/** @param {Event} event */
 	static showClientHover(event) {
 		if (event.clientX > $(event.target).offset().left + 30)
 			DFSettingsClarity.hideHover();
@@ -62,12 +64,12 @@ class DFSettingsClarity {
 		hover.find('span.msg').text(game.i18n.localize('DF_SETTINGS_CLARITY.Scope_' + scope));
 		$(document.body).append(hover);
 		const css = {
-			position: 'absolute',
 			left: `${element.offset().left - hover.outerWidth()}px`,
 			top: `${element.offset().top - 15}px`
 		};
 		hover.css(css);
 	}
+	/** @param {Event} event */
 	static hideHover() {
 		if (DFSettingsClarity.hover.parent().length == 0)
 			return;
@@ -75,9 +77,9 @@ class DFSettingsClarity {
 	}
 }
 
-Hooks.once('init', function () {
-	FuzzySearch.init();
-});
+// Hooks.once('init', function () {
+// 	FuzzySearch.init();
+// });
 
 Hooks.once('setup', function () {
 	const user = game.data.users.find(x => x._id === game.userId);
@@ -100,11 +102,14 @@ Hooks.once('ready', function () {
 	DFSettingsClarity.hover.attr("style", "");
 });
 
-Hooks.on('renderSettingsConfig', function (_app, html, _data) {
-	const world = html.find("label:contains('🌎')");
-	world.on('mousemove', DFSettingsClarity.showWorldHover);
-	world.on('mouseleave', DFSettingsClarity.hideHover);
-	const client = html.find("label:contains('👤')");
-	client.on('mousemove', DFSettingsClarity.showClientHover);
-	client.on('mouseleave', DFSettingsClarity.hideHover);
+Hooks.on('renderSettingsConfig', /** @param {HTMLElement} html */ function (_app, html, _data) {
+	const labels = [...html.querySelectorAll("label")];
+	labels.filter(x => x.textContent.includes('🌎')).forEach(world => {
+		world.addEventListener('mousemove', DFSettingsClarity.showWorldHover);
+		world.addEventListener('mouseleave', DFSettingsClarity.hideHover);
+	});
+	labels.filter(x => x.textContent.includes('👤')).forEach(client => {
+		client.addEventListener('mousemove', DFSettingsClarity.showClientHover);
+		client.addEventListener('mouseleave', DFSettingsClarity.hideHover);
+	});
 });
