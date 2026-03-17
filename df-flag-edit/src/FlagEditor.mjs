@@ -1,5 +1,7 @@
 /// <reference path="./types.d.ts" />
 import SETTINGS from "../common/Settings.mjs";
+import { parseHTML } from '../common/fvtt.mjs';
+
 
 export default class FlagEditor extends Application {
 	static PREF_LAST_OBJ = 'FlagEditor.LastObject';
@@ -21,17 +23,17 @@ export default class FlagEditor extends Application {
 
 	static init() {
 		SETTINGS.register(FlagEditor.PREF_LAST_OBJ, { scope: 'client', type: String, default: '', config: false });
-		Hooks.on('renderSettings', (/**@type {Settings}*/ _, /**@type {JQuery<HTMLElement>}*/ html) => {
+		Hooks.on('renderSettings', (/**@type {Settings}*/ _, /**@type {HTMLElement}*/ html) => {
 			if (!game.user.isGM) return;
-			const captureButton = $(`<div><button data-action="edit-json"><i class="fas fa-code"></i>${game.i18n.localize('DF_FLAG_EDIT.EditButtonLabel')}</button></div>`);
-			captureButton.find('button').on('click', () => (new FlagEditor()).render(true));
-			html.find('#game-details').after(captureButton);
+			const captureButton = parseHTML(`<button type="button" data-action="openApp" data-app="edit-json"><i class="fas fa-code" inert></i>${'DF_FLAG_EDIT.EditButtonLabel'.localize()}</button>`);
+			captureButton.onclick = () => (new FlagEditor()).render(true);
+			html.querySelector('section#settings>section.info').appendChild(captureButton);
 		});
 	}
 
 	constructor() {
 		super({
-			title: game.i18n.localize('DF_FLAG_EDIT.Title').replace(' - {0} ({1})', '')
+			title: 'DF_FLAG_EDIT.Title'.localize().replace(' - {0} ({1})', '')
 		});
 	}
 

@@ -4,47 +4,47 @@
 	grid-template-rows: auto auto 1fr auto auto auto;
 	margin-bottom: 10px;
 
-	> button {
+	>button {
 		height: fit-content;
 	}
 
-	> .col1 {
+	>.col1 {
 		grid-column: 1;
 	}
 
-	> .col2 {
+	>.col2 {
 		grid-column: 2;
 	}
 
-	> .col3 {
+	>.col3 {
 		grid-column: 3;
 	}
 
-	> .row1 {
+	>.row1 {
 		grid-row: 1;
 	}
 
-	> .row2 {
+	>.row2 {
 		grid-row: 2;
 	}
 
-	> .row3 {
+	>.row3 {
 		grid-row: 3;
 	}
 
-	> .row4 {
+	>.row4 {
 		grid-row: 4;
 	}
 
-	> .row5 {
+	>.row5 {
 		grid-row: 5;
 	}
 
-	> .row6 {
+	>.row6 {
 		grid-row: 6;
 	}
 
-	> .colend3 {
+	>.colend3 {
 		grid-column-end: 4;
 	}
 
@@ -57,7 +57,7 @@
 		margin: 0;
 	}
 
-	> div.col1.colend3.row2 {
+	>div.col1.colend3.row2 {
 		margin-bottom: 1em;
 	}
 
