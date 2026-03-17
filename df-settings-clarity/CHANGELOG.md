@@ -1,5 +1,10 @@
 # DF Settings Clarity
 
+## Release 13.0.0 (2026-03-17)
+- **UPDATE:** Migrated to FoundryVTT v13.351.
+- **UPDATE:** Removed FuzzySearch feature as it is now obsolete in v13.
+- **UPDATE:** Changed Unknown Scope log from `warn` to `debug` so that they no longer display by default in the console.
+
 ## Release 4.0.0 (2025-02-12)
 - **UPDATE:** Migrated to v12.
 - **UPDATE:** Downgraded TS -> JS (such sad).

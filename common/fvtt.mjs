@@ -4,12 +4,22 @@
  * @returns {Promise<HTMLElement>}
  */
 export async function renderTemplateElement(path, data) {
-    const container = document.createElement("div");
-    container.innerHTML = await foundry.applications.handlebars.renderTemplate(path, data);
-    const element = container.firstChild;
-    container.removeChild(element);
-    return element;
+	return parseHTML(await foundry.applications.handlebars.renderTemplate(path, data));
 }
+
+/**
+ * @param {string} html
+ * @returns {HTMLElement}
+ */
+export function parseHTML(html) {
+	const container = document.createElement("div");
+	container.innerHTML = html;
+	const element = container.firstChild;
+	container.removeChild(element);
+	return element;
+}
+
+/* BELOW ARE TYPE DEFINITIONS FOUND IN foundry.mjs */
 
 /**
  * @typedef ApplicationConfiguration

@@ -6,13 +6,6 @@ This simple module provides a measure of clarity to the module configurations. I
 
 ![Settings Clarity](../.assets/df-settings-clarity/cover.png)
 
-## Settings Search
-
-*Powered by [fuzzysort](https://github.com/farzher/fuzzysort)*
-Adds a new search box that performs a Fuzzy Search to try and help you find the settings you need.
-
-![FoundryVTT Core Demo](../.assets/df-settings-clarity/search-default.gif)
-
 ##### [![become a patron](../.assets/patreon-image.png)](https://www.patreon.com/bePatron?u=46113583) If you want to support me or just help me buy doggy treats! Also, you can keep up to date on what I'm working on. I will be announcing any new modules or pre-releases there for anyone wanting to help me test things out!
 
 ## Contributors
