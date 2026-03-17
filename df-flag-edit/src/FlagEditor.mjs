@@ -4,12 +4,7 @@ import { parseHTML } from '../common/fvtt.mjs';
 
 
 export default class FlagEditor extends Application {
-	static PREF_LAST_OBJ = 'FlagEditor.LastObject';
-
-	static IGNORED_COLLECTIONS = [
-		"FogExploration",
-		"Setting"
-	];
+	static #PREF_LAST_OBJ = 'FlagEditor.LastObject';
 
 	static get defaultOptions() {
 		return foundry.utils.mergeObject(/**@type {Partial<ApplicationOptions>}*/Application.defaultOptions, {
@@ -21,8 +16,17 @@ export default class FlagEditor extends Application {
 		});
 	}
 
+	/** @returns {string} */
+	static get lastObject() {
+		return SETTINGS.get(FlagEditor.#PREF_LAST_OBJ);
+	}
+	/** @param {string} uuid_or_path */
+	static setLastObject(uuid_or_path) {
+		return SETTINGS.set(FlagEditor.#PREF_LAST_OBJ, uuid_or_path);
+	}
+
 	static init() {
-		SETTINGS.register(FlagEditor.PREF_LAST_OBJ, { scope: 'client', type: String, default: '', config: false });
+		SETTINGS.register(FlagEditor.#PREF_LAST_OBJ, { scope: 'client', type: String, default: '', config: false });
 		Hooks.on('renderSettings', (/**@type {Settings}*/ _, /**@type {HTMLElement}*/ html) => {
 			if (!game.user.isGM) return;
 			const captureButton = parseHTML(`<button type="button" data-action="openApp" data-app="edit-json"><i class="fas fa-code" inert></i>${'DF_FLAG_EDIT.EditButtonLabel'.localize()}</button>`);
@@ -71,7 +75,7 @@ export default class FlagEditor extends Application {
 		};
 		this.editor = new JSONEditor(this.element.find('#editor')[0], editorOptions);
 		if (!this.document) {
-			await this._handlePathChange(SETTINGS.get(FlagEditor.PREF_LAST_OBJ));
+			await this._handlePathChange(FlagEditor.lastObject);
 		}
 
 		/**@type {JQuery<HTMLInputElement>}*/
@@ -184,12 +188,12 @@ export default class FlagEditor extends Application {
 
 	getData() {
 		return {
-			path: SETTINGS.get(FlagEditor.PREF_LAST_OBJ)
+			path: FlagEditor.lastObject
 		};
 	}
 
 	async _handlePathChange(/**@type {string}*/ data) {
-		await SETTINGS.set(FlagEditor.PREF_LAST_OBJ, data);
+		await FlagEditor.setLastObject(data);
 		/**@type {FoundryDocument | null}*/ let document;
 		if (data.length === 0) {
 			this._hideError();
@@ -238,7 +242,7 @@ export default class FlagEditor extends Application {
 	 * @returns {boolean}
 	 */
 	static isDocument(target) {
-		return target?.data !== undefined || target?.document !== undefined;
+		return target?.flags !== undefined || target?._source !== undefined;
 	}
 	/**
 	 * @param {string} target 

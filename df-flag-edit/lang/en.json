@@ -4,6 +4,7 @@
 		"Cancel": "Cancel",
 		"Save": "Save",
 		"Apply": "Apply",
+		"HeaderButtonLabel": "Edit Flags",
 		"EditButtonLabel": "Edit Object Flags",
 		"EditButtonPromptTitle": "Edit Object Flags",
 		"EditButtonPromptDesc": "You can enter an Object's ID (<code>jQFzSIMgxCXFvCyr</code>)<br>or an Object's Path (<code>game.scenes.viewed</code>)<br>If you use an Object Path, the path must be an avaluatable JavaScript expression that results in an ID, a Document, or a Data object.",
