@@ -29,12 +29,21 @@ export class InputHandler {
 	get walls() { return canvas.walls; }
 
 	/**
-	 * @param {PIXI.InteractionEvent} event
+	 * Get the native DOM event from a PIXI FederatedEvent.
+	 * @param {Event} event
+	 * @returns {UIEvent}
+	 */
+	static getNativeEvent(event) {
+		return event.nativeEvent ?? event.data?.originalEvent;
+	}
+
+	/**
+	 * @param {Event} event
 	 * @returns {boolean}
 	 */
 	shouldSnap(event) {
-		const { originalEvent } = event.data;
-		return this.walls._forceSnap || !originalEvent.shiftKey;
+		const originalEvent = InputHandler.getNativeEvent(event);
+		return !originalEvent.shiftKey;
 	}
 
 	/**
@@ -103,18 +112,20 @@ export class InitializerInputHandler extends InputHandler {
 		this.lineA.copyFrom(this.getWallEndPoint(origin, snap));
 		this.lineB.copyFrom(this.getWallEndPoint(destination, snap));
 	}
-	/**@param {PIXI.Point} origin @param {PIXI.Point} destination @param {PIXI.InteractionEvent} event*/
+	/**@param {PIXI.Point} origin @param {PIXI.Point} destination @param {Event} event*/
 	move(origin, destination, event) {
 		const snap = this.shouldSnap(event);
-		const destPoint = this.squaring && event.data.originalEvent.altKey ? InputHandler.squarePoint(origin, destination) : destination;
-		const origPoint = !this.tool.startedWithCtrlHeld && event.data.originalEvent.ctrlKey ? new PIXI.Point(origin.x - (destPoint.x - origin.x), origin.y - (destPoint.y - origin.y)) : origin;
+		const nativeEvent = InputHandler.getNativeEvent(event);
+		const destPoint = this.squaring && nativeEvent.altKey ? InputHandler.squarePoint(origin, destination) : destination;
+		const origPoint = !this.tool.startedWithCtrlHeld && nativeEvent.ctrlKey ? new PIXI.Point(origin.x - (destPoint.x - origin.x), origin.y - (destPoint.y - origin.y)) : origin;
 		this.lineA.copyFrom(this.getWallEndPoint(origPoint, snap));
 		this.lineB.copyFrom(this.getWallEndPoint(destPoint, snap));
 	}
-	/**@param {PIXI.Point} origin @param {PIXI.Point} destination @param {PIXI.InteractionEvent} event*/
+	/**@param {PIXI.Point} origin @param {PIXI.Point} destination @param {Event} event*/
 	stop(origin, destination, event) {
 		const snap = this.shouldSnap(event);
-		if (this.squaring && event.data.originalEvent.altKey)
+		const nativeEvent = InputHandler.getNativeEvent(event);
+		if (this.squaring && nativeEvent.altKey)
 			this.lineB.copyFrom(this.getWallEndPoint(InputHandler.squarePoint(origin, destination), snap));
 		else
 			this.lineB.copyFrom(this.getWallEndPoint(destination, snap));
@@ -144,20 +155,22 @@ export class PointInputHandler extends InputHandler {
 		this.point = destination;
 		this.completion = completion;
 	}
-	/**@param {PIXI.Point} _origin @param {PIXI.Point} destination @param {PIXI.InteractionEvent} event*/
+	/**@param {PIXI.Point} _origin @param {PIXI.Point} destination @param {Event} event*/
 	start(_origin, destination, event) {
 		this.move(null, destination, event);
 	}
-	/**@param {PIXI.Point} _origin @param {PIXI.Point} destination @param {PIXI.InteractionEvent} event*/
+	/**@param {PIXI.Point} _origin @param {PIXI.Point} destination @param {Event} event*/
 	move(_origin, destination, event) {
-		if (!!this.#_origin && event.data.originalEvent.altKey)
+		const nativeEvent = InputHandler.getNativeEvent(event);
+		if (!!this.#_origin && nativeEvent.altKey)
 			this.point.copyFrom(this.getWallEndPoint(InputHandler.squarePoint(this.#_origin, destination), this.shouldSnap(event)));
 		else
 			this.point.copyFrom(this.getWallEndPoint(destination, this.shouldSnap(event)));
 	}
-	/**@param {PIXI.Point} _origin @param {PIXI.Point} destination @param {PIXI.InteractionEvent} event*/
+	/**@param {PIXI.Point} _origin @param {PIXI.Point} destination @param {Event} event*/
 	stop(_origin, destination, event) {
-		if (!!this.#_origin && event.data.originalEvent.altKey)
+		const nativeEvent = InputHandler.getNativeEvent(event);
+		if (!!this.#_origin && nativeEvent.altKey)
 			this.point.copyFrom(this.getWallEndPoint(InputHandler.squarePoint(this.#_origin, destination), this.shouldSnap(event)));
 		else
 			this.point.copyFrom(this.getWallEndPoint(destination, this.shouldSnap(event)));

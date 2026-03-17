@@ -4,7 +4,7 @@
 	"title": "DF Curvy Walls",
 	"description": "Creates wall segments along a Bezier Cubic or Quadratic curve, an ellipse, or a rectangle",
 	"authors": [ { "name": "flamewave000", "discord": "flamewave000", "url": "https://github.com/flamewave000" } ],
-	"compatibility": { "minimum": 12, "verified": 12.331 },
+	"compatibility": { "minimum": 12, "verified": 13 },
 	"relationships": {
 		"requires": [
 			{

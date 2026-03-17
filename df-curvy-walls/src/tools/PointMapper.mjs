@@ -3,7 +3,7 @@
 import { CurvyWallToolManager, Mode } from "../CurvyWallToolManager.mjs";
 import { Bezier } from "../../libs/bezier.js";
 import { BezierTool } from "./BezierTool.mjs";
-import { PointInputHandler } from "./ToolInputHandler.mjs";
+import { InputHandler, PointInputHandler } from "./ToolInputHandler.mjs";
 
 const pointNearPoint = BezierTool.pointNearPoint;
 
@@ -77,7 +77,7 @@ export default class PointMapper extends BezierTool {
 		const utility = new PointInputHandler(this, point);
 		const snap = utility.shouldSnap(event);
 
-		if (event.data.originalEvent.ctrlKey) {
+		if (InputHandler.getNativeEvent(event).ctrlKey) {
 			const handle = this.points.findIndex(e => pointNearPoint(point, e, BezierTool.HANDLE_RADIUS));
 			if (handle < 0) return false;
 			this.points.splice(handle, 1);

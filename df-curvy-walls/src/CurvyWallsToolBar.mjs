@@ -12,7 +12,7 @@ export class CurvyWallsToolBar extends Application {
 					icon: '<i class="fas fa-bezier-curve"></i>',
 					title: 'Curvy Walls Tools',
 					visible: () => {
-						return ui.controls.activeControl === 'walls';
+						return (ui.controls.control?.name ?? ui.controls.activeControl) === 'walls';
 					},
 					tools: [
 						{
@@ -212,27 +212,12 @@ export class CurvyWallsToolBar extends Application {
 	 * @param {JQuery<HTMLElement>} html
 	 */
 	activateListeners(html) {
-		const toolbarPosition = game.settings.get('lib-df-buttons', 'position');
-		switch (toolbarPosition) {
-			case 'top':
-				html.remove();
-				$(document.querySelector('#moduleControls')).append(html);
-				html.css('position', 'unset');
-				break;
-			case 'left':
-				html.remove();
-				$(document.querySelector('#moduleControls')).append(html);
-				html.css('top', '0');
-				html.css('left', '46px');
-				break;
-			case 'right':
-			case 'bottom':
-				html.remove();
-				$(document.querySelector('body')).append(html);
-				html.css('left', (ui.moduleControls.getLeftWidth() + 5) + 'px');
-				html.css('top', ui.moduleControls.getTopHeight(true) + 'px');
-				break;
-		}
+		// Append inside #lib-df-buttons so it moves with the draggable toolbar
+		const container = document.querySelector('#lib-df-buttons');
+		if (!container) return;
+		html.remove();
+		$(container).append(html);
+
 		html.find('li').on("click", (/**@type {JQuery.ClickEvent}*/event) => {
 			const element = $(event.currentTarget);
 			const name = element.attr('data-tool');

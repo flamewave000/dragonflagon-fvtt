@@ -29,6 +29,41 @@ MODE_NAMES[Mode.Quad] = 'bezierquad';
 MODE_NAMES[Mode.Circ] = 'beziercirc';
 MODE_NAMES[Mode.Rect] = 'bezierrect';
 
+/**
+ * Reimplementation of WallsLayer#getWallDataFromActiveTool (made private in v13).
+ * Translates the active tool name into default wall data.
+ * @param {string} tool - The active tool name (e.g. "walls", "terrain", "invisible", etc.)
+ * @returns {object} Wall data object
+ */
+function getWallDataFromActiveTool(tool) {
+	if (tool === "clone" && canvas.walls._cloneType) return canvas.walls._cloneType;
+	const wallData = {
+		light: CONST.WALL_SENSE_TYPES.NORMAL,
+		sight: CONST.WALL_SENSE_TYPES.NORMAL,
+		sound: CONST.WALL_SENSE_TYPES.NORMAL,
+		move: CONST.WALL_SENSE_TYPES.NORMAL
+	};
+	switch (tool) {
+		case "invisible":
+			wallData.sight = wallData.light = wallData.sound = CONST.WALL_SENSE_TYPES.NONE; break;
+		case "terrain":
+			wallData.sight = wallData.light = wallData.sound = CONST.WALL_SENSE_TYPES.LIMITED; break;
+		case "ethereal":
+			wallData.move = wallData.sound = CONST.WALL_SENSE_TYPES.NONE; break;
+		case "doors":
+			wallData.door = CONST.WALL_DOOR_TYPES.DOOR; break;
+		case "secret":
+			wallData.door = CONST.WALL_DOOR_TYPES.SECRET; break;
+		case "window": {
+			const d = canvas.dimensions.distance;
+			wallData.sight = wallData.light = CONST.WALL_SENSE_TYPES.PROXIMITY;
+			wallData.threshold = { light: 2 * d, sight: 2 * d, attenuation: true };
+			break;
+		}
+	}
+	return wallData;
+}
+
 class WallPool {
 	/**@readonly @type {Wall[]}*/ static walls = [];
 	/**
@@ -37,7 +72,7 @@ class WallPool {
 	 */
 	static acquire(wallData) {
 		const result = new Wall(new WallDocument(wallData, { parent: canvas.scene }));
-		wallData = foundry.utils.deepClone(wallData);
+		wallData = structuredClone(wallData);
 		delete wallData._id;
 		result.document = foundry.utils.mergeObject(result.document, wallData);
 		delete result.parent;
@@ -53,6 +88,25 @@ export class CurvyWallToolManager {
 	/**@type {WallsLayer}*/ #wallsLayer;
 	/**@type {Wall[]}*/ #walls = [];
 	/**@type {InputHandler|null}*/ #currentHandler = null;
+	/**@type {PIXI.Point|null}*/ #dragOrigin = null;
+
+	/**
+	 * Get canvas-space coordinates from a v13 FederatedEvent.
+	 * @param {Event} event
+	 * @returns {PIXI.Point}
+	 */
+	static _getCanvasPoint(event) {
+		return event.getLocalPosition(canvas.stage);
+	}
+
+	/**
+	 * Get the native DOM event from a PIXI FederatedEvent.
+	 * @param {Event} event
+	 * @returns {UIEvent}
+	 */
+	static _getNativeEvent(event) {
+		return event.nativeEvent ?? event.data?.originalEvent;
+	}
 	/**@type {BezierTool|null}*/ #_activeTool = null;
 	/**@type { (mode: Mode, toolMode: ToolMode | null) => void }*/
 	#_modeListener = null;
@@ -154,8 +208,7 @@ export class CurvyWallToolManager {
 			this.#_pointMapper.points = [];
 			ui.notifications.info(game.i18n.localize(this.#_pointMapper.getTooltipMessage()), { permanent: true });
 		} else {
-			ui.notifications.active.forEach(x => x.remove());
-			ui.notifications.active = [];
+			document.querySelectorAll('#notifications .notification').forEach(x => x.remove());
 		}
 		this.render();
 	}
@@ -168,8 +221,7 @@ export class CurvyWallToolManager {
 		this._inPointMapMode = false;
 		this.#_pointMapper.bindData(this.#_activeTool);
 		this.#_activeTool.setMode(ToolMode.Placed);
-		ui.notifications.active.forEach(x => x.remove());
-		ui.notifications.active = [];
+		document.querySelectorAll('#notifications .notification').forEach(x => x.remove());
 		this.render();
 	}
 
@@ -180,8 +232,10 @@ export class CurvyWallToolManager {
 	 */
 	static _onClickLeft(wrapped, event) {
 		const self = CurvyWallToolManager.instance;
+		const point = CurvyWallToolManager._getCanvasPoint(event);
+		const nativeEvent = CurvyWallToolManager._getNativeEvent(event);
 		if (self._inPointMapMode) {
-			if (!self.#_pointMapper.checkPointForClick(event.interactionData.origin, event))
+			if (!self.#_pointMapper.checkPointForClick(point, event))
 				return;
 			if (self.#_pointMapper.hasEnoughData())
 				self.#_modeListener(self.mode, ToolMode.NotPlaced);
@@ -190,16 +244,16 @@ export class CurvyWallToolManager {
 		}
 
 		if (self.mode == Mode.None || self.activeTool == null) return wrapped(event);
-		if (self.activeTool.checkPointForClick(event.interactionData.origin, event)) {
+		if (self.activeTool.checkPointForClick(point, event)) {
 			self.render();
 			return;
 		}
-		if (event.data.originalEvent.ctrlKey) {
+		if (nativeEvent.ctrlKey) {
 			self.activeTool.startedWithCtrlHeld = true;
 		}
-		if (SETTINGS.get(CurvyWallToolManager.PREF_DROP_KEY) === 'ctrl' && !event.data.originalEvent.ctrlKey) return;
-		if (SETTINGS.get(CurvyWallToolManager.PREF_DROP_KEY) === 'alt' && !event.data.originalEvent.altKey) return;
-		self.activeTool.placeTool(event.interactionData.origin, self.#_previousToolData.get(self.#_mode));
+		if (SETTINGS.get(CurvyWallToolManager.PREF_DROP_KEY) === 'ctrl' && !nativeEvent.ctrlKey) return;
+		if (SETTINGS.get(CurvyWallToolManager.PREF_DROP_KEY) === 'alt' && !nativeEvent.altKey) return;
+		self.activeTool.placeTool(point, self.#_previousToolData.get(self.#_mode));
 		self.render();
 	}
 	/**
@@ -209,17 +263,19 @@ export class CurvyWallToolManager {
 	 */
 	static _onDragLeftStart(wrapped, event) {
 		const self = CurvyWallToolManager.instance;
+		const point = CurvyWallToolManager._getCanvasPoint(event);
+		self.#dragOrigin = point.clone();
 		if (self._inPointMapMode) {
-			self.#currentHandler = self.#_pointMapper.checkPointForDrag(event.interactionData.origin);
+			self.#currentHandler = self.#_pointMapper.checkPointForDrag(point);
 			if (self.#currentHandler == null) return;
-			self.#currentHandler.start(event.interactionData.origin, event.interactionData.destination, event);
+			self.#currentHandler.start(self.#dragOrigin, point, event);
 			self.render();
 			return;
 		}
 		if (self.mode == Mode.None || self.activeTool == null) return wrapped(event);
-		self.#currentHandler = self.activeTool.checkPointForDrag(event.interactionData.origin);
+		self.#currentHandler = self.activeTool.checkPointForDrag(point);
 		if (self.#currentHandler == null) return;
-		self.#currentHandler.start(event.interactionData.origin, event.interactionData.destination, event);
+		self.#currentHandler.start(self.#dragOrigin, point, event);
 		self.render();
 	}
 	/**
@@ -230,10 +286,12 @@ export class CurvyWallToolManager {
 	static _onDragLeftMove(wrapped, event) {
 		const self = CurvyWallToolManager.instance;
 		if (self.mode == Mode.None || !self.#currentHandler) return wrapped(event);
-		if (self.activeTool.startedWithCtrlHeld && !event.data.originalEvent.ctrlKey) {
+		const nativeEvent = CurvyWallToolManager._getNativeEvent(event);
+		if (self.activeTool.startedWithCtrlHeld && !nativeEvent.ctrlKey) {
 			self.activeTool.startedWithCtrlHeld = false;
 		}
-		self.#currentHandler.move(event.interactionData.origin, event.interactionData.destination, event);
+		const destination = CurvyWallToolManager._getCanvasPoint(event);
+		self.#currentHandler.move(self.#dragOrigin, destination, event);
 		self.render();
 	}
 	/**
@@ -245,8 +303,10 @@ export class CurvyWallToolManager {
 		const self = CurvyWallToolManager.instance;
 		if (self.mode == Mode.None || !self.#currentHandler) return wrapped(event);
 		self.activeTool.startedWithCtrlHeld = false;
-		self.#currentHandler.stop(event.interactionData.origin, event.interactionData.destination, event);
+		const destination = CurvyWallToolManager._getCanvasPoint(event);
+		self.#currentHandler.stop(self.#dragOrigin, destination, event);
 		self.#currentHandler = null;
+		self.#dragOrigin = null;
 		self.render();
 	}
 	/**
@@ -269,12 +329,13 @@ export class CurvyWallToolManager {
 	 */
 	static _onClickRight(wrapped, event) {
 		const self = CurvyWallToolManager.instance;
-		if (!event.data.originalEvent.ctrlKey || self.mode == Mode.None) return wrapped(event);
+		const nativeEvent = CurvyWallToolManager._getNativeEvent(event);
+		if (!nativeEvent.ctrlKey || self.mode == Mode.None) return wrapped(event);
 		self.mode = Mode.None;
 		self.render();
 	}
 
-	#graphicsContext = new PIXI.Graphics(null);
+	#graphicsContext = new PIXI.Graphics();
 	render() {
 		this.#wallsLayer.preview.removeChildren();
 		if (this.currentlyMappingPoints) {
@@ -290,7 +351,7 @@ export class CurvyWallToolManager {
 		const pointData = this.activeTool?.getSegments(this.segments);
 		if (pointData.length == 0) return;
 		this.#walls.length;
-		/**@type {WallData}*/const wallData = this.#wallsLayer._getWallDataFromActiveTool(game.activeTool);
+		/**@type {WallData}*/const wallData = getWallDataFromActiveTool(game.activeTool);
 
 		while (this.#walls.length > pointData.length - 1) {
 			const wall = this.#walls.pop();
@@ -299,7 +360,7 @@ export class CurvyWallToolManager {
 		if (pointData[0].x !== undefined) {
 			/**@type {PIXI.Point[]}*/const points = pointData;
 			for (let c = 0; c < points.length - 1; c++) {
-				/**@type {WallData}*/const data = foundry.utils.duplicate(wallData);
+				/**@type {WallData}*/const data = structuredClone(wallData);
 				delete data._id;
 				data.c = [points[c].x, points[c].y, points[c + 1].x, points[c + 1].y];
 				if (c == this.#walls.length) {
@@ -320,7 +381,7 @@ export class CurvyWallToolManager {
 				this.#wallsLayer.preview.removeChild(wall);
 			}
 			for (let c = 0; c < points.length; c++) {
-				/**@type {WallData}*/const data = foundry.utils.duplicate(wallData);
+				/**@type {WallData}*/const data = structuredClone(wallData);
 				delete data._id;
 				data.c = [points[c][0].x, points[c][0].y, points[c][1].x, points[c][1].y];
 				if (c == this.#walls.length) {
@@ -345,11 +406,11 @@ export class CurvyWallToolManager {
 	}
 
 	init() {
-		libWrapper.register(SETTINGS.MOD_NAME, 'Wall.prototype._onDragLeftStart', (/**@type {any}*/wrapper,/**@type {any[]}*/...args) => {
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.placeables.Wall.prototype._onDragLeftStart', (/**@type {any}*/wrapper,/**@type {any[]}*/...args) => {
 			this.clearTool();
 			wrapper(...args);
 		}, 'WRAPPER');
-		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype.clearPreviewContainer', (/**@type {Function}*/wrapped) => {
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.layers.WallsLayer.prototype.clearPreviewContainer', (/**@type {Function}*/wrapped) => {
 			this.clearTool();
 			return wrapped();
 		}, 'WRAPPER');
@@ -357,12 +418,12 @@ export class CurvyWallToolManager {
 
 	patchWallsLayer() {
 		this.#wallsLayer = canvas.walls;
-		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onClickLeft', CurvyWallToolManager._onClickLeft, 'MIXED');
-		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onDragLeftStart', CurvyWallToolManager._onDragLeftStart, 'MIXED');
-		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onDragLeftMove', CurvyWallToolManager._onDragLeftMove, 'MIXED');
-		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onDragLeftDrop', CurvyWallToolManager._onDragLeftDrop, 'MIXED');
-		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onDragLeftCancel', CurvyWallToolManager._onDragLeftCancel, 'MIXED');
-		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onClickRight', CurvyWallToolManager._onClickRight, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.layers.WallsLayer.prototype._onClickLeft', CurvyWallToolManager._onClickLeft, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.layers.WallsLayer.prototype._onDragLeftStart', CurvyWallToolManager._onDragLeftStart, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.layers.WallsLayer.prototype._onDragLeftMove', CurvyWallToolManager._onDragLeftMove, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.layers.WallsLayer.prototype._onDragLeftDrop', CurvyWallToolManager._onDragLeftDrop, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.layers.WallsLayer.prototype._onDragLeftCancel', CurvyWallToolManager._onDragLeftCancel, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.layers.WallsLayer.prototype._onClickRight', CurvyWallToolManager._onClickRight, 'MIXED');
 		Hooks.on('requestCurvyWallsRedraw', () => this.render());
 	}
 

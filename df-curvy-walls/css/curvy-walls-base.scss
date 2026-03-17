@@ -1,10 +1,6 @@
 #df-curvy-walls-tools {
 	display: flex;
 	flex-flow: row nowrap;
-	vertical-align: top;
-	left: 101px;
-	position: absolute;
-	top: 73px;
 	ol {
 		margin: 0 10px 0 0;
 		list-style: none;
@@ -54,12 +50,5 @@
 		background: rgba(0, 128, 0, 0.5);
 		box-shadow: 0 0 10px #0a0;
 		border: 1px solid #0a0;
-	}
-}
-#moduleControls {
-	#df-curvy-walls-tools {
-		ol {
-			margin: 0;
-		}
 	}
 }

@@ -122,7 +122,7 @@ export class CurvyWallToolManager {
 		this.render();
 	}
 
-	#graphicsContext = new PIXI.Graphics(null);
+	#graphicsContext = new PIXI.Graphics();
 	render() {
 		this.#wallsLayer.preview.removeChildren();
 		if (this.activeTool == null) return;
@@ -139,7 +139,7 @@ export class CurvyWallToolManager {
 		if ((/**@type {PIXI.Point}*/pointData[0]).x !== undefined) {
 			/**@type {PIXI.Point[]}*/const points = pointData;
 			for (let c = 0; c < points.length - 1; c++) {
-				/**@type {WallData}*/const document = foundry.utils.duplicate(wallData);
+				/**@type {WallData}*/const document = structuredClone(wallData);
 				document.c = [points[c].x, points[c].y, points[c + 1].x, points[c + 1].y];
 				if (c == this.#walls.length) {
 					this.#walls.push(WallPool.acquire(document));
@@ -160,7 +160,7 @@ export class CurvyWallToolManager {
 				this.#wallsLayer.preview.removeChild(wall);
 			}
 			for (let c = 0; c < points.length; c++) {
-				/**@type {WallData}*/const document = foundry.utils.duplicate(wallData);
+				/**@type {WallData}*/const document = structuredClone(wallData);
 				document.c = [points[c][0].x, points[c][0].y, points[c][1].x, points[c][1].y];
 				if (c == this.#walls.length) {
 					this.#walls.push(WallPool.acquire(document));
