@@ -7,7 +7,7 @@
 		"HeaderButtonLabel": "Edit Flags",
 		"EditButtonLabel": "Edit Object Flags",
 		"EditButtonPromptTitle": "Edit Object Flags",
-		"EditButtonPromptDesc": "You can enter an Object's ID (<code>jQFzSIMgxCXFvCyr</code>)<br>or an Object's Path (<code>game.scenes.viewed</code>)<br>If you use an Object Path, the path must be an avaluatable JavaScript expression that results in an ID, a Document, or a Data object.",
+		"EditButtonPromptDesc": "<p>You can enter the following values:</p><ul><li>Object ID: <code>jQFzSIMgxCXFvCyr</code></li><li>Object Path: <code>game.scenes.viewed</code></li></ul><p>If you use an Object Path, the path must be an evaluatable JavaScript expression that results in an ID, a Document, or a Data object.</p>",
 		"EditButtonPromptPlaceholder": "ID or Object Path",
 		"ErrorObjectNotFound": "Object could not be found",
 		"PoweredBy": "Powered by <a href=\"https://github.com/josdejong/jsoneditor\">Json Editor</a> under <a href=\"https://raw.githubusercontent.com/josdejong/jsoneditor/master/LICENSE\">Apache 2.0 License</a>"

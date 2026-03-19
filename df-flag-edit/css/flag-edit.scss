@@ -1,79 +1,82 @@
-.df-arch-flag-edit {
-	display: grid;
-	grid-template-columns: auto auto auto;
-	grid-template-rows: auto auto 1fr auto auto auto;
-	margin-bottom: 10px;
+.df-flag-edit {
+	min-width: 400px;
+	min-height: 300px;
+	
+	footer {
+		align-items: center;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		gap: 0.5rem;
 
-	>button {
-		height: fit-content;
+		button {
+			flex: 1;
+			--button-size: calc(1.25 * var(--input-height));
+		}
 	}
 
-	>.col1 {
-		grid-column: 1;
-	}
+	main {
+		display: flex;
+		flex-direction: column;
+		flex-wrap: nowrap;
+		height: stretch;
 
-	>.col2 {
-		grid-column: 2;
-	}
+		>section>ul {
+			margin: 0;
+		}
 
-	>.col3 {
-		grid-column: 3;
-	}
+		>search {
+			margin-bottom: 0.5rem;
 
-	>.row1 {
-		grid-row: 1;
-	}
+			>input {
+				font-family: "Courier New", monospace;
+				padding-right: 25px;
+			}
 
-	>.row2 {
-		grid-row: 2;
-	}
+			>i {
+				position: absolute;
+				right: 1.5rem;
+				padding-top: 0.5rem;
+				color: orangered;
 
-	>.row3 {
-		grid-row: 3;
-	}
+				:hover {
+					text-shadow: 0px 0px 8px red;
+				}
+			}
+		}
 
-	>.row4 {
-		grid-row: 4;
-	}
-
-	>.row5 {
-		grid-row: 5;
-	}
-
-	>.row6 {
-		grid-row: 6;
-	}
-
-	>.colend3 {
-		grid-column-end: 4;
-	}
-
-	table {
-		width: 100%;
-		border-collapse: unset;
-		background: none;
-		border-top: none;
-		border-bottom: none;
-		margin: 0;
-	}
-
-	>div.col1.colend3.row2 {
-		margin-bottom: 1em;
-	}
-
-	.error {
-		position: absolute;
-		right: 15px;
-		padding-top: 6px;
-		color: orangered;
-	}
-
-	.error:hover {
-		text-shadow: 0px 0px 8px red;
-	}
-
-	#object-path {
-		font-family: "Courier New", monospace;
-		padding-right: 25px;
+		>cite {
+			margin-bottom: 0.75rem;
+			margin-top: 0.5rem;
+		}
+		
+		>code {
+			flex: 1;
+			display: block;
+			padding: 0;
+			table {
+				margin: unset;
+				background: unset;
+				overflow: unset;
+				width: unset;
+			}
+			div.jsoneditor-frame {
+				>* {
+					display: unset;
+				}
+				>input {
+					background: unset;
+				}
+			}
+			input[type="checkbox"] {
+				background: unset;
+			}
+			ul, li {
+				margin: unset;
+			}
+			button {
+				display: unset;
+			}
+		}
 	}
 }

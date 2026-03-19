@@ -2,18 +2,40 @@
 import SETTINGS from "../common/Settings.mjs";
 import { parseHTML } from '../common/fvtt.mjs';
 
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export default class FlagEditor extends Application {
+export default class FlagEditor extends HandlebarsApplicationMixin(ApplicationV2) {
+	// region Static Methods and Properties
 	static #PREF_LAST_OBJ = 'FlagEditor.LastObject';
-
-	static get defaultOptions() {
-		return foundry.utils.mergeObject(/**@type {Partial<ApplicationOptions>}*/Application.defaultOptions, {
-			template: `modules/${SETTINGS.MOD_NAME}/templates/flag-edit.hbs`,
-			minimizable: true,
+	/** @type {import("../common/fvtt.mjs").ApplicationConfiguration} */
+	static DEFAULT_OPTIONS = {
+		position: {
+			width: 500,
+			height: 600,
+		},
+		window: {
 			resizable: true,
-			height: 500,
-			width: 500
-		});
+			minimizable: true,
+			contentClasses: ['df-flag-edit']
+		},
+		actions: {
+			cancel: this.#cancel,
+			apply: this.#apply,
+			save: this.#save
+		}
+	};
+
+	/** @type {import("../common/fvtt.mjs").ApplicationParts} */
+	static get PARTS() {
+		return {
+			content: {
+				template: `modules/${SETTINGS.MOD_NAME}/templates/flag-edit-content.hbs`,
+				scrollable: false
+			},
+			footer: {
+				template: `modules/${SETTINGS.MOD_NAME}/templates/flag-edit-footer.hbs`
+			}
+		};
 	}
 
 	/** @returns {string} */
@@ -35,30 +57,161 @@ export default class FlagEditor extends Application {
 		});
 	}
 
-	constructor() {
-		super({
-			title: 'DF_FLAG_EDIT.Title'.localize().replace(' - {0} ({1})', '')
-		});
+	/**
+	 * @param {any} target 
+	 * @returns {Promise<boolean>}
+	 */
+	static async isID(target) {
+		return !!(await fromUuid(target));
+	}
+	/**
+	 * @param {any} target 
+	 * @returns {boolean}
+	 */
+	static isDocument(target) {
+		return target?.flags !== undefined || target?._source !== undefined;
+	}
+	/**
+	 * @param {string} target 
+	 * @returns {FoundryDocument | string | null}
+	 */
+	static evaluateDocument(target) { return eval(target); }
+
+	/**@type {Promise<unknown> | null}*/ static #loadEditorPromise = null;
+	/**
+	 * @returns {Promise<void}
+	 */
+	static #loadEditor() {
+		// Resolve immediately if element exists
+		if (this.#loadEditorPromise == null) {
+			// If the Editor library has not yet been loaded, lets load it now inside a promise
+			this.#loadEditorPromise = new Promise(res => {
+				/**@type {HTMLScriptElement}*/ const script = document.createElement('script');
+				script.async = true;
+				script.onload = () => res();
+				// If the Ace Lib is installed and running
+				if ('ace' in window)
+					script.src = `/modules/${SETTINGS.MOD_NAME}/libs/jsoneditor-minimalist.min.js`;
+				else
+					script.src = `/modules/${SETTINGS.MOD_NAME}/libs/jsoneditor.min.js`;
+				document.body.append(script);
+			});
+		}
+		return this.#loadEditorPromise;
 	}
 
-	/**@type {FoundryDocument | null}*/ _document = null;
-	set document(/**@type {FoundryDocument | null}*/ value) {
-		this._document = value;
-		this.editor.set(this._document?.flags || '');
+	/** @this {FlagEditor} */
+	static #cancel() { this.close(); }
+
+	/** @this {FlagEditor} */
+	static async #save() {
+		FlagEditor.#apply.call(this);
+		this.close();
 	}
-	/**@type {FoundryDocument | null}*/
-	get document() { return this._document; }
-	/**@type {JSONEditor}*/ editor;
+
+	/** @this {FlagEditor} */
+	static async #apply() {
+		if (this.document?.flags === undefined || this.document?.flags === null)
+			return;
+		this.#saveButton.toggleAttribute('disabled', true);
+		this.#applyButton.toggleAttribute('disabled', true);
+		const flags = this.#editor.get();
+		const newKeys = Object.keys(flags)
+			.flatMap(x => Object.keys(flags[x]).map(y => `${x}_____${y}`))
+			.filter(x => !x.endsWith('_____'));
+		const oldKeys = Object.keys(this.document.flags)
+			.flatMap(x => {
+				if (typeof (this.document.flags[x]) === 'object')
+					return Object.keys(this.document.flags[x]).map(y => `${x}_____${y}`);
+				else return x;
+			})
+			.filter(x => !x.endsWith('_____'));
+		const deleted = oldKeys.filter(x => !newKeys.includes(x));
+		for (const flag of deleted) {
+			if (!flag.includes('_____')) {
+				delete flags[flag];
+				flags['-=' + flag] = null;
+				continue;
+			}
+			const scope = flag.split('_____')[0];
+			const key = flag.split('_____')[1];
+			try {
+				// await this.document.unsetFlag(scope, key);
+				const head = key.split('.');
+				const tail = `-=${head.pop()}`;
+				const t = [...head, tail].join('.');
+				if (flags[scope] === undefined)
+					flags[scope] = {};
+				flags[scope][t] = null;
+			}
+			catch (err) { console.warn(err); }
+		}
+		for (const scope of Object.keys(flags)) {
+			if (flags[scope] === null || flags[scope] === undefined) {
+				if (scope.startsWith('-=')) continue;
+				delete flags[scope];
+				flags['-=' + scope] = null;
+			}
+			else if (Object.keys(flags[scope]).every(x => x.startsWith('-='))) {
+				delete flags[scope];
+				flags['-=' + scope] = null;
+			}
+		}
+		await this.#document.update({ flags });
+		this.#editor.set(this.#document?.flags || '');
+		this.#saveButton.toggleAttribute('disabled', false);
+		this.#applyButton.toggleAttribute('disabled', false);
+	}
+	// endregion
+
+	/**@type {HTMLButtonElement}*/#saveButton;
+	/**@type {HTMLButtonElement}*/#applyButton;
+	/**@type {HTMLInputElement}*/#search;
+	/**@type {HTMLElement}*/#code;
+	/**@type {HTMLElement}*/#errorFlag;
+	/** @type {HTMLElement} */get element() { return super.element; }
+	/**@type {JSONEditor}*/#editor;
+	/**@type {FoundryDocument | null}*/#document = null;
+	get document() { return this.#document; }
+	set document(value) {
+		this.#document = value;
+		this.#editor.set(this.#document?.flags || '');
+	}
+
+	constructor() {
+		super(/** @type {import("../common/fvtt.mjs").ApplicationConfiguration} */({
+			window: { title: 'DF_FLAG_EDIT.Title'.localize().replace(' - {0} ({1})', '') }
+		}));
+	}
+
+
+	async _prepareContext(options) {
+		const context = await super._prepareContext(options);
+		context.path = FlagEditor.lastObject;
+		return context;
+	}
 
 	/**
-	 * 
-	 * @param {boolean} [force]
-	 * @param {any} [options]
-	 * @returns {Promise<void>}
+	 * Attach event listeners to rendered template parts.
+	 * @param {string} partId                       The id of the part being rendered
+	 * @param {HTMLElement} htmlElement             The rendered HTML element for the part
+	 * @param {ApplicationRenderOptions} _options    Rendering options passed to the render method
+	 * @protected
 	 */
-	async _render(force, options) {
-		await FlagEditor._loadEditor();
-		await super._render(force, options);
+	async _attachPartListeners(partId, htmlElement, _options) {
+		if (partId == "footer") {
+			this.#saveButton = htmlElement.querySelector('button[data-action="save"]');
+			this.#applyButton = htmlElement.querySelector('button[data-action="apply"]');
+			return;
+		}
+		if (partId != "content") return;
+		this.#code = htmlElement.querySelector(":scope>code");
+		this.#errorFlag = htmlElement.querySelector("search>i");
+		this.#search = htmlElement.querySelector("search>input");
+		this.#search.oninput = e => this.#search.onchange(e);
+		this.#search.onchange = _ => this.#handlePathChange(this.#search.value.trim());
+
+		await FlagEditor.#loadEditor();
 		const editorOptions = {
 			// If the Ace Lib is installed and running
 			ace: 'ace' in window ? ace : undefined,
@@ -73,136 +226,40 @@ export default class FlagEditor extends Application {
 			onCreateMenu: (/**@type { {className:string}[] }*/items, _) => items
 				.filter(x => !["jsoneditor-extract", "jsoneditor-transform"].includes(x.className))
 		};
-		this.editor = new JSONEditor(this.element.find('#editor')[0], editorOptions);
-		if (!this.document) {
-			await this._handlePathChange(FlagEditor.lastObject);
-		}
-
-		/**@type {JQuery<HTMLInputElement>}*/
-		const input = this.element.find('#object-path');
-		input.on('input', () => input.trigger('change'));
-		input.on('change', async () => this._handlePathChange(input.val().trim()));
-		this.element.find('#cancel').on('click', () => this.close());
-		const applyButton = this.element.find('#apply');
-		const saveButton = this.element.find('#save');
-		saveButton.on('click', () => {
-			applyButton.trigger('click');
-			this.close();
-		});
-		applyButton.on('click', async () => {
-			if (this.document?.flags === undefined || this.document?.flags === null)
-				return;
-			saveButton.prop('disabled', true);
-			applyButton.prop('disabled', true);
-			const flags = this.editor.get();
-			const newKeys = Object.keys(flags)
-				.flatMap(x => Object.keys(flags[x]).map(y => `${x}_____${y}`))
-				.filter(x => !x.endsWith('_____'));
-			const oldKeys = Object.keys(this.document.flags)
-				.flatMap(x => {
-					if (typeof (this.document.flags[x]) === 'object')
-						return Object.keys(this.document.flags[x]).map(y => `${x}_____${y}`);
-					else return x;
-				})
-				.filter(x => !x.endsWith('_____'));
-			const deleted = oldKeys.filter(x => !newKeys.includes(x));
-			for (const flag of deleted) {
-				if (!flag.includes('_____')) {
-					delete flags[flag];
-					flags['-=' + flag] = null;
-					continue;
-				}
-				const scope = flag.split('_____')[0];
-				const key = flag.split('_____')[1];
-				try {
-					// await this.document.unsetFlag(scope, key);
-					const head = key.split('.');
-					const tail = `-=${head.pop()}`;
-					const t = [...head, tail].join('.');
-					if (flags[scope] === undefined)
-						flags[scope] = {};
-					flags[scope][t] = null;
-				}
-				catch (err) { console.warn(err); }
-			}
-			for (const scope of Object.keys(flags)) {
-				if (flags[scope] === null || flags[scope] === undefined) {
-					if (scope.startsWith('-=')) continue;
-					delete flags[scope];
-					flags['-=' + scope] = null;
-				}
-				else if (Object.keys(flags[scope]).every(x => x.startsWith('-='))) {
-					delete flags[scope];
-					flags['-=' + scope] = null;
-				}
-			}
-			await this.document.update({ flags });
-			this.editor.set(this._document?.flags || '');
-			saveButton.prop('disabled', false);
-			applyButton.prop('disabled', false);
-		});
-	}
-
-	/**@type {Promise<unknown> | null}*/ static _loadEditorPromise = null;
-	/**
-	 * @returns {Promise<void}
-	 */
-	static _loadEditor() {
-		// Resolve immediately if element exists
-		if (this._loadEditorPromise == null) {
-			// If the Editor library has not yet been loaded, lets load it now inside a promise
-			this._loadEditorPromise = new Promise(res => {
-				/**@type {HTMLScriptElement}*/ const script = document.createElement('script');
-				script.async = true;
-				script.onload = () => res();
-				// If the Ace Lib is installed and running
-				if ('ace' in window)
-					script.src = `/modules/${SETTINGS.MOD_NAME}/libs/jsoneditor-minimalist.min.js`;
-				else
-					script.src = `/modules/${SETTINGS.MOD_NAME}/libs/jsoneditor.min.js`;
-				document.body.append(script);
-			});
-		}
-		return this._loadEditorPromise;
+		this.#editor = new JSONEditor(this.#code, editorOptions);
+		if (!this.#document)
+			await this.#handlePathChange(FlagEditor.lastObject);
 	}
 
 	/**
 	 * @param {string} [error]
 	 */
-	_showError(error) {
-		const el = this.element.find('.error');
-		el.attr('title', error || game.i18n.localize('DF_FLAG_EDIT.ErrorObjectNotFound'));
-		el.show();
+	#showError(error) {
+		this.#errorFlag.setAttribute('aria-label', error || game.i18n.localize('DF_FLAG_EDIT.ErrorObjectNotFound'));
+		this.#errorFlag.classList.toggle('hidden', false);
 		this.document = null;
 		this._updateTitle();
 	}
-	_hideError() {
-		this.element.find('.error').hide();
+	#hideError() {
+		this.#errorFlag.classList.toggle('hidden', true);
 	}
-	_updateTitle() {
-		this.options.title = game.i18n.localize('DF_FLAG_EDIT.Title')
+	#updateTitle() {
+		this.options.window.title = game.i18n.localize('DF_FLAG_EDIT.Title')
 			.replace('{0}', this.document !== null ? Object.getPrototypeOf(this.document).constructor.name : '#')
 			.replace('{1}', this.document?._id || '#');
-		this.element.find('h4.window-title').text(this.options.title);
+		this.element.querySelector('header>.window-title').textContent = this.options.window.title;
 	}
-
-	getData() {
-		return {
-			path: FlagEditor.lastObject
-		};
-	}
-
-	async _handlePathChange(/**@type {string}*/ data) {
+	async #handlePathChange(/**@type {string}*/ data) {
 		await FlagEditor.setLastObject(data);
 		/**@type {FoundryDocument | null}*/ let document;
 		if (data.length === 0) {
-			this._hideError();
+			this.#hideError();
 			document = null;
 			return;
 		}
 		try {
 			// If we are an ID
-			if (FlagEditor.isID(data))
+			if (await FlagEditor.isID(data))
 				document = await fromUuid(data);
 			// we are an object path
 			else {
@@ -210,47 +267,26 @@ export default class FlagEditor extends Application {
 				// If the result is NOT a Document/Data
 				if (!FlagEditor.isDocument(temp)) {
 					// If the Object Path result is an ID
-					if ((temp instanceof String || typeof temp === 'string') && FlagEditor.isID(temp)) {
+					if ((temp instanceof String || typeof temp === 'string') && await FlagEditor.isID(temp)) {
 						temp = await fromUuid(temp);
 					} else throw 'Invalid object from path';
 				}
 				document = temp;
 			}
 		} catch (error) {
-			this._showError(error);
+			this.#showError(error);
 			document = null;
 			return;
 		}
 		if (document?.flags === undefined || document?.flags === null) {
-			this._showError('Invalid object: does not contain a flags field');
+			this.#showError('Invalid object: does not contain a flags field');
 			return;
 		}
-		this._hideError();
+		this.#hideError();
 		this.document = document;
-		this._updateTitle();
+		this.#updateTitle();
 	}
-
-	/**
-	 * @param {any} target 
-	 * @returns {boolean}
-	 */
-	static isID(target) {
-		return !!fromUuidSync(target);
-	}
-	/**
-	 * @param {any} target 
-	 * @returns {boolean}
-	 */
-	static isDocument(target) {
-		return target?.flags !== undefined || target?._source !== undefined;
-	}
-	/**
-	 * @param {string} target 
-	 * @returns {FoundryDocument | string | null}
-	 */
-	static evaluateDocument(target) { return eval(target); }
 }
-
 
 window.showFlagEditorForDocument = async (document) => {
 	if (document.data === undefined) {

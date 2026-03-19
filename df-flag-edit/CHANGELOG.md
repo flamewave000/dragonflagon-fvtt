@@ -1,5 +1,8 @@
 # DragonFlagon Flag Editor
 
+## Release 13.0.0 (2026-03-19)
+- **UPDATE:** Migrated to FoundryVTT v13.351
+
 ## Release 2.0.1 (2025-02-22)
 - **UPDATE:** Now using built in `fromUuid` and `fromUuidSync` helper functions to more reliably lookup documents and better support embedded documents which previously had issues.
 

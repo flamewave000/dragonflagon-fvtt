@@ -1,6 +1,5 @@
 /// <reference path="../../node_modules/@types/jquery/index.d.ts" />
 /// <reference path="../../common/fvtt.mjs" />
-import '../common/HooksExt.shim.mjs';
 import SETTINGS from "../common/Settings.mjs";
 import FlagEditor from "./FlagEditor.mjs";
 SETTINGS.init('df-flag-edit');
