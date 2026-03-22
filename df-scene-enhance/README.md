@@ -1,5 +1,8 @@
 # DF Scene Enhancement
 
+> [!IMPORTANT]
+> <img style="width:2rem;height:2rem;" src=".assets/no-ai-icon.svg"> **ALL DragonFlagon Modules are made AI-Free**
+
 ![Forge Installs](https://img.shields.io/badge/dynamic/json?color=red&label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-scene-enhance) ![Latest Version](https://img.shields.io/badge/dynamic/json?label=Latest%20Release&prefix=v&query=package.versions%5B0%5D&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fdf-scene-enhance) [![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Fdf-scene-enhance%2Fshield%2Fendorsements)](https://www.foundryvtt-hub.com/package/df-scene-enhance/)
 
 A few enhancements to scene management for players and GMs.
