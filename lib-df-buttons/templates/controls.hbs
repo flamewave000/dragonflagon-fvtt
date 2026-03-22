@@ -1,30 +1,14 @@
-{{#*inline "control"}}
-<li class="{{#if c.class}}{{c.class}} {{/if}}control-tool{{#if c.active}} active{{/if}}{{#if c.button}} button{{/if}}{{#if c.toggle}} toggle{{/if}}"
-	data-{{d}}="{{c.name}}" title="{{localize c.title}}">
-	{{{c.icon}}}
-</li>
-{{/inline}}
-
-<div id="lib-df-buttons" class="app">
-	<a id="magnet" class="button" title="{{localize 'LIB_DF_BUTTONS.title'}}"><i class="fas fa-magnet"></i></a>
-	<section id="moduleControls">
-		<ol class="controls active">
-			{{#unless singleGroup}}
-			{{#each groups as |g|}}
-			{{> control c=g d='group'}}
-			{{/each}}
-			{{/unless}}
-		</ol>
-		<div class="group-tools">
-			{{#each groups as |g|}}
-			{{#if g.tools.length}}
-			<ol class="controls{{#if g.active}} active{{/if}}">
-				{{#each g.tools as |t|}}
-				{{> control c=t d='tool'}}
-				{{/each}}
-			</ol>
-			{{/if}}
-			{{/each}}
-		</div>
-	</section>
-</div>
+<menu class="flexcol" data-tooltip-direction="RIGHT" id="{{id}}">
+	{{#each controls as |control|}}
+	<li>
+		<button
+			type="button"
+			class="control ui-control layer icon {{#if control.class}}{{control.class}}{{/if}} {{#if control.button}}button{{/if}} {{#if control.toggle}}toggle{{/if}} {{{control.icon}}}"
+			role="tab"
+			{{#if (not control.button)}}aria-pressed="{{control.active}}"{{/if}}
+			aria-label="{{localize control.title}}"
+			data-control="{{control.name}}"
+			data-tooltip></button>
+	</li>
+	{{/each}}
+</menu>

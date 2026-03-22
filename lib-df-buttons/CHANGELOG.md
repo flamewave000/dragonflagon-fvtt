@@ -1,5 +1,10 @@
 # DragonFlagon Module Buttons Library
 
+## Release 13.0.0 (2026-03-22)
+- **UPDATE:** Migrated to FoundryVTT v13.351.
+- **UPDATE:** Removed magneting feature to simplify code base and improve reliability. Also plays nicer with the native Foundry UI. Custom CSS is also now removed, which should make it play nicer with UI Overhaul modules.
+- **FIX:** A couple of small bugs.
+
 ## Release 2.0.3 (2025-02-24)
 - **FIX #459:** Greatly improved module button positioning in the UI system.
 

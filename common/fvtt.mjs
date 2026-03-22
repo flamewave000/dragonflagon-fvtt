@@ -3,8 +3,10 @@
  * @param {object} data 
  * @returns {Promise<HTMLElement>}
  */
-export async function renderTemplateElement(path, data) {
-	return parseHTML(await foundry.applications.handlebars.renderTemplate(path, data));
+export async function renderTemplate(path, data) {
+	/**@type {string}*/
+	const html = await foundry.applications.handlebars.renderTemplate(path, data);
+	return parseHTML(html.trim());
 }
 
 /**
