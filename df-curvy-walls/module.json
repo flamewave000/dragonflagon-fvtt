@@ -1,6 +1,6 @@
 {
 	"id": "df-curvy-walls",
-	"version": "4.0.0",
+	"version": "13.0.0",
 	"title": "DF Curvy Walls",
 	"description": "Creates wall segments along a Bezier Cubic or Quadratic curve, an ellipse, or a rectangle",
 	"authors": [ { "name": "flamewave000", "discord": "flamewave000", "url": "https://github.com/flamewave000" } ],
@@ -15,7 +15,7 @@
 			{
 				"id": "lib-df-buttons",
 				"type": "module",
-				"compatibility": { "verified": "13.0.0", "minimum": "13.0.0" }
+				"compatibility": { "verified": "13.1.1", "minimum": "13.1.1" }
 			}
 		]
 	},

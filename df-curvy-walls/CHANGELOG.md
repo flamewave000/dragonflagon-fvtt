@@ -1,5 +1,8 @@
 # DF Curvy Walls
 
+## Release 13.0.0 (2026-03-23)
+- **UPDATE:** Migrated to FoundryVTT v13.351.
+
 ## Release 4.0.0 (2025-02-24)
 - **UPDATE:** Migrated to v12.
 - **UPDATE:** Downgraded TS -> JS (such sad).
