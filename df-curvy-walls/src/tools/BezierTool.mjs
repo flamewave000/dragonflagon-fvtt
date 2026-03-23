@@ -1,5 +1,4 @@
-/// <reference path="../../../fvtt-scripts/foundry.js" />
-/// <reference path="../../../fvtt-scripts/foundry-esm.js" />
+/// <reference path="../../../fvtt-scripts/foundry.mjs" />
 /// <reference path="./ToolInputHandler.mjs" />
 /// <reference path="../CurvyWallsToolBar.mjs" />
 
@@ -116,7 +115,7 @@ export class BezierTool {
 	 * @returns {PreciseText}
 	 */
 	static createText(text) {
-		const result = new PreciseText(text, BezierTool.TEXT_STYLE);
+		const result = new foundry.canvas.containers.PreciseText(text, BezierTool.TEXT_STYLE);
 		result.anchor.set(0.5, 0.5);
 		return result;
 	}

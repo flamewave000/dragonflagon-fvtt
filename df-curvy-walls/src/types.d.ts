@@ -1,5 +1,6 @@
-import "../../fvtt-scripts/foundry";
-import "../../fvtt-scripts/foundry-esm";
+import "../../fvtt-scripts/foundry.mjs";
+import "../../common/libWrapper"
+import "../../lib-df-buttons/src/ToolType";
 
 declare interface WallData {
 	c: [number, number, number, number];
@@ -18,30 +19,6 @@ declare interface WallData {
 		sound: number | null;
 		attenuation: boolean;
 	};
-}
-declare interface CurvyWallControl {
-	title: string;
-	icon: string;
-	toggleable?: boolean;
-	class?: string;
-	isActive?: () => boolean;
-	onClick: (enabled?: boolean) => void;
-}
-
-declare interface CurvyWallControlUI {
-	name: string;
-	title: string;
-	icon: string;
-	toggleable?: boolean;
-	class?: string;
-	isActive?: boolean;
-}
-
-
-declare interface CurvyWallsToolsOptions {
-	tools: CurvyWallControlUI[];
-	general: CurvyWallControlUI[];
-	controls: CurvyWallControlUI[];
 }
 
 declare interface WallData {

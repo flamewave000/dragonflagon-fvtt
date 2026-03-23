@@ -1,9 +1,6 @@
-/// <reference path="../../fvtt-scripts/foundry.js" />
-/// <reference path="../../fvtt-scripts/foundry-esm.js" />
 /// <reference path="./types.d.ts" />
 /// <reference path="./tools/BezierTool.mjs" />
 /// <reference path="./tools/ToolInputHandler.mjs" />
-/// <reference path="../common/libWrapper.d.ts" />
 
 import { ToolMode } from './tools/BezierTool.mjs';
 import CircleTool from './tools/CircleTool.mjs';
@@ -12,6 +9,8 @@ import CubicTool from './tools/CubicTool.mjs';
 import QuadTool from './tools/QuadTool.mjs';
 import PointMapper from './tools/PointMapper.mjs';
 import SETTINGS from "../common/Settings.mjs";
+
+const { Wall } = foundry.canvas.placeables;
 
 export const Mode = Object.freeze({
 	None: 0,
@@ -148,14 +147,15 @@ export class CurvyWallToolManager {
 		this.render();
 	}
 
+	#notification = null;
 	togglePointMapping() {
 		this._inPointMapMode = !this._inPointMapMode;
 		if (this._inPointMapMode) {
 			this.#_pointMapper.points = [];
-			ui.notifications.info(game.i18n.localize(this.#_pointMapper.getTooltipMessage()), { permanent: true });
-		} else {
-			ui.notifications.active.forEach(x => x.remove());
-			ui.notifications.active = [];
+			this.#notification = ui.notifications.info(game.i18n.localize(this.#_pointMapper.getTooltipMessage()), { permanent: true });
+		} else if (this.#notification?.active) {
+			ui.notifications.remove(this.#notification);
+			this.#notification = null;
 		}
 		this.render();
 	}
@@ -345,11 +345,11 @@ export class CurvyWallToolManager {
 	}
 
 	init() {
-		libWrapper.register(SETTINGS.MOD_NAME, 'Wall.prototype._onDragLeftStart', (/**@type {any}*/wrapper,/**@type {any[]}*/...args) => {
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.placeables.Wall.prototype._onDragLeftStart', (/**@type {any}*/wrapper,/**@type {any[]}*/...args) => {
 			this.clearTool();
 			wrapper(...args);
 		}, 'WRAPPER');
-		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype.clearPreviewContainer', (/**@type {Function}*/wrapped) => {
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.layers.WallsLayer.prototype.clearPreviewContainer', (/**@type {Function}*/wrapped) => {
 			this.clearTool();
 			return wrapped();
 		}, 'WRAPPER');
@@ -357,12 +357,12 @@ export class CurvyWallToolManager {
 
 	patchWallsLayer() {
 		this.#wallsLayer = canvas.walls;
-		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onClickLeft', CurvyWallToolManager._onClickLeft, 'MIXED');
-		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onDragLeftStart', CurvyWallToolManager._onDragLeftStart, 'MIXED');
-		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onDragLeftMove', CurvyWallToolManager._onDragLeftMove, 'MIXED');
-		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onDragLeftDrop', CurvyWallToolManager._onDragLeftDrop, 'MIXED');
-		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onDragLeftCancel', CurvyWallToolManager._onDragLeftCancel, 'MIXED');
-		libWrapper.register(SETTINGS.MOD_NAME, 'WallsLayer.prototype._onClickRight', CurvyWallToolManager._onClickRight, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.layers.WallsLayer.prototype._onClickLeft', CurvyWallToolManager._onClickLeft, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.layers.WallsLayer.prototype._onDragLeftStart', CurvyWallToolManager._onDragLeftStart, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.layers.WallsLayer.prototype._onDragLeftMove', CurvyWallToolManager._onDragLeftMove, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.layers.WallsLayer.prototype._onDragLeftDrop', CurvyWallToolManager._onDragLeftDrop, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.layers.WallsLayer.prototype._onDragLeftCancel', CurvyWallToolManager._onDragLeftCancel, 'MIXED');
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.layers.WallsLayer.prototype._onClickRight', CurvyWallToolManager._onClickRight, 'MIXED');
 		Hooks.on('requestCurvyWallsRedraw', () => this.render());
 	}
 

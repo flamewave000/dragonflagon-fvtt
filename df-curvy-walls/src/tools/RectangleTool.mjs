@@ -96,7 +96,7 @@ export default class RectangleTool extends BezierTool {
 	 * @returns {PreciseText}
 	 */
 	static #createLineLabel(text) {
-		const result = new PreciseText(text, RectangleTool.#STYLE);
+		const result = new foundry.canvas.containers.PreciseText(text, RectangleTool.#STYLE);
 		result.anchor.set(0.5, 0.5);
 		return result;
 	}
