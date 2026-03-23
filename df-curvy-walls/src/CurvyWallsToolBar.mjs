@@ -51,19 +51,31 @@ export default class CurvyWallsToolBar {
 				onClick: active => { CurvyWallToolManager.instance.mode = active ? Mode.Rect : Mode.None; }
 			}
 		});
+
+		// this.#prevToolMode = CurvyWallToolManager.instance.
+		CurvyWallToolManager.instance.setModeListener((mode, toolMode) => {
+			console.log(`Mode: ${mode}, Tool: ${toolMode}`)
+			if (this.#prevToolMode === toolMode) return;
+			this.#prevToolMode = toolMode ?? 0;
+			Hooks.callAll('refreshModuleButtons');
+		});
 	}
+
+	static #prevToolMode = 0;
 
 	/**@type {ToolSet}*/
 	static #_generalControls = {
 		increment: {
 			title: 'df-curvy-walls.increment',
 			icon: 'fas fa-plus',
+			type: 'button',
 			enabled: CurvyWallsToolBar.#toolIsPlaced,
 			onClick: () => CurvyWallToolManager.instance.segments++
 		},
 		decrement: {
 			title: 'df-curvy-walls.decrement',
 			icon: 'fas fa-minus',
+			type: 'button',
 			enabled: CurvyWallsToolBar.#toolIsPlaced,
 			onClick: () => CurvyWallToolManager.instance.segments--
 		},
@@ -71,6 +83,7 @@ export default class CurvyWallsToolBar {
 			title: 'df-curvy-walls.apply',
 			icon: 'fas fa-check',
 			class: 'apply',
+			type: 'button',
 			enabled: CurvyWallsToolBar.#toolIsPlaced,
 			onClick: CurvyWallToolManager.instance.apply.bind(CurvyWallToolManager.instance)
 		},
@@ -78,6 +91,7 @@ export default class CurvyWallsToolBar {
 			title: 'df-curvy-walls.cancel',
 			icon: 'fas fa-times',
 			class: 'cancel',
+			type: 'button',
 			enabled: CurvyWallsToolBar.#toolIsPlaced,
 			onClick: CurvyWallToolManager.instance.clearTool.bind(CurvyWallToolManager.instance)
 		},
@@ -102,63 +116,4 @@ export default class CurvyWallsToolBar {
 	static #toolIsPlaced() {
 		return CurvyWallToolManager.instance.mode != Mode.None && CurvyWallToolManager.instance.activeTool.mode != ToolMode.NotPlaced;
 	}
-		
-
-	// /**
-	//  * @returns {CurvyWallsToolsOptions}
-	//  */
-	// getData() {
-	// 	const toolIsPlaced = CurvyWallToolManager.instance.mode != Mode.None && CurvyWallToolManager.instance.activeTool.mode != ToolMode.NotPlaced;
-	// 	const toolControls = CurvyWallToolManager.instance.activeTool?.getTools();
-	// 	/**@type {CurvyWallControlUI[]}*/
-	// 	const placementControls = [{
-	// 		name: 'pointconstruct',
-	// 		title: this.#_placementControls.pointconstruct.title,
-	// 		icon: this.#_placementControls.pointconstruct.icon,
-	// 		class: this.#_placementControls.pointconstruct.class,
-	// 		toggleable: true,
-	// 		isActive: this.#_placementControls.pointconstruct.isActive()
-	// 	}];
-	// 	if (CurvyWallToolManager.instance.currentlyMappingPoints && CurvyWallToolManager.instance.canApplyPointMapping) {
-	// 		placementControls.push({
-	// 			name: 'applyplacement',
-	// 			title: this.#_placementControls.applyplacement.title,
-	// 			icon: this.#_placementControls.applyplacement.icon,
-	// 			class: this.#_placementControls.applyplacement.class
-	// 		});
-	// 	}
-
-	// 	/**@type {CurvyWallsToolsOptions}*/
-	// 	const data = {
-	// 		tools: Object.keys(this.#_tools).map(it => {
-	// 			return {
-	// 				name: it,
-	// 				title: this.#_tools[it].title,
-	// 				icon: this.#_tools[it].icon,
-	// 				toggleable: true,
-	// 				isActive: this.#_tools[it].isActive()
-	// 			};
-	// 		}),
-	// 		general: toolIsPlaced ? Object.keys(this.#_generalControls).map(it => {
-	// 			return {
-	// 				name: it,
-	// 				title: this.#_generalControls[it].title,
-	// 				icon: this.#_generalControls[it].icon,
-	// 				class: this.#_generalControls[it].class
-	// 			};
-	// 		}) : [Mode.Quad, Mode.Circ, Mode.Rect].includes(CurvyWallToolManager.instance.mode) ? placementControls : [],
-	// 		controls: toolIsPlaced && !!toolControls ? Object.keys(toolControls).map(it => {
-	// 			return {
-	// 				name: it,
-	// 				title: toolControls[it].title,
-	// 				icon: toolControls[it].icon,
-	// 				class: toolControls[it].class,
-	// 				toggleable: toolControls[it].toggleable,
-	// 				isActive: toolControls[it].toggleable ? toolControls[it].isActive() : undefined
-	// 			};
-	// 		}) : []
-	// 	};
-
-	// 	return data;
-	// }
 }

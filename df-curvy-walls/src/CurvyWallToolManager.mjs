@@ -9,6 +9,7 @@ import CubicTool from './tools/CubicTool.mjs';
 import QuadTool from './tools/QuadTool.mjs';
 import PointMapper from './tools/PointMapper.mjs';
 import SETTINGS from "../common/Settings.mjs";
+import { getWallDataFromActiveTool } from './foundry-copy.mjs';
 
 const { Wall } = foundry.canvas.placeables;
 
@@ -290,7 +291,7 @@ export class CurvyWallToolManager {
 		const pointData = this.activeTool?.getSegments(this.segments);
 		if (pointData.length == 0) return;
 		this.#walls.length;
-		/**@type {WallData}*/const wallData = this.#wallsLayer._getWallDataFromActiveTool(game.activeTool);
+		/**@type {WallData}*/const wallData = getWallDataFromActiveTool();
 
 		while (this.#walls.length > pointData.length - 1) {
 			const wall = this.#walls.pop();
