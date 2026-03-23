@@ -1,5 +1,4 @@
 /// <reference path="./types.d.ts" />
-/// <reference path="./tools/BezierTool.mjs" />
 /// <reference path="./tools/ToolInputHandler.mjs" />
 
 import { ToolMode } from './tools/BezierTool.mjs';
@@ -53,7 +52,7 @@ export class CurvyWallToolManager {
 	/**@type {WallsLayer}*/ #wallsLayer;
 	/**@type {Wall[]}*/ #walls = [];
 	/**@type {InputHandler|null}*/ #currentHandler = null;
-	/**@type {BezierTool|null}*/ #_activeTool = null;
+	/**@type {import("./tools/BezierTool.mjs").BezierTool|null}*/ #_activeTool = null;
 	/**@type { (mode: Mode, toolMode: ToolMode | null) => void }*/
 	#_modeListener = null;
 	#_ignoreNextToolModeChange = false;
@@ -65,14 +64,14 @@ export class CurvyWallToolManager {
 	]);
 	#_pointMapper = new PointMapper();
 
-	/**@type {number}*/
+	get pointMapper() { return this.#_pointMapper; }
+
 	get segments() { return this.#_activeTool.segments; }
 	set segments(value) {
 		this.#_activeTool.segments = Math.clamp(value, 1, 64);
 		if (this.mode != Mode.None)
 			this.render();
 	}
-	/**@type {BezierTool | null}*/
 	get activeTool() { return this.#_activeTool; }
 
 	#_inPointMapMode = false;
@@ -80,7 +79,6 @@ export class CurvyWallToolManager {
 	get currentlyMappingPoints() { return this._inPointMapMode; }
 
 	/**@private*/constructor() { }
-	/**@type {CurvyWallToolManager}*/
 	static get instance() {
 		return this.#_instance || (this.#_instance = new this());
 	}
@@ -169,8 +167,7 @@ export class CurvyWallToolManager {
 		this._inPointMapMode = false;
 		this.#_pointMapper.bindData(this.#_activeTool);
 		this.#_activeTool.setMode(ToolMode.Placed);
-		ui.notifications.active.forEach(x => x.remove());
-		ui.notifications.active = [];
+		ui.notifications.remove(this.#notification);
 		this.render();
 	}
 

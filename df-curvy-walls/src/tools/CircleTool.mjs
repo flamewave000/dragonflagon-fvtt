@@ -50,49 +50,51 @@ export default class CircleTool extends BezierTool {
 			bounds.maxX, bounds.maxY]);
 	}
 
-	/**@type {Record<string, CurvyWallControl>}*/
-	#_tools = {
-		ellipseclose: {
-			icon: 'fas fa-adjust',
-			title: 'df-curvy-walls.ellipse_close',
-			toggleable: true,
-			isActive: () => CircleTool.closeLoopIfSliced,
-			onClick: enabled => {
-				CircleTool.closeLoopIfSliced = enabled;
-				Hooks.call('requestCurvyWallsRedraw');
-			}
-		},
-		ellipsefinish: {
-			icon: 'fas fa-compress-alt',
-			title: 'df-curvy-walls.ellipse_finish_slice',
-			toggleable: true,
-			isActive: () => CircleTool.finishSliceIfShort,
-			onClick: enabled => {
-				CircleTool.finishSliceIfShort = enabled;
-				Hooks.call('requestCurvyWallsRedraw');
-			}
-		},
-		ellipseinc: {
-			icon: 'dfcw ellipseinc',
-			title: 'df-curvy-walls.ellipse_increment',
-			onClick: () => {
-				CircleTool.snapSetIndex = Math.clamp(CircleTool.snapSetIndex + 1, 0, CircleTool.ANGLE_SNAP_STEPS.length - 1);
-				Hooks.call('requestCurvyWallsRedraw');
-			}
-		},
-		ellipsedec: {
-			icon: 'dfcw ellipsedec',
-			title: 'df-curvy-walls.ellipse_decrement',
-			onClick: () => {
-				CircleTool.snapSetIndex = Math.clamp(CircleTool.snapSetIndex - 1, 0, CircleTool.ANGLE_SNAP_STEPS.length - 1);
-				Hooks.call('requestCurvyWallsRedraw');
-			}
-		}
-	};
 	/**
-	 * @returns {Record<string, CurvyWallControl>}
+	 * @returns {ToolSet|undefined}
 	 */
-	getTools() { return this.#_tools; }
+	getTools() {
+		return {
+			ellipseclose: {
+				icon: 'fas fa-adjust',
+				title: 'df-curvy-walls.ellipse_close',
+				type: 'toggle',
+				isActive: () => CircleTool.closeLoopIfSliced,
+				onClick: enabled => {
+					CircleTool.closeLoopIfSliced = enabled;
+					Hooks.call('requestCurvyWallsRedraw');
+				}
+			},
+			ellipsefinish: {
+				icon: 'fas fa-compress-alt',
+				title: 'df-curvy-walls.ellipse_finish_slice',
+				type: 'toggle',
+				isActive: () => CircleTool.finishSliceIfShort,
+				onClick: enabled => {
+					CircleTool.finishSliceIfShort = enabled;
+					Hooks.call('requestCurvyWallsRedraw');
+				}
+			},
+			ellipseinc: {
+				icon: 'dfcw ellipseinc',
+				title: 'df-curvy-walls.ellipse_increment',
+				type: 'button',
+				onClick: () => {
+					CircleTool.snapSetIndex = Math.clamp(CircleTool.snapSetIndex + 1, 0, CircleTool.ANGLE_SNAP_STEPS.length - 1);
+					Hooks.call('requestCurvyWallsRedraw');
+				}
+			},
+			ellipsedec: {
+				icon: 'dfcw ellipsedec',
+				title: 'df-curvy-walls.ellipse_decrement',
+				type: 'button',
+				onClick: () => {
+					CircleTool.snapSetIndex = Math.clamp(CircleTool.snapSetIndex - 1, 0, CircleTool.ANGLE_SNAP_STEPS.length - 1);
+					Hooks.call('requestCurvyWallsRedraw');
+				}
+			}
+		};
+	}
 	/**
 	 * @param {PIXI.Point} point
 	 * @param { { l1: number[], l2: number[], a1: number, a2: number } } data
@@ -197,7 +199,7 @@ export default class CircleTool extends BezierTool {
 			.endFill();
 		this.drawSegmentLabel(context);
 		const snapAngle = Math.toDegrees(CircleTool.ANGLE_SNAP_STEPS[CircleTool.snapSetIndex]).toFixed(2);
-		const arcLabel = BezierTool.createText(`⇲${snapAngle}°   ◶${180 / parseFloat(snapAngle)}`);
+		const arcLabel = BezierTool.createText(`⇲${snapAngle}°   ◶${360 / parseFloat(snapAngle)}`);
 		arcLabel.position.copyFrom(this.lineCenter);
 		arcLabel.position.y += BezierTool.TEXT_STYLE.fontSize + 4;
 		context.addChild(arcLabel);

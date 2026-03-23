@@ -273,8 +273,8 @@ export default class RectangleTool extends BezierTool {
 		return false;
 	}
 
-	/**@returns {Record<string, CurvyWallControl>}*/
-	getTools() { return {}; }
+	/**@returns {ToolSet|undefined}*/
+	getTools() { return undefined; }
 	/**
 	 * @param {PIXI.Point} point
 	 * @param { { l1: number[], l2: number[], t: number, r: number, b: number, l: number } } data

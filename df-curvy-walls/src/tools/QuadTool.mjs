@@ -107,8 +107,8 @@ export default class QuadTool extends BezierTool {
 		return null;
 	}
 
-	/** @returns {Record<string, CurvyWallControl>}*/
-	getTools() { return {}; }
+	/** @returns {ToolSet|undefined}*/
+	getTools() { return undefined; }
 	/**
 	 * @param {PIXI.Point} point
 	 * @param { { l1: number[], l2: number[], c: number[] } } data

@@ -117,14 +117,14 @@ export default class CubicTool extends BezierTool {
 	}
 
 	/**
-	 * @returns {Record<string, CurvyWallControl>}
+	 * @returns {ToolSet|undefined}
 	 */
 	getTools() {
 		return {
 			cubiclock: {
 				icon: 'fas fa-lock',
 				title: 'df-curvy-walls.cubic_lock_handles',
-				toggleable: true,
+				type: 'toggle',
 				isActive: () => CubicTool.lockHandles,
 				onClick: enabled => CubicTool.lockHandles = enabled
 			}

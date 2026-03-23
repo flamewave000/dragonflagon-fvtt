@@ -1,5 +1,5 @@
 /// <reference path="../types.d.ts" />
-/// <reference path="../../../fvtt-scripts/foundry.js" />
+/// <reference path="../../../fvtt-scripts/foundry.mjs" />
 /// <reference path="./BezierTool.mjs" />
 
 /** @abstract */

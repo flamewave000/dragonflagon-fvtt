@@ -22,6 +22,9 @@ export default class PointMapper extends BezierTool {
 	lineB = new PIXI.Point();
 	/**@type {PIXI.Point[]}*/ points = [];
 
+	/**@type {(owner: PointMapper) => void}*/
+	onchange = null;
+
 	/**
 	 * @param {PIXI.Graphics} context
 	 */
@@ -81,6 +84,7 @@ export default class PointMapper extends BezierTool {
 			const handle = this.points.findIndex(e => pointNearPoint(point, e, BezierTool.HANDLE_RADIUS));
 			if (handle < 0) return false;
 			this.points.splice(handle, 1);
+			this.onchange(this);
 			return true;
 		}
 		// If we are clicking on an already existing point, or we have max points
@@ -91,15 +95,13 @@ export default class PointMapper extends BezierTool {
 			case Mode.Quad:
 				if (this.points.length == 3) return false;
 				this.points.push(utility.getWallEndPoint(point, snap));
+				this.onchange(this);
 				return true;
-			case Mode.Circ:
-			// if (this.points.length == 4) return false;
-			// this.points.push(utility.getWallEndPoint(point, snap));
-			// return true;
-				// fallthrough
+			case Mode.Circ: // fallthrough
 			case Mode.Rect:
 				if (this.points.length == 4) return false;
 				this.points.push(utility.getWallEndPoint(point, snap));
+				this.onchange(this);
 				return true;
 		}
 		return false;
@@ -202,7 +204,7 @@ export default class PointMapper extends BezierTool {
 	placeTool(_point, _data) { throw new Error("Method not implemented."); }
 	/** @abstract @returns {object} */
 	getData() { throw new Error("Method not implemented."); }
-	/** @abstract @returns {Record<string, CurvyWallControl>} */
+	/** @abstract @returns {ToolSet|undefined} */
 	getTools() { throw new Error("Method not implemented."); }
 }
 

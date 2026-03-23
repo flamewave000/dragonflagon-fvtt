@@ -76,17 +76,17 @@ export class BezierTool {
 	}
 
 	/** @abstract @param {PIXI.Graphics} context */
-	drawHandles(context) { throw new Error("Not Implemented"); }// eslint-disable-line
+	drawHandles(context) { throw new Error("Not Implemented"); }
 	/** @abstract @param {PIXI.Point} point @returns {InputHandler | null}*/
-	/**@abstract */ checkPointForDrag(point) { throw new Error("Not Implemented"); }// eslint-disable-line
+	checkPointForDrag(point) { throw new Error("Not Implemented"); }
 	/** @abstract @param {number} count @returns {PIXI.Point[] | PIXI.Point[][]}*/
-	/**@abstract */ getSegments(count) { throw new Error("Not Implemented"); }// eslint-disable-line
+	getSegments(count) { throw new Error("Not Implemented"); }
 	/** @abstract @param {PIXI.Point} point @param {object} data @returns {void}*/
-	/**@abstract */ placeTool(point, data) { throw new Error("Not Implemented"); }// eslint-disable-line
+	placeTool(point, data) { throw new Error("Not Implemented"); }
 	/** @abstract @returns {object}*/
-	/**@abstract */ getData() { throw new Error("Not Implemented"); }
-	/** @abstract @returns {Record<string, CurvyWallControl>}*/
-	/**@abstract */ getTools() { throw new Error("Not Implemented"); }
+	getData() { throw new Error("Not Implemented"); }
+	/** @abstract @returns {ToolSet|null}*/
+	getTools() { throw new Error("Not Implemented"); }
 
 	/**
 	 * @param {PIXI.Point} _point
