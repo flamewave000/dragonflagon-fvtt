@@ -19,8 +19,6 @@
 		"ellipse_increment": "Aumentar paso (número de divisiones del circulo; disminuirá el ángulo de corte)",
 		"ellipse_decrement": "Disminuir paso (número de divisiones del círculo; aumentará el ángulo de corte)",
 		"trace_curve_with_points": "Coloque puntos en el lienzo para generar una curva",
-		"SettingPreserve_Name": "Preservar estado de herramienta",
-		"SettingPreserve_Hint": "Cuando se activa, al salir de la capa de muros y volver a entrar, se mantendrá el estado actual de la herramienta",
 		"SettingDropKey_Name":"Tecla de la herramienta de posicionado",
 		"SettingDropKey_Hint":"La tecla que hay que mantener presionada al hacer clic en algún punto del tablero para posicionar la herramienta que se ha configurado",
 		"SettingDropKey_OptionAlt": "Alt",

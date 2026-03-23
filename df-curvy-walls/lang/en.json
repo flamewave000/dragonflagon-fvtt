@@ -15,8 +15,6 @@
 		"ellipse_increment": "Increase angle step size",
 		"ellipse_decrement": "Decrease angle step size",
 		"trace_curve_with_points": "Place points on the canvas to generate a curve",
-		"SettingPreserve_Name": "Preserve Tool State",
-		"SettingPreserve_Hint": "When enabled and you switch away from the Walls Layer, the tool will preserve its state for when you return to the Walls Layer.",
 		"SettingDropKey_Name": "Key to hold when placing tool",
 		"SettingDropKey_Hint": "Key to hold down when clicking a spot on the board to place the previously configured tool.",
 		"SettingDropKey_OptionAlt": "Alt",

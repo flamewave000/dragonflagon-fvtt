@@ -76,13 +76,13 @@ export class BezierTool {
 	}
 
 	/** @abstract @param {PIXI.Graphics} context */
-	drawHandles(context) { throw new Error("Not Implemented"); }
+	drawHandles(context) { throw new Error("Not Implemented"); } // eslint-disable-line
 	/** @abstract @param {PIXI.Point} point @returns {InputHandler | null}*/
-	checkPointForDrag(point) { throw new Error("Not Implemented"); }
+	checkPointForDrag(point) { throw new Error("Not Implemented"); } // eslint-disable-line
 	/** @abstract @param {number} count @returns {PIXI.Point[] | PIXI.Point[][]}*/
-	getSegments(count) { throw new Error("Not Implemented"); }
+	getSegments(count) { throw new Error("Not Implemented"); } // eslint-disable-line
 	/** @abstract @param {PIXI.Point} point @param {object} data @returns {void}*/
-	placeTool(point, data) { throw new Error("Not Implemented"); }
+	placeTool(point, data) { throw new Error("Not Implemented"); } // eslint-disable-line
 	/** @abstract @returns {object}*/
 	getData() { throw new Error("Not Implemented"); }
 	/** @abstract @returns {ToolSet|null}*/

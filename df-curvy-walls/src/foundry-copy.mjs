@@ -9,7 +9,7 @@
  * @this {WallsLayer}
  */
 const getWallDataFromActiveTool = (function () {
-	const tool = game.activeTool
+	const tool = game.activeTool;
 	// Using the clone tool
 	if (tool === "clone" && this._cloneType) return this._cloneType;
 	// Default wall data

@@ -1,11 +1,8 @@
 /// <reference path="./types.d.ts" />
 import { CurvyWallToolManager, Mode } from './CurvyWallToolManager.mjs';
-import SETTINGS from "../common/Settings.mjs";
 import { ToolMode } from './tools/BezierTool.mjs';
 
 export default class CurvyWallsToolBar {
-	/** @readonly */static PREF_PRESERVE = 'preserve-tool';
-
 	static init() {
 		Hooks.on('getModuleTools', (/**@type {ControlManager}*/_, /**@type {Record<String, Tool>}*/tools) => {
 			const enabled = () => ui.controls.control.name === 'walls';

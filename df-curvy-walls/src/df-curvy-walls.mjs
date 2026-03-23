@@ -1,5 +1,5 @@
 import CurvyWallsToolBar from './CurvyWallsToolBar.mjs';
-import { CurvyWallToolManager, Mode } from './CurvyWallToolManager.mjs';
+import { CurvyWallToolManager } from './CurvyWallToolManager.mjs';
 import SETTINGS from "../common/Settings.mjs";
 import { BezierTool } from './tools/BezierTool.mjs';
 
@@ -7,14 +7,6 @@ import { BezierTool } from './tools/BezierTool.mjs';
 SETTINGS.init('df-curvy-walls');
 
 Hooks.once('init', function () {
-	SETTINGS.register(CurvyWallsToolBar.PREF_PRESERVE, {
-		scope: 'world',
-		type: Boolean,
-		config: true,
-		default: true,
-		name: 'df-curvy-walls.SettingPreserve_Name',
-		hint: 'df-curvy-walls.SettingPreserve_Hint',
-	});
 	SETTINGS.register(CurvyWallToolManager.PREF_DROP_KEY, {
 		name: 'df-curvy-walls.SettingDropKey_Name',
 		hint: 'df-curvy-walls.SettingDropKey_Hint',
@@ -76,26 +68,3 @@ Hooks.once("ready", function () {
 	canvas.walls.bezier = CurvyWallToolManager.instance;
 	CurvyWallToolManager.instance.patchWallsLayer();
 });
-
-/**@type {ControlManager}*/let moduleControls;
-
-// Hooks.on('renderSceneControls', async (/**@type {SceneControls}*/controls) => {
-// 	// Exit if we do not have a canvas
-// 	if (game.settings.get('core', 'noCanvas')) return;
-// 	if (!game.modules.get('lib-wrapper')?.active) return;
-// 	if (!game.user.isGM) return;
-// 	if (controls.activeControl !== 'walls') {
-// 		// await curvyWallApp.close();
-// 		if (moduleControls._state === 2)
-// 			moduleControls.refresh();
-// 		return;
-// 	}
-// 	else if (moduleControls._state === 2)
-// 		moduleControls.activateGroupByName(SETTINGS.MOD_NAME);
-// 	// curvyWallApp.render();
-// 	if (CurvyWallToolManager.instance.mode != Mode.None)
-// 		CurvyWallToolManager.instance.render();
-// });
-// Refresh the curvy wall controls when the button bar re-renders
-// Hooks.on('renderControlManager', () => curvyWallApp.render());
-Hooks.on('getModuleToolGroupsPre', (/**@type {ControlManager}*/app) => { moduleControls = app; });
