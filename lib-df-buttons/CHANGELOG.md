@@ -1,5 +1,11 @@
 # DragonFlagon Module Buttons Library
 
+## Release 13.1.1 (2026-03-23)
+- **NEW:** Added `hidden` property to tools.
+- **UPDATE:** Renamed `visible` to `enabled`.
+- **UPDATE:** Fix menu render issues when resizing view.
+- **UPDATE:** Toggle button bug fixes.
+
 ## Release 13.1.0 (2026-03-22)
 - **UPDATE:** Major overhaul of menu system to improve versatility and stability.
 

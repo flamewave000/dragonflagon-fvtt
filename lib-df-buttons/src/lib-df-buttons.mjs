@@ -25,7 +25,7 @@ Hooks.once('ready', () => {
 // 	tools.radial1 = {
 // 		icon: 'fas fa-dice-one',
 // 		title: 'radial1',
-// 		visible: () => ui.controls.control.name === 'tokens',
+// 		enabled: () => ui.controls.control.name === 'tokens',
 // 		onClick: handleClick,
 // 		tools: {
 // 			'tool1-1': { title: 'tool1-1', onClick: handleClick, icon: 'fas fa-dice-one' },
@@ -37,7 +37,7 @@ Hooks.once('ready', () => {
 // 	tools.radial2 = {
 // 		icon: 'fas fa-dice-two',
 // 		title: 'radial2',
-// 		visible: () => ui.controls.control.name === 'walls',
+// 		enabled: () => ui.controls.control.name === 'walls',
 // 		onClick: handleClick,
 // 		tools: {
 // 			'tool2-1': { title: 'tool2-1', onClick: handleClick, icon: 'fas fa-dice-two' },

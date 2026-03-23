@@ -91,10 +91,10 @@ export interface Tool {
 	 */
 	isActive?: Predicate | boolean | null;
 	/**
-	 * (default: true) Sets the visibility of the tool. Can be a function or a
-	 * boolean value
+	 * (default: true) If true, the tool will be visible and interactive. If
+	 * false, the tool will be hidden, and will not be interactive.
 	 */
-	visible?: Predicate | boolean | null;
+	enabled?: Predicate | boolean | null;
 	/**
 	 * A collection of tools that represents a sub-menu of this tool that
 	 * will display to the right if this tool is selected.
@@ -102,6 +102,11 @@ export interface Tool {
 	 * > **Radial tools only, will otherwise be ignored for buttons and toggles.**
 	 */
 	tools?: Record<string, Tool>;
+	/**
+	 * A special field that allows the control to be interacted with
+	 * programmatically, but not drawn in the menu UI.
+	 */
+	hidden?: true;
 	/**
 	 * A click handler that is invoked when ever the tool is pressed. This
 	 * function is given an `active` state when either the default Radial or set

@@ -22,10 +22,6 @@ import { renderTemplate } from "../common/fvtt.mjs";
  */
 
 /**
- * @typedef {Record<string, Tool>} ToolSet
- */
-
-/**
  * @implements {IControlManager}
  */
 export default class ControlManager {
@@ -56,9 +52,10 @@ export default class ControlManager {
 			console.warn(`ControlManager::#initializeFields > tool (${id}) declared with invalid type ('${tool.type}'). Defaulting to 'radial'`);
 			tool.type = 'radial';
 		}
-		tool.isActive = tool.toggle ? (tool.isActive ?? false) : false;
-		tool.visible = tool.visible ?? true;
+		tool.isActive = tool.type === 'toggle' ? (tool.isActive ?? false) : false;
+		tool.enabled = tool.enabled ?? true;
 		tool.onClick = tool.onClick ?? null;
+		tool.hidden = !!tool.hidden;
 		if (tool.type != 'radial' && !tool.onClick)
 			throw new Error(`ControlManager::#initializeFields > ${tool.type} tool is missing onClick handler`);
 		if (tool.tools === undefined)
@@ -83,7 +80,7 @@ export default class ControlManager {
 				foundFirstRadial = true;
 				tool.isActive = true;
 				// Notify the auto-selected group they are now selected
-				ControlManager.#invokeHandler(tool?.onClick, tool, true);
+				ControlManager.#invokeHandler(tool, true);
 			}
 			if (!tool.tools || tool.type !== 'radial') continue;
 			// If our tool has tools, recurse
@@ -100,10 +97,22 @@ export default class ControlManager {
 		if (owner.onClick.prototype) await owner.onClick(active);
 		else await owner.onClick.call(owner, active);
 	}
+
+	/**
+	 * Updates the system menu count to allow for the UI to display custom menus properly.
+	 * @param {number} oldCount Previous menu count to subtract from the current column count.
+	 * @param {*} newCount New menu count to be added to the new column count.
+	 */
+	static #updateColumnCount(oldCount, newCount) {
+		const uiLeft = document.querySelector("#ui-left");
+		const systemColCount = parseInt(uiLeft.style.getPropertyValue('--control-columns')) - oldCount;
+		uiLeft.style.setProperty('--control-columns', String(systemColCount + newCount));
+	}
 	// endregion
 
-	/**@type {{[x:string]:Tool}}*/ #tools = {};
+	/**@type {ToolSet}*/ #tools = {};
 	/**@type {Record<string, number>}*/ #hooksRegister = {};
+	#menuCount = 0;
 
 	get tools() { return [...this.#tools]; }
 
@@ -138,6 +147,10 @@ export default class ControlManager {
 	 */
 	async #triggerTool(toolSet, deferRender = false) {
 		const tool = toolSet.at(-1);
+		if (tool && !await ControlManager.checkBoolean(tool.enabled)) {
+			console.error("ControlManager#triggerTool > Called for disabled tool. Ignoring request.");
+			return;
+		}
 		/**@type {ToolSet}*/
 		const parent = (toolSet.at(-2)?.tools ?? this.#tools);
 		switch (tool.type) {
@@ -153,6 +166,8 @@ export default class ControlManager {
 				if (!deferRender) await this.render();
 				break;
 			case 'radial':
+				// If we are already active, ignore the request
+				if (tool.isActive) return;
 				/**@type {[string, Tool]}*/
 				const [_, currentTool] = Object.entries(parent)
 					.find(([_, tool]) => tool.type === 'radial' && tool.isActive);
@@ -181,18 +196,20 @@ export default class ControlManager {
 		};
 		let activeRadialMenu = null;
 		for (const [id, tool] of entries) {
-			if (!await ControlManager.checkBoolean(tool.visible))
+			if (!await ControlManager.checkBoolean(tool.enabled))
 				continue;
-			menu.tools.push({
-				path: [...path, id].join('.'),
-				title: tool.title,
-				icon: tool.icon,
-				class: tool.class ?? false,
-				active: tool.type !== 'button' && await ControlManager.checkBoolean(tool.isActive),
-				button: tool.type === 'button',
-				toggle: tool.type === 'toggle',
-				radial: tool.type !== 'button' && tool.type !== 'toggle',
-			});
+			if (!tool.hidden) {
+				menu.tools.push({
+					path: [...path, id].join('.'),
+					title: tool.title,
+					icon: tool.icon,
+					class: tool.class ?? false,
+					active: tool.type !== 'button' && await ControlManager.checkBoolean(tool.isActive),
+					button: tool.type === 'button',
+					toggle: tool.type === 'toggle',
+					radial: tool.type !== 'button' && tool.type !== 'toggle',
+				});
+			}
 			if (tool.type === 'radial' && tool.isActive === true && activeRadialMenu === null && tool.tools)
 				activeRadialMenu = [id, tool.tools] ?? null;
 		}
@@ -211,25 +228,30 @@ export default class ControlManager {
 	}
 
 	async render() {
-		if (!game.ready) throw new Error("ControlManager#render called before game is ready");
-		/**@type {HTMLElement}*/
-		const sceneControls = document.querySelector("aside#scene-controls");
-		// Remove the old menus
-		sceneControls.querySelectorAll("menu[data-ldfb]").forEach(x => x.remove());
-		const menus = await this.#createMenus([], this.#tools);
-		for (const menu of menus) {
-			const html = await renderTemplate(ControlManager.TEMPLATE, menu);
-			html.querySelectorAll('button').forEach(btn => btn.onclick = this.#onClickTool.bind(this));
-			sceneControls.appendChild(html);
-		}
-		/**@type {HTMLElement}*/
-		const uiLeft = sceneControls.closest("#ui-left");
-		uiLeft.style.setProperty('--control-columns', (menus.length + 2).toString());
+		await navigator.locks.request('lib-df-buttons#ControlManager#render', async () => {
+			if (!game.ready) throw new Error("ControlManager#render called before game is ready");
+			/**@type {HTMLElement}*/
+			const sceneControls = document.querySelector("aside#scene-controls");
+			// Remove the old menus
+			sceneControls.querySelectorAll("menu[data-ldfb]").forEach(x => x.remove());
+			const menus = (await this.#createMenus([], this.#tools)).filter(x => x.tools.length > 0);
+			for (const menu of menus) {
+				// There is a chance for an empty menu if all tools are hidden and/or disabled
+				if (menu.tools.length === 0) continue;
+				const html = await renderTemplate(ControlManager.TEMPLATE, menu);
+				html.querySelectorAll('button').forEach(btn => btn.onclick = this.#onClickTool.bind(this));
+				sceneControls.appendChild(html);
+			}
+
+			const prevCount = this.#menuCount;
+			this.#menuCount = menus.length;
+			ControlManager.#updateColumnCount(prevCount, this.#menuCount);
+		});
 	}
 	refresh = this.render;
 
 	async setup() {
-		this.#tools = [];
+		this.#tools = {};
 		Hooks.callAll(`getModuleToolsPre`, this, this.#tools);
 		Hooks.callAll(`getModuleTools`, this, this.#tools);
 		Hooks.callAll(`getModuleToolsPost`, this, this.#tools);
@@ -238,16 +260,15 @@ export default class ControlManager {
 
 	reloadModuleButtons() {
 		Hooks.callAll("moduleButtonsReloading", this);
-		// Notify the current group that they are now disabled before we rebuild
-		const currentGroup = this.activeGroup;
-		ControlManager.#invokeHandler(currentGroup?.onClick, currentGroup, false);
 		// Notify all selected tools of being deactivated
-		const tools = this.#tools;
-		while (tools) {
-			for (const [_, tool] of Object.entries(tools)) {
+		const tools = [this.#tools];
+		while (tools.length > 0) {
+			for (const [_, tool] of Object.entries(tools.pop())) {
 				if (tool.type !== 'radial' || !tool.isActive) continue;
 				tool.isActive = false;
 				ControlManager.#invokeHandler(tool, false);
+				if (tool.tools)
+					tools.push(tool.tools);
 			}
 		}
 		this.setup();
@@ -259,6 +280,18 @@ export default class ControlManager {
 		this.#hooksRegister['reloadModuleButtons'] = Hooks.on('reloadModuleButtons', this.reloadModuleButtons.bind(this));
 		this.#hooksRegister['refreshModuleButtons'] = Hooks.on('refreshModuleButtons', this.render.bind(this));
 		this.#hooksRegister['renderSceneControls'] = Hooks.on('renderSceneControls', this.render.bind(this));
+
+		const handler = (/**@type {()=>void}*/wrapper, ...args) => {
+			const result = wrapper(...args);
+			ControlManager.#updateColumnCount(0, this.#menuCount);
+			return result;
+		};
+		// Soft dependency on libWrapper, monkey-patch if it is missing
+		if (!libWrapper) {
+			const orig = ui.controls.setPosition;
+			ui.controls.setPosition = (function(...args) { handler(orig.bind(ui.controls), ...args); });
+		} else
+			libWrapper.register('lib-df-buttons', 'ui.controls.setPosition', handler, "WRAPPER");
 	}
 
 	/**
