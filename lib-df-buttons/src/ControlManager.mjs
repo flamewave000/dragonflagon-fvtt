@@ -4,26 +4,32 @@
 import { renderTemplate } from "../common/fvtt.mjs";
 
 /**
- * @typedef {object} ControlUI
- * @property {string} name
+ * @typedef {object} ToolUI
+ * @property {string} path
  * @property {string} title
  * @property {string} icon
  * @property {string | false} class
  * @property {boolean} active
  * @property {boolean} button
  * @property {boolean} toggle
+ * @property {boolean} radial
  */
 
 /**
- * @typedef {object} ControlManagerData
- * @property {ControlUI[]} groups
- * @property {ControlUI[] | null} tools
+ * @typedef {object} Menu
+ * @property {string} id
+ * @property {ToolUI[]} tools
+ */
+
+/**
+ * @typedef {Record<string, Tool>} ToolSet
  */
 
 /**
  * @implements {IControlManager}
  */
 export default class ControlManager {
+	// region Class Method
 	/** @readonly */
 	static TEMPLATE = 'modules/lib-df-buttons/templates/controls.hbs';
 
@@ -39,308 +45,235 @@ export default class ControlManager {
 		return result === null || result === undefined || !!result;
 	}
 
-	/**@type {ToolGroup[]}*/ #groups = [];
-	/**@type {Record<string, number>}*/ #hooksRegister = {};
-	/**@type {ToolGroup[]}*/ get groups() { return this.#groups; }
-	/**@type {string|null}*/ activeGroupName = null;
-
-	get activeToolName() {
-		const group = this.activeGroup;
-		return group ? group.activeTool : null;
-	}
-	get activeGroup() {
-		if (!this.groups) return null;
-		return this.groups.find(c => c.name === this.activeGroupName) || null;
-	}
-	get activeTool() {
-		const group = this.activeGroup;
-		if (!group) return null;
-		const tool = group.tools.find(t => t.name === group.activeTool);
-		return tool || null;
-	}
-
-	/** @param {Tool} control */
-	static #initializeFields(control) {
-		control.toggle = !!control.toggle;
-		control.button = !!control.button;
-		control.isActive = control.toggle ? (control.isActive ?? false) : false;
-		control.visible = control.visible ?? true;
-		control.onClick = control.onClick ?? null;
+	/**
+	 * @param {string} id
+	 * @param {Tool} tool
+	 */
+	static #initializeFields(id, tool) {
+		if (tool.type === undefined || tool.type === null)
+			tool.type = 'radial';
+		else if (!['radial', 'button', 'toggle'].includes(tool.type)) {
+			console.warn(`ControlManager::#initializeFields > tool (${id}) declared with invalid type ('${tool.type}'). Defaulting to 'radial'`);
+			tool.type = 'radial';
+		}
+		tool.isActive = tool.toggle ? (tool.isActive ?? false) : false;
+		tool.visible = tool.visible ?? true;
+		tool.onClick = tool.onClick ?? null;
+		if (tool.type != 'radial' && !tool.onClick)
+			throw new Error(`ControlManager::#initializeFields > ${tool.type} tool is missing onClick handler`);
+		if (tool.tools === undefined)
+			return;
+		if (!tool.tools)
+			delete tool.tools;
+		else if (!(tool.tools instanceof Object))
+			delete tool.tools;
+		else if (Object.keys(tool.tools).length == 0)
+			delete tool.tools;
 	}
 
-	activateHooks() {
-		this.#hooksRegister['activateGroupByName'] = Hooks.on('activateGroupByName', this.activateGroupByName.bind(this));
-		this.#hooksRegister['activateToolByName'] = Hooks.on('activateToolByName', this.activateToolByName.bind(this));
-		this.#hooksRegister['reloadModuleButtons'] = Hooks.on('reloadModuleButtons', this.reloadModuleButtons.bind(this));
-		this.#hooksRegister['refreshModuleButtons'] = Hooks.on('refreshModuleButtons', this.render.bind(this));
-		this.#hooksRegister['renderSceneControls'] = Hooks.on('renderSceneControls', this.render.bind(this));
-	}
-
-	async setup() {
-		/**@type {ToolGroup[]}*/ this.#groups = [];
-		Hooks.callAll(`getModuleToolGroupsPre`, this, this.#groups);
-		Hooks.callAll(`getModuleToolGroups`, this, this.#groups);
-		Hooks.callAll(`getModuleToolGroupsPost`, this, this.#groups);
-		for (const group of this.#groups) {
+	/** @param {ToolSet} tools */
+	static async #processToolsRecursively(tools) {
+		const entries = Object.entries(tools);
+		let foundFirstRadial = false;
+		for (const [id, tool] of entries) {
 			// Initialize all unset fields to their defaults
-			ControlManager.#initializeFields(group);
-			// Detect if this group should be the default active group
-			if (!this.activeGroupName && !group.toggle && !group.button && await ControlManager.checkBoolean(group.visible)) {
-				this.activeGroupName = group.name;
-				group.isActive = true;
+			ControlManager.#initializeFields(id, tool);
+			// Detect if this tool should be the default active radial tool
+			if (!foundFirstRadial && tool.type === 'radial') {
+				foundFirstRadial = true;
+				tool.isActive = true;
 				// Notify the auto-selected group they are now selected
-				const currentGroup = this.activeGroup;
-				this.#invokeHandler(currentGroup?.onClick, currentGroup, false);
+				ControlManager.#invokeHandler(tool?.onClick, tool, true);
 			}
-			// Initialize the tools for the group
-			for (const tool of (group.tools ?? [])) {
-				ControlManager.#initializeFields(tool);
-				if (!group.activeTool && !tool.toggle && !tool.button && await ControlManager.checkBoolean(tool.visible)) {
-					group.activeTool = tool.name;
-					tool.isActive = true;
-					// Notify the auto-selected tool they are now selected
-					const currentTool = this.activeTool;
-					this.#invokeHandler(currentTool?.onClick, currentTool, false);
-				}
-			}
+			if (!tool.tools || tool.type !== 'radial') continue;
+			// If our tool has tools, recurse
+			this.#processToolsRecursively(tool.tools);
 		}
-	}
-
-	/** @returns {Promise<ControlManagerData>} */
-	async #getData() {
-		if (this.groups.length == 0) return { groups: [], singleGroup: false };
-
-		/**@type {ControlUI[]}*/
-		let groups = [];
-		/**@type {Partial<ControlUI>[] | null}*/
-		let tools = null;
-
-		for (const group of this.#groups) {
-			if (
-				!await ControlManager.checkBoolean(group.visible, true) ||
-				(game.settings.get('core', 'noCanvas') && !await ControlManager.checkBoolean(group.noCanvas, false))
-			) continue;
-			/**@type {ControlUI}*/ const groupUI = {
-				name: group.name,
-				icon: group.icon,
-				title: group.title,
-				button: group.button,
-				toggle: group.toggle,
-				class: group.class ?? false,
-				active: await ControlManager.checkBoolean(group.isActive)
-			};
-			if (groupUI.active && !groupUI.toggle && !groupUI.button) {
-				tools = [];
-				for (const tool of (group.tools ?? [])) {
-					if (
-						!await ControlManager.checkBoolean(tool.visible, true) ||
-						(game.settings.get('core', 'noCanvas') && !await ControlManager.checkBoolean(group.noCanvas, false))
-					) continue;
-					tools.push({
-						name: tool.name,
-						icon: tool.icon,
-						title: tool.title,
-						button: tool.button,
-						toggle: tool.toggle,
-						class: tool.class ?? false,
-						active: await ControlManager.checkBoolean(tool.isActive)
-					});
-				}
-			}
-			groups.push(groupUI);
-		}
-		// If there is only a single group containing tools, remove the group and just display the tools
-		if (groups.length === 1 && !groups[0].button && !groups[0].toggle) {
-			groups = tools || [];
-			tools = null;
-		}
-		if (groups.length > 0 && groups.every(x => !x.active)) {
-			const firstGroup = groups.find(x => !x.button && !x.toggle);
-			firstGroup.active = true;
-			if (firstGroup)
-				this.activateGroupByName(firstGroup.name);
-		}
-		return { groups, tools };
 	}
 
 	/**
-	 * @param {Handler<boolean> | null | undefined} handler
 	 * @param {Tool} owner
 	 * @param {boolean} [active]
 	 */
-	async #invokeHandler(handler, owner, active) {
-		if (handler === null || handler === undefined) return;
-		if (!handler.prototype) await handler(active);
-		else await handler.bind(owner)(active);
+	static async #invokeHandler(owner, active) {
+		if (owner.onClick === null || owner.onClick === undefined) return;
+		if (owner.onClick.prototype) await owner.onClick(active);
+		else await owner.onClick.call(owner, active);
+	}
+	// endregion
+
+	/**@type {{[x:string]:Tool}}*/ #tools = {};
+	/**@type {Record<string, number>}*/ #hooksRegister = {};
+
+	get tools() { return [...this.#tools]; }
+
+	/**
+	 * Uses a JS Path to retrieve a chain of tools.
+	 * 
+	 * @example
+	 * 'radial1.radial2.myButton' => [ Tool#radial1, Tool#radial2, Tool#myButton ]
+	 * @param {string} path
+	 * @returns {Tool[]}
+	 */
+	#toolsFromPath(path) {
+		const tokens = path.split('.');
+		if (tokens.length < 1) return [];
+		let currentMenu = this.#tools;
+		const tools = [];
+		do {
+			const id = tokens.shift();
+			/**@type {Tool|undefined}*/
+			const tool = currentMenu[id];
+			if (tool === undefined)
+				throw new Error(`ControlManager::#toolFromPath > Tool set does not contain id '${id}' from path '${path}'`);
+			tools.push(tool);
+			currentMenu = tool?.tools;
+		} while (currentMenu && tokens.length > 0);
+		return tools;
 	}
 
-	/** @param {JQuery.ClickEvent} event */
-	async #onClickGroup(event) {
-		event.preventDefault();
-		const li = event.currentTarget;
-		const groupName = li.dataset.control;
-		const group = this.groups.find(c => c.name === groupName);
-		// Handle Toggles
-		if (group.toggle) {
-			const newState = !await ControlManager.checkBoolean(group.isActive);
-			// If the group's active state is not a function, use it to store state
-			if (!(group.isActive instanceof Function))
-				group.isActive = newState;
-			this.#invokeHandler(group.onClick, group, newState);
-			// Render the controls
-			this.refresh();
+	/**
+	 * @param {Tool[]} toolSet
+	 * @param {boolean} deferRender If true, will not call {@link render}.
+	 */
+	async #triggerTool(toolSet, deferRender = false) {
+		const tool = toolSet.at(-1);
+		/**@type {ToolSet}*/
+		const parent = (toolSet.at(-2)?.tools ?? this.#tools);
+		switch (tool.type) {
+			case 'button':
+				await ControlManager.#invokeHandler(tool);
+				break;
+			case 'toggle':
+				const newState = !await ControlManager.checkBoolean(tool.isActive);
+				// If the tool's active state is not a function, use it to store state
+				if (!(tool.isActive instanceof Function))
+					tool.isActive = newState;
+				await ControlManager.#invokeHandler(tool, newState);
+				if (!deferRender) await this.render();
+				break;
+			case 'radial':
+				/**@type {[string, Tool]}*/
+				const [_, currentTool] = Object.entries(parent)
+					.find(([_, tool]) => tool.type === 'radial' && tool.isActive);
+				currentTool.isActive = false;
+				await ControlManager.#invokeHandler(currentTool, false);
+				tool.isActive = true;
+				await ControlManager.#invokeHandler(tool, true);
+				if (!deferRender) await this.render();
+				break;
+			default:
+				break;
 		}
-		// Handle Buttons
-		else if (group.button)
-			await this.#invokeHandler(group.onClick, group);
-		// Handle Groups
-		else
-			this.activateGroupByName(groupName);
 	}
-	/** @param {JQuery.ClickEvent} event */
+
+	/**
+	 * @param {string[]} path
+	 * @param {ToolSet} tools
+	 * @returns {Menu[]}
+	 */
+	async #createMenus(path, tools) {
+		const entries = Object.entries(tools);
+		if (entries.length == 0) return [];
+		const menu = {
+			id: path.join('.'),
+			tools: []
+		};
+		let activeRadialMenu = null;
+		for (const [id, tool] of entries) {
+			if (!await ControlManager.checkBoolean(tool.visible))
+				continue;
+			menu.tools.push({
+				path: [...path, id].join('.'),
+				title: tool.title,
+				icon: tool.icon,
+				class: tool.class ?? false,
+				active: tool.type !== 'button' && await ControlManager.checkBoolean(tool.isActive),
+				button: tool.type === 'button',
+				toggle: tool.type === 'toggle',
+				radial: tool.type !== 'button' && tool.type !== 'toggle',
+			});
+			if (tool.type === 'radial' && tool.isActive === true && activeRadialMenu === null && tool.tools)
+				activeRadialMenu = [id, tool.tools] ?? null;
+		}
+		if (activeRadialMenu !== null)
+			return [menu, ...await this.#createMenus([...path, activeRadialMenu[0]], activeRadialMenu[1])];
+		else return [menu];
+	}
+
+	/** @param {PointerEvent} event */
 	async #onClickTool(event) {
 		event.preventDefault();
-		const li = event.currentTarget;
-		const group = this.activeGroup;
-		const toolName = li.dataset.control;
-		const tool = group.tools.find(t => t.name === toolName);
-		// Handle Toggles
-		if (tool.toggle) {
-			const newState = !await ControlManager.checkBoolean(tool.isActive);
-			// If the tool's active state is not a function, use it to store state
-			if (!(tool.isActive instanceof Function))
-				tool.isActive = newState;
-			this.#invokeHandler(tool.onClick, tool, newState);
-			// Render the controls
-			this.refresh();
-		}
-		// Handle Buttons
-		else if (group.button)
-			this.#invokeHandler(tool.onClick, tool);
-		// Handle Tools
-		else
-			this.activateToolByName(group.name, toolName);
+		/**@type {HTMLElement*/
+		const button = event.currentTarget;
+		const tools = this.#toolsFromPath(button.dataset.path);
+		this.#triggerTool(tools);
 	}
 
 	async render() {
 		if (!game.ready) throw new Error("ControlManager#render called before game is ready");
-
-		// Remove the old menus completely
-		document.querySelector("menu#ldfb-groups")?.remove();
-		document.querySelector("menu#ldfb-tools")?.remove();
-		/**@type {HTMLElement}*/const sceneControls = document.querySelector("#scene-controls");
-		const { groups, tools } = await this.#getData();
-		var columnCount = 2;
-		if (groups.length > 0) {
-			columnCount++;
-			await this.#renderControls('ldfb-groups', groups, sceneControls, this.#onClickGroup);
+		/**@type {HTMLElement}*/
+		const sceneControls = document.querySelector("aside#scene-controls");
+		// Remove the old menus
+		sceneControls.querySelectorAll("menu[data-ldfb]").forEach(x => x.remove());
+		const menus = await this.#createMenus([], this.#tools);
+		for (const menu of menus) {
+			const html = await renderTemplate(ControlManager.TEMPLATE, menu);
+			html.querySelectorAll('button').forEach(btn => btn.onclick = this.#onClickTool.bind(this));
+			sceneControls.appendChild(html);
 		}
-		if (tools != null && tools.length > 0) {
-			columnCount++;
-			await this.#renderControls('ldfb-tools', tools, sceneControls, this.#onClickTool);
-		}
-		document.querySelector("#ui-left").style.setProperty('--control-columns', columnCount.toString());
+		/**@type {HTMLElement}*/
+		const uiLeft = sceneControls.closest("#ui-left");
+		uiLeft.style.setProperty('--control-columns', (menus.length + 2).toString());
 	}
 	refresh = this.render;
 
-	/**
-	 * @param {string} id
-	 * @param {ControlUI[]} controls
-	 * @param {HTMLElement} sceneControls
-	 * @param {Function} onClick
-	 */
-	async #renderControls(id, controls, sceneControls, onClick) {
-		const html = await renderTemplate(ControlManager.TEMPLATE, { id, controls });
-		html.querySelectorAll('button').forEach(btn => btn.onclick = onClick.bind(this));
-		sceneControls.appendChild(html);
-	}
-
-	/**
-	 * @param {string} groupName
-	 * @returns {Promise<void>}
-	 */
-	async activateGroupByName(groupName) {
-		const group = this.groups.find(x => x.name === groupName);
-		if (!group) {
-			console.warn(`ControlManager::activateGroupByName > Attempted to activate ToolGroup with non-existant name '${groupName}'`);
-			return;
-		}
-		if (group.button || group.toggle) {
-			console.warn(`ControlManager::activateGroupByName > Attempted to activate ToolGroup that is either a button or toggle`);
-			return;
-		}
-		if (this.activeGroupName === groupName) {
-			this.refresh();
-			return;
-		}
-		const prevGroup = this.activeGroup;
-		this.activeGroupName = groupName;
-		// Deactivate previous group
-		if (prevGroup) {
-			prevGroup.isActive = false;
-			await this.#invokeHandler(prevGroup.onClick, prevGroup, false);
-		}
-		// Activate new group
-		group.isActive = true;
-		await this.#invokeHandler(group.onClick, group, true);
-		this.refresh();
-		Hooks.callAll("toolGroupActivated", this, group);
-	}
-	/**
-	 * @param {string} groupName
-	 * @param {string} toolName
-	 * @param {boolean} [activateGroup]
-	 * @returns 
-	 */
-	async activateToolByName(groupName, toolName, activateGroup = true) {
-		const group = this.groups.find(x => x.name === groupName);
-		if (!group) {
-			console.warn(`ControlManager::activateToolByName > Attempted to activate ToolGroup with non-existant name '${groupName}'`);
-			return;
-		}
-		const tool = group.tools.find(x => x.name === toolName);
-		if (!tool) {
-			console.warn(`ControlManager::activateToolByName > Attempted to activate Tool with non-existant name '${toolName}'`);
-			return;
-		}
-		if (tool.button || tool.toggle) {
-			console.warn(`ControlManager::activateToolByName > Attempted to activate Tool that is either a button or toggle`);
-			return;
-		}
-		if (group.activeTool === toolName) {
-			this.refresh();
-			return;
-		}
-		const prevTool = group.tools.find(x => x.name === group.activeTool);
-		group.activeTool = toolName;
-		// Deactivate previous tool
-		if (prevTool) {
-			prevTool.isActive = false;
-			await this.#invokeHandler(prevTool.onClick, prevTool, false);
-		}
-		// Activate new tool
-		tool.isActive = true;
-		await this.#invokeHandler(tool.onClick, tool, true);
-		if (activateGroup && this.activeGroupName !== groupName) {
-			this.activateGroupByName(groupName);
-		}
-		else if (this.activeGroupName === groupName) {
-			this.refresh();
-		}
-		Hooks.callAll("toolActivated", this, group, tool);
+	async setup() {
+		this.#tools = [];
+		Hooks.callAll(`getModuleToolsPre`, this, this.#tools);
+		Hooks.callAll(`getModuleTools`, this, this.#tools);
+		Hooks.callAll(`getModuleToolsPost`, this, this.#tools);
+		ControlManager.#processToolsRecursively(this.#tools);
 	}
 
 	reloadModuleButtons() {
 		Hooks.callAll("moduleButtonsReloading", this);
 		// Notify the current group that they are now disabled before we rebuild
 		const currentGroup = this.activeGroup;
-		this.#invokeHandler(currentGroup?.onClick, currentGroup, false);
+		ControlManager.#invokeHandler(currentGroup?.onClick, currentGroup, false);
 		// Notify all selected tools of being deactivated
-		for (const group of this.#groups) {
-			const currentTool = group.activeTool && group.tools ? group.tools.find(x => x.name === group.activeTool) : undefined;
-			this.#invokeHandler(currentTool?.onClick, currentTool, false);
+		const tools = this.#tools;
+		while (tools) {
+			for (const [_, tool] of Object.entries(tools)) {
+				if (tool.type !== 'radial' || !tool.isActive) continue;
+				tool.isActive = false;
+				ControlManager.#invokeHandler(tool, false);
+			}
 		}
 		this.setup();
 		this.render();
+	}
+
+	activateHooks() {
+		this.#hooksRegister['activateToolByPath'] = Hooks.on('activateToolByPath', this.activateToolByPath.bind(this));
+		this.#hooksRegister['reloadModuleButtons'] = Hooks.on('reloadModuleButtons', this.reloadModuleButtons.bind(this));
+		this.#hooksRegister['refreshModuleButtons'] = Hooks.on('refreshModuleButtons', this.render.bind(this));
+		this.#hooksRegister['renderSceneControls'] = Hooks.on('renderSceneControls', this.render.bind(this));
+	}
+
+	/**
+	 * @param {string} path
+	 * @param {boolean} activateParents
+	 * @returns {Promise<void>}
+	 */
+	async activateToolByPath(path, activateParents = true) {
+		const tools = this.#toolsFromPath(path);
+		if (!activateParents)
+			return await this.#triggerTool(tools);
+		while (tools.length > 0) {
+			await this.#triggerTool(tools, true);
+			tools.pop();
+		}
+		await this.render();
 	}
 }

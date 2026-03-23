@@ -9,25 +9,23 @@ declare type Predicate = () => (Promise<boolean> | boolean);
  * parent group is active.
  */
 declare interface Tool {
-	/** Unique name ID of the Tool */
-	name: string;
 	/** Plain Text or a Localization Key */
 	title: string;
 	/** HTMLElement to be used as an icon */
 	icon: string;
 	/**
-	 * (default: false) If true, the tool will act as a simple button.
-	 * Must implement {@link onClick}
+	 * (default: 'radial') The type of tool can be a button, toggle, or radial.
+	 * 
+	 * |    Type    |  `onClick` |   `tools`  |
+	 * |------------|------------|------------|
+	 * | `'button'` | `required` |  `ignored` |
+	 * | `'toggle'` | `required` |  `ignored` |
+	 * | `'radial'` | `optional` | `optional` |
 	 */
-	button?: boolean | null;
-	/**
-	 * (default: false) If true, the tool will act as a toggle button.
-	 * Must implement {@link onClick}
-	 */
-	toggle?: boolean | null;
+	type: 'button' | 'toggle' | 'radial';
 	/**
 	 * (default: null) Used to add your own custom class name to the generated
-	 * control.
+	 * button HTML.
 	 */
 	class?: string | null;
 	/**
@@ -48,6 +46,13 @@ declare interface Tool {
 	 */
 	visible?: Predicate | boolean | null;
 	/**
+	 * A collection of tools that represents a sub-menu of this tool that
+	 * will display to the right if this tool is selected.
+	 * 
+	 * > **Radial tools only, will otherwise be ignored for buttons and toggles.**
+	 */
+	tools?: Record<string, Tool>;
+	/**
 	 * A click handler that is invoked when ever the tool is pressed. This
 	 * function is given an `active` state when either the default Radial or set
 	 * as a toggle button.
@@ -60,43 +65,18 @@ declare interface Tool {
 	 */
 	onClick?: Handler<boolean> | null;
 }
-/**
- * A collection of Tools that appear on the main bar
- */
-declare interface ToolGroup extends Tool {
-	/** {@link Tool} collection */
-	tools?: Tool[];
-	/**
-	 * {@link Tool.name} of tool to be active. Defaults to the first tool in
-	 * the {@link tools} list.
-	 */
-	activeTool?: string;
-}
 
 /** Manages the button UI, Hooks, and User Interactions. */
 declare interface ControlManager {
-	/** Complete list of {@link ToolGroup} objects. */
-	get groups(): ToolGroup[];
-	/** Name of currently active {@link ToolGroup}. */
-	get activeGroupName(): string;
-	/** Name of the currently active {@link Tool}. */
-	get activeToolName(): string;
-	/** The currently active {@link ToolGroup} object. */
-	get activeGroup(): ToolGroup;
-	/** The currently active {@link Tool} object. */
-	get activeTool(): Tool;
+	/** The primary tool set. */
+	get tools(): Record<string, Tool>;
 	/**
-	 * Activates a {@link ToolGroup} by its unique name.
-	 * @param groupName Name of the group to be activated.
+	 * Activates a {@link Tool} at some level within the Tool stack via their unique names.
+	 * @param path A string containing a path to the sub-menu of the tool using
+	 *             the unique names provided for each tool. ie: "my-tool-group.my-sub-tool".
+	 * @param activateParents (Default true) Also activate the parent {@link Tool}s in the path.
 	 */
-	activateGroupByName(groupName: string): Promise<void>;
-	/**
-	 * Activates a {@link Tool} inside the given {@link ToolGroup} via their unique names.
-	 * @param groupName Name of group that contains the {@link Tool}.
-	 * @param toolName Name of the {@link Tool} to be activated.
-	 * @param activateGroup (Default true) Also activate the {@link ToolGroup}.
-	 */
-	activateToolByName(groupName: string, toolName: string, activateGroup?: boolean): Promise<void>;
+	activateToolByPath(path: string, activateParents?: boolean): Promise<void>;
 	/** Reload the module buttons bar by rebuilding the {@link ToolGroup}s and rerendering. */
 	reloadModuleButtons(): void;
 	/** Refresh the button UI to reflect any external changes made */

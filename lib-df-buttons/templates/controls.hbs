@@ -1,14 +1,16 @@
-<menu class="flexcol" data-tooltip-direction="RIGHT" id="{{id}}">
-	{{#each controls as |control|}}
-	<li>
+<menu class="flexcol" data-tooltip-direction="RIGHT" id="{{id}}" data-ldfb>
+	{{#each tools as |tool|}}<li>
 		<button
 			type="button"
-			class="control ui-control layer icon {{#if control.class}}{{control.class}}{{/if}} {{#if control.button}}button{{/if}} {{#if control.toggle}}toggle{{/if}} {{{control.icon}}}"
 			role="tab"
-			{{#if (not control.button)}}aria-pressed="{{control.active}}"{{/if}}
-			aria-label="{{localize control.title}}"
-			data-control="{{control.name}}"
+			class="control ui-control layer icon
+				{{#if tool.button}}button{{/if}}
+				{{#if tool.toggle}}toggle{{/if}}
+				{{{tool.icon}}}
+				{{#if tool.class}}{{tool.class}}{{/if}}"
+			aria-pressed="{{tool.active}}"
+			aria-label="{{localize tool.title}}"
+			data-path="{{tool.path}}"
 			data-tooltip></button>
-	</li>
-	{{/each}}
+	</li>{{/each}}
 </menu>
