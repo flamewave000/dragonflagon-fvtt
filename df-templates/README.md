@@ -1,7 +1,7 @@
 # DF Template Enhancements
 
 > [!IMPORTANT]
-> <img style="width:2rem;height:2rem;" src=".assets/no-ai-icon.svg"> **ALL DragonFlagon Modules are made AI-Free**
+> <img style="width:2rem;height:2rem;" src="../.assets/no-ai-icon.svg"> **ALL DragonFlagon Modules are made AI-Free**
 
 Various enhancements to the FoundryVTT Templates layer. This brings different forms of template grid highlighting and auto-targetting features.
 
