@@ -38,7 +38,7 @@ class WallPool {
 		const result = new Wall(new WallDocument(wallData, { parent: canvas.scene }));
 		wallData = foundry.utils.deepClone(wallData);
 		delete wallData._id;
-		result.document = foundry.utils.mergeObject(result.document, wallData);
+		result.document = CurvyWallToolManager.setWallData(result.document, wallData);
 		delete result.parent;
 		return result;
 	}
@@ -272,6 +272,16 @@ export class CurvyWallToolManager {
 		self.render();
 	}
 
+	static setWallData(target, source) {
+		delete target.light;
+		delete target.sight;
+		delete target.sound;
+		delete target.move;
+		delete target.door;
+		delete target.threshold;
+		return foundry.utils.mergeObject(target, source, { inplace: false });
+	}
+
 	#graphicsContext = new PIXI.Graphics(null);
 	render() {
 		this.#wallsLayer.preview.removeChildren();
@@ -305,7 +315,7 @@ export class CurvyWallToolManager {
 					this.#wallsLayer.preview.addChild(this.#walls[c]);
 					this.#walls[c].draw();
 				} else {
-					this.#walls[c].document = foundry.utils.mergeObject(this.#walls[c].document, data);
+					this.#walls[c].document = CurvyWallToolManager.setWallData(this.#walls[c].document, data);
 					this.#wallsLayer.preview.addChild(this.#walls[c]);
 					this.#walls[c].refresh();
 				}
@@ -326,7 +336,7 @@ export class CurvyWallToolManager {
 					this.#wallsLayer.preview.addChild(this.#walls[c]);
 					this.#walls[c].draw();
 				} else {
-					this.#walls[c].document = foundry.utils.mergeObject(this.#walls[c].document, data);
+					this.#walls[c].document = CurvyWallToolManager.setWallData(this.#walls[c].document, data);
 					this.#wallsLayer.preview.addChild(this.#walls[c]);
 					this.#walls[c].refresh();
 				}
@@ -343,13 +353,18 @@ export class CurvyWallToolManager {
 	}
 
 	init() {
-		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.placeables.Wall.prototype._onDragLeftStart', (/**@type {any}*/wrapper,/**@type {any[]}*/...args) => {
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.placeables.Wall.prototype._onDragLeftStart', (/**@type {any}*/wrapped,/**@type {any[]}*/...args) => {
 			this.clearTool();
-			wrapper(...args);
+			wrapped(...args);
 		}, 'WRAPPER');
 		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.canvas.layers.WallsLayer.prototype.clearPreviewContainer', (/**@type {Function}*/wrapped) => {
 			this.clearTool();
 			return wrapped();
+		}, 'WRAPPER');
+		libWrapper.register(SETTINGS.MOD_NAME, 'foundry.applications.ui.SceneControls.prototype.activate', async (/**@type {any}*/wrapped,/**@type {any[]}*/...args) => {
+			const result = await wrapped(...args);
+			this.render();
+			return result;
 		}, 'WRAPPER');
 	}
 
