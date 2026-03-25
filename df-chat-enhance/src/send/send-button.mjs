@@ -1,5 +1,6 @@
-/// <reference path="../../../fvtt-scripts/foundry.js" />
+/// <reference path="../../../fvtt-scripts/foundry.mjs" />
 /// <reference path="../../../common/foundry.d.ts" />
+import { parseHTML } from "../../common/fvtt.mjs";
 import SETTINGS from "../../common/Settings.mjs";
 
 export default class SendButton {
@@ -27,44 +28,37 @@ export default class SendButton {
 				}
 			}
 		});
-		Hooks.on('renderChatLog', this.#_renderChatLog.bind(this));
+		Hooks.on('renderChatInput', this.#_renderChatLog.bind(this));
 	}
 
 	/**
-	 * @param {ChatLog} app
-	 * @param {JQuery<HTMLElement>} html
+	 * @param {ChatLog} _
+	 * @param { { '#chat-controls': HTMLElement, '#chat-message': HTMLTextAreaElement, '#roll-privacy': HTMLElement} } html
 	 */
-	static #_renderChatLog(app, html) {
+	static #_renderChatLog(_, html) {
 		if (!SETTINGS.get(this.#PREF_ENABLED)) return;
-		const sendButton = $('<button class="dfce-send-btn"><i class="fas fa-paper-plane"></i></button>');
-		sendButton.attr('title', 'DF_CHAT_SEND_BUTTON.ButtonTitle'.localize());
-		html.find('#chat-form').append(sendButton);
-
-		const textarea = html.find('#chat-message');
-		sendButton.prop('disabled', textarea[0].textLength <= 0 || textarea[0].value.trim().length <= 0);
-
-		sendButton.on('click', async event => {
+		document.querySelectorAll('#dfce-send-btn').forEach(x => x.remove());
+		const container = parseHTML('<div id="dfce-send-btn"><button class="ui-control icon fa-solid fa-paper-plane"></button></div>');
+		html["#chat-controls"].appendChild(container);
+		const sendButton = container.querySelector("button");
+		sendButton.setAttribute('title', 'DF_CHAT_SEND_BUTTON.ButtonTitle'.localize());
+		sendButton.onclick = async event => {
 			event.preventDefault();
-			await ui.chat._onChatKeyDown({
-				code: 'Enter',
-				currentTarget: textarea[0],
-				originalEvent: {
-					isComposing: false
-				},
+			event.stopPropagation();
+			ui.chat._onKeyDown({
+				key: "Enter",
+				shiftKey: false,
+				isComposing: false,
+				target: html["#chat-message"],
 				preventDefault: () => { },
 				stopPropagation: () => { }
 			});
-			setTimeout(() => textarea.trigger('input'), 100);
-		});
-
-		/**@type {(event: JQuery.TriggeredEvent<HTMLTextAreaElement, undefined, HTMLTextAreaElement, HTMLTextAreaElement>) => void}*/
-		const handler = (event) => {
-			/**@type {HTMLTextAreaElement}*/
-			const element = event.currentTarget;
-			sendButton.prop('disabled', element.textLength <= 0 || element.value.trim().length <= 0);
+			sendButton.toggleAttribute('disabled', true);
 		};
-		textarea[0].dfce_handler = handler;
-		textarea.on('input', handler);
-		textarea.on('change', handler);
+
+		const handler = () => sendButton.toggleAttribute('disabled', html["#chat-message"].value.trim().length <= 0);
+		html["#chat-message"].oninput = handler;
+		html["#chat-message"].onchange = handler;
+		handler();
 	}
 }

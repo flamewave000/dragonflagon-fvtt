@@ -2,20 +2,20 @@
 	"id": "df-chat-enhance",
 	"title": "DF Chat Enhancements",
 	"description": "Various enhancements to the chat features.",
-	"version": "5.1.0",
+	"version": "13.0.0",
 	"authors": [ { "name": "flamewave000", "discord": "flamewave000", "url": "https://github.com/flamewave000" } ],
-	"compatibility": { "minimum": 12, "verified": 12.331 },
+	"compatibility": { "minimum": 13, "verified": 13.351 },
 	"relationships": {
 		"requires": [
 			{
 				"id": "lib-wrapper",
 				"type": "module",
-				"compatibility": { "verified": "1.13.2.0", "minimum": "1.12.15.0" }
+				"compatibility": { "verified": "1.13.4.0", "minimum": "1.13.4.0" }
 			},
 			{
 				"id": "_chatcommands",
 				"type": "module",
-				"compatibility": { "verified": "2.0.2", "minimum": "2.0.2" }
+				"compatibility": { "verified": "2.0.5", "minimum": "2.0.5" }
 			}
 		]
 	},
