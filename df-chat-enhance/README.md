@@ -20,28 +20,28 @@ Multiple improvements to the chat system feature set. Brings a new Chat Archive 
 ## Table of Contents
 
 - [Adventure Log](#Adventure-Log)
-	- [Config](#Config)
-	- [Log Command Help](#Log-Command-Help)
-	- [Log Commands](#Log-Commands)
-	  - [GM Only Log](#GM-Only-Log)
-	  - [Right-Click Add to Log](#Right-Click-Add-to-Log)
-	  - [Quote Sources](#Quote-Sources)
+  - [Config](#Config)
+  - [Log Command Help](#Log-Command-Help)
+  - [Log Commands](#Log-Commands)
+    - [GM Only Log](#GM-Only-Log)
+    - [Right-Click Add to Log](#Right-Click-Add-to-Log)
+    - [Quote Sources](#Quote-Sources)
 - [Roll Selector Buttons](#roll-selector-buttons)
 - [Chat Archive](#Chat-Archive)
-	- [Create Archive](#Create-Archive)
-		- [Create Chat Archive Window](#Create-Chat-Archive-Window)
-	- [Manage Chat Archives](#Manage-Chat-Archives)
-		- [Edit Archive Name](#Edit-Archive-Name)
-		- [Delete Messages](#Delete-Messages)
-		- [Archive Merging](#Archive-Merging)
+  - [Create Archive](#Create-Archive)
+    - [Create Chat Archive Window](#Create-Chat-Archive-Window)
+  - [Manage Chat Archives](#Manage-Chat-Archives)
+    - [Edit Archive Name](#Edit-Archive-Name)
+    - [Delete Messages](#Delete-Messages)
+    - [Archive Merging](#Archive-Merging)
 - [Edit Sent Messages](#Edit-Sent-Messages)
-	- [Edit Last Message Keyboard Shortcut](#Edit-Last-Message-Keyboard-Shortcut)
+  - [Edit Last Message Keyboard Shortcut](#Edit-Last-Message-Keyboard-Shortcut)
 - [Better Chat Log Scrolling](#Better-Chat-Log-Scrolling)
 - [Chat Message Merging](#Chat-Message-Merging)
-	- [Message Headers](#Message-Headers)
-	- [Message Divider](#Message-Divider)
-	- [Hover Shadow](#Hover-Shadow)
-	- [Roll Merging](#Roll-Merging)
+  - [Message Headers](#Message-Headers)
+  - [Message Divider](#Message-Divider)
+  - [Hover Shadow](#Hover-Shadow)
+  - [Roll Merging](#Roll-Merging)
 - [Whisper Recipient List Truncation](#Whisper-Recipient-List-Truncation)
 - [Third-Party Libraries](#Third-Party-Libraries)
 
@@ -71,10 +71,10 @@ At any time you can simply enter `/log` into the chat to display the help dialog
 
 ### Log Commands
 
-| Name | Command | Description |
-| --- | --- | --- |
-| General Event | `/log ...message`<br />`/log e ...message`<br />`/log event ...message` | Logs a simple event message to the adventure log. |
-| Quote | `/log q <source> ...message`<br />`/log quote <source> ...message`<br />`/log q "<source with spaces" ...message`<br />`/log quote "<source with spaces" ...message` | Adds an entry Quote of the "Source". |
+| Name          | Command                                                                                                                                                              | Description                                       |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| General Event | `/log ...message`<br />`/log e ...message`<br />`/log event ...message`                                                                                              | Logs a simple event message to the adventure log. |
+| Quote         | `/log q <source> ...message`<br />`/log quote <source> ...message`<br />`/log q "<source with spaces" ...message`<br />`/log quote "<source with spaces" ...message` | Adds an entry Quote of the "Source".              |
 
 #### Player Log
 
@@ -137,22 +137,22 @@ AdventureLog.gmquote("Bob", "Don't worry, be happy!", true)
 
 ## Roll Selector Buttons ![Roll Types](../.assets/df-chat-enhance/privacy-roll-types.png)
 
-Replaces the dropdown menu for roll modes with selector buttons. The colours are specifically meant to be colour-blind friendly (please let me know if there is any issue with this). The module also registers keyboard shortcuts for the roll modes. To avoid conflicts, these are not set by default and you will need to map them yourself to your own desired shortcut combination.
+Restyles the roll selector buttons. The colours are specifically meant to be colour-blind friendly (please let me know if there is any issue with this). The module also registers keyboard shortcuts for the roll modes. To avoid conflicts, these are not set by default and you will need to map them yourself to your own desired shortcut combination.
 
-| Players | Game Masters |
-| :-: | :-: |
+| Players                                                                | Game Masters                                                               |
+|:----------------------------------------------------------------------:|:--------------------------------------------------------------------------:|
 | ![Roll buttons for players](../.assets/df-chat-enhance/privacy-pc.png) | ![Roll buttons for Game Master](../.assets/df-chat-enhance/privacy-gm.png) |
 
-| Roll Type | Button |
-| - | - |
-| Public Rolls | ![](../.assets/df-chat-enhance/privacy-rt-public.png) |
-| Private GM Rolls | ![](../.assets/df-chat-enhance/privacy-rt-gm.png) |
-| Blind GM Rolls | ![](../.assets/df-chat-enhance/privacy-rt-blind.png) |
-| Self Rolls | ![](../.assets/df-chat-enhance/privacy-rt-self.png) |
+| Roll Type        | Button                                                |
+| ---------------- | ----------------------------------------------------- |
+| Public Rolls     | ![](../.assets/df-chat-enhance/privacy-rt-public.png) |
+| Private GM Rolls | ![](../.assets/df-chat-enhance/privacy-rt-gm.png)     |
+| Blind GM Rolls   | ![](../.assets/df-chat-enhance/privacy-rt-blind.png)  |
+| Self Rolls       | ![](../.assets/df-chat-enhance/privacy-rt-self.png)   |
 
 ### Roll Mode Toggle
 
-There is also a roll mode toggle shortcut registered. This will toggle between `Roll Mode A` and `Roll Mode B` which are configured in the module settings. This is very useful for a GM who maybe frequently toggles between Public and Self rolls. Or for a player who maybe toggles between Public and Private GM rolls. This shortcut is also not set to any default, so you will need to create a keybinding for it in the Configure Controls menu.
+There is also a roll mode toggle shortcut registered. This will toggle between `Roll Mode A` and `Roll Mode B` which are configured in the module settings. This is very useful for a GM who may frequently toggle between Public and Self rolls. Or for a player who may toggle between Public and Private GM rolls. This shortcut is also not set to any default, so you will need to create a keybinding for it in the Configure Controls menu.
 
 ## Chat Archive
 
@@ -164,9 +164,9 @@ To create an archive, simply click the new "Archive chat log" button that is now
 
 #### Create Chat Archive Window
 
-|All chats|Date range of chats|
-|:-:|:-:|
-|![Create chat archive window](../.assets/df-chat-enhance/archive-new-window.png)|![Create chat archive window](../.assets/df-chat-enhance/archive-new-window-date.png)|
+| All chats                                                                        | Date range of chats                                                                   |
+|:--------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------:|
+| ![Create chat archive window](../.assets/df-chat-enhance/archive-new-window.png) | ![Create chat archive window](../.assets/df-chat-enhance/archive-new-window-date.png) |
 
 The windows is fairly self explanatory, you can select all the current chat messages for archiving, or you can select a local date range.
 
@@ -186,9 +186,9 @@ GMs will see the typical Trash Can button on archived messages that allows them 
 
 When viewing a Chat Archive, GMs will see a Merge button in the top right corner. This button presents a Dialog where you can select one of your other archives which can be merged into the one currently being viewed. It also gives a checkbox that if checked will delete the other archive that is being merged into the currently viewed one.
 
-|Manage Archives|View Archive|Edit Archive Name|Archive Merge|
-|:-:|:-:|:-:|:-:|
-|![Manage archives](../.assets/df-chat-enhance/archive-manage.png)|![View archive](../.assets/df-chat-enhance/archive-viewer.png)|![Edit archive](../.assets/df-chat-enhance/archive-edit.png)|![Merge archive](../.assets/df-chat-enhance/archive-merge.png)|
+| Manage Archives                                                   | View Archive                                                   | Edit Archive Name                                            | Archive Merge                                                  |
+|:-----------------------------------------------------------------:|:--------------------------------------------------------------:|:------------------------------------------------------------:|:--------------------------------------------------------------:|
+| ![Manage archives](../.assets/df-chat-enhance/archive-manage.png) | ![View archive](../.assets/df-chat-enhance/archive-viewer.png) | ![Edit archive](../.assets/df-chat-enhance/archive-edit.png) | ![Merge archive](../.assets/df-chat-enhance/archive-merge.png) |
 
 ## Chat Message Markdown
 
@@ -212,17 +212,17 @@ Currently in Foundry if you scroll up through the chat log, it will automaticall
 
 This feature prevents that auto-scroll and instead will give you a "Scroll To Bottom" button that you can click to quickly get back down. Also, if new messages are posted to the chat, the button will pulse and say "New Message!" on it.
 
-|Scroll To Bottom Button|Scroll To Bottom with New Message|
-|:-:|:-:|
-|![Scroll To Bottom Button](../.assets/df-chat-enhance/scroll-manage.png)|![Scroll To Bottom with New Message](../.assets/df-chat-enhance/scroll-manage-new.png)|
+| Scroll To Bottom Button                                                  | Scroll To Bottom with New Message                                                      |
+|:------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------:|
+| ![Scroll To Bottom Button](../.assets/df-chat-enhance/scroll-manage.png) | ![Scroll To Bottom with New Message](../.assets/df-chat-enhance/scroll-manage-new.png) |
 
 ## Chat Message Merging
 
 You will now be able to have messages merged in the chat. There are various settings for customizing the look and feel of the chat merges.
 
-|Chat Merging GM|Chat Merging PC|
-|:-:|:-:|
-|![Chat Merging GM](../.assets/df-chat-enhance/chat-merge-gm.png)|![Chat Merging PC](../.assets/df-chat-enhance/chat-merge-pc.png)|
+| Chat Merging GM                                                  | Chat Merging PC                                                  |
+|:----------------------------------------------------------------:|:----------------------------------------------------------------:|
+| ![Chat Merging GM](../.assets/df-chat-enhance/chat-merge-gm.png) | ![Chat Merging PC](../.assets/df-chat-enhance/chat-merge-pc.png) |
 
 ### Message Headers
 
@@ -232,9 +232,9 @@ By default, the message headers of merged messages are hidden (except for the to
 
 There is an option for merged messages to display a thin divider between them. This adopts the border colour of the messages.
 
-|With Divider|Without Divider|
-|:-:|:-:|
-|![With Divider](../.assets/df-chat-enhance/chat-merge-divider-on.png)|![Without Divider](../.assets/df-chat-enhance/chat-merge-divider-off.png)|
+| With Divider                                                          | Without Divider                                                           |
+|:---------------------------------------------------------------------:|:-------------------------------------------------------------------------:|
+| ![With Divider](../.assets/df-chat-enhance/chat-merge-divider-on.png) | ![Without Divider](../.assets/df-chat-enhance/chat-merge-divider-off.png) |
 
 ### Hover Shadow
 
@@ -246,15 +246,15 @@ Merged Messages are set to display a faint shadow when you hover over them. I re
 
 Rolls can be merged in an independent way. You have three choices, No Merging, Merge with other Rolls, and Merge With Any. Below demonstrates the visual differences between the three options:
 
-|No Merging|Merge with other Rolls|Merge With Any|
-|:-:|:-:|:-:|
-|![No Merging](../.assets/df-chat-enhance/chat-merge-roll-none.png)|![Merge with other Rolls](../.assets/df-chat-enhance/chat-merge-roll-rolls.png)|![Merge With Any](../.assets/df-chat-enhance/chat-merge-roll-all.png)|
+| No Merging                                                         | Merge with other Rolls                                                          | Merge With Any                                                        |
+|:------------------------------------------------------------------:|:-------------------------------------------------------------------------------:|:---------------------------------------------------------------------:|
+| ![No Merging](../.assets/df-chat-enhance/chat-merge-roll-none.png) | ![Merge with other Rolls](../.assets/df-chat-enhance/chat-merge-roll-rolls.png) | ![Merge With Any](../.assets/df-chat-enhance/chat-merge-roll-all.png) |
 
 ## Chat Box Send Button
 
-*This feature OFF by default, but can be turned on in the module settings.*
+*This feature is OFF by default, but can be turned on in the module settings.*
 
-Displays a Send Message button in the chat box. This button can be clicked to send the currently written message. This is useful for anyone using a touch screen, or just prefers using a mouse to send the message instead of hitting Enter.
+Displays a Send Message button next to the chat box. This button can be clicked to send the currently written message. This is useful for anyone using a touch screen, or just prefers using a mouse to send the message instead of hitting Enter.
 
 ## Simple Calendar Chat Message Timestamps
 
@@ -273,5 +273,6 @@ Core Foundry prevents the selection of text in ANY part of Foundry. This means s
 ## Third-Party Libraries
 
 - `marked.min.js` - a markdown parser
-	> Copyright (c) 2011-2021, Christopher Jeffrey. (MIT Licensed)
-	> https://github.com/markedjs/marked
+  
+  > Copyright (c) 2011-2021, Christopher Jeffrey. (MIT Licensed)
+  > https://github.com/markedjs/marked

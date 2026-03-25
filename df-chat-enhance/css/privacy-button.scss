@@ -3,40 +3,26 @@ $colour-gm: #F2CA27;
 $colour-blind: #E87E04;
 $colour-self: #E74C3C;
 
-#dfcp-rt-buttons {
-	display: flex;
-	flex-flow: row nowrap;
-	margin: 0 0.5em;
-	button {
-		flex: 0 1 auto;
-		min-height: 36px;
-		max-height: 36px;
-		padding-top: 2px;
-		i {
-			height: 20px;
-			margin: auto;
-		}
+button {
+	&.dfce-roll-btn[data-roll-mode="publicroll"] {
+		&[aria-pressed="false"]:hover { color: $colour-public; }
+		&[aria-pressed="true"] { background-color: $colour-public; }
 	}
-	button.gm:first-child i {
-		width: 20px;
+
+	&.dfce-roll-btn[data-roll-mode="gmroll"] {
+		&[aria-pressed="false"]:hover { color: $colour-gm; }
+		&[aria-pressed="true"] { background-color: $colour-gm; }
 	}
-	button.active i {
-		color: #000;
+
+	&.dfce-roll-btn[data-roll-mode="blindroll"] {
+		&[aria-pressed="false"]:hover { color: $colour-blind; }
+		&[aria-pressed="true"] { background-color: $colour-blind; }
 	}
-	button[data-id="publicroll"].active {
-		background-color: $colour-public;
+
+	&.dfce-roll-btn[data-roll-mode="selfroll"] {
+		&[aria-pressed="false"]:hover { color: $colour-self; }
+		&[aria-pressed="true"] { background-color: $colour-self; }
 	}
-	button[data-id="gmroll"].active {
-		background-color: $colour-gm;
-	}
-	button[data-id="blindroll"].active {
-		background-color: $colour-blind;
-	}
-	button[data-id="selfroll"].active {
-		background-color: $colour-self;
-	}
-}
-#chat-controls {
-	padding: 0.5em 0;
-	align-items: center;
+
+	&.dfce-roll-btn[aria-pressed="true"] { color: var(--control-hover-bg-color); }
 }

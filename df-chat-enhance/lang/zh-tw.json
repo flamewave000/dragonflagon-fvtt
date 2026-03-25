@@ -51,10 +51,6 @@
 		"ArchiveViewer_Merge_OnlyOneArchive": "沒有其他可用於合併的歸檔"
 	},
 	"DF_CHAT_PRIVACY": {
-		"Settings_EnableTitle": "擲骰按鈕：將所有擲骰類型選項替換為按鈕",
-		"Settings_EnableHint": "(需要重載) 將擲骰類型的下拉式功能表選項替換為四個一組的按鈕。",
-		"Settings_ReplaceButtonsTitle": "擲骰按鈕：應用同類風格在所有聊天按鈕上",
-		"Settings_ReplaceButtonsHint": "(需要重載) 也為其他聊天按鈕應用風格，使得聊天按鈕風格都統一近似新的擲骰類型按鈕。"
 	},
 	"DF_CHAT_LOG": {
 		"CommandDescription": "向冒險日誌提交事件",

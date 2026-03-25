@@ -49,10 +49,6 @@
 		"ArchiveViewer_Merge_OnlyOneArchive": "Não há outros arquivos para mesclar"
 	},
 	"DF_CHAT_PRIVACY": {
-		"Settings_EnableTitle": "Botões do Chat",
-		"Settings_EnableHint": "Substitui o menu de 'Tipos de Mensagem' por quatro botões (requer atualização).",
-		"Settings_ReplaceButtonsTitle": "Estilo dos Botões do Chat",
-		"Settings_ReplaceButtonsHint": "Modifica os demais botões do Chat para serem como os quatro botões de mensagem (requer atualização)."
 	},
 	"DF_CHAT_LOG": {
 		"CommandDescription": "Submit an event to the Adventure Log",

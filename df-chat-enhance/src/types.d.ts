@@ -1,4 +1,10 @@
 
+declare interface ChatElements {
+	'#chat-controls': HTMLElement,
+	'#chat-message': HTMLTextAreaElement,
+	'#roll-privacy': HTMLElement
+}
+
 declare interface AdventurLogApi {
 	event(message: string, postToChat?: boolean): Promise<void>
 	pevent(message: string, postToChat?: boolean): Promise<void>

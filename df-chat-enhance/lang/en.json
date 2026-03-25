@@ -58,10 +58,8 @@
 		"ArchiveViewer_Error_Delete_All": "Cannot delete all of the chats in an Archive. If you wish to delete an archive, please do so from the Archive Manager."
 	},
 	"DF_CHAT_PRIVACY": {
-		"Settings_EnableTitle": "Roll Buttons: Replace roll type selector with buttons",
-		"Settings_EnableHint": "(Requires Reload) Replace the drop-down menu selector for roll types with a set of four buttons.",
-		"Settings_ReplaceButtonsTitle": "Roll Buttons: Use button style on all chat buttons",
-		"Settings_ReplaceButtonsHint": "(Requires Reload) Restyle the other chat buttons to look the same as the new Roll Type buttons.",
+		"Settings_EnableTitle": "Roll Buttons: Colourize Roll Buttons",
+		"Settings_EnableHint": "Re-colour the Roll Mode select buttons so it is easier to see which one is currently selected.",
 		"Settings_ToggleATitle": "Roll Buttons: Toggle Shortcut Roll Mode A",
 		"Settings_ToggleAHint": "If the Roll Mode Toggle keyboard shortcut is configured, this setting is for the default roll mode it switches to.",
 		"Settings_ToggleBTitle": "Roll Buttons: Toggle Shortcut Roll Mode B",

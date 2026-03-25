@@ -7,7 +7,7 @@ import SETTINGS from "../common/Settings.mjs";
 // import * as DFAdventureLog from "./logger/df-adventure-log.mjs";
 // import DFAdventureLogProcessor from "./logger/DFAdventureLogProcessor.mjs";
 // import ChatMerge from "./merge/chat-merge.mjs";
-// import ChatRollPrivacy from "./privacy/df-chat-privacy.mjs";
+import ChatRollPrivacy from "./privacy/df-chat-privacy.mjs";
 // import ScrollManage from "./scroll-manage/scroll-manage.mjs";
 // import WhisperTruncation from "./whisper-trunc/whisper-trunc.mjs";
 // import PlayerColor from './player-color/PlayerColor.mjs';
@@ -23,7 +23,7 @@ Application.prototype._recalculateDimensions = function () {
 };
 
 Hooks.once('setup', function () {
-	// ChatRollPrivacy.setup();
+	ChatRollPrivacy.setup();
 });
 
 Hooks.once('init', function () {
@@ -33,7 +33,7 @@ Hooks.once('init', function () {
 	 * from <a> tags to <button> tags if enabled.
 	 */
 	// DFChatArchive.init();
-	// ChatRollPrivacy.init();
+	ChatRollPrivacy.init();
 	// DFAdventureLog.init();
 	// ChatMerge.init();
 	// ScrollManage.init();

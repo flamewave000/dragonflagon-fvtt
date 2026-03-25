@@ -58,10 +58,8 @@
 		"ArchiveViewer_Error_Delete_All": "Impossible de supprimer tous les chats dans une archive. Si vous souhaitez supprimer une archive, veuillez le faire du gestionnaire d'archives."
 	},
 	"DF_CHAT_PRIVACY": {
-		"Settings_EnableTitle": "Boutons de roulis: remplacer le sélecteur de type de rouleau par des boutons",
-		"Settings_EnableHint": "(Nécessite un rechargement) Remplacez le sélecteur de menu déroulant pour les types de rouleaux avec un ensemble de quatre boutons.",
-		"Settings_ReplaceButtonsTitle": "Boutons de roulement: utilisez le style des bouton sur tous les boutons de chat",
-		"Settings_ReplaceButtonsHint": "(Nécessite un rechargement) Restyle les autres boutons de chat pour se ressembler les nouveaux boutons de type de rouleau.",
+		"Settings_EnableTitle": "Boutons de Rouleau: colorer les boutons de rouleau",
+		"Settings_EnableHint": "Recolorez les boutons de sélection du mode Roll afin qu'il soit plus facile de voir lequel est actuellement sélectionné.",
 		"Settings_ToggleATitle": "Boutons de Rouleau: Basculez le Mode de Rouleau de Raccourci A",
 		"Settings_ToggleAHint": "Si le raccourci clavier Basculer le mode de roulis est configuré, ce paramètre correspond au mode de roulis par défaut vers lequel il bascule.",
 		"Settings_ToggleBTitle": "Boutons de Rouleau: Basculez le Mode de Rouleau de Raccourci B",

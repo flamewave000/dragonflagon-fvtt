@@ -58,10 +58,6 @@
 		"ArchiveViewer_Error_Delete_All": "아카이브에서 모든 채팅을 삭제할 수는 없습니다. 아카이브를 삭제하려면 아카이브 관리창에서 삭제하십시오."
 	},
 	"DF_CHAT_PRIVACY": {
-		"Settings_EnableTitle": "굴림 버튼: 굴림 유형 선택기를 버튼으로 대체",
-		"Settings_EnableHint": "(새로고침 필요) 굴림 유형 드롭다운 선택기를 버튼 세트로 대체한다.",
-		"Settings_ReplaceButtonsTitle": "굴림 버튼: 모든 채팅 버튼에 스타일 사용",
-		"Settings_ReplaceButtonsHint": "(새로고침 필요) 다른 채팅 버튼도 새 굴림 유형 버튼과 동일하게 보이도록 조정한다."
 	},
 	"DF_CHAT_LOG": {
 		"CommandDescription": "모험 기록에 이벤트 제출",

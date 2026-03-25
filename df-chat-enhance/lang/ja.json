@@ -58,10 +58,6 @@
 		"ArchiveViewer_Error_Delete_All": "アーカイブ内のすべてのチャットを削除することはできません。 アーカイブを削除したい場合は、アーカイブマネージャから削除してください。"
 	},
 	"DF_CHAT_PRIVACY": {
-		"Settings_EnableTitle": "ロールボタン：ロールタイプセレクターをボタンに置き換えます",
-		"Settings_EnableHint": "ロールタイプのドロップダウンメニューセレクターを4つのボタンのセットに置き換えます（リロードが必要）。",
-		"Settings_ReplaceButtonsTitle": "ロールボタン：すべてのチャットボタンでボタンスタイルを使用します",
-		"Settings_ReplaceButtonsHint": "他のチャットボタンも新しいロールタイプボタンと同じスタイルに変更します（リロードが必要）。"
 	},
 	"DF_CHAT_LOG": {
 		"CommandDescription": "アドベンチャーログにイベントを送信する",

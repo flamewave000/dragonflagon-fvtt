@@ -1,5 +1,8 @@
 # DF Chat Enhancements
 
+## Release 13.0.0 ()
+- **UPDATE:** Roll mode buttons feature is now built into native Foundry, now the feature only registers keyboard shortcuts and provides the unique colouring to the buttons.
+
 ## Release 5.1.0 (2025-04-24)
 - **UPDATE:** Korean Localization: Courtesy of [Jihoon9836](https://github.com/Jihoon9836)
 - **NEW #457:** New keyboard shortcut registered for a Roll Mode Quick Toggle which allows you to quickly switch between two configurable roll modes.

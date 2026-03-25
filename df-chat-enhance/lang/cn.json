@@ -57,10 +57,6 @@
 		"ArchiveViewer_Error_Delete_All": "无法删除归档中的所有聊天记录，如果你想删除某个归档，请在归档管理器中进行。"
 	},
 	"DF_CHAT_PRIVACY": {
-		"Settings_EnableTitle": "掷骰按钮：将所有掷骰类型选项替换为按钮",
-		"Settings_EnableHint": "(需要重载) 将掷骰类型的下拉菜单选项替换为四个一组的按钮。",
-		"Settings_ReplaceButtonsTitle": "掷骰按钮：应用同类风格在所有聊天按钮上",
-		"Settings_ReplaceButtonsHint": "(需要重载) 也为其他聊天按钮应用风格，使得聊天按钮风格都统一近似新的掷骰类型按钮。"
 	},
 	"DF_CHAT_LOG": {
 		"CommandDescription": "向冒险日志提交事件",

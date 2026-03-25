@@ -1,5 +1,6 @@
 /// <reference path="../../../fvtt-scripts/foundry.mjs" />
 /// <reference path="../../../common/foundry.d.ts" />
+/// <reference path="../types.d.ts" />
 import { parseHTML } from "../../common/fvtt.mjs";
 import SETTINGS from "../../common/Settings.mjs";
 
@@ -15,16 +16,17 @@ export default class SendButton {
 			default: false,
 			onChange: (isActive) => {
 				if (isActive) {
-					this.#_renderChatLog(ui.chat, $('#sidebar #chat'));
-					const popout = $('#chat-popout');
-					if (popout.length > 0)
-						this.#_renderChatLog(ui.chat, popout);
+					this.#_renderChatLog(ui.chat, {
+						"#chat-controls": document.querySelector("#chat-controls"),
+						"#chat-message": document.querySelector("#chat-message"),
+						"#roll-privacy": document.querySelector("#roll-privacy"),
+					});
 				}
 				else {
-					$('.dfce-send-btn').remove();
-					$('#chat-message').each((_a, /**@type {HTMLTextAreaElement}*/textarea) => {
-						$(textarea).off('input', textarea.dfce_handler);
-					});
+					document.querySelector('#dfce-send-btn').remove();
+					const cm = document.querySelector('#chat-message');
+					cm.oninput = undefined;
+					cm.onchange = undefined;
 				}
 			}
 		});
@@ -33,7 +35,7 @@ export default class SendButton {
 
 	/**
 	 * @param {ChatLog} _
-	 * @param { { '#chat-controls': HTMLElement, '#chat-message': HTMLTextAreaElement, '#roll-privacy': HTMLElement} } html
+	 * @param {ChatElements} html
 	 */
 	static #_renderChatLog(_, html) {
 		if (!SETTINGS.get(this.#PREF_ENABLED)) return;
