@@ -113,6 +113,13 @@ export default class ControlManager {
 	/**@type {ToolSet}*/ #tools = {};
 	/**@type {Record<string, number>}*/ #hooksRegister = {};
 	#menuCount = 0;
+	/**
+	 * Serializes concurrent {@link render} calls. Replaces a previous `navigator.locks`
+	 * mutex, which is `undefined` in insecure contexts (e.g. Foundry served over plain
+	 * HTTP on a LAN/remote address) and caused render to throw and no buttons to appear.
+	 * @type {Promise<void>}
+	 */
+	#renderLock = Promise.resolve();
 
 	get tools() { return [...this.#tools]; }
 
@@ -228,27 +235,37 @@ export default class ControlManager {
 	}
 
 	async render() {
-		await navigator.locks.request('lib-df-buttons#ControlManager#render', async () => {
-			if (!game.ready) throw new Error("ControlManager#render called before game is ready");
-			/**@type {HTMLElement}*/
-			const sceneControls = document.querySelector("aside#scene-controls");
-			// Remove the old menus
-			sceneControls.querySelectorAll("menu[data-ldfb]").forEach(x => x.remove());
-			const menus = (await this.#createMenus([], this.#tools)).filter(x => x.tools.length > 0);
-			for (const menu of menus) {
-				// There is a chance for an empty menu if all tools are hidden and/or disabled
-				if (menu.tools.length === 0) continue;
-				const html = await renderTemplate(ControlManager.TEMPLATE, menu);
-				html.querySelectorAll('button').forEach(btn => btn.onclick = this.#onClickTool.bind(this));
-				sceneControls.appendChild(html);
-			}
-
-			const prevCount = this.#menuCount;
-			this.#menuCount = menus.length;
-			ControlManager.#updateColumnCount(prevCount, this.#menuCount);
-		});
+		// Serialize concurrent renders via a promise-chain mutex so a render cannot
+		// interleave with another's remove/append DOM manipulation. Works in all browser
+		// contexts (unlike navigator.locks, which requires a secure context).
+		const run = () => this.#renderImpl();
+		const next = this.#renderLock.then(run, run);
+		// Keep the chain alive even if a render rejects, while still propagating the
+		// rejection to this caller via `next`.
+		this.#renderLock = next.catch(() => { });
+		return next;
 	}
 	refresh = this.render;
+
+	async #renderImpl() {
+		if (!game.ready) throw new Error("ControlManager#render called before game is ready");
+		/**@type {HTMLElement}*/
+		const sceneControls = document.querySelector("aside#scene-controls");
+		// Remove the old menus
+		sceneControls.querySelectorAll("menu[data-ldfb]").forEach(x => x.remove());
+		const menus = (await this.#createMenus([], this.#tools)).filter(x => x.tools.length > 0);
+		for (const menu of menus) {
+			// There is a chance for an empty menu if all tools are hidden and/or disabled
+			if (menu.tools.length === 0) continue;
+			const html = await renderTemplate(ControlManager.TEMPLATE, menu);
+			html.querySelectorAll('button').forEach(btn => btn.onclick = this.#onClickTool.bind(this));
+			sceneControls.appendChild(html);
+		}
+
+		const prevCount = this.#menuCount;
+		this.#menuCount = menus.length;
+		ControlManager.#updateColumnCount(prevCount, this.#menuCount);
+	}
 
 	async setup() {
 		this.#tools = {};

@@ -1,5 +1,8 @@
 # DragonFlagon Module Buttons Library
 
+## Release 13.1.2 (2026-06-16)
+- **FIX #529:** Buttons now render over insecure (HTTP) connections.
+
 ## Release 13.1.1 (2026-03-23)
 - **NEW:** Added `hidden` property to tools.
 - **UPDATE:** Renamed `visible` to `enabled`.
