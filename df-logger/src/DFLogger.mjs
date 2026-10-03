@@ -38,7 +38,7 @@ export default class DFLogger {
 				alias: alias
 			},
 			whisper: [game.user.id],
-			type: CONST.CHAT_MESSAGE_STYLES.OOC,
+			style: CONST.CHAT_MESSAGE_STYLES.OOC,
 			flags: { 'df-logger': { destroy: !this.Persist } }
 		});
 
